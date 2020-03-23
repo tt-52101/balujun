@@ -1,0 +1,29 @@
+<div class="ant-layout-sider-children">
+  <div class="alain-pro__sider-logo">
+    <a [routerLink]="['/']" class="alain-pro__header-logo-link">
+      <img class="alain-pro__header-logo-expanded" src="/assets/images/logos/logo-txt.png" alt="{{settings.app.name}}"
+        style="height:50px;" />
+      <img class="alain-pro__header-logo-collapsed" src="/assets/images/logos/logo.png" alt="{{settings.app.name}}"
+        style="height:40px;" />
+    </a>
+  </div>
+  <!-- <nz-dropdown nzTrigger="click" class="alain-pro__aside-user">
+   <div nz-dropdown class="user-block-dropdown">
+      <div class="sidebar-nav-user-avatar">
+        <nz-avatar [nzSrc]="'/assets/images/user.png'" nzSize="large" nzIcon="anticon anticon-user"></nz-avatar>
+      </div>
+
+      <div class="alain-pro__aside-user-info">
+        <strong>{{shownLoginName}}</strong>
+        <p class="text-truncate mb0">{{emailAddress}}</p>
+      </div>
+    </div>
+    <ul nz-menu>
+      <li nz-menu-item (click)="logout()">
+        <i nz-icon type="logout" theme="outline"></i>
+        {{l('Logout')}}
+      </li>
+    </ul>
+    </nz-dropdown-menu> -->
+  <yoyo-sidebar-nav></yoyo-sidebar-nav>
+</div>

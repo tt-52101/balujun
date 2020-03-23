@@ -1,0 +1,183 @@
+<nz-card [nzBordered]="false">
+  <div class="mb-md">
+    <!-- 模糊搜索框 -->
+    <nz-row nzGutter="16">
+<!--       <nz-col nzMd="6" nzSm="6">
+
+        <nz-form-item>
+          <nz-form-control>
+            <nz-input-group nzSearch [nzSuffix]="suffixSearchButton">
+              <input type="text" nz-input [(ngModel)]="filterText" (keyup.enter)="refresh()" name="filterText" [placeholder]="l('SearchWithThreeDot')">
+              <ng-template #suffixSearchButton>
+                <button nz-button nzType="primary" nzSearch type="submit" (click)="refresh()">
+                  <i class="anticon anticon-search"></i>
+                </button>
+              </ng-template>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+
+      </nz-col> -->
+      <nz-col nzMd="6" nzSm="6" class="btn-gutter">
+        <button nz-button [nzType]="'primary'"  (click)="createOrEdit()"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+          <!-- <i class="anticon anticon-plus"></i> -->
+          <span>
+            {{l("Create")}}
+          </span>
+        </button>
+        <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+          <!-- <i class="anticon anticon-delete"></i> -->
+          <span>
+            {{l("BatchDelete")}}
+          </span>
+        </button>
+<!--         <button nz-button nzType="default"  (click)="exportToExcel()">
+          <span>
+            {{l("ExportToExcel")}}
+          </span>
+        </button> -->
+      </nz-col>
+    </nz-row>
+  </div>
+  <!-- 实体的表格内容 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable [nzData]="dataList" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1190px',y: '600px'}" style="word-break:break-all">
+      <!-- 暂无数据组件 -->
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <!-- 分页信息显示 当前 1 页/共 3 页，共 5 条/显示 1-2 条 -->
+      <!--       <ng-template #showTotalTemplate let-total let-range="range">
+        {{l('GridFooterDisplayText',pageNumber,totalPages,total,range[0],range[1])}}
+      </ng-template> -->
+      <!-- 表头 -->
+      <thead (nzSortChange)="gridSort($event)">
+        <tr>
+          <th nz-th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+          <th nz-th class="text-center" nzWidth="160px" nzLeft="60px">
+            <span>{{l('MenuName')}}</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>{{l('MenuCode')}}</span>
+          </th>
+<!--           <th nz-th class="text-center" nzWidth="170px">
+            <span>{{l('ParentId')}}</span>
+          </th> -->
+          <th nz-th class="text-center" nzWidth="170px">
+            <span>{{l('NavigateUrl')}}</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="80px">
+            <span>{{l('Sort')}}</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="80px">
+            <span>{{l('Level')}}</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>{{l('Iocn')}}</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>{{l('IsEnabled')}}</span>
+          </th>
+          <th nz-th class="text-center" nzRight="0px" nzWidth="135px">
+            <span>{{l('Actions')}}</span>
+          </th>
+        </tr>
+      </thead>
+      <!-- 表格内容 -->
+      <tbody>
+        <tr *ngFor="let item of ajaxTable.data">
+          <!-- 全选框 -->
+          <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td>
+          <td nz-td nzLeft="60px">
+            <!-- <ellipsis lines="1"> -->
+              <span nz-tooltip [nzTitle]="item.menuName" *ngIf="item.level == 1" class="firstlevel">
+                {{item.menuName}}
+              </span>
+
+              <span nz-tooltip [nzTitle]="item.menuName" *ngIf="item.level == 2" class="secondlevel">
+                {{item.menuName}}
+              </span>
+              <!-- </ellipsis> -->
+            </td>
+            <td nz-td class="text-center">
+              <ellipsis lines="1">
+                <span nz-tooltip [nzTitle]="item.menuCode">
+                  {{item.menuCode}}
+                </span>
+              </ellipsis>
+            </td>
+<!--             <td nz-td class="text-center">
+              <ellipsis lines="1">
+                <span nz-tooltip [nzTitle]="item.parentId">
+                  {{item.parentId}}
+                </span>
+              </ellipsis>
+            </td> -->
+<!--           <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.parent">
+                {{item.parent}}
+              </span>
+            </ellipsis>
+          </td> -->
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.navigateUrl">
+                {{item.navigateUrl}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.sort">
+                {{item.sort}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.level">
+                {{item.level}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <i nz-icon [nzType]="item.iocName" nzTheme="outline"></i>
+          </td>
+          <!--           <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.iocClassName">
+                {{item.iocClassName}}
+              </span>
+            </ellipsis>
+          </td> -->
+          <!--           <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.isEnabled">
+              {{item.isEnabled}}
+            </span>
+          </td> -->
+          <td nz-td class="text-center" [innerHTML]="item.isEnabled | yn"> </td>
+          <td nz-td class="text-center" nzRight="0px">
+            <!-- 编辑 -->
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+              <a (click)="createOrEdit(item.id)">
+                <!-- <i class="anticon anticon-edit mr-sm"></i> -->
+                <span>{{l('Edit')}}</span>
+              </a>
+              <nz-divider nzType="vertical"></nz-divider>
+            </ng-container>
+            <!-- 删除 -->
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')" [nzOkType]="'danger'">
+                <a nz-popconfirm>
+                  <!-- <i class="anticon anticon-delete mr-sm"></i> -->
+                  <span>{{l('Delete')}}</span>
+                </a>
+              </nz-popconfirm>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+</nz-card>

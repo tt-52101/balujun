@@ -1,0 +1,209 @@
+<!-- <page-header [title]="l('Customer')"></page-header> -->
+<nz-card [nzBordered]="false">
+  <nz-row>
+    <form nz-form [nzLayout]="'inline'" [nzNoColon]="true">
+      <!-- 文本 -->
+      <nz-form-item style="margin-bottom: 20px">
+        <nz-form-label nzFor="Name">{{l("Name")}}</nz-form-label>
+        <nz-form-control>
+          <nz-input-group>
+            <input type="text" nz-input name="Name" [placeholder]="l('Name')" [(ngModel)]="queryData[0].value">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 文本 -->
+      <nz-form-item style="margin-bottom: 20px">
+        <nz-form-label nzFor="Mobile">{{l("Mobile")}}</nz-form-label>
+        <nz-form-control>
+          <nz-input-group>
+            <input type="number" nz-input name="Mobile" [placeholder]="l('Mobile')" [(ngModel)]="queryData[1].value">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 文本 -->
+      <nz-form-item style="margin-bottom: 20px">
+        <nz-form-label nzFor="Sex">{{l("Sex")}}</nz-form-label>
+        <nz-form-control>
+          <nz-input-group>
+            <!-- <input type="text" nz-input name="info1" [(ngModel)]="queryData.info1"> -->
+            <nz-select [(ngModel)]="queryData[2].value" name="Sex" [nzPlaceHolder]="l('Sex')" nzAllowClear style="width: 180px">
+              <nz-option [nzLabel]="l('Not')" nzValue="Not"></nz-option>
+              <nz-option [nzLabel]="l('Man')" nzValue="Man"></nz-option>
+              <nz-option [nzLabel]="l('Woman')" nzValue="Woman"></nz-option>
+            </nz-select>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 下拉框 -->
+      <nz-form-item style="margin-bottom: 20px">
+        <nz-form-label nzFor="VerifiableType">{{l("VerifiableType")}}</nz-form-label>
+        <nz-form-control>
+          <nz-select [(ngModel)]="queryData[3].value" name="VerifiableType" [nzPlaceHolder]="l('VerifiableType')" nzAllowClear style="width: 180px">
+            <nz-option nzValue="IdentityCard" [nzLabel]="l('IdentityCard')"></nz-option>
+            <!-- <nz-option nzValue="ICCard" [nzLabel]="l('ICCard')"></nz-option> -->
+            <!-- <nz-option nzValue="QRCode" [nzLabel]="l('QRCode')"></nz-option> -->
+            <nz-option nzValue="ReturnCard" [nzLabel]="l('ReturnCard')"></nz-option>
+            <nz-option nzValue="TaiwanCard" [nzLabel]="l('TaiwanCard')"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- 文本 -->
+      <nz-form-item style="margin-bottom: 20px">
+        <nz-form-label nzFor="CertificatesNum">{{l("CertificatesNum")}}</nz-form-label>
+        <nz-form-control>
+          <nz-input-group>
+            <input type="number" nz-input name="CertificatesNum" [placeholder]="l('CertificatesNum')" [(ngModel)]="queryData[4].value">
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item style="margin:0 0 20px 10px">
+        <nz-form-control>
+          <button nz-button nzType="primary" style="margin:0 10px 0 0" (click)="search()">{{l("Search")}}</button>
+          <button nz-button nzType="danger" (click)="batchDelete()" style="margin:0 10px 0 0"  *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">{{l("BatchDelete")}}</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-row>
+  <!-- 实体的表格内容 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable [nzData]="dataList" nzBordered [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzFrontPagination]="false" [nzScroll]="{ x: '1465px', y: '600px' }" style="word-break:break-all">
+      <!-- 暂无数据组件 -->
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <!-- 表头 -->
+      <thead (nzSortChange)="gridSort($event)">
+        <tr>
+          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0"></th>
+          <th nz-th nzWidth="160px" class="text-center" nzLeft="60px">
+            <span>{{l('CustomerName')}}</span>
+          </th>
+          <th nz-th nzWidth="160px" class="text-center">
+            <span>{{l('Mobile')}}</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>{{l('LoginPwd')}}</span>
+          </th>
+          <th nz-th nzWidth="100px" class="text-center">
+            <span>{{l('Sex')}}</span>
+          </th>
+          <th nz-th nzWidth="100px" class="text-center">
+            <span>{{l('Country')}}</span>
+          </th>
+          <th nz-th nzWidth="180px" class="text-center">
+            <span>{{l('CertificatesNum')}}</span>
+          </th>
+          <th nz-th nzWidth="100px" class="text-center">
+            <span>{{l('VerifiableType')}}</span>
+          </th>
+
+          <th nz-th nzWidth="180px" class="text-center">
+            <span>{{l('OpenID')}}</span>
+          </th>
+          <th nz-th nzWidth="140px" class="text-center">
+            <span>{{l('Photo')}}</span>
+          </th>
+
+          <th nz-th nzWidth="150px" class="text-center" nzRight="0px">
+            <span>{{l('Actions')}}</span>
+          </th>
+        </tr>
+      </thead>
+      <!-- 表格内容 -->
+      <tbody>
+        <tr *ngFor="let item of ajaxTable.data">
+          <!-- 全选框 -->
+          <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0"></td>
+          <td nz-td nzWidth="160px" class="text-center" nzLeft="60px">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.customerName">
+                {{item.customerName}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.mobile">
+                {{item.mobile}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.loginPwd">
+                {{item.loginPwd}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.sex">
+                {{l(item.sex)}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.country">
+                {{item.country}}
+              </span>
+            </ellipsis>
+          </td>
+
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.certificatesNum">
+                {{item.certificatesNum}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.verifiableType">
+                {{l(item.verifiableType)}}
+              </span>
+            </ellipsis>
+          </td>
+
+          <td nz-td class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.openID">
+                {{item.openID}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td class="text-center">
+
+            <div *ngIf="item.photo && item.photo.indexOf(',') == -1">
+              <img [src]="imgurl + '/' +item.photo" style="max-width: 100px;max-height: 100px;cursor: pointer;" (click)="viewbigpic(imgurl + '/' + pitem)">
+            </div>
+
+            <div *ngIf="item.photo && item.photo.indexOf(',') > -1">
+              <div>
+                <img *ngFor="let pitem of item.photo.split(',')" [src]="imgurl + '/' + pitem" style="max-width: 100px;max-height: 100px;cursor: pointer;margin-bottom: 20px" (click)="viewbigpic(imgurl + '/' + pitem)">
+              </div>
+            </div>
+
+          </td>
+
+          <td class="text-center" nzWidth="150px" nzRight="0px">
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+              <a (click)="createOrEdit(item.id)">
+                <span>{{l('Edit')}}</span>
+              </a>
+              <nz-divider nzType="vertical"></nz-divider>
+            </ng-container>
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
+                <a nz-popconfirm>
+                  <span>{{l('Delete')}}</span>
+                </a>
+              </nz-popconfirm>
+            </ng-container>
+          </td>
+
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+</nz-card>

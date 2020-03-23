@@ -1,0 +1,177 @@
+<div class="contentbox">
+  <div class="leftcard">
+    <nz-row style="background: #fff;padding: 10px 20px 20px 20px;border-bottom:1px solid rgba(221,226,238,1);">
+
+      <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="scheduleCode">航班班次</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input name="scheduleCode" [(ngModel)]="hangbanquery[0].value" style="width: 150px">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="routeId">航线</nz-form-label>
+          <nz-form-control>
+            <nz-select name="routeId" [(ngModel)]="hangbanquery[1].value" nzAllowClear style="width: 150px">
+              <nz-option nzValue="" nzLabel="全部"></nz-option>
+              <nz-option *ngFor="let item of hangxianList;let i = index;" [nzValue]="item.id" [nzLabel]="item.routeName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="boatId">游船</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="hangbanquery[2].value" name="boatId" nzAllowClear style="width: 150px">
+              <nz-option nzValue="" nzLabel="全部"></nz-option>
+              <nz-option *ngFor="let item of youchuanList;let i = index;" [nzValue]="item.id" [nzLabel]="item.boatName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="runStatus">行程状态</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="hangbanquery[4].value" name="runStatus" nzAllowClear style="width: 110px">
+              <nz-option nzValue="" nzLabel="全部"></nz-option>
+              <nz-option nzValue="WaitCheck" [nzLabel]="l('WaitCheck')"></nz-option>
+              <nz-option nzValue="BeginCheck" [nzLabel]="l('BeginCheck')"></nz-option>
+              <nz-option nzValue="ScheduleRunning" [nzLabel]="l('ScheduleRunning')"></nz-option>
+              <nz-option nzValue="Ending" [nzLabel]="l('Ending')"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item style="margin:0 8px 0 10px;">
+          <button nz-button (click)="gethangban()" style="margin-top: 4px;padding: 0px 20px;height: 32px;background: #308DE5;color: #fff">查询</button>
+          <button nz-button (click)="clear()" style="margin-top: 4px;padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c;color: #fff">清空</button>
+        </nz-form-item>
+      </form>
+      <div class="datectrl">
+        <i class="datectrlicon" nz-icon nzType="double-left" nzTheme="outline" (click)="settime(1)"></i>
+        <div class="dateitem" (click)="datechange(item.date,item.day,item.fulldate,item.enable)" *ngFor="let item of datearr;let i = index;" [ngStyle]="{'background':item.date == nowdate?'#308DE5':'#fff'}">
+          <span *ngIf="item.enable" [ngStyle]="{'color':item.date == nowdate?'#fff':'#308DE5'}">{{item.date}}</span>
+          <span *ngIf="item.enable" [ngStyle]="{'color':item.date == nowdate?'#fff':'#308DE5'}">{{item.day}}</span>
+          <span *ngIf="!item.enable" style="color:grey">{{item.date}}</span>
+          <span *ngIf="!item.enable" style="color:grey">{{item.day}}</span>
+        </div>
+        <i class="datectrlicon" nz-icon nzType="double-right" nzTheme="outline" (click)="settime(2)"></i>
+        <!-- style="width: 1px;height: 1px;opacity: 0;z-index: -999;" [nzOpen]="showcalendar" [nzShowToday]="false"-->
+        <nz-date-picker [nzDisabledDate]="disabledDate" [(ngModel)]="calendardate" (ngModelChange)="calendarChange($event)"></nz-date-picker>
+        <!-- <i class="datectrlicon" nz-icon nzType="calendar" nzTheme="outline" style="font-size: 25px;" (click)="calendarctrl()"></i> -->
+      </div>
+    </nz-row>
+    <nz-row>
+      <div class="hblist" *ngIf="hangbanList.length==0">
+        <span style="width: 100%;text-align: center;display: block;margin: 20px 0;font-weight: 600;font-size: 18px;">暂无{{nowdate}}航班</span>
+      </div>
+      <div class="hblist" *ngIf="hangbanList.length>0">
+        <div class="hbitem" *ngFor="let item of hangbanList;let i = index;">
+          <div class="infobox">
+            <div class="hb-item-left">
+              <div class="hb-item-left-top">
+                <img *ngIf="item.boat.picture" [src]="imgurl + '/' + item.boat.picture" class="ycimg">
+                <div class="hb-item-left-top-right">
+                  <div class="hb-item-left-top-right-top">
+                    <div>{{item.scheduleCode}}</div>
+                    <div>{{item.boat.boatName}}</div>
+                    <nz-tag [nzColor]="'#8ABAEB'">{{l(item.scheduleStatus)}}</nz-tag>
+                  </div>
+                  <div class="hb-item-left-top-right-middle">
+                    {{item.startTimeStr | timeformat}} - {{item.endTimeStr | timeformat}}
+                  </div>
+                  <div>
+                    <span style="font-weight: 600">航线名称：</span><span style="margin-right: 20px">{{item.route.routeName}}</span>
+                    <span style="font-weight: 600">路线：</span><span style="margin-right: 20px">{{item.route.startPosition}} - {{item.route.endPosition}}</span>
+                    <span style="font-weight: 600">检票时间：</span><span style="margin-right: 20px">{{item.checkStartTimeStr |timeformat}} - {{item.checkEndTimeStr |timeformat}}</span>
+                  </div>
+                  <div class="ticketbox" *ngIf="item.ticketPrices && item.ticketPrices.length>0" style="margin-top: 8px">
+                    <button (click)="createOrEdit(item,titem)" nz-button nzType="default" nzSize="small" class="ticketitem" style="padding: 0px 8px;height: 26px;" *ngFor="let titem of item.ticketPrices;let ind = index">
+                      {{titem.ticketName}} ￥{{titem.price}}
+                    </button>
+                  </div>
+                  <div *ngIf="!item.ticketPrices">
+                    <nz-tag [nzColor]="'dimgray'" style="margin-top: 8px">无票型销售</nz-tag>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="hb-item-right">
+              <div>座位数：{{item.seatQuantity}}</div>
+              <div style="margin-top: 10px;">余票数：{{item.surplusQuantity}}</div>
+              <!-- <button (click)="showorhide(i)" nz-button nzType="primary" nzSize="small" class="ticketitem" style="height: 26px;">查看票型</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-row>
+  </div>
+  <div class="rightcard">
+    <div class="rd-top">
+      <button nz-button (click)="openguest()" style="background: #fc992c;border-color: #fc992c;color: #fff;display: inline-block;margin-bottom: 10px;">打开客显</button>
+      <div class="rd-top-top" *ngIf="!scheduleId">
+        <span>请选择票型</span>
+      </div>
+      <div class="rd-top-top" *ngIf="scheduleId">
+        <span style="font-weight: 600">{{schedule.scheduleCode}}</span>
+        <span>{{schedule.startTimeStr | timeformat}} - {{schedule.endTimeStr | timeformat}}</span>
+      </div>
+      <div class="rd-top-list">
+        <div class="rd-top-item" *ngFor="let item of orderdetail;let i = index;">
+          <div>{{i + 1}}</div>
+          <div>{{item.ticket.ticketName}}</div>
+          <div>{{item.customer.customerName}}</div>
+          <div>{{l(item.customer.verifiableType)}}</div>
+          <div>￥{{item.ticket.price}}</div>
+          <i class="deleteicon" nz-icon nzType="delete" nzTheme="outline" (click)="deleteticket(i)"></i>
+        </div>
+      </div>
+      <div class="rd-top-bottom">
+        <span>数量：{{orderdetail.length}}</span>
+        <span>合计：￥{{totalamount}}</span>
+      </div>
+    </div>
+    <div style="background: #fff;padding: 10px 0;">
+      <form nz-form class="mb-md my-form" [nzNoColon]="true" style="max-width: 600px;">
+        <nz-form-item class="formitem1">
+          <nz-form-label class="my-form-label" [nzSm]="4" [nzXl]="6" nzFor="payMethodId"><span>支付方式</span></nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXl]="14" style="margin-top: 4px;">
+            <nz-select [(ngModel)]="orderinfo.payMethodId" name="payMethodId" nzAllowClear>
+              <nz-option *ngFor="let item of paymethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <!--         <nz-form-item class="formitem1">
+          <nz-form-label class="my-form-label" [nzSm]="4" [nzXl]="6" nzFor="zhekou"><span>折扣</span></nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXl]="14" style="margin-top: 4px;">
+            <nz-input-number nz-input  [nzMin]="0"
+            [nzMax]="1"
+            [nzStep]="0.01" name="zhekou" #discount="ngModel" type="number" 
+            [(ngModel)]="discount" required
+            [nzPlaceHolder]="l('Discount')" ></nz-input-number>
+          </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item class="formitem1">
+          <nz-form-label class="my-form-label" [nzSm]="4" [nzXl]="6"><span>应收</span></nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXl]="14">
+            <span class="bluetext">￥{{totalamount}}</span>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem1">
+          <nz-form-label class="my-form-label" [nzSm]="4" [nzXl]="6" nzFor="shou"><span>实收</span></nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXl]="14" style="margin-top: 4px;">
+            <input type="number" nz-input name="shou" [(ngModel)]="receive" nzAddOnAfter="RMB">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem1">
+          <nz-form-label class="my-form-label" [nzSm]="4" [nzXl]="6"><span>找零</span></nz-form-label>
+          <nz-form-control [nzSm]="16" [nzXl]="14">
+            <span class="bluetext">￥{{receive -receivable}}</span>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem1" style="margin-top: 20px">
+          <nz-form-control>
+            <button nz-button class="submitbtn" (click)="settlement()" *ngIf="isAllOperation || curmenupower.indexOf('SellTicket') > -1">结算出票</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+</div>

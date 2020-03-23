@@ -1,0 +1,77 @@
+import { Component, Inject, Input, OnInit, Injector } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { SettingsService } from '@delon/theme';
+import { AppComponentBase } from '@shared/component-base';
+import {
+  UserServiceProxy,
+  ChangeUserLanguageDto,
+  ProfileServiceProxy
+} from '@shared/service-proxies/service-proxies';
+import * as _ from 'lodash';
+// import { I18NService } from '@core/i18n/i18n.service';
+
+@Component({
+  selector: 'header-i18n',
+  template: `
+  <div
+  nz-dropdown
+  [ngClass]="'btnClass'"
+  class="alain-pro__item"
+  nzPlacement="bottomRight"
+  [nzDropdownMenu]="dropdownMenu"
+  >
+  <i nz-icon nzType="global" [ngClass]="'btnIconClass'"></i>
+  {{ currentLanguage.displayName }}
+  <i nz-icon type="down"></i>
+  </div>
+
+  <nz-dropdown-menu #dropdownMenu="nzDropdownMenu">
+  <ul nz-menu>
+  <li
+  nz-menu-item
+  *ngFor="let item of languages"
+  [nzSelected]="item.name == currentLanguage.name"
+  (click)="change(item.name)"
+  >
+  <i class="anticon {{ item.icon }}"></i>
+  <span>{{ item.displayName }}</span>
+  </li>
+  </ul>
+  </nz-dropdown-menu>
+  `
+})
+export class HeaderI18nComponent extends AppComponentBase implements OnInit {
+  languages: abp.localization.ILanguageInfo[];
+  currentLanguage: abp.localization.ILanguageInfo;
+
+  constructor(
+    injector: Injector,
+    private _profileService: ProfileServiceProxy
+    ) {
+    super(injector);
+  }
+
+  ngOnInit() {
+    // console.log(this.localization.languages)
+    this.languages = _.filter(this.localization.languages, l => !l.isDisabled);
+    this.currentLanguage = this.localization.currentLanguage;
+
+  }
+
+  change(languageName: string): void {
+    // console.log(languageName)
+    const input = new ChangeUserLanguageDto();
+    input.languageName = languageName;
+
+    this._profileService.changeLanguage(input).subscribe(() => {
+      abp.utils.setCookieValue(
+        'Abp.Localization.CultureName',
+        languageName,
+        new Date(new Date().getTime() + 5 * 365 * 86400000), // 5 year
+        abp.appPath
+        );
+
+      window.location.reload();
+    });
+  }
+}

@@ -1,0 +1,54 @@
+
+
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+        <div class="modal-title">
+            <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
+            <!--             <span *ngIf="entity.id">{{l('Edit')}}</span> -->
+            <span>{{l('Edit')}}</span>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 12px">
+        <button nz-button [nzType]="'primary'" type="button" (click)="allcheckChange()">
+            {{l("AllCheck")}}
+        </button>
+        <button nz-button [nzType]="'default'" type="button" (click)="allnotcheckChange()">
+            {{l("AllNotCheck")}}
+        </button>
+    </div>
+
+    <nz-table #basicTable nzBordered [nzData]="powerList" nzSize="small">
+      <thead>
+        <tr>
+            <th nz-th class="text-center" nzWidth="200px">{{l('Menu')}}</th>
+            <th nz-th class="text-center" >{{l('Power')}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let poweritem of basicTable.data;let i = index">
+          <td nz-td class="text-center" >{{poweritem.menuname}}</td>
+          <td nz-td>
+            <nz-checkbox-group [name]="poweritem.menuname" [(ngModel)]="poweritem.child" (ngModelChange)="ngModelChange($event)"></nz-checkbox-group>
+        </td>
+    </tr>
+</tbody>
+</nz-table>
+
+<div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+        <!-- <i class="anticon anticon-close-circle-o"></i>  -->
+        {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="saving" [nzLoading]="saving">
+        <!-- <i class="anticon anticon-save" *ngIf="!saving"></i> -->
+        {{l("Save")}}
+    </button>
+</div>
+</form>
+
+
+
+
+

@@ -1,0 +1,75 @@
+
+
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+        <div class="modal-title">
+            <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
+            <span *ngIf="entity.id">{{l('Edit')}}</span>
+            <span *ngIf="!entity.id">{{l('Create')}}</span>
+        </div>
+    </div>
+    <!-- 模态框内容 -->
+    <fieldset>
+        <!-- 提示信息 -->
+        <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="scenicSpotName">{{l('ScenicSpotName')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="scenicSpotName" #scenicSpotName="ngModel"
+                [(ngModel)]="entity.scenicSpotName"
+                [placeholder]="l('ScenicSpotName')"  required >
+
+                <!-- 校验 -->
+                <nz-form-explain *ngIf="scenicSpotName.control.dirty&&scenicSpotName.control.errors">
+                    <ng-container *ngIf="scenicSpotName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="scenicSpotInfo">{{l('ScenicSpotInfo')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+<!--             <input nz-input name="scenicSpotInfo" #scenicSpotInfo="ngModel"
+            [(ngModel)]="entity.scenicSpotInfo"
+            [placeholder]="l('ScenicSpotInfo')"  required > -->
+            <textarea nz-input style="height: 100px;" [placeholder]="l('ScenicSpotInfo')" required #scenicSpotInfo="ngModel" [(ngModel)]="entity.scenicSpotInfo" name="scenicSpotInfo"></textarea>
+            <!-- 校验 -->
+            <nz-form-explain *ngIf="scenicSpotInfo.control.dirty&&scenicSpotInfo.control.errors">
+                <ng-container *ngIf="scenicSpotInfo.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+            </nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    
+    <nz-form-item nz-row>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="parentId">{{l('Parent')}}</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+<!--                 <input nz-input name="parentId" #parentId="ngModel"
+                [(ngModel)]="entity.parentId"
+                [placeholder]="l('ParentId')" > -->
+                <nz-select name="info4" [(ngModel)]="entity.parentId" name="info4" nzAllowClear (ngModelChange)="onChange($event)">
+                    <nz-option *ngFor="let item of scenicspotarr;let i = index;" [nzValue]="item.id" [nzLabel]="item.scenicSpotName"></nz-option>
+                </nz-select>
+            </nz-form-control>
+        </nz-form-item>
+
+
+
+    </fieldset>
+    <!-- 模态框底部 -->
+    <div class="modal-footer">
+        <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+            <!-- <i class="anticon anticon-close-circle-o"></i>  -->
+            {{l("Cancel")}}
+        </button>
+        <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+            <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+            {{l("Save")}}
+        </button>
+    </div>
+</form>
+
+
+
+
+

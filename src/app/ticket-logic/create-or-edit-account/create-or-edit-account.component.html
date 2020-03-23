@@ -1,0 +1,121 @@
+
+
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+        <div class="modal-title">
+            <i class="anticon anticon-medicine-box mr-sm"></i>
+            <span *ngIf="entity.id">{{l('Edit')}}</span>
+            <span *ngIf="!entity.id">{{l('Create')}}</span>
+        </div>
+    </div>
+    <!-- 模态框内容 -->
+    <fieldset>
+        <!-- 提示信息 -->
+        <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+            <nz-form-item nz-row>
+                    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="accountNo">{{l('AccountNo')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="accountNo" #accountNo="ngModel"
+                                   [(ngModel)]="entity.accountNo"
+                                   [placeholder]="l('AccountNo')"  required >
+
+                            <!-- 校验 -->
+                            <nz-form-explain *ngIf="accountNo.control.dirty&&accountNo.control.errors">
+                                                                <ng-container *ngIf="accountNo.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                            </nz-form-explain>
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="accountDate">{{l('AccountDate')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <nz-time-picker name="accountDate" #accountDate="ngModel"
+                                            [(ngModel)]="entity.accountDate"  required ></nz-time-picker>
+
+                            <!-- 校验 -->
+                            <nz-form-explain *ngIf="accountDate.control.dirty&&accountDate.control.errors">
+                                                                <ng-container *ngIf="accountDate.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                            </nz-form-explain>
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="quantity">{{l('Quantity')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="quantity" #quantity="ngModel"
+                                   [(ngModel)]="entity.quantity"
+                                   [placeholder]="l('Quantity')"  required >
+
+                            <!-- 校验 -->
+                            <nz-form-explain *ngIf="quantity.control.dirty&&quantity.control.errors">
+                                                                <ng-container *ngIf="quantity.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                            </nz-form-explain>
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="amount">{{l('Amount')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="amount" #amount="ngModel"
+                                   [(ngModel)]="entity.amount"
+                                   [placeholder]="l('Amount')"  required >
+
+                            <!-- 校验 -->
+                            <nz-form-explain *ngIf="amount.control.dirty&&amount.control.errors">
+                                                                <ng-container *ngIf="amount.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                            </nz-form-explain>
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="accountStatus">{{l('AccountStatus')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="accountStatus" #accountStatus="ngModel"
+                                   [(ngModel)]="entity.accountStatus"
+                                   [placeholder]="l('AccountStatus')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="collectiorId">{{l('CollectiorId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="collectiorId" #collectiorId="ngModel"
+                                   [(ngModel)]="entity.collectiorId"
+                                   [placeholder]="l('CollectiorId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="collectionTime">{{l('CollectionTime')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="collectionTime" #collectionTime="ngModel"
+                                   [(ngModel)]="entity.collectionTime"
+                                   [placeholder]="l('CollectionTime')"  required >
+
+                            <!-- 校验 -->
+                            <nz-form-explain *ngIf="collectionTime.control.dirty&&collectionTime.control.errors">
+                                                                <ng-container *ngIf="collectionTime.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                            </nz-form-explain>
+
+                </nz-form-control>
+            </nz-form-item>
+
+    </fieldset>
+    <!-- 模态框底部 -->
+    <div class="modal-footer">
+        <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+            <i class="anticon anticon-close-circle-o"></i> {{l("Cancel")}}
+        </button>
+        <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+            <i class="anticon anticon-save" *ngIf="!saving"></i> {{l("Save")}}
+        </button>
+    </div>
+</form>
+
+
+
+
+

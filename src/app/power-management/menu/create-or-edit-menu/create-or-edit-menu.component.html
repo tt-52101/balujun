@@ -1,0 +1,106 @@
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+  <!-- 模态框头部 -->
+  <div class="modal-header">
+    <div class="modal-title">
+      <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
+      <span *ngIf="entity.id">{{l('Edit')}}</span>
+      <span *ngIf="!entity.id">{{l('Create')}}</span>
+    </div>
+  </div>
+  <!-- 模态框内容 -->
+  <fieldset>
+    <!-- 提示信息 -->
+    <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24">{{l('Parent')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-tree-select [nzDefaultExpandAll]="false" [nzNodes]="menuarr" name="parentId" nzPlaceHolder="Please select" [(ngModel)]="parentId" (ngModelChange)="onChange($event)">
+        </nz-tree-select>
+
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="menuName">{{l('MenuName')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="menuName" #menuName="ngModel" [(ngModel)]="entity.menuName" [placeholder]="l('MenuName')" required>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="menuName.control.dirty&&menuName.control.errors">
+          <ng-container *ngIf="menuName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="menuCode">{{l('MenuCode')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="menuCode" #menuCode="ngModel" [(ngModel)]="entity.menuCode" [placeholder]="l('MenuCode')" required>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="menuCode.control.dirty&&menuCode.control.errors">
+          <ng-container *ngIf="menuCode.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzFor="navigateUrl">{{l('NavigateUrl')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="navigateUrl" #navigateUrl="ngModel" [(ngModel)]="entity.navigateUrl" [placeholder]="l('NavigateUrl')">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sort">{{l('Sort')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="sort" #sort="ngModel" [(ngModel)]="entity.sort" [placeholder]="l('Sort')">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="level">{{l('Level')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="level" #level="ngModel" [(ngModel)]="entity.level" [placeholder]="l('Level')">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row *ngIf="entity.level == 1">
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="iocName">{{l('IocName')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+
+        <nz-select [(ngModel)]="entity.iocName" name="iocName" (ngModelChange)="iconChange($event)">
+          <nz-option *ngFor="let item of iconarr" [nzLabel]="item.title" [nzValue]="item.title" nzCustomContent ><i nz-icon [nzType]="item.icon"></i> {{item.title}}</nz-option>
+
+        </nz-select>
+
+        <!-- 校验 -->
+<!--         <nz-form-explain *ngIf="iocName.control.dirty&&iocName.control.errors">
+          <ng-container *ngIf="iocName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain> -->
+      </nz-form-control>
+    </nz-form-item>
+
+<!--     <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="iocClassName">{{l('IocClassName')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="iocClassName" #iocClassName="ngModel" [(ngModel)]="entity.iocClassName" [placeholder]="l('IocClassName')" required>
+        <nz-form-explain *ngIf="iocClassName.control.dirty&&iocClassName.control.errors">
+          <ng-container *ngIf="iocClassName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item> -->
+    
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <label nz-checkbox name="isEnabled" #isEnabled="ngModel" [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
+      </nz-form-control>
+    </nz-form-item>
+  </fieldset>
+  <!-- 模态框底部 -->
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+      <!-- <i class="anticon anticon-close-circle-o"></i> -->
+       {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i> -->
+       {{l("Save")}}
+    </button>
+  </div>
+</form>

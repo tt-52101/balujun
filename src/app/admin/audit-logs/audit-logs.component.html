@@ -1,0 +1,178 @@
+<!-- <page-header [title]="l('AuditLogs')"></page-header> -->
+<nz-card [nzBordered]="false">
+  <!-- 检索表单 -->
+  <form nz-form (ngSubmit)="refreshGoFirstPage()" class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+    <nz-form-item style="margin:0 20px 15px 0;">
+      <nz-form-label>{{l("UserName")}}</nz-form-label>
+      <nz-form-control>
+        <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+          <input type="text" nz-input [(ngModel)]="username" name="UserName" [placeholder]="l('UserName')">
+          <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSearch type="submit">{{l('Query')}}
+              <!-- <i class="anticon anticon-search"></i> -->
+            </button>
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;">
+      <nz-form-label>{{l("ErrorState")}}</nz-form-label>
+      <nz-form-control>
+        <nz-select [(ngModel)]="hasException" name="HasException" [nzPlaceHolder]="l('ErrorState')" nzAllowClear style="width: 230px">
+          <nz-option [nzLabel]="l('All')" nzValue=""></nz-option>
+          <nz-option [nzLabel]="l('Success')" nzValue="false"></nz-option>
+          <nz-option [nzLabel]="l('HasError')" nzValue="true"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;">
+      <nz-form-label>{{l("DateRange")}}</nz-form-label>
+      <nz-form-control>
+        <nz-range-picker style="width: 230px;margin:0 8px 0 10px;" name="DateRange" [(ngModel)]="startToEndDate" [nzPlaceHolder]="[l('StartDateTime'),l('EndDateTime')]"></nz-range-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;" nz-row *ngIf="advancedFiltersVisible">
+      <nz-form-label>{{l("Service")}}</nz-form-label>
+      <nz-form-control>
+        <input nz-input name="Service" [(ngModel)]="serviceName" [placeholder]="l('Service')">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;" *ngIf="advancedFiltersVisible">
+      <nz-form-label>{{l("Duration")}}</nz-form-label>
+      <nz-form-control>
+        <nz-input-group nzCompact>
+          <nz-input-number name="MinExecutionDuration" [(ngModel)]="minExecutionDuration" [nzPlaceHolder]="l('MinExecutionDuration')" [nzMin]="0" [nzMax]="86400000" [nzStep]="1" style="text-align: center; width: 110px;"></nz-input-number>
+          <input type="text" disabled nz-input placeholder="~" style="width: 30px; border-left: 0px;pointer-events: none; background-color: rgb(255, 255, 255);">
+          <nz-input-number name="MaxExecutionDuration" [(ngModel)]="maxExecutionDuration" [nzPlaceHolder]="l('MaxExecutionDuration')" [nzMin]="0" [nzMax]="86400000" [nzStep]="1" style="text-align: center; border-left: 0px; width: 110px;"></nz-input-number>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;" nz-row *ngIf="advancedFiltersVisible">
+      <nz-form-label>{{l("MethodName")}}</nz-form-label>
+      <nz-form-control>
+        <input nz-input name="MethodName" [(ngModel)]="methodName" [placeholder]="l('MethodName')">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item style="margin:0 20px 15px 0;" *ngIf="advancedFiltersVisible">
+      <nz-form-label>{{l("Browser")}}</nz-form-label>
+      <nz-form-control>
+        <input nz-input name="BrowserInfo" [(ngModel)]="browserInfo" [placeholder]="l('Browser')">
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <!-- 操作部分 -->
+  <nz-row nzGutter="8">
+    <nz-col nzMd="20" nzSm="12" class="btn-gutter">
+    </nz-col>
+    <nz-col nzMd="4" nzSm="12" class="text-right">
+      <a (click)="advancedFiltersVisible=!advancedFiltersVisible">
+        {{advancedFiltersVisible ? l('HideAdvancedFilters') : l('ShowAdvancedFilters')}}
+        <i nz-icon nzType="{{advancedFiltersVisible ? 'up' : 'down'}}" nzTheme="outline"></i>
+      </a>
+    </nz-col>
+  </nz-row>
+  <!-- 数据部分 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable nzShowSizeChanger [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
+      <!-- 暂无数据 -->
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <!-- 分页信息显示 当前 1 页/共 3 页，共 5 条/显示 1-2 条 -->
+      <!--       <ng-template #showTotalTemplate let-total let-range="range">
+        {{l('GridFooterDisplayText',pageNumber,totalPages,total,range[0],range[1])}}
+      </ng-template> -->
+      <!-- 表头 -->
+      <thead nz-thead (nzSortChange)=" gridSort($event)">
+        <tr>
+          <th class="text-center" nz-th>
+            <span>{{l('Time')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('UserName')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Service')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Action')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Duration')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('IpAddress')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Client')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Browser')}}</span>
+          </th>
+          <th nzWidth="100px" class="text-center">
+            <span>{{l('ExceptionType')}}</span>
+          </th>
+          <th nzWidth="120px" class="text-center">
+            <span>{{l('Actions')}}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody nz-tbody>
+        <tr nz-tbody-tr *ngFor="let item of ajaxTable.data">
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.executionTime | _date:'YYYY-MM-DD HH:mm:ss'">
+              {{item.executionTime | _date:'YYYY-MM-DD HH:mm:ss'}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.userName">
+              {{item.userName}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.serviceName">
+              {{item.serviceName}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.methodName">
+              {{item.methodName}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="l('Xms', item.executionDuration)">
+              {{l('Xms', item.executionDuration)}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.clientIpAddress">
+              {{item.clientIpAddress}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span nz-tooltip [nzTitle]="item.clientName">
+              {{item.clientName}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span nz-tooltip [nzTitle]="item.browserInfo">
+              {{truncateStringWithPostfix(item.browserInfo, 20)}}
+            </span>
+          </td>
+          <td class="text-center">
+            <i *ngIf="item.exception" nz-tooltip [nzTitle]="l('HasError')" class="anticon anticon-warning text-warning"></i>
+            <i *ngIf="!item.exception" nz-tooltip [nzTitle]="l('Success')" class="anticon anticon-check-circle text-green"></i>
+          </td>
+          <td nzWidth="120px" class="text-center">
+            <span>
+              <a (click)="showDetails(item)">
+                <!-- <i class="anticon anticon-search"></i> -->
+                <span>{{l('ViewDetails')}}</span>
+              </a>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+</nz-card>

@@ -1,0 +1,104 @@
+<nz-card [nzBordered]="false">
+    <div class="mb-md">
+        <!-- 模糊搜索框 -->
+        <nz-row nzGutter="16">
+            <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+                <nz-form-item class="formitem">
+                    <nz-form-label>角色名称</nz-form-label>
+                    <nz-form-control>
+                        <nz-select [(ngModel)]="scqueryData[0]" nzAllowClear style="width: 130px" name="route">
+                            <nz-option *ngFor="let item of scqueryData[0].value;let i = index;" [nzValue]="item.id"
+                                [nzLabel]="item"></nz-option>
+                        </nz-select>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="formitem">
+                    <nz-form-label nzFor="scheduleCode">人员姓名</nz-form-label>
+                    <nz-form-control>
+                        <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[1].value"
+                            style="width: 130px">
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item class="formitem">
+                    <nz-form-label nzFor="scheduleCode">可售票别名</nz-form-label>
+                    <nz-form-control>
+                        <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[2].value"
+                            style="width: 130px">
+                    </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
+                    <button nz-button [nzType]="'primary'" (click)="getlist()"
+                        style="padding: 0px 20px;height: 32px;">查询</button>
+                </nz-form-item>
+
+            </form>
+        </nz-row>
+    </div>
+    <nz-row class="my-md">
+        <nz-table #ajaxTable [nzData]="scqueryData" [nzTotal]="totalItems" [nzLoading]="isTableLoading"
+            [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
+            [nzFrontPagination]="false" nzBordered style="word-break:break-all">
+            <ng-template #noDataTemplate>
+                <no-data></no-data>
+            </ng-template>
+            <thead>
+                <tr>
+                    <th nz-th class="text-center" nzWidth="150px" nzLeft="00px">
+                        <span>角色名称</span>
+                    </th>
+                    <th nz-th class="text-center" nzWidth="130px" nzLeft="150px">
+                        <span>包含人员姓名</span>
+                    </th>
+                    <th nz-th class="text-center" nzWidth="135px">
+                        <span>可售票型</span>
+                    </th>
+                    <th nz-th class="text-center" nzWidth="135px">
+                        <span>是否启用</span>
+                    </th>
+                    <th nz-th class="text-center" nzWidth="150px">
+                        <span>操作</span>
+                    </th>
+                </tr>
+            </thead>
+            <!-- 表格内容 -->
+            <tbody>
+          <tr *ngFor="let item of list">
+            <td nz-td class="text-center" nzLeft="0px">
+              <span>
+                {{item.name}}
+              </span>
+            </td>
+            <td nz-td class="text-center" nzLeft="150px">
+  
+              <span>
+                {{item.aa}}
+              </span>
+  
+            </td>
+            <td nz-td class="text-center">
+                <span *ngFor="let titem of item.bb;let i = index">
+                    <span *ngIf="i==0">
+                      {{titem}}
+                    </span>
+                    <span *ngIf="i!=0">
+                    <br>{{titem}}
+                    </span>
+                  </span>
+            </td>
+            <td nz-td class="text-center">
+                {{item.cc}}
+            </td>
+   
+            <td nz-td class="text-center" nzRight="0px">
+              <ng-container>
+                <a (click)="createOrEdit(id)">
+                  <span>{{item.dd}}</span>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+        </nz-table>
+    </nz-row>
+</nz-card>

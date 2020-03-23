@@ -1,0 +1,163 @@
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+  <!-- 模态框头部 -->
+  <div class="modal-header">
+    <div class="modal-title">
+      <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
+      <span *ngIf="entity.id">{{l('Edit')}}</span>
+      <span *ngIf="!entity.id">{{l('Create')}}</span>
+    </div>
+  </div>
+  <!-- 模态框内容 -->
+  <fieldset>
+    <!-- 提示信息 -->
+    <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="travelName">{{l('TravelName')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="travelName" #travelName="ngModel" [(ngModel)]="entity.travelName" [placeholder]="l('TravelName')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="travelName.control.dirty&&travelName.control.errors">
+          <ng-container *ngIf="travelName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="mobile">{{l('Mobile')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="mobile" #mobile="ngModel" [(ngModel)]="entity.mobile" [placeholder]="l('Mobile')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="mobile.control.dirty&&mobile.control.errors">
+          <ng-container *ngIf="mobile.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="contacts">{{l('Contacts')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="contacts" #contacts="ngModel" [(ngModel)]="entity.contacts" [placeholder]="l('Contacts')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="contacts.control.dirty&&contacts.control.errors">
+          <ng-container *ngIf="contacts.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <label nz-checkbox name="isEnabled" #isEnabled="ngModel" [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
+
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="discount">{{l('Discount')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="discount" #discount="ngModel" [(ngModel)]="entity.discount" [placeholder]="l('Discount')">
+
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="payMethod">{{l('PayMethod')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <!--        <input nz-input name="payMethod" #payMethod="ngModel" [(ngModel)]="entity.payMethod" [placeholder]="l('PayMethod')"
+          required> -->
+          <nz-select name="payMethod" [(ngModel)]="entity.payMethod" nzAllowClear required>
+            <nz-option nzValue="PaySuccess" [nzLabel]="l('PaySuccess')"></nz-option>
+            <nz-option nzValue="PayFalse" [nzLabel]="l('PayFalse')"></nz-option>
+          </nz-select>
+          <!-- 校验 -->
+        <!--        <nz-form-explain *ngIf="payMethod.control.dirty&&payMethod.control.errors">
+          <ng-container *ngIf="payMethod.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain> -->
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="totalSum">{{l('TotalSum')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="totalSum" #totalSum="ngModel" [(ngModel)]="entity.totalSum" [placeholder]="l('TotalSum')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="totalSum.control.dirty&&totalSum.control.errors">
+          <ng-container *ngIf="totalSum.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="prepaidAmount">{{l('PrepaidAmount')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="prepaidAmount" #prepaidAmount="ngModel" [(ngModel)]="entity.prepaidAmount" [placeholder]="l('PrepaidAmount')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="prepaidAmount.control.dirty&&prepaidAmount.control.errors">
+          <ng-container *ngIf="prepaidAmount.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="alarmAmount">{{l('AlarmAmount')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="alarmAmount" #alarmAmount="ngModel" [(ngModel)]="entity.alarmAmount" [placeholder]="l('AlarmAmount')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="alarmAmount.control.dirty&&alarmAmount.control.errors">
+          <ng-container *ngIf="alarmAmount.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="upperLimit">{{l('UpperLimit')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="upperLimit" #upperLimit="ngModel" [(ngModel)]="entity.upperLimit" [placeholder]="l('UpperLimit')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="upperLimit.control.dirty&&upperLimit.control.errors">
+          <ng-container *ngIf="upperLimit.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="lowerlimit">{{l('Lowerlimit')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="lowerlimit" #lowerlimit="ngModel" [(ngModel)]="entity.lowerlimit" [placeholder]="l('Lowerlimit')"
+        required>
+
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="lowerlimit.control.dirty&&lowerlimit.control.errors">
+          <ng-container *ngIf="lowerlimit.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+
+      </nz-form-control>
+    </nz-form-item>
+
+  </fieldset>
+  <!-- 模态框底部 -->
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+      <!-- <i class="anticon anticon-close-circle-o"></i> -->
+      {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i> -->
+      {{l("Save")}}
+    </button>
+  </div>
+</form>

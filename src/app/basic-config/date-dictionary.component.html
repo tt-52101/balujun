@@ -1,0 +1,121 @@
+
+
+<!-- <page-header [title]="l('DateDictionary')"></page-header> -->
+
+<nz-card [nzBordered]="false">
+
+    <div class="mb-md">
+        <!-- 模糊搜索框 -->
+        <nz-row nzGutter="16">
+            <nz-col nzMd="6" nzSm="6" class="btn-gutter">
+
+
+                <button nz-button [nzType]="'primary'"  (click)="createOrEdit()" *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+                    <span>
+                        {{l("Create")}}
+                    </span>
+                </button>
+                <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+                    <span>
+                        {{l("BatchDelete")}}
+                    </span>
+                </button>
+            </nz-col>
+
+        </nz-row>
+    </div>
+
+    <!-- 实体的表格内容 -->
+    <nz-row class="my-md">
+        <nz-table #ajaxTable [nzData]="dataList" nzBordered [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading"
+        (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true"
+        [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+        <!-- 暂无数据组件 -->
+        <ng-template #noDataTemplate>
+            <no-data></no-data>
+        </ng-template>
+
+        <!-- 表头 -->
+        <thead (nzSortChange)="gridSort($event)">
+            <tr>
+                <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate"
+                (nzCheckedChange)="checkAll($event)"></th>
+                <th class="text-center" nz-th>
+                    <span>{{l('DictionaryName')}}</span>
+                </th>
+                <th class="text-center" nz-th>
+                    <span>{{l('DictionaryCode')}}</span>
+                </th>
+
+                <th class="text-center" nz-th>
+                    <span>{{l('Parent')}}</span>
+                </th> 
+                <th class="text-center" nz-th>
+                    <span>{{l('Explain')}}</span>
+                </th>
+                <th class="text-center" nz-th>
+                    <span>{{l('Sort')}}</span>
+                </th>
+                <th nzWidth="230px" class="text-center">
+                    <span>{{l('Actions')}}</span>
+                </th>
+            </tr>
+        </thead>
+        <!-- 表格内容 -->
+        <tbody>
+            <tr *ngFor="let item of ajaxTable.data">
+                <!-- 全选框 -->
+                <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
+
+                <td class="text-center" nz-td>
+                    <span nz-tooltip [nzTitle]="item.dictionaryName">
+                        {{item.dictionaryName}}
+                    </span>
+                </td>
+                <td class="text-center" nz-td>
+                    <span nz-tooltip [nzTitle]="item.dictionaryCode">
+                        {{item.dictionaryCode}}
+                    </span>
+                </td>
+                <td class="text-center" nz-td>
+                    <span nz-tooltip [nzTitle]="item.parent.dictionaryName" *ngIf="item.parent">
+                        {{item.parent.dictionaryName}}
+                    </span>
+                </td>
+                <td class="text-center" nz-td>
+                    <span nz-tooltip [nzTitle]="item.explain">
+                        {{item.explain}}
+                    </span>
+                </td>
+                <td class="text-center" nz-td>
+                    <span nz-tooltip [nzTitle]="item.sort">
+                        {{item.sort}}
+                    </span>
+                </td>
+
+                <td nz-td class="text-center">
+                    <!-- 编辑 -->
+                    <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+                        <a (click)="createOrEdit(item.id)">
+                            <!-- <i class="anticon anticon-edit mr-sm"></i> -->
+                            <span>{{l('Edit')}}</span>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                    </ng-container>
+                    <!-- 删除 -->
+                    <ng-container *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1" >
+                        <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
+                            <a nz-popconfirm>
+                                <!-- <i class="anticon anticon-delete mr-sm"></i> -->
+                                <span>{{l('Delete')}}</span>
+                            </a>
+                        </nz-popconfirm>
+                    </ng-container>
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+
+</nz-row>
+</nz-card>
+

@@ -1,0 +1,228 @@
+
+
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+        <div class="modal-title">
+            <i class="anticon anticon-medicine-box mr-sm"></i>
+            <span *ngIf="entity.id">{{l('Edit')}}</span>
+            <span *ngIf="!entity.id">{{l('Create')}}</span>
+        </div>
+    </div>
+    <!-- 模态框内容 -->
+    <fieldset>
+        <!-- 提示信息 -->
+        <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="activityNo">{{l('ActivityNo')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="activityNo" #activityNo="ngModel"
+                                   [(ngModel)]="entity.activityNo"
+                                   [placeholder]="l('ActivityNo')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sourceId">{{l('SourceId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="sourceId" #sourceId="ngModel"
+                                   [(ngModel)]="entity.sourceId"
+                                   [placeholder]="l('SourceId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scheduleId">{{l('ScheduleId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="scheduleId" #scheduleId="ngModel"
+                                   [(ngModel)]="entity.scheduleId"
+                                   [placeholder]="l('ScheduleId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="orgActivityId">{{l('OrgActivityId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="orgActivityId" #orgActivityId="ngModel"
+                                   [(ngModel)]="entity.orgActivityId"
+                                   [placeholder]="l('OrgActivityId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="activityDate">{{l('ActivityDate')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <nz-time-picker name="activityDate" #activityDate="ngModel"
+                                            [(ngModel)]="entity.activityDate" ></nz-time-picker>
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="playDate">{{l('PlayDate')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <nz-time-picker name="playDate" #playDate="ngModel"
+                                            [(ngModel)]="entity.playDate" ></nz-time-picker>
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="customerId">{{l('CustomerId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="customerId" #customerId="ngModel"
+                                   [(ngModel)]="entity.customerId"
+                                   [placeholder]="l('CustomerId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="buyer">{{l('Buyer')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="buyer" #buyer="ngModel"
+                                   [(ngModel)]="entity.buyer"
+                                   [placeholder]="l('Buyer')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="mobile">{{l('Mobile')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="mobile" #mobile="ngModel"
+                                   [(ngModel)]="entity.mobile"
+                                   [placeholder]="l('Mobile')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="payMethodId">{{l('PayMethodId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="payMethodId" #payMethodId="ngModel"
+                                   [(ngModel)]="entity.payMethodId"
+                                   [placeholder]="l('PayMethodId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="voucherNo">{{l('VoucherNo')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="voucherNo" #voucherNo="ngModel"
+                                   [(ngModel)]="entity.voucherNo"
+                                   [placeholder]="l('VoucherNo')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="payStatus">{{l('PayStatus')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="payStatus" #payStatus="ngModel"
+                                   [(ngModel)]="entity.payStatus"
+                                   [placeholder]="l('PayStatus')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="activityType">{{l('ActivityType')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="activityType" #activityType="ngModel"
+                                   [(ngModel)]="entity.activityType"
+                                   [placeholder]="l('ActivityType')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="remark">{{l('Remark')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="remark" #remark="ngModel"
+                                   [(ngModel)]="entity.remark"
+                                   [placeholder]="l('Remark')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isPrint">{{l('IsPrint')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <label nz-checkbox name="isPrint" #isPrint="ngModel"
+                                   [(ngModel)]="entity.isPrint" >{{l('IsPrint')}}</label>
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="closed">{{l('Closed')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <label nz-checkbox name="closed" #closed="ngModel"
+                                   [(ngModel)]="entity.closed" >{{l('Closed')}}</label>
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="totalQuantity">{{l('TotalQuantity')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="totalQuantity" #totalQuantity="ngModel"
+                                   [(ngModel)]="entity.totalQuantity"
+                                   [placeholder]="l('TotalQuantity')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="totalAmount">{{l('TotalAmount')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="totalAmount" #totalAmount="ngModel"
+                                   [(ngModel)]="entity.totalAmount"
+                                   [placeholder]="l('TotalAmount')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="accountsId">{{l('AccountsId')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="accountsId" #accountsId="ngModel"
+                                   [(ngModel)]="entity.accountsId"
+                                   [placeholder]="l('AccountsId')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+                    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="orderType">{{l('OrderType')}}</nz-form-label>
+                <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                            <input nz-input name="orderType" #orderType="ngModel"
+                                   [(ngModel)]="entity.orderType"
+                                   [placeholder]="l('OrderType')" >
+
+
+                </nz-form-control>
+            </nz-form-item>
+
+    </fieldset>
+    <!-- 模态框底部 -->
+    <div class="modal-footer">
+        <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+            <i class="anticon anticon-close-circle-o"></i> {{l("Cancel")}}
+        </button>
+        <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+            <i class="anticon anticon-save" *ngIf="!saving"></i> {{l("Save")}}
+        </button>
+    </div>
+</form>
+
+
+
+
+

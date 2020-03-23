@@ -1,0 +1,26 @@
+<div class="bigbox">
+	<div *ngIf="scheduleCode">
+		<span class="title">航班班次</span>
+		<span class="body black">{{scheduleCode}}</span>
+		<span class="body">{{routeName}}</span>
+	</div>
+	<div *ngIf="scheduleCode">
+		<span class="title">航行日期</span>
+		<span class="body blue">{{startTimeStr}}</span> <span class="body">-</span> <span class="body">{{endTimeStr}}</span>
+		<span class="body">{{saleDateStr}}</span>
+	</div>
+
+
+	<div class="list" *ngFor="let item of ticketlist;let i = index;">
+		<div>{{i + 1}}</div>
+		<div>{{item.ticketName}}</div>
+		<div>{{item.customerName}}</div>
+		<div>{{l(item.verifiableType)}}</div>
+		<div>￥{{item.price}}</div>
+	</div>
+
+	<div class="bottom" *ngIf="ticketlist.length>0">
+		<span>数量：{{ticketlist.length}}</span>
+		<span>合计：￥{{totalamount}}</span>
+	</div>
+</div>

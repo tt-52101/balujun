@@ -1,0 +1,87 @@
+<!-- <page-header [title]="l('BranchUser')"></page-header> -->
+<nz-card [nzBordered]="false">
+    <div class="mb-md">
+        <!-- 操作常规按钮部分 如： 添加、批量删除、导出Excel表 -->
+        <nz-row nzGutter="8">
+            <nz-col nzMd="20" nzSm="12" class="btn-gutter">
+                <button nz-button [nzType]="'primary'"  (click)="createOrEdit()">
+                    <!-- <i class="anticon anticon-plus"></i> -->
+                    <span>
+                        {{l("Create")}}
+                    </span>
+                </button>
+                <button nz-button [nzType]="'danger'"  (click)="batchDelete()">
+                    <!-- <i class="anticon anticon-delete"></i> -->
+                    <span>
+                        {{l("BatchDelete")}}
+                    </span>
+                </button>
+            </nz-col>
+        </nz-row>
+    </div>
+    <!-- 实体的表格内容 -->
+    <nz-row class="my-md">
+        <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading"
+        (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" nzBordered
+        [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+        <!-- 暂无数据组件 -->
+        <ng-template #noDataTemplate>
+            <no-data></no-data>
+        </ng-template>
+
+        <!-- 表头 -->
+        <thead (nzSortChange)="gridSort($event)">
+            <tr>
+                <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate"
+                (nzCheckedChange)="checkAll($event)"></th>
+                <th nz-th class="text-center" nzShowSort nzSortKey="Branch">
+                    <span>{{l('Branch')}}</span>
+                </th>
+                <th nz-th class="text-center" nzShowSort nzSortKey="User">
+                    <span>{{l('User')}}</span>
+                </th>
+                <th nz-th class="text-center">
+                    <span>{{l('Actions')}}</span>
+                </th>
+            </tr>
+        </thead>
+        <!-- 表格内容 -->
+        <tbody>
+            <tr *ngFor="let item of ajaxTable.data">
+                <!-- 全选框 -->
+                <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
+                <td nz-td class="text-center">
+                    <span nz-tooltip [nzTitle]="item.branch.branchName">
+                        {{item.branch.branchName}}
+                    </span>
+                </td>
+                <td nz-td class="text-center">
+                    <span nz-tooltip [nzTitle]="item.user.userName">
+                        {{item.user.userName}}
+                    </span>
+                </td>
+                <td nz-td class="text-center">
+                    <!-- 编辑 -->
+                    <ng-container >
+                        <a (click)="createOrEdit(item.id)">
+                            <!-- <i class="anticon anticon-edit mr-sm"></i> -->
+                            <span>{{l('Edit')}}</span>
+                        </a>
+                        <nz-divider nzType="vertical"></nz-divider>
+                    </ng-container>
+                    <!-- 删除 -->
+                    <ng-container >
+                        <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
+                            <a nz-popconfirm>
+                                <!-- <i class="anticon anticon-delete mr-sm"></i> -->
+                                <span>{{l('Delete')}}</span>
+                            </a>
+                        </nz-popconfirm>
+                    </ng-container>
+
+                </td>
+            </tr>
+        </tbody>
+    </nz-table>
+</nz-row>
+</nz-card>

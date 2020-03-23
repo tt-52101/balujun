@@ -1,0 +1,167 @@
+<nz-card [nzBordered]="false">
+    <div class="mb-md">
+      <!-- 模糊搜索框 -->
+      <nz-row nzGutter="16">
+        <!-- <nz-col nzMd="6" nzSm="6" class="btn-gutter"> -->
+          <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+            <nz-form-item class="formitem">
+              <nz-form-label nzFor="scheduleCode">用户姓名</nz-form-label>
+              <nz-form-control>
+                <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[0].value" style="width: 120px">
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item class="formitem">
+                <nz-form-label nzFor="scheduleCode">手机号</nz-form-label>
+                <nz-form-control>
+                  <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[0].value" style="width: 120px">
+                </nz-form-control>
+              </nz-form-item>
+
+
+            <nz-form-item class="formitem">
+              <nz-form-label>证件类型</nz-form-label>
+              <nz-form-control>
+                <nz-select [(ngModel)]="scqueryData[1].value"  nzAllowClear style="width: 120px" name="route">
+                 <nz-option nzValue="false" [nzLabel]="l('NotSettle')"></nz-option>
+                 <nz-option nzValue="true" [nzLabel]="l('Settled')"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <!-- <nz-form-item class="formitem">
+                <nz-form-label>{{l('Settle')}}{{l('Status')}}</nz-form-label>
+                <nz-form-control>
+                  <nz-select [(ngModel)]="queryData[6].value" nzAllowClear style="width: 100px" name="closed">
+                    <nz-option nzValue="false" [nzLabel]="l('NotSettle')"></nz-option>
+                    <nz-option nzValue="true" [nzLabel]="l('Settled')"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item> -->
+
+            <nz-form-item class="formitem">
+                <nz-form-label nzFor="scheduleCode">证件号</nz-form-label>
+                <nz-form-control>
+                  <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[0].value" style="width: 120px">
+                </nz-form-control>
+              </nz-form-item>
+            <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
+              <button nz-button [nzType]="'primary'" (click)="refresh()" style="padding: 0px 20px;height: 32px;">搜索</button>
+            </nz-form-item>
+            <!-- <nz-form-item class="formitem" style="margin:0 8px 0 10px;"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+              <button nz-button [nzType]="'primary'"  (click)="createOrEdit()" style="padding: 0px 20px;height: 32px;">编辑</button>
+            </nz-form-item> -->
+            <nz-form-item class="formitem" style="margin:4px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+              <button nz-button [nzType]="'danger'"  (click)="batchDelete()" style="padding: 0px 20px;height: 32px;">批量删除</button>
+            </nz-form-item>
+          </form>
+        </nz-row>
+      </div>
+      <nz-row class="my-md">
+        <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
+          <ng-template #noDataTemplate>
+            <no-data></no-data>
+          </ng-template>
+          <thead (nzSortChange)="gridSort($event)">
+            <tr>
+              <th nz-th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="10px"></th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>用户姓名</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>手机号</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="50px">
+                <span>性别</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>证件类型</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="100px">
+                <span>证件号码</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>微信OpenID</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>照片</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>创建人</span>
+              </th>
+              <th nz-th class="text-center" nzWidth="80px">
+                <span>操作</span>
+              </th>
+            </tr>
+          </thead>
+          <!-- 表格内容 -->
+          <tbody>
+            <tr *ngFor="let item of ajaxTable.data">
+              <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.ticketCode}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.ticketMode}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.sex}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.ticketMode}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <!-- <span *ngFor="let titem of item.ticketPrices;let i = index"></span>
+                  <span *ngIf="i==0">
+                    {{titem.ticketMode}}
+                  </span>
+                  <span *ngIf="i!=0">
+                    ,{{titem.ticketMode}}
+                  </span>
+                </span> -->
+                {{item.ticketMode}}
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{l(item.checkMethod)}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.ticketClassify}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <span>
+                  {{item.sort}}
+                </span>
+              </td>
+              <td nz-td class="text-center">
+                <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+                  <a (click)="createOrEdit(item.id)">
+                    <span>{{l('Edit')}}</span>
+                  </a>
+                  <nz-divider nzType="vertical"></nz-divider>
+                </ng-container>
+                <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+                  <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')" [nzOkType]="'danger'">
+                    <a nz-popconfirm>
+                      <span>{{l('Delete')}}</span>
+                    </a>
+                  </nz-popconfirm>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-row>
+    </nz-card>
+  

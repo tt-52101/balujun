@@ -1,0 +1,178 @@
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+    <!-- 模态框头部 -->
+    <div class="modal-header">
+        <div class="modal-title">
+            <span *ngIf="entity.id">{{l('Edit')}}</span>
+            <span *ngIf="!entity.id">{{l('Create')}}</span>
+        </div>
+    </div>
+    <!-- 模态框内容 -->
+    <fieldset>
+        <!-- 提示信息 -->
+        <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+        <nz-form-item nz-row>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="menuId">{{l('Menu')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+<!--                 <input nz-input name="menuId" #menuId="ngModel"
+                [(ngModel)]="entity.menuId"
+                [placeholder]="l('MenuId')" > -->
+                <nz-tree-select [nzDefaultExpandAll]="false" [nzNodes]="menuarr" name="menuId" [(ngModel)]="menuId" (ngModelChange)="onChange($event)">
+                </nz-tree-select>
+
+            </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item nz-row>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="category">{{l('Category')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+<!--                 <input nz-input name="category" #category="ngModel"
+                [(ngModel)]="entity.category"
+                [placeholder]="l('Category')" > -->
+                <nz-radio-group [(ngModel)]="entity.category" name="category" #category="ngModel" (ngModelChange)="catetorychange()">
+                  <label nz-radio nzValue="OPERATE">{{l('OPERATE')}}</label>
+                  <label nz-radio nzValue="MENU">{{l('MENU')}}</label>
+                  <label nz-radio nzValue="Data">{{l('Data')}}</label>
+              </nz-radio-group>
+          </nz-form-control>
+      </nz-form-item>
+
+<!--         <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="menuPath">{{l('MenuPath')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="menuPath" #menuPath="ngModel"
+                [(ngModel)]="entity.menuPath"
+                [placeholder]="l('MenuPath')"  required >
+
+                <nz-form-explain *ngIf="menuPath.control.dirty&&menuPath.control.errors">
+                    <ng-container *ngIf="menuPath.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item nz-row *ngIf="!ismenu">
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="powerCode">{{l('PowerCode')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="powerCode" #powerCode="ngModel" *ngIf="!showselect" [(ngModel)]="entity.powerCode" [placeholder]="l('PowerCode')"  required >
+
+                <nz-select [(ngModel)]="entity.powerCode" name="powerCodeselect" *ngIf="showselect" required (ngModelChange)="powerCodeselect($event)">
+                  <nz-option nzValue="viewown" nzLabel="仅查看自己的数据"></nz-option>
+                  <nz-option nzValue="viewownorgan" nzLabel="仅查看所在机构的数据"></nz-option>
+                  <nz-option nzValue="viewsuborgan" nzLabel="仅查看所在机构的子机构的数据"></nz-option>
+                  <nz-option nzValue="viewallorgan" nzLabel="查看所有机构的数据"></nz-option>
+              </nz-select>
+
+
+        </nz-form-control>
+    </nz-form-item >
+    <nz-form-item nz-row *ngIf="!showselect && !ismenu">
+        <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="powerName">{{l('PowerName')}}</nz-form-label>
+        <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+            <input nz-input name="powerName" #powerName="ngModel"
+            [(ngModel)]="entity.powerName"
+            [placeholder]="l('PowerName')"  required >
+
+            <!-- 校验 -->
+            <nz-form-explain *ngIf="powerName.control.dirty&&powerName.control.errors">
+                <ng-container *ngIf="powerName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+            </nz-form-explain>
+
+        </nz-form-control>
+    </nz-form-item>
+<!--         <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="method">{{l('Method')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="method" #method="ngModel"
+                [(ngModel)]="entity.method"
+                [placeholder]="l('Method')"  required >
+                <nz-form-explain *ngIf="method.control.dirty&&method.control.errors">
+                    <ng-container *ngIf="method.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="params">{{l('Params')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="params" #params="ngModel"
+                [(ngModel)]="entity.params"
+                [placeholder]="l('Params')"  required >
+                <nz-form-explain *ngIf="params.control.dirty&&params.control.errors">
+                    <ng-container *ngIf="params.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="groupName">{{l('GroupName')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="groupName" #groupName="ngModel"
+                [(ngModel)]="entity.groupName"
+                [placeholder]="l('GroupName')"  required >
+                <nz-form-explain *ngIf="groupName.control.dirty&&groupName.control.errors">
+                    <ng-container *ngIf="groupName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item nz-row>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sort">{{l('Sort')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="sort" #sort="ngModel"
+                [(ngModel)]="entity.sort"
+                [placeholder]="l('Sort')" >
+
+
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzFor="iocName">{{l('IocName')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <nz-select [(ngModel)]="entity.iocName" name="iocName" (ngModelChange)="iconChange($event)">
+                  <nz-option *ngFor="let item of iconarr" [nzLabel]="item.title" [nzValue]="item.title" nzCustomContent ><i nz-icon [nzType]="item.icon"></i> {{item.title}}</nz-option>
+
+              </nz-select>
+
+          </nz-form-control>
+      </nz-form-item>
+        <!-- <nz-form-item nz-row>
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="iocClassName">{{l('IocClassName')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+                <input nz-input name="iocClassName" #iocClassName="ngModel"
+                [(ngModel)]="entity.iocClassName"
+                [placeholder]="l('IocClassName')"  required >
+
+                <nz-form-explain *ngIf="iocClassName.control.dirty&&iocClassName.control.errors">
+                    <ng-container *ngIf="iocClassName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+
+            </nz-form-control>
+        </nz-form-item> -->
+
+        <nz-form-item nz-row>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
+            <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+                <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
+                [(ngModel)]="entity.isEnabled" >{{l('IsEnabled')}}</label>
+
+
+            </nz-form-control>
+        </nz-form-item>
+
+    </fieldset>
+    <!-- 模态框底部 -->
+    <div class="modal-footer">
+        <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+            <!-- <i class="anticon anticon-close-circle-o"></i>  -->
+            {{l("Cancel")}}
+        </button>
+        <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
+            <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+            {{l("Save")}}
+        </button>
+    </div>
+</form>
+
+
+
+
+

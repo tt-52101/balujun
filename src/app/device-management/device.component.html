@@ -1,0 +1,199 @@
+<!-- <page-header [title]="l('Device')"></page-header> -->
+
+<nz-card [nzBordered]="false">
+
+  <div class="mb-md">
+    <nz-row nzGutter="16">
+      <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="deviceName">设备名称</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input name="deviceName" [(ngModel)]="queryData[0].value" style="width: 120px">
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- <nz-form-item>
+          <nz-form-label>站点</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 120px" name="route">
+              <nz-option *ngFor="let item of stationList;let i = index;" [nzValue]="item.id" [nzLabel]="item.stationName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+
+        <nz-form-item>
+          <nz-form-label>设备类型</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 120px" name="status">
+              <nz-option nzValue="TicketMachine" [nzLabel]="l('TicketMachine')"></nz-option>
+              <nz-option nzValue="SelfhelpMachine" [nzLabel]="l('SelfhelpMachine')"></nz-option>
+              <nz-option nzValue="GateMachine" [nzLabel]="l('GateMachine')"></nz-option>
+              <nz-option nzValue="HandMachine" [nzLabel]="l('HandMachine')"></nz-option>
+              <nz-option nzValue="FaceMachine" [nzLabel]="l('FaceMachine')"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>状态</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 120px" name="status">
+              <nz-option nzValue="Not" [nzLabel]="l('Not')"></nz-option>
+              <nz-option nzValue="Using" [nzLabel]="l('Using')"></nz-option>
+              <nz-option nzValue="Closing" [nzLabel]="l('Closing')"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <button nz-button nzType="primary" type="submit" (click)="refresh()">
+            <span>
+              {{l("Query")}}
+            </span>
+          </button>
+          <button nz-button [nzType]="'primary'"  (click)="createOrEdit()" *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+            <span>
+              {{l("Create")}}
+            </span>
+          </button>
+
+          <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+            <span>
+              {{l("BatchDelete")}}
+            </span>
+          </button>
+        </nz-form-item>
+      </form>
+    </nz-row>
+  </div>
+
+  <!-- 实体的表格内容 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"
+    [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzScroll]="{ x: '1390px'}" style="word-break:break-all"
+    [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false"
+    nzBordered>
+    <!-- 暂无数据组件 -->
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+
+    <!-- 表头 -->
+    <thead (nzSortChange)="gridSort($event)">
+      <tr>
+        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+        <th nz-th class="text-center" nzWidth="130px" >
+          <span>{{l('DeviceCode')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('DeviceName')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="150px">
+          <span>{{l('IPAddress')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('Port')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('DeviceType')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('SecretKey')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="200px">
+          <span>{{l('VerifiableType')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('IsEnabled')}}</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>{{l('DeviceStatus')}}</span>
+        </th>
+        <th class="text-center" nzWidth="130px">
+          <span>{{l('Actions')}}</span>
+        </th>
+      </tr>
+    </thead>
+    <!-- 表格内容 -->
+    <tbody>
+      <tr *ngFor="let item of ajaxTable.data">
+        <!-- 全选框 -->
+        <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
+
+        <td nz-td class="text-center">
+          <span>
+            {{item.deviceCode}}
+          </span>
+        </td>
+        <td nz-td class="text-center">
+          <span>
+            {{item.deviceName}}
+          </span>
+        </td>
+        <td nz-td class="text-center">
+          <span>
+            {{item.ipAddress}}
+          </span>
+        </td>
+        <td nz-td class="text-center">
+          <span>
+            {{item.port}}
+          </span>
+        </td>
+        <td nz-td class="text-center">
+          <span>
+            {{l(item.deviceType)}}
+          </span>
+        </td>
+        <td nz-td class="text-center">
+          <span>
+            {{item.secretKey}}
+          </span>
+        </td>
+
+        <td nz-td class="text-center">
+          <span *ngFor="let titem of item.verifiableTypes;let i = index">
+            <span *ngIf="i==0">
+              {{l(titem)}}
+            </span>
+            <span *ngIf="i!=0">
+              ,{{l(titem)}}
+            </span>
+          </span>
+        </td>
+
+<!--         <td nz-td class="text-center">
+          <span>
+            {{item.isEnabled}}
+          </span>
+        </td> -->
+        <td nz-td class="text-center" [innerHTML]="item.isEnabled | yn"></td>
+        <td nz-td class="text-center">
+          <span>
+            {{l(item.deviceStatus)}}
+          </span>
+        </td>
+
+        <td nz-td class="text-center">
+          <ng-container *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+            <a (click)="createOrEdit(item.id)">
+              <span>{{l('Edit')}}</span>
+            </a>
+            <nz-divider nzType="vertical"></nz-divider>
+          </ng-container>
+
+          <ng-container>
+            <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')" [nzOkType]="'danger'">
+              <a nz-popconfirm>
+                <span>{{l('Delete')}}</span>
+              </a>
+            </nz-popconfirm>
+          </ng-container>
+
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+</nz-row>
+</nz-card>

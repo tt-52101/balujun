@@ -1,0 +1,101 @@
+<!-- <page-header [title]="l('Roles')"></page-header> -->
+<!-- 表格部分 -->
+<nz-card [nzBordered]="false">
+<div class="mb-md">
+  <!-- 操作按钮 -->
+  <nz-row nzGutter="8">
+    <!-- 添加、批量删除、导出Excel表等按钮 -->
+    <nz-col nzMd="20" nzSm="12" class="btn-gutter">
+      <button nz-button [nzType]="'primary'"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1" (click)="createOrEdit()">
+        <!-- <i nz-icon nzType="plus"></i> -->
+        <span>
+          {{l("CreateNewRole")}}
+        </span>
+      </button>
+      <button nz-button [nzType]="'danger'"  *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1" (click)="batchDelete()">
+        <!-- <i nz-icon nzType="delete"></i> -->
+        <span>
+          {{l("BatchDelete")}}
+        </span>
+      </button>
+    </nz-col>
+  </nz-row>
+</div>
+
+<!-- 表格 -->
+<div class="mb-md">
+  <nz-table #ajaxTable nzShowSizeChanger [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
+  [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
+  (nzPageSizeChange)="refresh()" [nzFrontPagination]="false" [nzNoResult]="noDataTemplate"
+  nzBordered>
+  <!-- 暂无数据 -->
+  <ng-template #noDataTemplate>
+    <no-data></no-data>
+  </ng-template>
+<!-- 表头 -->
+<thead>
+  <tr>
+    <th nz-th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
+    [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)">
+  </th>
+  <th nz-th class="text-center">
+    <span>角色名称</span>
+  </th>
+  <th nz-th class="text-center">
+    <span>角色ID</span>
+  </th>
+  <th nz-th class="text-center">
+    <span>创建时间</span>
+  </th>
+  <th nz-th class="text-center">
+    <span>操作</span>
+  </th>
+</tr>
+</thead>
+<!-- 表格内容 -->
+<tbody>
+  <tr *ngFor="let item of ajaxTable.data">
+    <td nzShowCheckbox [(nzChecked)]="item.checked&&!item.isStatic" [nzDisabled]="item.isStatic"
+    (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
+    <td nz-td class="text-center">
+      <span>{{item.displayName}} </span>
+    </td>
+    <td class="text-center">
+      <span>  {{item.id}}</span>
+        <nz-tag style="margin-left: 5px" *ngIf="item.isDefault" [nzColor]="'#2db7f5'" nz-tooltip [nzTitle]="l('DefaultRole_Description')">
+        {{l('Default')}}</nz-tag>
+      </td>
+      <td class="text-center">
+        <span> {{item.creationTime|_date}}</span>
+      </td>
+      
+      <td class="text-center">
+
+        <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+          <a (click)="createOrEdit(item.id)" *ngIf="!item.isStatic">
+            <span>{{l('Edit')}}</span>
+          </a>
+        </ng-container>
+
+        <ng-container *ngIf="!item.isStatic && (isAllOperation || curmenupower.indexOf('EditPower') > -1)" >
+          <a (click)="editPowerRole(item.id)" style="margin: 0 20px;">
+            <span>{{l('EditPower')}}</span>
+          </a>
+        </ng-container>
+
+
+        <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+          <a nz-popconfirm *ngIf="!item.isStatic"
+          [nzPopconfirmTitle]="l('ConfirmDeleteWarningMessage')"
+          (nzOnConfirm)="delete(item)"
+          >
+          <span>{{l('Delete')}}</span>
+        </a>
+
+      </ng-container>
+    </td>
+  </tr>
+</tbody>
+</nz-table>
+</div>
+</nz-card>

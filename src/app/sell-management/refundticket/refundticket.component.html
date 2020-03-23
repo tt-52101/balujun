@@ -1,0 +1,311 @@
+<nz-card [nzBordered]="false">
+  <nz-row>
+    <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true" style="border-bottom: 1px solid #ccc;">
+      <nz-form-item class="formitem">
+        <nz-form-label nzFor="info1">票码</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input name="OrderNumber"  [(ngModel)]="queryData[0].value" style="width: 180px">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item class="formitem">
+        <nz-form-label nzFor="info2">手机号</nz-form-label>
+        <nz-form-control>
+          <input type="text" nz-input name="Qrcode"  [(ngModel)]="queryData[1].value" style="width: 180px">
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem">
+        <nz-form-label nzFor="info3">证件类型</nz-form-label>
+        <nz-form-control>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 120px" name="status">
+              <nz-option nzValue="身份证" nzLabel="身份证"></nz-option>
+              <nz-option nzValue="护照" nzLabel="护照"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem">
+        <nz-form-label nzFor="info3">证件号</nz-form-label>
+        <nz-form-control>
+          <input nz-input name="Mobile"  [(ngModel)]="queryData[2].value" style="width: 180px">
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item style="margin:0 8px 0 10px;">
+        <button nz-button (click)="query()" nzSize="small" style="margin-top: 4px;padding: 0px 20px;height: 32px;background: #3086c4;color: #fff">查询订单</button>
+      </nz-form-item>
+    </form>
+  </nz-row>
+  <nz-row style="display: flex;" >
+
+
+    <nz-col style="width: 100%;margin-top: 20px" *ngIf="!single">
+      <nz-table #ajaxTable1 [nzData]="orderlist" [nzScroll]="{ x: '1180px' }" style="word-break:break-all" nzShowPagination='false' nzBordered>
+        <ng-template #noDataTemplate>
+          <no-data></no-data>
+        </ng-template>
+        <thead>
+          <tr>
+            <th class="text-center" nzWidth="200px">
+              <span>订单号</span>
+            </th>
+            <th class="text-center" nzWidth="130px">
+              <span>名字</span>
+            </th>
+            <th class="text-center" nzWidth="150px">
+              <span>手机号</span>
+            </th>
+            <th class="text-center" nzWidth="160px">
+              <span>总数量</span>
+            </th>
+            <th class="text-center" nzWidth="80px">
+              <span>总金额</span>
+            </th>
+            <th class="text-center" nzWidth="80px">
+              <span>支付方式</span>
+            </th>
+            <th class="text-center" nzWidth="130px">
+              <span>支付状态</span>
+            </th>
+            <th class="text-center" nzWidth="130px">
+              <span>创建时间</span>
+            </th>
+            <th class="text-center" nzWidth="120px" nzRight="0px">
+              <span>操作</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ajaxTable1.data; let i = index;">
+            <td class="text-center" nzWidth="200px">
+              <span>
+                {{item.activityNo}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="130px">
+              <span>
+                {{item.buyer}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="150px">
+              <span>
+                {{item.mobile}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="150px">
+              <span>
+                {{item.unitPrice}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="160px">
+              <span>
+                {{item.certificatesNum}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="80px">
+              <span>
+                {{item.totalQuantity}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="80px">
+              <span>
+                {{item.totalAmount}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="130px">
+              <span>
+                {{item.etime}}
+              </span>
+            </td>
+            <td class="text-center" nzWidth="120px" nzRight="0px">
+              <ng-container>
+                <a (click)="select(item)">
+                  <span>选择</span>
+                </a>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-col>
+
+
+
+
+
+    <nz-col style="width: 70%;margin-top: 20px" *ngIf="single">
+      <nz-table #ajaxTable [nzData]="orderticket" [nzScroll]="{ x: '860px',y:'460px' }" style="word-break:break-all"
+      nzShowPagination='false' nzBordered>
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <thead>
+        <tr>
+          <th  [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
+           <!-- <th nz-th nzWidth="60px" nzLeft="0px"></th> -->
+           <th class="text-center" nzWidth="100px">
+              <span>票型名称</span>
+            </th>
+            <th class="text-center" nzWidth="100px">
+              <span>名字</span>
+            </th>
+            <th class="text-center" nzWidth="130px">
+              <span>手机号</span>
+            </th>
+            <th class="text-center" nzWidth="140px">
+              <span>票码</span>
+            </th>
+            <th class="text-center" nzWidth="100px">
+              <span>售价</span>
+            </th>
+            <th class="text-center" nzWidth="100px">
+              <span>门票状态</span>
+            </th>
+            <th class="text-center" nzWidth="180px" nzRight="0px">
+              <span>开始有效期</span>
+            </th>
+            <th class="text-center" nzWidth="180px" nzRight="0px">
+              <span>结束有效期</span>
+            </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of ajaxTable.data; let i = index;">
+          <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(orderticket)"></td>
+          <!-- <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" [nzDisabled]="item.ticketStatus!=='Activate'" (nzCheckedChange)="checkticket(i,item)" nzLeft="0px"></td> -->
+
+          <td class="text-center" nzWidth="150px">
+            <span>
+              {{item.ticketName}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="80px">
+            <span>
+              {{item.ticketNo}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="130px">
+            <span>
+              {{item.customerName}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="150px">
+            <span>
+              {{item.mobile}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="100px">
+            <span>
+              {{item.unitPrice}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="100px">
+            <span>
+              {{item.ticketStatus}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="100px">
+            <span>
+              {{item.stime}}
+            </span>
+          </td>
+          <td class="text-center" nzWidth="100px">
+            <span>
+              {{item.etime}}
+            </span>
+          </td>
+          
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-col>
+
+
+
+
+
+  <nz-col style="width: 30%;" *ngIf="single">
+    <div class="borderbox">
+      <form nz-form class="mb-md">
+       <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>订单号</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>{{orderinfo.activityNo}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>订单来源</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>{{orderinfo.sourceName}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>购票人</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span *ngIf="orderinfo.payMethod">{{orderinfo.buyer}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>支付方式</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span *ngIf="orderinfo.payMethod">{{orderinfo.totalQuantity}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>门票数量</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>{{orderinfo.totalQuantity2}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>下单时间</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>{{orderinfo.etime}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>订单总金额</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>￥{{orderinfo.unitPrice}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>手续费比例</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <nz-select [(ngModel)]="rDiscount" name="rDiscount" (ngModelChange)="countprice()" style="width: 200px">
+            <nz-option nzValue="0.9" [nzLabel]="('10%')"></nz-option>
+            <nz-option nzValue="1" [nzLabel]="('免费')"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>手续费金额</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>￥{{orderinfo.unitPrice}}</span>
+        </nz-form-control>
+      </nz-form-item>
+  
+      <nz-form-item class="formitem1">
+        <nz-form-label class="my-form-label" [nzSm]="8"><span>应退金额</span></nz-form-label>
+        <nz-form-control [nzSm]="16">
+          <span>￥{{orderinfo.unitPrice}}</span>
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button class="submitbtn" (click)="printticket()" style="margin-top: 20px" *ngIf="isAllOperation || curmenupower.indexOf('Refund') > -1">确认退款</button>
+
+    </form>
+  </div>
+</nz-col>
+</nz-row>
+</nz-card>

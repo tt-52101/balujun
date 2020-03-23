@@ -1,0 +1,80 @@
+<nz-card [nzBordered]="false">
+  <nz-row class="my-md">
+    <nz-table #ajaxTable nzShowSizeChanger [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <thead nz-thead (nzSortChange)=" gridSort($event)">
+        <tr>
+          <th class="text-center" nz-th>
+            <span>{{l('UserName')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>登录端</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('IpAddress')}}</span>
+          </th>
+          <th class="text-center" nz-th>
+            <span>{{l('Time')}}</span>
+          </th>
+
+          <th class="text-center" nz-th>
+            <span>{{l('iSExceptionType')}}</span>
+          </th>
+
+          <th class="text-center" nz-th nzWidth="120px">
+            <span>{{l('Exception')}}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody nz-tbody>
+        <tr nz-tbody-tr *ngFor="let item of ajaxTable.data">
+          <td nz-td class="text-center">
+            <span >
+              {{item.userNameOrEmailAddress}}
+            </span>
+          </td>
+
+          <td nz-td class="text-center">
+            <span >
+              {{item.sourceName}}
+            </span>
+          </td>
+
+          <td nz-td class="text-center">
+            <span >
+              {{item.clientIpAddress}}
+            </span>
+          </td>
+
+          <td nz-td class="text-center">
+            <span>
+              {{item.executionTime | _date:'YYYY-MM-DD HH:mm:ss'}}
+            </span>
+          </td>
+
+          <td class="text-center">
+            <i *ngIf="!item.hasException" nz-tooltip [nzTitle]="l('HasError')" class="anticon anticon-warning text-warning"></i>
+            <i *ngIf="item.hasException" nz-tooltip [nzTitle]="l('Success')" class="anticon anticon-check-circle text-green"></i>
+          </td>
+
+          <td nz-td class="text-center">
+<!--             <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.exception">
+                {{item.exception}}
+              </span>
+            </ellipsis> -->
+            <span>
+              <a (click)="showDetails(item)" *ngIf="!item.hasException">
+                <span>{{l('ViewDetails')}}</span>
+              </a>
+            </span>
+          </td>
+
+
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+</nz-card>

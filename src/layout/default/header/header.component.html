@@ -1,0 +1,49 @@
+<div class="d-flex align-items-center">
+  <!-- Menu -->
+  <div class="alain-pro__header-item alain-pro__header-trigger" (click)="toggleCollapsedSidebar()" >
+    <i nz-icon nzType="menu-{{settings.layout.collapsed ? 'unfold' : 'fold'}}"></i>
+    <span style="color:#3C4353;font-size: 24px;margin-left: 20px;font-weight: bold;">游船票务管理系统</span>
+  </div>
+  <!-- Github Page --> 
+<!--   <a class="alain-pro__header-item alain-pro__header-trigger"
+    href="https://gitee.com/aiabpedu/LTMCompanyName.Yozeev" target="_blank">
+    <i nz-icon type="github"></i>
+  </a> -->
+  <!-- 52abp官网 -->
+<!--   <a class="alain-pro__header-item alain-pro__header-trigger" href="https://www.52abp.com">
+    <i nz-icon type="link"></i>
+  </a> -->
+</div>
+
+<!-- 右侧菜单栏 -->
+<div class="alain-pro__header-right">
+
+  <!-- <app-header-notifications class=" alain-pro__header-item mr-sm"></app-header-notifications> -->
+  <!-- Settings -->
+
+<!--   <div class="alain-pro__nav-item mr-sm" nz-dropdown nzPlacement="bottomRight" [nzDropdownMenu]="dropdownMenu">
+    <i nz-icon nzType="setting"></i>
+  </div> -->
+
+<!--   <nz-dropdown-menu class="hidden-xs alain-pro__header-item" #dropdownMenu='nzDropdownMenu'>
+
+    <div nz-menu style="width:200px;">
+      <div nz-menu-item>
+        <header-fullscreen></header-fullscreen>
+      </div>
+      <div nz-menu-item (click)="this.settings.setLayout('theme',this.settings.layout.theme === 'dark'?'light':'dark')">
+        <div><i nz-icon nzType="bg-colors"></i> 切换主题</div>
+      </div>
+      <div nz-menu-item>
+        <header-storage></header-storage>
+      </div>
+    </div>
+  </nz-dropdown-menu> -->
+  <div style="font-size: 16px;color: #333;">{{date}}</div>
+  <div style="font-size: 16px;color: #333;margin: 0 20px;">{{time}}</div>
+  <div style="font-size: 16px;color: #333;margin-right:20px;">{{day}}</div>
+
+  <!-- <header-i18n class=" alain-pro__header-item "></header-i18n> -->
+  
+  <header-user class="hidden-xs alain-pro__header-item"></header-user>
+</div>

@@ -1,0 +1,33 @@
+// 建议所有项目自定义样式放在该文件夹下
+@import './yoyo';
+@import './yoyo-layout';
+@import './fix/index';
+// modal-body
+
+
+.padding-bottom-45 {
+	padding-bottom: 45px;
+}
+
+/*多个按钮之间的间隙*/
+
+.btn-gutter>[nz-button] {
+	margin-right: 8px;
+}
+
+.btn-gutter>nz-button-group [nz-button] {
+	margin-right: 0;
+}
+
+.ant-form-inline .ant-form-item > .ant-form-item-control-wrapper, .ant-form-inline .ant-form-item > .ant-form-item-label{
+	vertical-align: middle!important;
+}
+
+.ant-input-affix-wrapper .ant-input{
+	min-height:0!important;
+}
+
+.ant-form-item {
+	display: flex;
+	align-items: center;
+}
