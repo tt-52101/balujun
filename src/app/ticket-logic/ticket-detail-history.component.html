@@ -3,35 +3,49 @@
     <nz-row nzGutter="8">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
         <nz-form-item>
-          <nz-form-label nzFor="deviceId">{{l('Device')}}</nz-form-label>
+          <nz-form-label nzFor="deviceId">设备名称</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear name="deviceId" style="width: 180px">
-              <nz-option *ngFor="let item of devicList;let i = index;" [nzValue]="item.id" [nzLabel]="item.deviceName"></nz-option>
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear name="deviceId" style="width: 150px">
+              <nz-option *ngFor="let item of devicList;let i = index;" [nzValue]="item.id" [nzLabel]="item.deviceName">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-
-<!--         <nz-form-item class="formitem">
-          <nz-form-label nzFor="scheduleCode">票型</nz-form-label>
+        <nz-form-item>
+          <nz-form-label nzFor="deviceId">票码</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 180px" name="boat">
-              <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.ticketName" [nzLabel]="item.ticketName"></nz-option>
+            <input type="text" nz-input name='ticketcode' [(ngModel)]="queryData[1].value" style="width: 150px">
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="scheduleCode">证件类型</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 150px" name="boat">
+              <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.ticketName"
+                [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>
-        </nz-form-item> -->
-
+        </nz-form-item>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="scheduleCode">验票结果</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 150px" name="boat">
+              <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.ticketName"
+                [nzLabel]="item.ticketName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
         <nz-form-item class="formitem">
           <nz-form-label>检票时间</nz-form-label>
           <nz-form-control>
-            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [nzDisabledDate]="disabledDate"
-            [(ngModel)]="collectionTime"></nz-range-picker>
+            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)"
+              name="collectionTime" [nzDisabledDate]="disabledDate" [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-
         <nz-form-item>
           <button nz-button [nzType]="'primary'" type="submit" (click)="refresh()">
             <span>
-              {{l("Query")}}
+              查询
             </span>
           </button>
         </nz-form-item>
@@ -39,7 +53,10 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1330px'}" style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
+      [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
+      (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
+      [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1330px'}" style="word-break:break-all">
       <!-- 暂无数据组件 -->
       <ng-template #noDataTemplate>
         <no-data></no-data>
@@ -47,54 +64,52 @@
       <!-- 表头 -->
       <thead (nzSortChange)="gridSort($event)">
         <tr>
-          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
+            [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
+          </th>
 
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Device')}}</span>
+            <span>票型名称</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('DeviceName')}}</span>
-          </th>
-<!--           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('TicketDetail')}}</span>
-          </th> -->
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('TicketNo')}}</span>
+            <span>票码</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>游客</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('VisitValue')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('ValidationType')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('TicketName')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('StatusCode')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('StatusText')}}</span>
+            <span>证件类型</span>
           </th>
           <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('CheckTime')}}</span>
+            <span>验证信息</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Checker')}}</span>
+            <span>验票结果代码</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('CheckCount')}}</span>
+            <span>验票结果</span>
           </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>设备名称</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="120px">
+            <span>设备编号</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>操作员</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>验票次数</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="150px">
+            <span>验证时间</span>
+          </th>
+     
         </tr>
       </thead>
       <!-- 表格内容 -->
       <tbody>
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
-          <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td>
+          <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px">
+          </td>
 
           <td nz-td class="text-center">
             <span *ngIf="item.device">
@@ -106,11 +121,6 @@
               {{item.device.deviceCode}}
             </span>
           </td>
-<!--           <td nz-td class="text-center">
-            <span>
-              {{item.ticketDetail}}
-            </span>
-          </td> -->
           <td nz-td class="text-center">
             <span>
               {{item.ticketNo}}
@@ -156,11 +166,7 @@
               {{item.checker.name}}
             </span>
           </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.checkCount}}
-            </span>
-          </td>
+  
         </tr>
       </tbody>
     </nz-table>
