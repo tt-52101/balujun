@@ -12,6 +12,7 @@ import { CreateOrEditBranchComponent } from './create-or-edit-branch/create-or-e
 import { CreateOrEditRoleComponent } from './roles/create-or-edit-role/create-or-edit-role.component';
 import { CreateOrEditPowerRoleComponent } from './roles/create-or-edit-power-role/create-or-edit-power-role.component';
 import { CreateOrEditUserComponent } from './users/create-or-edit-user/create-or-edit-user.component';
+import { EditUserPermissionsComponent } from './users/edit-user-permissions/edit-user-permissions.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { CreateOrEditUserComponent } from './users/create-or-edit-user/create-or
     CreateOrEditRoleComponent,
     CreateOrEditPowerRoleComponent,
     CreateOrEditUserComponent,
-   
+    EditUserPermissionsComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +37,7 @@ import { CreateOrEditUserComponent } from './users/create-or-edit-user/create-or
     CreateOrEditRoleComponent,
     CreateOrEditPowerRoleComponent,
     CreateOrEditUserComponent,
+    EditUserPermissionsComponent,
   ]
 })
 

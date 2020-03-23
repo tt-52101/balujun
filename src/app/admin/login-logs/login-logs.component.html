@@ -1,4 +1,4 @@
-<nz-card [nzBordered]="false">
+<!-- <nz-card [nzBordered]="false">
   <nz-row class="my-md">
     <nz-table #ajaxTable nzShowSizeChanger [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
       <ng-template #noDataTemplate>
@@ -60,11 +60,7 @@
           </td>
 
           <td nz-td class="text-center">
-<!--             <ellipsis lines="1">
-              <span nz-tooltip [nzTitle]="item.exception">
-                {{item.exception}}
-              </span>
-            </ellipsis> -->
+
             <span>
               <a (click)="showDetails(item)" *ngIf="!item.hasException">
                 <span>{{l('ViewDetails')}}</span>
@@ -77,4 +73,4 @@
       </tbody>
     </nz-table>
   </nz-row>
-</nz-card>
+</nz-card> -->

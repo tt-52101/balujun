@@ -172,4 +172,8 @@ export class GroupBooking extends AppComponentBase implements OnInit {
     }
 
 
+    settlement(){
+        
+    }
+
 }

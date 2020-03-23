@@ -12,7 +12,7 @@ export class CreateOrEditTouristInformationComponent extends ModalComponentBase 
     * 编辑时DTO的id
     */
    id: any ;
-   list=[
+   list:any=[
 		{
 			ticketName:'成人票',
 			ticketCode:'张三',

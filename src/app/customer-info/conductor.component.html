@@ -36,9 +36,11 @@
         </nz-row>
     </div>
     <nz-row class="my-md">
-        <nz-table #ajaxTable [nzData]="scqueryData" [nzTotal]="totalItems" [nzLoading]="isTableLoading"
+        <nz-table #ajaxTable [nzData]="scqueryData" 
+
             [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
             [nzFrontPagination]="false" nzBordered style="word-break:break-all">
+            <!-- [nzTotal]="totalItems" [nzLoading]="isTableLoading" -->
             <ng-template #noDataTemplate>
                 <no-data></no-data>
             </ng-template>

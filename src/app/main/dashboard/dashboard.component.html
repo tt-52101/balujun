@@ -1,12 +1,12 @@
 <div style="display: flex;justify-content: space-between;">
   <div style="width: 40%">
     <nz-card style="width:100%" class="my-card">
-      <nz-radio-group [(ngModel)]="range1" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts1()'>
+      <!-- <nz-radio-group [(ngModel)]="range1" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts1()'>
         <label nz-radio-button nzValue="Daily">今日</label>
         <label nz-radio-button nzValue="Weekly">一周</label>
         <label nz-radio-button nzValue="Monthly">一月</label>
         <label nz-radio-button nzValue="Yearly">一年</label>
-      </nz-radio-group>
+      </nz-radio-group> -->
       <nz-row [nzGutter]="16">
         <nz-col [nzSpan]="12">
           <nz-statistic [nzValue]="peoplecount | number" [nzTitle]="'今日游客数量'"></nz-statistic>
@@ -19,12 +19,12 @@
     </nz-card>
     <nz-card style="width:100%;margin-top: 10px" class="my-card">
       <p style="font-size: 20px;color: #3C4353">票型比例分析</p>
-      <nz-radio-group [(ngModel)]="range2" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts2()'>
+      <!-- <nz-radio-group [(ngModel)]="range2" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts2()'>
         <label nz-radio-button nzValue="Daily">今日</label>
         <label nz-radio-button nzValue="Weekly">一周</label>
         <label nz-radio-button nzValue="Monthly">一月</label>
         <label nz-radio-button nzValue="Yearly">一年</label>
-      </nz-radio-group>
+      </nz-radio-group> -->
       <div id="container2" style="height: 300px"></div>
     </nz-card>
   </div>

@@ -28,10 +28,7 @@ import { CollectComponent } from './collect.component';
 import { CreateOrEditAccountComponent } from './create-or-edit-account/create-or-edit-account.component';
 import { CreateOrEditAccountDetailComponent } from './create-or-edit-account-detail/create-or-edit-account-detail.component';
 import { CreateOrEditActivityComponent } from './create-or-edit-activity/create-or-edit-activity.component';
-import { CreateOrEditActivityDetailComponent } from './create-or-edit-activity-detail/create-or-edit-activity-detail.component';
-import { CreateOrEditActivityTempDetailComponent } from './create-or-edit-activity-temp-detail/create-or-edit-activity-temp-detail.component';
 import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
-import { CreateOrEditTicketDetailComponent } from './create-or-edit-ticket-detail/create-or-edit-ticket-detail.component';
 import { CreateOrEditTicketDetailHistoryComponent } from './create-or-edit-ticket-detail-history/create-or-edit-ticket-detail-history.component';
 import { CreateOrEditTicketIntroduceComponent } from './create-or-edit-ticket-introduce/create-or-edit-ticket-introduce.component';
 import { CreateOrEditTicketPriceComponent } from './create-or-edit-ticket-price/create-or-edit-ticket-price.component';
@@ -72,10 +69,7 @@ import { Datezone } from '../common/datezone.pipe';
   CreateOrEditAccountComponent,
   CreateOrEditAccountDetailComponent,
   CreateOrEditActivityComponent,
-  CreateOrEditActivityDetailComponent,
-  CreateOrEditActivityTempDetailComponent,
   CreateOrEditTicketComponent,
-  CreateOrEditTicketDetailComponent,
   CreateOrEditTicketDetailHistoryComponent,
   CreateOrEditTicketIntroduceComponent,
   CreateOrEditTicketPriceComponent,
@@ -89,10 +83,7 @@ import { Datezone } from '../common/datezone.pipe';
   CreateOrEditAccountComponent,
   CreateOrEditAccountDetailComponent,
   CreateOrEditActivityComponent,
-  CreateOrEditActivityDetailComponent,
-  CreateOrEditActivityTempDetailComponent,
   CreateOrEditTicketComponent,
-  CreateOrEditTicketDetailComponent,
   CreateOrEditTicketDetailHistoryComponent,
   CreateOrEditTicketIntroduceComponent,
   CreateOrEditTicketPriceComponent,

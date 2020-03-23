@@ -17,7 +17,6 @@
           <input nz-input name="travelName" #travelName="ngModel" [(ngModel)]="list.ticketCode" 
           required>
   
-          <!-- 校验 -->
           <nz-form-explain *ngIf="travelName.control.dirty&&travelName.control.errors">
             <ng-container *ngIf="travelName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
           </nz-form-explain>
@@ -29,9 +28,7 @@
         <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
           <input nz-input name="mobile" #mobile="ngModel" [(ngModel)]="list.ticketMode" 
           required>
-  
-          <!-- 校验 -->
-          <nz-form-explain *ngIf="mobile.control.dirty&&mobile.control.errors">
+           <nz-form-explain *ngIf="mobile.control.dirty&&mobile.control.errors">
             <ng-container *ngIf="mobile.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
           </nz-form-explain>
   

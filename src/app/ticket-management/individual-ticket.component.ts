@@ -124,7 +124,9 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
 
 
 
-
+    settlement(){
+        
+    }
 
 
 

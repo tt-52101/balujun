@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {ActivityTempDetailServiceProxy, PagedResultDtoOfActivityTempDetailListDto, ActivityTempDetailListDto } from '@shared/service-proxies/service-proxies';
-import { CreateOrEditActivityTempDetailComponent } from './create-or-edit-activity-temp-detail/create-or-edit-activity-temp-detail.component';
+
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
 
@@ -53,12 +53,7 @@ export class  ActivityTempDetailComponent extends PagedListingComponentBase<Acti
 	* @param id 当前DTO的Id
 	*/
 	createOrEdit(id?: number): void {
-		this.modalHelper.static(CreateOrEditActivityTempDetailComponent, { id: id })
-		.subscribe(result => {
-			if (result) {
-				this.refresh();
-			}
-		});
+
 	}
 	
 	
