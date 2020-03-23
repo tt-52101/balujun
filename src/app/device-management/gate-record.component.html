@@ -41,28 +41,31 @@
         <tr>
           <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)"></th>
           <th nz-th class="text-center">
-            <span>{{l('操作员')}}</span>
+            <span>设备名称</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('Device')}}</span>
+            <span>设备编号</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('DeviceCode')}}</span>
+            <span>设备分类</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('VerifiableType')}}</span>
+            <span>证件类型</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('VerifiableValue')}}</span>
+            <span>证件号</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('ReturnState')}}</span>
+            <span>返回状态</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('ReturnInfo')}}</span>
+            <span>返回信息</span>
           </th>
           <th nz-th class="text-center">
-            <span>{{l('CreationTime')}}</span>
+            <span>操作员</span>
+          </th>
+          <th nz-th class="text-center">
+            <span>操作时间</span>
           </th>
         </tr>
       </thead>
@@ -99,6 +102,11 @@
           <td nz-td class="text-center">
             <span>
               {{item.returnState}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.returnInfo}}
             </span>
           </td>
           <td nz-td class="text-center">

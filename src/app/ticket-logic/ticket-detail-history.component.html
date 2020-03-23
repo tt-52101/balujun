@@ -112,23 +112,23 @@
           </td>
 
           <td nz-td class="text-center">
-            <span *ngIf="item.device">
-              {{item.device.deviceName}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span *ngIf="item.device">
-              {{item.device.deviceCode}}
+            <span>
+              {{item.ticketName}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.ticketNo}}
+              {{item.ticketId}}
             </span>
           </td>
           <td nz-td class="text-center">
-            <span *ngIf="item.customer">
-              {{item.customer.customerName}}
+            <span>
+              {{item.ticketId}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.ticketId}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -158,12 +158,12 @@
           </td>
           <td class="text-center">
             <span>
-              {{item.checkTime |_date}}
+              {{item.checkCount}}
             </span>
           </td>
           <td nz-td class="text-center">
-            <span *ngIf="item.checker">
-              {{item.checker.name}}
+            <span>
+              {{item.checkTime |_date}}
             </span>
           </td>
   

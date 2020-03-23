@@ -66,6 +66,8 @@ implements OnInit {
 			finishedCallback();
 		})
 		.subscribe(result => {
+			console.log(result.items);
+			
 			this.dataList = result.items;
 			this.showPaging(result);
 		});

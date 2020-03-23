@@ -5,8 +5,8 @@ import { SharedModule } from '@shared/shared.module';
 
 import { ReportRoutingModule } from './report-routing.module';
 
-// import { SalerTicketComponent } from './salerticket/salerticket.component';
-// import { SalerDailyComponent } from './salerdaily/salerdaily.component';
+import { SalerTicketComponent } from './salerticket/salerticket.component';
+import { SalerDailyComponent } from './salerdaily/salerdaily.component';
 import { PayMethodComponent } from './paymethod/paymethod.component';
 // import { SourceComponent } from './source/source.component';
 // import { TravelComponent, } from './travel/travel.component';
@@ -17,8 +17,8 @@ import { PayMethodComponent } from './paymethod/paymethod.component';
 @NgModule({
   declarations: [
 
-  // SalerTicketComponent,
-  // SalerDailyComponent,
+  SalerTicketComponent,
+  SalerDailyComponent,
   PayMethodComponent,
   // SourceComponent,
   // TravelComponent,

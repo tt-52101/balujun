@@ -3,32 +3,32 @@
     <nz-row nzGutter="16">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
         <nz-form-item class="formitem">
-          <nz-form-label nzFor="activityNo">{{l('AccountNo')}}</nz-form-label>
+          <nz-form-label nzFor="activityNo">结账单号</nz-form-label>
           <nz-form-control>
-            <input type="number" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 200px">
+            <input type="number" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 150px">
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem">
-          <nz-form-label>{{l('Status')}}</nz-form-label>
+          <nz-form-label>收款状态</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 200px" name="status">
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 150px" name="status">
               <nz-option nzValue="IsAccount" [nzLabel]="l('IsAccount')"></nz-option>
               <nz-option nzValue="NotAccount" [nzLabel]="l('NotAccount')"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item class="formitem">
+        <!-- <nz-form-item class="formitem">
           <nz-form-label>{{l('PayMethod')}}</nz-form-label>
           <nz-form-control>
             <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 200px" name="boat">
               <nz-option *ngFor="let item of payMethodList;let i = index;" [nzValue]="item.payCode" [nzLabel]="item.payName"></nz-option>
             </nz-select>
           </nz-form-control>
-        </nz-form-item>
+        </nz-form-item> -->
         <nz-form-item class="formitem">
-          <nz-form-label>{{l('Date')}}</nz-form-label>
+          <nz-form-label>日期</nz-form-label>
           <nz-form-control>
-            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [(ngModel)]="collectionTime"></nz-range-picker>
+            <nz-range-picker style="width: 300px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
@@ -41,7 +41,7 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" nzBordered [nzScroll]="{ x: '1180px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  nzBordered [nzScroll]="{ x: '1180px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -49,34 +49,31 @@
         <tr>
           <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
           <th nz-th class="text-center" nzWidth="100px" nzLeft="60px">
-            <span>{{l('AccountStatus')}}</span>
+            <span>状态</span>
           </th>
           <th nz-th class="text-center" nzWidth="190px">
-            <span>{{l('AccountNo')}}</span>
+            <span>结账单号</span>
           </th>
           <th nz-th class="text-center" nzWidth="130px">
-            <span>{{l('AccountDate')}}</span>
+            <span>结账日期</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('Amount')}}</span>
+            <span>订单金额</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('PayMethod')}}</span>
+            <span>支付方式</span>
           </th>
           <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('Remark')}}</span>
+            <span>数量</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Quantity')}}</span>
+            <span>业务员</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Seller')}}</span>
+            <span>收款人</span>
           </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Collectior')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>{{l('CollectionTime')}}</span>
+          <th nz-th class="text-center" nzWidth="150px">
+            <span>收款日期</span>
           </th>
           <th nzWidth="150px" class="text-center">
             <span>{{l('Actions')}}</span>
@@ -105,11 +102,6 @@
           <td class="text-center" nz-td>
             <span>
               ￥{{item.amount}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.payMethod">
-              {{item.payMethod.payName}}
             </span>
           </td>
           <td class="text-center" nz-td>
@@ -157,34 +149,34 @@
       <thead>
         <tr>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('AccountStatus')}}</span>
+            <span>状态</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="100px">
+            <span>结账单号</span>
           </th>
           <th nz-th class="text-center" nzWidth="190px">
-            <span>{{l('AccountNo')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>{{l('AccountDate')}}</span>
+            <span>结账日期</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('Amount')}}</span>
+            <span>订单金额</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('PayMethod')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('Remark')}}</span>
+            <span>支付方式</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Quantity')}}</span>
+            <span>数量</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="120px">
+            <span>业务员</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Seller')}}</span>
+            <span>收款人</span>
           </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Collectior')}}</span>
+          <th nz-th class="text-center" nzWidth="190px">
+            <span>收款日期</span>
           </th>
           <th nz-th class="text-center" nzWidth="130px">
-            <span>{{l('CollectionTime')}}</span>
+            <span>操作</span>
           </th>
         </tr>
       </thead>

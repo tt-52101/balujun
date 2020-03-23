@@ -41,7 +41,7 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" nzBordered [nzScroll]="{ x: '1350px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  nzBordered [nzScroll]="{ x: '1350px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -49,43 +49,34 @@
         <tr>
           <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
           <th nz-th class="text-center" nzWidth="100px" nzLeft="60px">
-            <span>{{l('AccountStatus')}}</span>
+            <span>状态</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="150px">
+            <span>结账单号</span>
           </th>
           <th nz-th class="text-center" nzWidth="190px">
-            <span>{{l('AccountNo')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('AccountDate')}}</span>
+            <span>结账日期</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('RecieveAmount')}}</span>
+            <span>订单金额</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('RAmount')}}</span>
+            <span>支付方式</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
-            <span>{{l('TotalAmount')}}</span>
+            <span>数量</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('PayMethod')}}</span>
+            <span>业务员</span>
           </th>
           <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('Remark')}}</span>
+            <span>收款人</span>
           </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Quantity')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Seller')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>{{l('Collectior')}}</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="150px">
-            <span>{{l('CollectionTime')}}</span>
+          <th nz-th class="text-center" nzWidth="190px">
+            <span>收款日期</span>
           </th>
           <th nzWidth="150px" class="text-center">
-            <span>{{l('Actions')}}</span>
+            <span>操作</span>
           </th>
         </tr>
       </thead>
