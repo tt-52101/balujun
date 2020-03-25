@@ -8,15 +8,15 @@ import {
 	// SellerTicketResultDto,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
+import { CreateOrEditSalerticketTaoComponent } from './create-or-edit-salerticket-tao/create-or-edit-salerticket-tao.component';
 
-import { CreateOrEditSalerdailyTaoComponent } from './create-or-edit-salerdaily-tao/create-or-edit-salerdaily-tao.component';
 
 @Component({
-  selector: 'app-create-or-edit-salerdaily',
-  templateUrl: './create-or-edit-salerdaily.component.html',
+  selector: 'app-create-or-edit-salerticket',
+  templateUrl: './create-or-edit-salerticket.component.html',
   styles: []
 })
-export class CreateOrEditSalerdailyComponent extends PagedListingComponentBase<''> implements OnInit {
+export class CreateOrEditSalerticketComponent extends PagedListingComponentBase<''> implements OnInit {
 
   protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
     throw new Error("Method not implemented.");
@@ -50,15 +50,15 @@ export class CreateOrEditSalerdailyComponent extends PagedListingComponentBase<'
     nn:'10000',
 		}
   ]
- 
   
   tao(id){
-    this.modalHelper.static(CreateOrEditSalerdailyTaoComponent, { id: id })
+    this.modalHelper.static(CreateOrEditSalerticketTaoComponent, { id: id })
 		.subscribe(result => {
 		  if (result) {
 			this.refresh();
 		  }
 		});
   }
+
 
 }

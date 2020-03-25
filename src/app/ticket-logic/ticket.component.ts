@@ -3,15 +3,9 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {TicketServiceProxy, PagedResultDtoOfTicketListDto, TicketListDto,
-	// GetTicketsInput
- } from '@shared/service-proxies/service-proxies';
+import {TicketServiceProxy, TicketListDto} from '@shared/service-proxies/service-proxies';
 import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
-// import { AppConsts } from '@shared/AppConsts';
-//  import { FileDownloadService } from '@shared/utils/file-download.service';
 
-
-// import { ReuseTabService } from '@delon/abc';
 
 @Component({
 	templateUrl: './ticket.component.html',
@@ -26,10 +20,8 @@ implements OnInit {
 	constructor(
 		injector: Injector,
 		private _ticketService: TicketServiceProxy,
-		// private _reuseTabService: ReuseTabService
 		) {
 		super(injector);
-		// this._reuseTabService.title = this.l('票型管理');
     this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
     this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
   }
@@ -45,21 +37,14 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-
-		// const formdata = new GetTicketsInput();
-		// formdata.queryData = this.queryData;
-		// formdata.sorting = request.sorting
-		// formdata.maxResultCount = request.maxResultCount;
-		// formdata.skipCount = request.skipCount;
-
-		// this._ticketService.getPaged(formdata)
-		// .finally(() => {
-		// 	finishedCallback();
-		// })
-		// .subscribe(result => {
-		// 	this.dataList = result.items;
-		// 	this.showPaging(result);
-		// });
+		this._ticketService.getPaged('','',request.maxResultCount,request.skipCount)
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			this.dataList = result.items;
+			this.showPaging(result);
+		});
 	}
 	
 	/**

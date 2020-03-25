@@ -26,8 +26,8 @@
         <nz-form-item class="formitem">
           <nz-form-label>日期</nz-form-label>
           <nz-form-control>
-            <nz-date-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="CreationTime"
-              [nzDisabledDate]="disabledDate" [(ngModel)]="CreationTime"></nz-date-picker>
+            <nz-range-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="CreationTime"
+              [nzDisabledDate]="disabledDate" [(ngModel)]="CreationTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem" style="margin:0 8px 0 10px;">

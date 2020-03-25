@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {GateRecordServiceProxy, PagedResultDtoOfGateRecordListDto, GateRecordListDto,DeviceServiceProxy,GetDevicesInput } from '@shared/service-proxies/service-proxies';
+import {GateRecordServiceProxy, PagedResultDtoOfGateRecordListDto, GateRecordListDto,DeviceServiceProxy,GetDevicesInput, } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditGateRecordComponent } from './create-or-edit-gate-record/create-or-edit-gate-record.component';
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
@@ -18,6 +18,8 @@ import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
 	animations: [appModuleAnimation()],
 })
 
+
+	
 
 export class  GateRecordComponent extends PagedListingComponentBase<GateRecordListDto>
 implements OnInit {
@@ -56,12 +58,13 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		this._gateRecordService.getPaged(
-			'',
-			request.sorting,
-			request.maxResultCount,
-			request.skipCount,
-			)
+		const formdata0 = new GetDevicesInput();
+		formdata0.filterText = ''
+		formdata0.sorting = request.sorting,
+		formdata0.maxResultCount = request.maxResultCount;
+		formdata0.skipCount =request.skipCount;
+
+		this._gateRecordService.getPaged(formdata0)
 		.finally(() => {
 			finishedCallback();
 		})

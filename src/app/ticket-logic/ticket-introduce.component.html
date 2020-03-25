@@ -19,7 +19,7 @@
   </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
       <!-- 暂无数据组件 -->
       <ng-template #noDataTemplate>
         <no-data></no-data>
@@ -37,9 +37,6 @@
             <span>标识码</span>
           </th>
           <th nz-th nzWidth="135px" class="text-center">
-            <span>是否启用</span>
-          </th>
-          <th nz-th nzWidth="135px" class="text-center">
             <span>音频</span>
           </th>
           <th nz-th nzWidth="135px" class="text-center">
@@ -50,6 +47,18 @@
           </th>
           <th nz-th nzWidth="135px" class="text-center">
             <span>排序</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>是否团体</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>一次夺票</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>验票方式</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>是否启用</span>
           </th>
           <th nz-th nzWidth="135px" class="text-center">
             <span>创建人</span>
@@ -67,7 +76,7 @@
           <td nz-td nzWidth="135px" class="text-center">
             <ellipsis lines="1">
               <span nz-tooltip [nzTitle]="item.ticket">
-                {{item.ticketName}}
+                {{item.tradeName}}
               </span>
             </ellipsis>
           </td>
@@ -96,6 +105,27 @@
             <ellipsis lines="1">
               <span nz-tooltip [nzTitle]="item.address">
                 {{item.address}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.abstract">
+                {{item.abstract}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.abstract">
+                {{item.abstract}}
+              </span>
+            </ellipsis>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
+            <ellipsis lines="1">
+              <span nz-tooltip [nzTitle]="item.abstract">
+                {{item.abstract}}
               </span>
             </ellipsis>
           </td>

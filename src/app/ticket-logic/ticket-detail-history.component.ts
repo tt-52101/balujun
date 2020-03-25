@@ -82,13 +82,12 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		this._ticketDetailHistoryService.getPaged(
-			// arr,
-			'',
-			request.sorting,
-			request.maxResultCount,
-			request.skipCount,
-		)
+		const formdata = new GetDevicesInput();
+		formdata.filterText = ''
+		formdata.sorting = request.sorting,
+		formdata.maxResultCount = request.maxResultCount;
+		formdata.skipCount =request.skipCount;
+		this._ticketDetailHistoryService.getPaged(formdata)
 			.finally(() => {
 				finishedCallback();
 			})

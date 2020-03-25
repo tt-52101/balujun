@@ -11,7 +11,7 @@
   <fieldset>
     <!-- 提示信息 -->
 
- 
+
 
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="tradeName" nzRequired>票型名称</nz-form-label>
@@ -34,12 +34,6 @@
           [placeholder]="l('Address')">
       </nz-form-control>
     </nz-form-item>
-    <!-- <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scenicspot">有效日期</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-        <nz-range-picker style="width: 100%" name="dateRange" [(ngModel)]="dateRange" (ngModelChange)="onChange($event)"></nz-range-picker>
-      </nz-form-control>
-    </nz-form-item> -->
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scenicspot" nzRequired>音频</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
@@ -50,7 +44,38 @@
         </nz-select>
       </nz-form-control>
     </nz-form-item>
-    
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scenicspot">有效日期</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-range-picker style="width: 100%" name="dateRange" [(ngModel)]="dateRange"
+          (ngModelChange)="onChange($event)"></nz-range-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isOnLine">是否团体</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <label nz-checkbox name="isOnLine" #isOnLine="ngModel" [(ngModel)]="entity.isOnLine"></label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isOnLine">一票多次</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <label nz-checkbox name="isOnLine" #isOnLine="ngModel" [(ngModel)]="entity.isOnLine"></label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="radioValue">验票方式</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-radio-group name="radiom" (ngModelChange)=aa() [(ngModel)]="radiom">
+          <label nz-radio *ngFor = "let item of radio; let i = index;" [nzValue]="item.id">{{item.value}}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isOnLine">是否启用</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">

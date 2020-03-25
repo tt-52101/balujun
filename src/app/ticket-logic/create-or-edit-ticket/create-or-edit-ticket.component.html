@@ -10,167 +10,97 @@
   <!-- 模态框内容 -->
   <fieldset>
     <!-- 提示信息 -->
-    <nz-form-item nz-row>
-      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketName">{{l('TicketName')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input nz-input name="ticketName" #ticketName="ngModel"
-        [(ngModel)]="entity.ticketName"
-        [placeholder]="l('TicketName')"  required>
-        <!-- 校验 -->
-        <nz-form-explain *ngIf="ticketName.control.dirty&&ticketName.control.errors">
-          <ng-container *ngIf="ticketName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-        </nz-form-explain>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketCode">{{l('TicketCode')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="ticketCode" #ticketCode="ngModel"
-        [(ngModel)]="entity.ticketCode"
-        [placeholder]="l('TicketCode')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketMode">{{l('TicketMode')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-<!--         <input required nz-input name="ticketMode" #ticketMode="ngModel"
-        [(ngModel)]="entity.ticketMode"
-        [placeholder]="l('TicketMode')" > -->
-        <nz-select [(ngModel)]="entity.ticketMode" nzAllowClear name="ticketMode">
-          <nz-option nzValue="OnebyOne" [nzLabel]="l('OnebyOne')"></nz-option>
-          <nz-option nzValue="OneByMore" [nzLabel]="l('OneByMore')"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketType">{{l('TicketType')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-<!--         <input required nz-input name="ticketType" #ticketType="ngModel"
-        [(ngModel)]="entity.ticketType"
-        [placeholder]="l('TicketType')" > -->
-        <nz-select [(ngModel)]="entity.ticketType" nzAllowClear name="ticketType">
-          <nz-option nzValue="Card" [nzLabel]="l('Card')"></nz-option>
-          <nz-option nzValue="Paper" [nzLabel]="l('Paper')"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="checkMethod">{{l('CheckMethod')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-<!--         <input required nz-input name="checkMethod" #checkMethod="ngModel"
-        [(ngModel)]="entity.checkMethod"
-        [placeholder]="l('CheckMethod')" > -->
-        <nz-select [(ngModel)]="entity.checkMethod" nzAllowClear name="checkMethod">
-          <nz-option nzValue="NumberCheck" [nzLabel]="l('NumberCheck')"></nz-option>
-          <nz-option nzValue="TimeCheck" [nzLabel]="l('TimeCheck')"></nz-option>
-          <nz-option nzValue="BalanceCheck" [nzLabel]="l('BalanceCheck')"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketClassify">{{l('TicketClassify')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-<!--         <input required nz-input name="ticketClassify" #ticketClassify="ngModel"
-        [(ngModel)]="entity.ticketClassify"
-        [placeholder]="l('TicketClassify')" > -->
-        <nz-select [(ngModel)]="entity.ticketClassify" nzAllowClear name="ticketClassify">
-          <nz-option nzValue="Adult" [nzLabel]="l('Adult')"></nz-option>
-          <nz-option nzValue="Children" [nzLabel]="l('Children')"></nz-option>
-          <nz-option nzValue="Old" [nzLabel]="l('Old')"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="checkNum">{{l('CheckNum')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="checkNum" #checkNum="ngModel"
-        [(ngModel)]="entity.checkNum"
-        [placeholder]="l('CheckNum')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="effectiveLong">{{l('EffectiveLong')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="effectiveLong" #effectiveLong="ngModel"
-        [(ngModel)]="entity.effectiveLong"
-        [placeholder]="l('EffectiveLong')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="unitPrice">{{l('UnitPrice')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="unitPrice" #unitPrice="ngModel"
-        [(ngModel)]="entity.unitPrice"
-        [placeholder]="l('UnitPrice')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketLength">{{l('TicketLength')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="ticketLength" #ticketLength="ngModel"
-        [(ngModel)]="entity.ticketLength"
-        [placeholder]="l('TicketLength')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="upperLimit">{{l('UpperLimit')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="upperLimit" #upperLimit="ngModel"
-        [(ngModel)]="entity.upperLimit"
-        [placeholder]="l('UpperLimit')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lowerLimit">{{l('LowerLimit')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input required nz-input name="lowerLimit" #lowerLimit="ngModel"
-        [(ngModel)]="entity.lowerLimit"
-        [placeholder]="l('LowerLimit')" >
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="audioName">{{l('AudioName')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-    <!--         <input required nz-input name="audioName" #audioName="ngModel"
-    [(ngModel)]="entity.audioName"
-    [placeholder]="l('AudioName')" > -->
-    <nz-upload [nzAction]="uploadurl"
-    [nzShowUploadList]="false"
-    [nzHeaders]="hearder"
-    nzName="file"
-    (nzChange)="handleChange($event)">
-    <!-- [nzBeforeUpload]="beforeUpload" -->
-    <button nz-button type="button"><span>{{l('Upload')}}</span></button>
-  </nz-upload>
-  <span style="margin-left: 10px">{{audioName}}</span>
-</nz-form-control>
-</nz-form-item>
 
-<nz-form-item nz-row>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
-  <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-    <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
-    [(ngModel)]="entity.isEnabled" >{{l('IsEnabled')}}</label>
-  </nz-form-control>
-</nz-form-item>
-<nz-form-item nz-row>
-  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sort">{{l('Sort')}}</nz-form-label>
-  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-    <input required nz-input name="sort" #sort="ngModel"
-    [(ngModel)]="entity.sort"
-    [placeholder]="l('Sort')" >
-  </nz-form-control>
-</nz-form-item>
-</fieldset>
-<!-- 模态框底部 -->
-<div class="modal-footer">
-  <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
-    <!-- <i class="anticon anticon-close-circle-o"></i>  -->
-    {{l("Cancel")}}
-  </button>
-  <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
-    <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
-    {{l("Save")}}
-  </button>
-</div>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="tradeName" nzRequired>票型名称</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="ticketName" #ticketName="ngModel" required [(ngModel)]="entity.ticketName">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="tradeInfo" nzRequired>标识码</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="ticketCode" #ticketCode="ngModel" required [(ngModel)]="entity.ticketCode">
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sort">排序</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="sort" #sort="ngModel" required [(ngModel)]="entity.sort">
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="audioName">音频</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file"
+          (nzChange)="handleChange($event)">
+          <button nz-button type="button"><span>上传</span></button>
+        </nz-upload>
+        <!-- <span style="margin-left: 10px">{{audioName}}</span> -->
+      </nz-form-control>
+    </nz-form-item>
+
+
+
+    <!-- <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scenicspot">有效日期</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-range-picker style="width: 100%" name="dateRange" [(ngModel)]="dateRange"
+          (ngModelChange)="onChange1($event)"></nz-range-picker>
+      </nz-form-control>
+    </nz-form-item> -->
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="group">是否团体</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-radio-group name="group" [(ngModel)]="entity.group">
+          <label nz-radio [nzValue]="0">散客票</label>
+          <label nz-radio [nzValue]="1">团体票</label>
+          <label nz-radio [nzValue]="2">卡类</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="ticketMode">一票多次</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-radio-group name="ticketMode" [(ngModel)]="entity.ticketMode">
+          <label nz-radio nzValue="OnebyOne">{{l('OnebyOne')}}</label>
+          <label nz-radio nzValue="OneByMore ">{{l('OneByMore')}}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="radioValue">验票方式</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-radio-group name="checkMethod" [(ngModel)]="entity.checkMethod">
+          <label nz-radio nzValue="NumberCheck">{{l('NumberCheck')}}</label>
+          <label nz-radio nzValue="TimeCheck">{{l('TimeCheck')}}</label>
+          <label nz-radio nzValue="BalanceCheck">{{l('BalanceCheck')}}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">是否启用</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <label nz-checkbox name="isEnabled" #isEnabled="ngModel" [(ngModel)]="entity.isEnabled"></label>
+      </nz-form-control>
+    </nz-form-item>
+  </fieldset>
+  <!-- 模态框底部 -->
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+      <!-- <i class="anticon anticon-close-circle-o"></i>  -->
+      {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
+      [nzLoading]="saving">
+      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+      {{l("Save")}}
+    </button>
+  </div>
 </form>

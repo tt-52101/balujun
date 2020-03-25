@@ -1,30 +1,14 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 
-import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {
-  UserServiceProxy, QueryData,
-  TicketServiceProxy,
-  // SellerTicketResultDto,
-  // GetTicketsInput
-} from '@shared/service-proxies/service-proxies';
-
 @Component({
-  selector: 'app-create-or-edit-salerdaily-tao',
-  templateUrl: './create-or-edit-salerdaily-tao.component.html',
+  selector: 'app-create-or-edit-salerticket-tao',
+  templateUrl: './create-or-edit-salerticket-tao.component.html',
   styles: []
 })
+export class CreateOrEditSalerticketTaoComponent implements OnInit {
 
-export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBase<''> implements OnInit {
-  protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
-    throw new Error("Method not implemented.");
-  }
-
-  constructor(
-    injector: Injector,
-  ) {
-    super(injector);
-  }
+  constructor() { }
 
   ngOnInit() {
   }

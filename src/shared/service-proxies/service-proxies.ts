@@ -97,25 +97,26 @@ export class ActivityServiceProxy {
 
     /**
      * 创建团体购票订单
-     * @param body (optional) { 
-      "sourceId":0,
-      "payMethodId":0,
-      "discount":0,
-      "orderType":"OrderTypeOrg",
-      "remark":"string",
-      "createUserId":0,
-      "totalQuantity":0,
-      "totalAmount":0,
-      "ticketPriceId":0,
-      "activityDetails":[
-        {
-          "quantity":0,
-          "customerId":0
-        }],
-      "groupId":0,
-      "availableStart":"2020-03-23T03:10:27.243Z",
-      "availableEnd":"2020-03-23T03:10:27.243Z"
-      }
+     * @param body (optional) {
+        "sourceId": 1,
+        "payMethodId": 4,
+        "discount": 0.8,
+        "orderType": "OrderTypeOrg",
+        "remark": "",
+        "createUserId": 2,
+        "totalQuantity": 1,
+        "totalAmount": 50,
+        "ticketPriceId": 1,
+        "activityDetails": [
+            {
+                "quantity": 1,
+                "customerId": 1
+            }
+        ],
+        "groupId": 1,
+        "availableStart": "2020-03-23T03:19:08.349Z",
+        "availableEnd": "2020-03-29T03:19:08.349Z"
+    }
      * @return Success
      */
     createGroupActivity(body: CreateGroupActivityModel | undefined): Observable<ActivityResultModel> {
@@ -626,6 +627,438 @@ export class ActivityServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfActivityListDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class CheckTicketServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 卡验票
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @return Success
+     */
+    cardOpen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/CardOpen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCardOpen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCardOpen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCardOpen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 二维码验票
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @return Success
+     */
+    scancodeopen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/Scancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processScancodeopen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processScancodeopen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+}
+
+@Injectable()
+export class HistoryServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 过闸统计
+     * @param queryData (optional) Device.DeviceName 设备名称,TicketClassify 票型, CreatorUserId 操作员ID，CreationTime 检票时间
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param ticketId (optional) 票型ID
+     * @return Success
+     */
+    getPagedStat(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<PagedResultDtoOfGateHistoryResultDto> {
+        let url_ = this.baseUrl + "/api/CheckTicket/History/GetPagedStat?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (ticketId === null)
+            throw new Error("The parameter 'ticketId' cannot be null.");
+        else if (ticketId !== undefined)
+            url_ += "ticketId=" + encodeURIComponent("" + ticketId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedStat(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedStat(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfGateHistoryResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfGateHistoryResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedStat(response: HttpResponseBase): Observable<PagedResultDtoOfGateHistoryResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfGateHistoryResultDto.fromJS(resultData200) : new PagedResultDtoOfGateHistoryResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfGateHistoryResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class FileServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    downloadFilePathFile(fileName: string, fileType: string, fileToken: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/File/DownloadFilePathFile?";
+        if (fileName === undefined || fileName === null)
+            throw new Error("The parameter 'fileName' must be defined and cannot be null.");
+        else
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&"; 
+        if (fileType === undefined || fileType === null)
+            throw new Error("The parameter 'fileType' must be defined and cannot be null.");
+        else
+            url_ += "fileType=" + encodeURIComponent("" + fileType) + "&"; 
+        if (fileToken === undefined || fileToken === null)
+            throw new Error("The parameter 'fileToken' must be defined and cannot be null.");
+        else
+            url_ += "fileToken=" + encodeURIComponent("" + fileToken) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDownloadFilePathFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDownloadFilePathFile(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDownloadFilePathFile(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    downloadTempFile(fileName: string, fileType: string, fileToken: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/File/DownloadTempFile?";
+        if (fileName === undefined || fileName === null)
+            throw new Error("The parameter 'fileName' must be defined and cannot be null.");
+        else
+            url_ += "fileName=" + encodeURIComponent("" + fileName) + "&"; 
+        if (fileType === undefined || fileType === null)
+            throw new Error("The parameter 'fileType' must be defined and cannot be null.");
+        else
+            url_ += "fileType=" + encodeURIComponent("" + fileType) + "&"; 
+        if (fileToken === undefined || fileToken === null)
+            throw new Error("The parameter 'fileToken' must be defined and cannot be null.");
+        else
+            url_ += "fileToken=" + encodeURIComponent("" + fileToken) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDownloadTempFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDownloadTempFile(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDownloadTempFile(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 上传音频文件
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadImage(body: Blob | undefined): Observable<AudioResultDto> {
+        let url_ = this.baseUrl + "/api/File/UploadImage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadImage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadImage(<any>response_);
+                } catch (e) {
+                    return <Observable<AudioResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AudioResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadImage(response: HttpResponseBase): Observable<AudioResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AudioResultDto.fromJS(resultData200) : new AudioResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AudioResultDto>(<any>null);
     }
 }
 
@@ -2983,6 +3416,415 @@ export class AddressLinkageServiceProxy {
 }
 
 @Injectable()
+export class AppVersionServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 批量删除AppVersion的方法
+     * @param body (optional) 
+     * @return Success
+     */
+    batchDelete(body: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/BatchDelete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBatchDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBatchDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBatchDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 添加或者修改的公共方法
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdate(body: CreateOrUpdateAppVersionInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/CreateOrUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 删除信息
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 通过指定id获取AppVersionListDto信息
+     * @param id (optional) 
+     * @return Success
+     */
+    getById(id: number | undefined): Observable<AppVersionListDto> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/GetById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(<any>response_);
+                } catch (e) {
+                    return <Observable<AppVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AppVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<AppVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AppVersionListDto.fromJS(resultData200) : new AppVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AppVersionListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑
+     * @param id (optional) 
+     * @return Success
+     */
+    getForEdit(id: number | undefined): Observable<GetAppVersionForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/GetForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetAppVersionForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetAppVersionForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForEdit(response: HttpResponseBase): Observable<GetAppVersionForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetAppVersionForEditOutput.fromJS(resultData200) : new GetAppVersionForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetAppVersionForEditOutput>(<any>null);
+    }
+
+    /**
+     * 获取的分页列表信息
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @return Success
+     */
+    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfAppVersionListDto> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/GetPaged?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfAppVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfAppVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfAppVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfAppVersionListDto.fromJS(resultData200) : new PagedResultDtoOfAppVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfAppVersionListDto>(<any>null);
+    }
+
+    /**
+     * 导出为excel文件
+     * @return Success
+     */
+    getToExcelFile(): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/AppVersion/GetToExcelFile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetToExcelFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetToExcelFile(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetToExcelFile(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class AuditLogServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -2991,6 +3833,63 @@ export class AuditLogServiceProxy {
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
         this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 根据ID查询操作日志详情
+     * @param id (optional) 
+     * @return Success
+     */
+    getAuditLogsInfoById(id: number | undefined): Observable<AuditLogListDto> {
+        let url_ = this.baseUrl + "/api/services/app/AuditLog/GetAuditLogsInfoById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAuditLogsInfoById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAuditLogsInfoById(<any>response_);
+                } catch (e) {
+                    return <Observable<AuditLogListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AuditLogListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAuditLogsInfoById(response: HttpResponseBase): Observable<AuditLogListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AuditLogListDto.fromJS(resultData200) : new AuditLogListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AuditLogListDto>(<any>null);
     }
 
     /**
@@ -3332,6 +4231,64 @@ export class AuditLogServiceProxy {
     }
 
     /**
+     * 根据ID查询登录日志异常
+     * @param id (optional) 
+     * @return Success
+     */
+    getLoginLogInfoByIf(id: number | undefined): Observable<LoginLogExceptionDto> {
+        let url_ = this.baseUrl + "/api/services/app/AuditLog/GetLoginLogInfoByIf?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetLoginLogInfoByIf(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetLoginLogInfoByIf(<any>response_);
+                } catch (e) {
+                    return <Observable<LoginLogExceptionDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<LoginLogExceptionDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetLoginLogInfoByIf(response: HttpResponseBase): Observable<LoginLogExceptionDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? LoginLogExceptionDto.fromJS(resultData200) : new LoginLogExceptionDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<LoginLogExceptionDto>(<any>null);
+    }
+
+    /**
+     * 操作日志查询
      * @param startDate (optional) 开始时间
      * @param endDate (optional) 结束时间
      * @param userName (optional) 用户名
@@ -3440,6 +4397,108 @@ export class AuditLogServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfAuditLogListDto>(<any>null);
+    }
+
+    /**
+     * 登录日志查询
+     * @param startDate (optional) 开始时间
+     * @param endDate (optional) 结束时间
+     * @param userName (optional) 登录用户名或邮箱
+     * @param sourceName (optional) 登录端
+     * @param sourceCode (optional) 登录端编码
+     * @param clientIpAddress (optional) IP地址
+     * @param hasException (optional) 是否包含异常
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @return Success
+     */
+    getPagedLoginLogs(startDate: moment.Moment | undefined, endDate: moment.Moment | undefined, userName: string | undefined, sourceName: string | undefined, sourceCode: string | undefined, clientIpAddress: string | undefined, hasException: boolean | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfLoginLogModel> {
+        let url_ = this.baseUrl + "/api/services/app/AuditLog/GetPagedLoginLogs?";
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent(startDate ? "" + startDate.toJSON() : "") + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent(endDate ? "" + endDate.toJSON() : "") + "&"; 
+        if (userName === null)
+            throw new Error("The parameter 'userName' cannot be null.");
+        else if (userName !== undefined)
+            url_ += "userName=" + encodeURIComponent("" + userName) + "&"; 
+        if (sourceName === null)
+            throw new Error("The parameter 'sourceName' cannot be null.");
+        else if (sourceName !== undefined)
+            url_ += "sourceName=" + encodeURIComponent("" + sourceName) + "&"; 
+        if (sourceCode === null)
+            throw new Error("The parameter 'sourceCode' cannot be null.");
+        else if (sourceCode !== undefined)
+            url_ += "sourceCode=" + encodeURIComponent("" + sourceCode) + "&"; 
+        if (clientIpAddress === null)
+            throw new Error("The parameter 'clientIpAddress' cannot be null.");
+        else if (clientIpAddress !== undefined)
+            url_ += "clientIpAddress=" + encodeURIComponent("" + clientIpAddress) + "&"; 
+        if (hasException === null)
+            throw new Error("The parameter 'hasException' cannot be null.");
+        else if (hasException !== undefined)
+            url_ += "hasException=" + encodeURIComponent("" + hasException) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedLoginLogs(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedLoginLogs(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfLoginLogModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfLoginLogModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedLoginLogs(response: HttpResponseBase): Observable<PagedResultDtoOfLoginLogModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfLoginLogModel.fromJS(resultData200) : new PagedResultDtoOfLoginLogModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfLoginLogModel>(<any>null);
     }
 }
 
@@ -6779,6 +7838,405 @@ export class EditionServiceProxy {
 }
 
 @Injectable()
+export class EmployeeServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 批量删除Employee的方法
+     * @param body (optional) 
+     * @return Success
+     */
+    batchDelete(body: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/BatchDelete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBatchDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBatchDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBatchDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 添加或者修改的公共方法
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdate(body: CreateOrUpdateEmployeeInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/CreateOrUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 删除信息
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 通过指定id获取EmployeeListDto信息
+     * @param id (optional) 
+     * @return Success
+     */
+    getById(id: number | undefined): Observable<EmployeeListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/GetById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(<any>response_);
+                } catch (e) {
+                    return <Observable<EmployeeListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<EmployeeListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<EmployeeListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? EmployeeListDto.fromJS(resultData200) : new EmployeeListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EmployeeListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑
+     * @param id (optional) 
+     * @return Success
+     */
+    getForEdit(id: number | undefined): Observable<GetEmployeeForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/GetForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetEmployeeForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetEmployeeForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForEdit(response: HttpResponseBase): Observable<GetEmployeeForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetEmployeeForEditOutput.fromJS(resultData200) : new GetEmployeeForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetEmployeeForEditOutput>(<any>null);
+    }
+
+    /**
+     * 获取的分页列表信息
+     * @param body (optional) 
+     * @return Success
+     */
+    getPaged(body: GetEmployeesInput | undefined): Observable<PagedResultDtoOfEmployeeListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/GetPaged";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfEmployeeListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfEmployeeListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfEmployeeListDto.fromJS(resultData200) : new PagedResultDtoOfEmployeeListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfEmployeeListDto>(<any>null);
+    }
+
+    /**
+     * 上传员工照片
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadPictures(body: Blob | undefined): Observable<UploadEmployeeResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/Employee/UploadPictures";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadPictures(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadPictures(<any>response_);
+                } catch (e) {
+                    return <Observable<UploadEmployeeResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<UploadEmployeeResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadPictures(response: HttpResponseBase): Observable<UploadEmployeeResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? UploadEmployeeResultDto.fromJS(resultData200) : new UploadEmployeeResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UploadEmployeeResultDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class FaceSwipingServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -7064,41 +8522,26 @@ export class FaceSwipingServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfFaceSwipingListDto> {
-        let url_ = this.baseUrl + "/api/services/app/FaceSwiping/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetFaceSwipingsInput | undefined): Observable<PagedResultDtoOfFaceSwipingListDto> {
+        let url_ = this.baseUrl + "/api/services/app/FaceSwiping/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -7421,41 +8864,26 @@ export class GateRecordServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfGateRecordListDto> {
-        let url_ = this.baseUrl + "/api/services/app/GateRecord/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetGateRecordsInput | undefined): Observable<PagedResultDtoOfGateRecordListDto> {
+        let url_ = this.baseUrl + "/api/services/app/GateRecord/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -17583,6 +19011,59 @@ export class TicketDetailServiceProxy {
         }
         return _observableOf<ActivityResultModel>(<any>null);
     }
+
+    /**
+     * 刷票
+     * @param body (optional) 
+     * @return Success
+     */
+    updateTicketStatus(body: TicketDetailEditDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/TicketDetail/UpdateTicketStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateTicketStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateTicketStatus(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdateTicketStatus(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -17871,41 +19352,26 @@ export class TicketDetailHistoryServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetTicketDetailHistorysInput | undefined): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -24911,12 +26377,12 @@ export class WeChatScenicSpotServiceProxy {
     }
 
     /**
-     * 上传图片
+     * 上传照片
      * @param body (optional) 
      * @return Success
      */
-    uploadPicture(body: Blob | undefined): Observable<UploadWeChatPictureResultDto> {
-        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/UploadPicture";
+    upLoadPictures(body: Blob | undefined): Observable<UploadWeChatPictureResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/UpLoadPictures";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = body;
@@ -24932,11 +26398,11 @@ export class WeChatScenicSpotServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUploadPicture(response_);
+            return this.processUpLoadPictures(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processUploadPicture(<any>response_);
+                    return this.processUpLoadPictures(<any>response_);
                 } catch (e) {
                     return <Observable<UploadWeChatPictureResultDto>><any>_observableThrow(e);
                 }
@@ -24945,7 +26411,7 @@ export class WeChatScenicSpotServiceProxy {
         }));
     }
 
-    protected processUploadPicture(response: HttpResponseBase): Observable<UploadWeChatPictureResultDto> {
+    protected processUpLoadPictures(response: HttpResponseBase): Observable<UploadWeChatPictureResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -26051,6 +27517,9 @@ export class CreateActivityModel implements ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
+    startDateTime: moment.Moment | undefined;
+    endDateTime: moment.Moment | undefined;
+    discount: number;
 
     constructor(data?: ICreateActivityModel) {
         if (data) {
@@ -26077,6 +27546,9 @@ export class CreateActivityModel implements ICreateActivityModel {
                     this.activityDetails.push(CreateActivityDetailModel.fromJS(item));
             }
             this.travelAgencyId = data["travelAgencyId"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.discount = data["discount"];
         }
     }
 
@@ -26103,6 +27575,9 @@ export class CreateActivityModel implements ICreateActivityModel {
                 data["activityDetails"].push(item.toJSON());
         }
         data["travelAgencyId"] = this.travelAgencyId;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["discount"] = this.discount;
         return data; 
     }
 
@@ -26125,6 +27600,9 @@ export interface ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
+    startDateTime: moment.Moment | undefined;
+    endDateTime: moment.Moment | undefined;
+    discount: number;
 }
 
 export class ActivityResultModel implements IActivityResultModel {
@@ -26330,6 +27808,356 @@ export interface ICreateGroupActivityModel {
     groupId: number;
     availableStart: moment.Moment;
     availableEnd: moment.Moment;
+}
+
+export class CheckResult implements ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+
+    constructor(data?: ICheckResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.status = data["status"];
+            this.msg = data["msg"];
+            this.count = data["count"];
+            this.audio = data["audio"];
+            this.show_msg = data["show_msg"];
+        }
+    }
+
+    static fromJS(data: any): CheckResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["msg"] = this.msg;
+        data["count"] = this.count;
+        data["audio"] = this.audio;
+        data["show_msg"] = this.show_msg;
+        return data; 
+    }
+
+    clone(): CheckResult {
+        const json = this.toJSON();
+        let result = new CheckResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+}
+
+export class QueryData implements IQueryData {
+    field: string | undefined;
+    method: string | undefined;
+    value: string | undefined;
+    logic: string | undefined;
+
+    constructor(data?: IQueryData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.field = data["field"];
+            this.method = data["method"];
+            this.value = data["value"];
+            this.logic = data["logic"];
+        }
+    }
+
+    static fromJS(data: any): QueryData {
+        data = typeof data === 'object' ? data : {};
+        let result = new QueryData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["field"] = this.field;
+        data["method"] = this.method;
+        data["value"] = this.value;
+        data["logic"] = this.logic;
+        return data; 
+    }
+
+    clone(): QueryData {
+        const json = this.toJSON();
+        let result = new QueryData();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IQueryData {
+    field: string | undefined;
+    method: string | undefined;
+    value: string | undefined;
+    logic: string | undefined;
+}
+
+export class VerifyTypeDataItem implements IVerifyTypeDataItem {
+    /** 类型名称 */
+    typeName: string | undefined;
+    /** 值 */
+    value: number;
+
+    constructor(data?: IVerifyTypeDataItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.typeName = data["typeName"];
+            this.value = data["value"];
+        }
+    }
+
+    static fromJS(data: any): VerifyTypeDataItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new VerifyTypeDataItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeName"] = this.typeName;
+        data["value"] = this.value;
+        return data; 
+    }
+
+    clone(): VerifyTypeDataItem {
+        const json = this.toJSON();
+        let result = new VerifyTypeDataItem();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IVerifyTypeDataItem {
+    /** 类型名称 */
+    typeName: string | undefined;
+    /** 值 */
+    value: number;
+}
+
+/** 过闸统计页面Dto */
+export class GateHistoryResultDto implements IGateHistoryResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 设备代码 */
+    deviceId: string | undefined;
+    /** 验票介质类型 */
+    verifyTypeDatas: VerifyTypeDataItem[] | undefined;
+    /** 合计 */
+    total: number;
+    /** 设备分类 */
+    deviceType: string | undefined;
+
+    constructor(data?: IGateHistoryResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceName = data["deviceName"];
+            this.deviceId = data["deviceId"];
+            if (data["verifyTypeDatas"] && data["verifyTypeDatas"].constructor === Array) {
+                this.verifyTypeDatas = [] as any;
+                for (let item of data["verifyTypeDatas"])
+                    this.verifyTypeDatas.push(VerifyTypeDataItem.fromJS(item));
+            }
+            this.total = data["total"];
+            this.deviceType = data["deviceType"];
+        }
+    }
+
+    static fromJS(data: any): GateHistoryResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GateHistoryResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceName"] = this.deviceName;
+        data["deviceId"] = this.deviceId;
+        if (this.verifyTypeDatas && this.verifyTypeDatas.constructor === Array) {
+            data["verifyTypeDatas"] = [];
+            for (let item of this.verifyTypeDatas)
+                data["verifyTypeDatas"].push(item.toJSON());
+        }
+        data["total"] = this.total;
+        data["deviceType"] = this.deviceType;
+        return data; 
+    }
+
+    clone(): GateHistoryResultDto {
+        const json = this.toJSON();
+        let result = new GateHistoryResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 过闸统计页面Dto */
+export interface IGateHistoryResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 设备代码 */
+    deviceId: string | undefined;
+    /** 验票介质类型 */
+    verifyTypeDatas: VerifyTypeDataItem[] | undefined;
+    /** 合计 */
+    total: number;
+    /** 设备分类 */
+    deviceType: string | undefined;
+}
+
+export class PagedResultDtoOfGateHistoryResultDto implements IPagedResultDtoOfGateHistoryResultDto {
+    totalCount: number;
+    items: GateHistoryResultDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfGateHistoryResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(GateHistoryResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfGateHistoryResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfGateHistoryResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfGateHistoryResultDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfGateHistoryResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfGateHistoryResultDto {
+    totalCount: number;
+    items: GateHistoryResultDto[] | undefined;
+}
+
+export class AudioResultDto implements IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
+
+    constructor(data?: IAudioResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.success = data["success"];
+            this.errorMsg = data["errorMsg"];
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): AudioResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudioResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["errorMsg"] = this.errorMsg;
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): AudioResultDto {
+        const json = this.toJSON();
+        let result = new AudioResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
 }
 
 export class ActivateEmailInput implements IActivateEmailInput {
@@ -28599,6 +30427,109 @@ export enum PositionEnum {
     Online = <any>"Online", 
 }
 
+export class WeChatScenicSpot implements IWeChatScenicSpot {
+    branchId: number | undefined;
+    scenicSpotName: string | undefined;
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    coverPicture: string | undefined;
+    scenicSpotAddr: string | undefined;
+    openTime: moment.Moment;
+    smokedWay: string | undefined;
+    scheduledTime: string | undefined;
+    focusPicture: string | undefined;
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IWeChatScenicSpot) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.scenicSpotName = data["scenicSpotName"];
+            this.parentId = data["parentId"];
+            this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
+            this.coverPicture = data["coverPicture"];
+            this.scenicSpotAddr = data["scenicSpotAddr"];
+            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.smokedWay = data["smokedWay"];
+            this.scheduledTime = data["scheduledTime"];
+            this.focusPicture = data["focusPicture"];
+            this.isEnable = data["isEnable"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): WeChatScenicSpot {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatScenicSpot();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["scenicSpotName"] = this.scenicSpotName;
+        data["parentId"] = this.parentId;
+        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
+        data["coverPicture"] = this.coverPicture;
+        data["scenicSpotAddr"] = this.scenicSpotAddr;
+        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["smokedWay"] = this.smokedWay;
+        data["scheduledTime"] = this.scheduledTime;
+        data["focusPicture"] = this.focusPicture;
+        data["isEnable"] = this.isEnable;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): WeChatScenicSpot {
+        const json = this.toJSON();
+        let result = new WeChatScenicSpot();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IWeChatScenicSpot {
+    branchId: number | undefined;
+    scenicSpotName: string | undefined;
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    coverPicture: string | undefined;
+    scenicSpotAddr: string | undefined;
+    openTime: moment.Moment;
+    smokedWay: string | undefined;
+    scheduledTime: string | undefined;
+    focusPicture: string | undefined;
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
 export class TicketPrice implements ITicketPrice {
     branchId: number | undefined;
     ticketId: number;
@@ -28611,6 +30542,8 @@ export class TicketPrice implements ITicketPrice {
     isEnabled: boolean;
     sort: number | undefined;
     ticketName: string | undefined;
+    wechatScenicSpotId: number | undefined;
+    weChatScenicSpot: WeChatScenicSpot;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -28642,6 +30575,8 @@ export class TicketPrice implements ITicketPrice {
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
             this.ticketName = data["ticketName"];
+            this.wechatScenicSpotId = data["wechatScenicSpotId"];
+            this.weChatScenicSpot = data["weChatScenicSpot"] ? WeChatScenicSpot.fromJS(data["weChatScenicSpot"]) : <any>undefined;
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -28670,6 +30605,8 @@ export class TicketPrice implements ITicketPrice {
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
         data["ticketName"] = this.ticketName;
+        data["wechatScenicSpotId"] = this.wechatScenicSpotId;
+        data["weChatScenicSpot"] = this.weChatScenicSpot ? this.weChatScenicSpot.toJSON() : <any>undefined;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -28698,6 +30635,8 @@ export interface ITicketPrice {
     isEnabled: boolean;
     sort: number | undefined;
     ticketName: string | undefined;
+    wechatScenicSpotId: number | undefined;
+    weChatScenicSpot: WeChatScenicSpot;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -29822,61 +31761,6 @@ export interface IGetActivityForEditOutput {
     payStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
     activityTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
     orderTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-export class QueryData implements IQueryData {
-    field: string | undefined;
-    method: string | undefined;
-    value: string | undefined;
-    logic: string | undefined;
-
-    constructor(data?: IQueryData) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.field = data["field"];
-            this.method = data["method"];
-            this.value = data["value"];
-            this.logic = data["logic"];
-        }
-    }
-
-    static fromJS(data: any): QueryData {
-        data = typeof data === 'object' ? data : {};
-        let result = new QueryData();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["field"] = this.field;
-        data["method"] = this.method;
-        data["value"] = this.value;
-        data["logic"] = this.logic;
-        return data; 
-    }
-
-    clone(): QueryData {
-        const json = this.toJSON();
-        let result = new QueryData();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IQueryData {
-    field: string | undefined;
-    method: string | undefined;
-    value: string | undefined;
-    logic: string | undefined;
 }
 
 /** 获取的传入参数Dto */
@@ -32044,6 +33928,302 @@ export enum AddressEnum {
     Streets = <any>"Streets", 
 }
 
+/** 的列表DTO Yozeev.BusinessLogic.Common.AppVersion */
+export class AppVersionEditDto implements IAppVersionEditDto {
+    /** Id */
+    id: number | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** ProgramName */
+    programName: string | undefined;
+    /** VersionId */
+    versionId: string | undefined;
+
+    constructor(data?: IAppVersionEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.versionName = data["versionName"];
+            this.programName = data["programName"];
+            this.versionId = data["versionId"];
+        }
+    }
+
+    static fromJS(data: any): AppVersionEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AppVersionEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["versionName"] = this.versionName;
+        data["programName"] = this.programName;
+        data["versionId"] = this.versionId;
+        return data; 
+    }
+
+    clone(): AppVersionEditDto {
+        const json = this.toJSON();
+        let result = new AppVersionEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的列表DTO Yozeev.BusinessLogic.Common.AppVersion */
+export interface IAppVersionEditDto {
+    /** Id */
+    id: number | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** ProgramName */
+    programName: string | undefined;
+    /** VersionId */
+    versionId: string | undefined;
+}
+
+export class CreateOrUpdateAppVersionInput implements ICreateOrUpdateAppVersionInput {
+    appVersion: AppVersionEditDto;
+
+    constructor(data?: ICreateOrUpdateAppVersionInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.appVersion = new AppVersionEditDto();
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.appVersion = data["appVersion"] ? AppVersionEditDto.fromJS(data["appVersion"]) : new AppVersionEditDto();
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateAppVersionInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateAppVersionInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appVersion"] = this.appVersion ? this.appVersion.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateOrUpdateAppVersionInput {
+        const json = this.toJSON();
+        let result = new CreateOrUpdateAppVersionInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateOrUpdateAppVersionInput {
+    appVersion: AppVersionEditDto;
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.AppVersion */
+export class AppVersionListDto implements IAppVersionListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** ProgramName */
+    programName: string | undefined;
+    /** VersionId */
+    versionId: string | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IAppVersionListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.versionName = data["versionName"];
+            this.programName = data["programName"];
+            this.versionId = data["versionId"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): AppVersionListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AppVersionListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["versionName"] = this.versionName;
+        data["programName"] = this.programName;
+        data["versionId"] = this.versionId;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): AppVersionListDto {
+        const json = this.toJSON();
+        let result = new AppVersionListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.AppVersion */
+export interface IAppVersionListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** ProgramName */
+    programName: string | undefined;
+    /** VersionId */
+    versionId: string | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+/** 读取可编辑的Dto */
+export class GetAppVersionForEditOutput implements IGetAppVersionForEditOutput {
+    appVersion: AppVersionEditDto;
+
+    constructor(data?: IGetAppVersionForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.appVersion = data["appVersion"] ? AppVersionEditDto.fromJS(data["appVersion"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetAppVersionForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAppVersionForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appVersion"] = this.appVersion ? this.appVersion.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetAppVersionForEditOutput {
+        const json = this.toJSON();
+        let result = new GetAppVersionForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 读取可编辑的Dto */
+export interface IGetAppVersionForEditOutput {
+    appVersion: AppVersionEditDto;
+}
+
+export class PagedResultDtoOfAppVersionListDto implements IPagedResultDtoOfAppVersionListDto {
+    totalCount: number;
+    items: AppVersionListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfAppVersionListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(AppVersionListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfAppVersionListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfAppVersionListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfAppVersionListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfAppVersionListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfAppVersionListDto {
+    totalCount: number;
+    items: AppVersionListDto[] | undefined;
+}
+
 export class FileDto implements IFileDto {
     fileName: string | undefined;
     fileType: string | undefined;
@@ -32093,6 +34273,131 @@ export interface IFileDto {
     fileName: string | undefined;
     fileType: string | undefined;
     fileToken: string | undefined;
+}
+
+export class AuditLogListDto implements IAuditLogListDto {
+    /** 用户Id */
+    userId: number | undefined;
+    /** 用户名 */
+    userName: string | undefined;
+    /** 模拟租户Id */
+    impersonatorTenantId: number | undefined;
+    /** 模拟用户Id */
+    impersonatorUserId: number | undefined;
+    /** 服务名称 */
+    serviceName: string | undefined;
+    /** 方法名称 */
+    methodName: string | undefined;
+    /** 参数 */
+    parameters: string | undefined;
+    /** 执行时间 */
+    executionTime: moment.Moment;
+    /** 持续时间 */
+    executionDuration: number;
+    /** 客户端ip地址 */
+    clientIpAddress: string | undefined;
+    /** 客户端 */
+    clientName: string | undefined;
+    /** 浏览器信息 */
+    browserInfo: string | undefined;
+    /** 异常 */
+    exception: string | undefined;
+    customData: string | undefined;
+    id: number;
+
+    constructor(data?: IAuditLogListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userId = data["userId"];
+            this.userName = data["userName"];
+            this.impersonatorTenantId = data["impersonatorTenantId"];
+            this.impersonatorUserId = data["impersonatorUserId"];
+            this.serviceName = data["serviceName"];
+            this.methodName = data["methodName"];
+            this.parameters = data["parameters"];
+            this.executionTime = data["executionTime"] ? moment(data["executionTime"].toString()) : <any>undefined;
+            this.executionDuration = data["executionDuration"];
+            this.clientIpAddress = data["clientIpAddress"];
+            this.clientName = data["clientName"];
+            this.browserInfo = data["browserInfo"];
+            this.exception = data["exception"];
+            this.customData = data["customData"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): AuditLogListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditLogListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        data["impersonatorTenantId"] = this.impersonatorTenantId;
+        data["impersonatorUserId"] = this.impersonatorUserId;
+        data["serviceName"] = this.serviceName;
+        data["methodName"] = this.methodName;
+        data["parameters"] = this.parameters;
+        data["executionTime"] = this.executionTime ? this.executionTime.toISOString() : <any>undefined;
+        data["executionDuration"] = this.executionDuration;
+        data["clientIpAddress"] = this.clientIpAddress;
+        data["clientName"] = this.clientName;
+        data["browserInfo"] = this.browserInfo;
+        data["exception"] = this.exception;
+        data["customData"] = this.customData;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): AuditLogListDto {
+        const json = this.toJSON();
+        let result = new AuditLogListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAuditLogListDto {
+    /** 用户Id */
+    userId: number | undefined;
+    /** 用户名 */
+    userName: string | undefined;
+    /** 模拟租户Id */
+    impersonatorTenantId: number | undefined;
+    /** 模拟用户Id */
+    impersonatorUserId: number | undefined;
+    /** 服务名称 */
+    serviceName: string | undefined;
+    /** 方法名称 */
+    methodName: string | undefined;
+    /** 参数 */
+    parameters: string | undefined;
+    /** 执行时间 */
+    executionTime: moment.Moment;
+    /** 持续时间 */
+    executionDuration: number;
+    /** 客户端ip地址 */
+    clientIpAddress: string | undefined;
+    /** 客户端 */
+    clientName: string | undefined;
+    /** 浏览器信息 */
+    browserInfo: string | undefined;
+    /** 异常 */
+    exception: string | undefined;
+    customData: string | undefined;
+    id: number;
 }
 
 export enum EntityChangeType {
@@ -32274,37 +34579,11 @@ export interface INameValueDto {
     value: string | undefined;
 }
 
-export class AuditLogListDto implements IAuditLogListDto {
-    /** 用户Id */
-    userId: number | undefined;
-    /** 用户名 */
-    userName: string | undefined;
-    /** 模拟租户Id */
-    impersonatorTenantId: number | undefined;
-    /** 模拟用户Id */
-    impersonatorUserId: number | undefined;
-    /** 服务名称 */
-    serviceName: string | undefined;
-    /** 方法名称 */
-    methodName: string | undefined;
-    /** 参数 */
-    parameters: string | undefined;
-    /** 执行时间 */
-    executionTime: moment.Moment;
-    /** 持续时间 */
-    executionDuration: number;
-    /** 客户端ip地址 */
-    clientIpAddress: string | undefined;
-    /** 客户端 */
-    clientName: string | undefined;
-    /** 浏览器信息 */
-    browserInfo: string | undefined;
-    /** 异常 */
-    exception: string | undefined;
-    customData: string | undefined;
-    id: number;
+/** 显示登录日志错误信息 */
+export class LoginLogExceptionDto implements ILoginLogExceptionDto {
+    details: string | undefined;
 
-    constructor(data?: IAuditLogListDto) {
+    constructor(data?: ILoginLogExceptionDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -32315,88 +34594,34 @@ export class AuditLogListDto implements IAuditLogListDto {
 
     init(data?: any) {
         if (data) {
-            this.userId = data["userId"];
-            this.userName = data["userName"];
-            this.impersonatorTenantId = data["impersonatorTenantId"];
-            this.impersonatorUserId = data["impersonatorUserId"];
-            this.serviceName = data["serviceName"];
-            this.methodName = data["methodName"];
-            this.parameters = data["parameters"];
-            this.executionTime = data["executionTime"] ? moment(data["executionTime"].toString()) : <any>undefined;
-            this.executionDuration = data["executionDuration"];
-            this.clientIpAddress = data["clientIpAddress"];
-            this.clientName = data["clientName"];
-            this.browserInfo = data["browserInfo"];
-            this.exception = data["exception"];
-            this.customData = data["customData"];
-            this.id = data["id"];
+            this.details = data["details"];
         }
     }
 
-    static fromJS(data: any): AuditLogListDto {
+    static fromJS(data: any): LoginLogExceptionDto {
         data = typeof data === 'object' ? data : {};
-        let result = new AuditLogListDto();
+        let result = new LoginLogExceptionDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["userName"] = this.userName;
-        data["impersonatorTenantId"] = this.impersonatorTenantId;
-        data["impersonatorUserId"] = this.impersonatorUserId;
-        data["serviceName"] = this.serviceName;
-        data["methodName"] = this.methodName;
-        data["parameters"] = this.parameters;
-        data["executionTime"] = this.executionTime ? this.executionTime.toISOString() : <any>undefined;
-        data["executionDuration"] = this.executionDuration;
-        data["clientIpAddress"] = this.clientIpAddress;
-        data["clientName"] = this.clientName;
-        data["browserInfo"] = this.browserInfo;
-        data["exception"] = this.exception;
-        data["customData"] = this.customData;
-        data["id"] = this.id;
+        data["details"] = this.details;
         return data; 
     }
 
-    clone(): AuditLogListDto {
+    clone(): LoginLogExceptionDto {
         const json = this.toJSON();
-        let result = new AuditLogListDto();
+        let result = new LoginLogExceptionDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IAuditLogListDto {
-    /** 用户Id */
-    userId: number | undefined;
-    /** 用户名 */
-    userName: string | undefined;
-    /** 模拟租户Id */
-    impersonatorTenantId: number | undefined;
-    /** 模拟用户Id */
-    impersonatorUserId: number | undefined;
-    /** 服务名称 */
-    serviceName: string | undefined;
-    /** 方法名称 */
-    methodName: string | undefined;
-    /** 参数 */
-    parameters: string | undefined;
-    /** 执行时间 */
-    executionTime: moment.Moment;
-    /** 持续时间 */
-    executionDuration: number;
-    /** 客户端ip地址 */
-    clientIpAddress: string | undefined;
-    /** 客户端 */
-    clientName: string | undefined;
-    /** 浏览器信息 */
-    browserInfo: string | undefined;
-    /** 异常 */
-    exception: string | undefined;
-    customData: string | undefined;
-    id: number;
+/** 显示登录日志错误信息 */
+export interface ILoginLogExceptionDto {
+    details: string | undefined;
 }
 
 export class PagedResultDtoOfAuditLogListDto implements IPagedResultDtoOfAuditLogListDto {
@@ -32452,6 +34677,144 @@ export class PagedResultDtoOfAuditLogListDto implements IPagedResultDtoOfAuditLo
 export interface IPagedResultDtoOfAuditLogListDto {
     totalCount: number;
     items: AuditLogListDto[] | undefined;
+}
+
+/** 显示登录信息 */
+export class LoginLogModel implements ILoginLogModel {
+    /** 用户名或邮箱 */
+    userNameOrEmailAddress: string | undefined;
+    /** 登录端 */
+    sourceName: string | undefined;
+    /** 登录端编码 */
+    sourceCode: string | undefined;
+    /** IP地址 */
+    clientIpAddress: string | undefined;
+    /** 执行时间 */
+    executionTime: moment.Moment;
+    /** 是否包含异常 */
+    hasException: boolean;
+    /** 异常 */
+    exception: string | undefined;
+
+    constructor(data?: ILoginLogModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userNameOrEmailAddress = data["userNameOrEmailAddress"];
+            this.sourceName = data["sourceName"];
+            this.sourceCode = data["sourceCode"];
+            this.clientIpAddress = data["clientIpAddress"];
+            this.executionTime = data["executionTime"] ? moment(data["executionTime"].toString()) : <any>undefined;
+            this.hasException = data["hasException"];
+            this.exception = data["exception"];
+        }
+    }
+
+    static fromJS(data: any): LoginLogModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginLogModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userNameOrEmailAddress"] = this.userNameOrEmailAddress;
+        data["sourceName"] = this.sourceName;
+        data["sourceCode"] = this.sourceCode;
+        data["clientIpAddress"] = this.clientIpAddress;
+        data["executionTime"] = this.executionTime ? this.executionTime.toISOString() : <any>undefined;
+        data["hasException"] = this.hasException;
+        data["exception"] = this.exception;
+        return data; 
+    }
+
+    clone(): LoginLogModel {
+        const json = this.toJSON();
+        let result = new LoginLogModel();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 显示登录信息 */
+export interface ILoginLogModel {
+    /** 用户名或邮箱 */
+    userNameOrEmailAddress: string | undefined;
+    /** 登录端 */
+    sourceName: string | undefined;
+    /** 登录端编码 */
+    sourceCode: string | undefined;
+    /** IP地址 */
+    clientIpAddress: string | undefined;
+    /** 执行时间 */
+    executionTime: moment.Moment;
+    /** 是否包含异常 */
+    hasException: boolean;
+    /** 异常 */
+    exception: string | undefined;
+}
+
+export class PagedResultDtoOfLoginLogModel implements IPagedResultDtoOfLoginLogModel {
+    totalCount: number;
+    items: LoginLogModel[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfLoginLogModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(LoginLogModel.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfLoginLogModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfLoginLogModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfLoginLogModel {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfLoginLogModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfLoginLogModel {
+    totalCount: number;
+    items: LoginLogModel[] | undefined;
 }
 
 /** 的列表DTO Yozeev.SystemConfig.BasicConfig.Branch */
@@ -35299,6 +37662,8 @@ export class DeviceListDto implements IDeviceListDto {
     deviceStatus: DeviceStatusEnum;
     /** IsEnabled */
     isEnabled: boolean;
+    /** 访问类型名称列表 */
+    verifiableTypes: VerifiableTypeEnum[] | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -35326,6 +37691,11 @@ export class DeviceListDto implements IDeviceListDto {
             this.secretKey = data["secretKey"];
             this.deviceStatus = data["deviceStatus"];
             this.isEnabled = data["isEnabled"];
+            if (data["verifiableTypes"] && data["verifiableTypes"].constructor === Array) {
+                this.verifiableTypes = [] as any;
+                for (let item of data["verifiableTypes"])
+                    this.verifiableTypes.push(item);
+            }
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -35353,6 +37723,11 @@ export class DeviceListDto implements IDeviceListDto {
         data["secretKey"] = this.secretKey;
         data["deviceStatus"] = this.deviceStatus;
         data["isEnabled"] = this.isEnabled;
+        if (this.verifiableTypes && this.verifiableTypes.constructor === Array) {
+            data["verifiableTypes"] = [];
+            for (let item of this.verifiableTypes)
+                data["verifiableTypes"].push(item);
+        }
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -35389,6 +37764,8 @@ export interface IDeviceListDto {
     deviceStatus: DeviceStatusEnum;
     /** IsEnabled */
     isEnabled: boolean;
+    /** 访问类型名称列表 */
+    verifiableTypes: VerifiableTypeEnum[] | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -36197,6 +38574,484 @@ export interface IMoveTenantsToAnotherEditionDto {
     targetEditionId: number;
 }
 
+/** 的列表DTO Yozeev.BusinessLogic.Common.Employee */
+export class EmployeeEditDto implements IEmployeeEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 姓名 */
+    name: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    /** 手机号 */
+    mobile: string | undefined;
+    /** 照片 */
+    photo: string | undefined;
+    sex: SexEnum;
+    verifiableType: VerifiableTypeEnum;
+    /** 证件号 */
+    certificatesNum: string | undefined;
+    /** 机构标识 */
+    branchId: number | undefined;
+
+    constructor(data?: IEmployeeEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.name = data["name"];
+            this.isEnable = data["isEnable"];
+            this.mobile = data["mobile"];
+            this.photo = data["photo"];
+            this.sex = data["sex"];
+            this.verifiableType = data["verifiableType"];
+            this.certificatesNum = data["certificatesNum"];
+            this.branchId = data["branchId"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["isEnable"] = this.isEnable;
+        data["mobile"] = this.mobile;
+        data["photo"] = this.photo;
+        data["sex"] = this.sex;
+        data["verifiableType"] = this.verifiableType;
+        data["certificatesNum"] = this.certificatesNum;
+        data["branchId"] = this.branchId;
+        return data; 
+    }
+
+    clone(): EmployeeEditDto {
+        const json = this.toJSON();
+        let result = new EmployeeEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的列表DTO Yozeev.BusinessLogic.Common.Employee */
+export interface IEmployeeEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 姓名 */
+    name: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    /** 手机号 */
+    mobile: string | undefined;
+    /** 照片 */
+    photo: string | undefined;
+    sex: SexEnum;
+    verifiableType: VerifiableTypeEnum;
+    /** 证件号 */
+    certificatesNum: string | undefined;
+    /** 机构标识 */
+    branchId: number | undefined;
+}
+
+export class CreateOrUpdateEmployeeInput implements ICreateOrUpdateEmployeeInput {
+    employee: EmployeeEditDto;
+
+    constructor(data?: ICreateOrUpdateEmployeeInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.employee = new EmployeeEditDto();
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employee = data["employee"] ? EmployeeEditDto.fromJS(data["employee"]) : new EmployeeEditDto();
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateEmployeeInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateEmployeeInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateOrUpdateEmployeeInput {
+        const json = this.toJSON();
+        let result = new CreateOrUpdateEmployeeInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateOrUpdateEmployeeInput {
+    employee: EmployeeEditDto;
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.Employee */
+export class EmployeeListDto implements IEmployeeListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 姓名 */
+    name: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    /** 手机号 */
+    mobile: string | undefined;
+    /** 照片 */
+    photo: string | undefined;
+    sex: SexEnum;
+    verifiableType: VerifiableTypeEnum;
+    /** 证件号 */
+    certificatesNum: string | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IEmployeeListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.name = data["name"];
+            this.isEnable = data["isEnable"];
+            this.mobile = data["mobile"];
+            this.photo = data["photo"];
+            this.sex = data["sex"];
+            this.verifiableType = data["verifiableType"];
+            this.certificatesNum = data["certificatesNum"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): EmployeeListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EmployeeListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["name"] = this.name;
+        data["isEnable"] = this.isEnable;
+        data["mobile"] = this.mobile;
+        data["photo"] = this.photo;
+        data["sex"] = this.sex;
+        data["verifiableType"] = this.verifiableType;
+        data["certificatesNum"] = this.certificatesNum;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): EmployeeListDto {
+        const json = this.toJSON();
+        let result = new EmployeeListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.Employee */
+export interface IEmployeeListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 姓名 */
+    name: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    /** 手机号 */
+    mobile: string | undefined;
+    /** 照片 */
+    photo: string | undefined;
+    sex: SexEnum;
+    verifiableType: VerifiableTypeEnum;
+    /** 证件号 */
+    certificatesNum: string | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+/** 读取可编辑的Dto */
+export class GetEmployeeForEditOutput implements IGetEmployeeForEditOutput {
+    employee: EmployeeEditDto;
+    sexEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+    verifiableTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+
+    constructor(data?: IGetEmployeeForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.employee = data["employee"] ? EmployeeEditDto.fromJS(data["employee"]) : <any>undefined;
+            if (data["sexEnumTypeEnum"] && data["sexEnumTypeEnum"].constructor === Array) {
+                this.sexEnumTypeEnum = [] as any;
+                for (let item of data["sexEnumTypeEnum"])
+                    this.sexEnumTypeEnum.push(KeyValuePairOfStringString.fromJS(item));
+            }
+            if (data["verifiableTypeEnumTypeEnum"] && data["verifiableTypeEnumTypeEnum"].constructor === Array) {
+                this.verifiableTypeEnumTypeEnum = [] as any;
+                for (let item of data["verifiableTypeEnumTypeEnum"])
+                    this.verifiableTypeEnumTypeEnum.push(KeyValuePairOfStringString.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetEmployeeForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeeForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["employee"] = this.employee ? this.employee.toJSON() : <any>undefined;
+        if (this.sexEnumTypeEnum && this.sexEnumTypeEnum.constructor === Array) {
+            data["sexEnumTypeEnum"] = [];
+            for (let item of this.sexEnumTypeEnum)
+                data["sexEnumTypeEnum"].push(item.toJSON());
+        }
+        if (this.verifiableTypeEnumTypeEnum && this.verifiableTypeEnumTypeEnum.constructor === Array) {
+            data["verifiableTypeEnumTypeEnum"] = [];
+            for (let item of this.verifiableTypeEnumTypeEnum)
+                data["verifiableTypeEnumTypeEnum"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): GetEmployeeForEditOutput {
+        const json = this.toJSON();
+        let result = new GetEmployeeForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 读取可编辑的Dto */
+export interface IGetEmployeeForEditOutput {
+    employee: EmployeeEditDto;
+    sexEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+    verifiableTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+}
+
+/** 获取的传入参数Dto */
+export class GetEmployeesInput implements IGetEmployeesInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetEmployeesInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetEmployeesInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetEmployeesInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetEmployeesInput {
+        const json = this.toJSON();
+        let result = new GetEmployeesInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetEmployeesInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
+export class PagedResultDtoOfEmployeeListDto implements IPagedResultDtoOfEmployeeListDto {
+    totalCount: number;
+    items: EmployeeListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfEmployeeListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(EmployeeListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfEmployeeListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfEmployeeListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfEmployeeListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfEmployeeListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfEmployeeListDto {
+    totalCount: number;
+    items: EmployeeListDto[] | undefined;
+}
+
+export class UploadEmployeeResultDto implements IUploadEmployeeResultDto {
+    uri: string | undefined;
+
+    constructor(data?: IUploadEmployeeResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): UploadEmployeeResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UploadEmployeeResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): UploadEmployeeResultDto {
+        const json = this.toJSON();
+        let result = new UploadEmployeeResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUploadEmployeeResultDto {
+    uri: string | undefined;
+}
+
 export class Device implements IDevice {
     branchId: number | undefined;
     ticketStationId: string | undefined;
@@ -36581,6 +39436,77 @@ export interface IGetFaceSwipingForEditOutput {
     faceSwiping: FaceSwipingEditDto;
 }
 
+/** 获取的传入参数Dto */
+export class GetFaceSwipingsInput implements IGetFaceSwipingsInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetFaceSwipingsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetFaceSwipingsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetFaceSwipingsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetFaceSwipingsInput {
+        const json = this.toJSON();
+        let result = new GetFaceSwipingsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetFaceSwipingsInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class PagedResultDtoOfFaceSwipingListDto implements IPagedResultDtoOfFaceSwipingListDto {
     totalCount: number;
     items: FaceSwipingListDto[] | undefined;
@@ -36904,6 +39830,77 @@ export class GetGateRecordForEditOutput implements IGetGateRecordForEditOutput {
 /** 读取可编辑的Dto */
 export interface IGetGateRecordForEditOutput {
     gateRecord: GateRecordEditDto;
+}
+
+/** 获取的传入参数Dto */
+export class GetGateRecordsInput implements IGetGateRecordsInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetGateRecordsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetGateRecordsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetGateRecordsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetGateRecordsInput {
+        const json = this.toJSON();
+        let result = new GetGateRecordsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetGateRecordsInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 export class PagedResultDtoOfGateRecordListDto implements IPagedResultDtoOfGateRecordListDto {
@@ -50361,6 +53358,77 @@ export interface IGetTicketDetailHistoryForEditOutput {
     checkStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
 }
 
+/** 获取的传入参数Dto */
+export class GetTicketDetailHistorysInput implements IGetTicketDetailHistorysInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetTicketDetailHistorysInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketDetailHistorysInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketDetailHistorysInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetTicketDetailHistorysInput {
+        const json = this.toJSON();
+        let result = new GetTicketDetailHistorysInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetTicketDetailHistorysInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
     totalCount: number;
     items: TicketDetailHistoryListDto[] | undefined;
@@ -51111,7 +54179,7 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
     /** Id */
     id: number | undefined;
     /** TicketId */
-    ticketId: string;
+    ticketId: number;
     ticket: Ticket;
     /** Price */
     price: number;
@@ -51128,6 +54196,8 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
     sort: number | undefined;
     /** TicketName */
     ticketName: string | undefined;
+    /** 所属景区的Id */
+    weChatScenicSpotId: number | undefined;
 
     constructor(data?: ITicketPriceEditDto) {
         if (data) {
@@ -51151,6 +54221,7 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
             this.ticketName = data["ticketName"];
+            this.weChatScenicSpotId = data["weChatScenicSpotId"];
         }
     }
 
@@ -51174,6 +54245,7 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
         data["ticketName"] = this.ticketName;
+        data["weChatScenicSpotId"] = this.weChatScenicSpotId;
         return data; 
     }
 
@@ -51190,7 +54262,7 @@ export interface ITicketPriceEditDto {
     /** Id */
     id: number | undefined;
     /** TicketId */
-    ticketId: string;
+    ticketId: number;
     ticket: Ticket;
     /** Price */
     price: number;
@@ -51207,6 +54279,8 @@ export interface ITicketPriceEditDto {
     sort: number | undefined;
     /** TicketName */
     ticketName: string | undefined;
+    /** 所属景区的Id */
+    weChatScenicSpotId: number | undefined;
 }
 
 export class CreateOrUpdateTicketPriceInput implements ICreateOrUpdateTicketPriceInput {
@@ -51260,7 +54334,7 @@ export class TicketPriceListDto implements ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
     /** TicketId */
-    ticketId: string;
+    ticketId: number;
     ticket: Ticket;
     /** Price */
     price: number;
@@ -51277,6 +54351,8 @@ export class TicketPriceListDto implements ITicketPriceListDto {
     sort: number | undefined;
     /** TicketName */
     ticketName: string | undefined;
+    /** 所属景区 */
+    weChatScenicSpotId: number | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -51305,6 +54381,7 @@ export class TicketPriceListDto implements ITicketPriceListDto {
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
             this.ticketName = data["ticketName"];
+            this.weChatScenicSpotId = data["weChatScenicSpotId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -51333,6 +54410,7 @@ export class TicketPriceListDto implements ITicketPriceListDto {
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
         data["ticketName"] = this.ticketName;
+        data["weChatScenicSpotId"] = this.weChatScenicSpotId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -51354,7 +54432,7 @@ export interface ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
     /** TicketId */
-    ticketId: string;
+    ticketId: number;
     ticket: Ticket;
     /** Price */
     price: number;
@@ -51371,6 +54449,8 @@ export interface ITicketPriceListDto {
     sort: number | undefined;
     /** TicketName */
     ticketName: string | undefined;
+    /** 所属景区 */
+    weChatScenicSpotId: number | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -57231,6 +60311,59 @@ export interface ICreateOrUpdateWeChatScenicSpotInput {
     weChatScenicSpot: WeChatScenicSpotEditDto;
 }
 
+/** 关联的标价 */
+export class WeChatTicketPrice implements IWeChatTicketPrice {
+    /** 小程序票名称 */
+    ticketName: string | undefined;
+    /** 小程序票价 */
+    price: number;
+
+    constructor(data?: IWeChatTicketPrice) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.price = data["price"];
+        }
+    }
+
+    static fromJS(data: any): WeChatTicketPrice {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatTicketPrice();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["price"] = this.price;
+        return data; 
+    }
+
+    clone(): WeChatTicketPrice {
+        const json = this.toJSON();
+        let result = new WeChatTicketPrice();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 关联的标价 */
+export interface IWeChatTicketPrice {
+    /** 小程序票名称 */
+    ticketName: string | undefined;
+    /** 小程序票价 */
+    price: number;
+}
+
 /** 的编辑DTO Yozeev.BusinessLogic.Common.WeChatScenicSpot */
 export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
     /** BranchId */
@@ -57251,6 +60384,11 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
     focusPicture: string | undefined;
     /** 是否启用 */
     isEnable: boolean;
+    /** 上级景点标识 */
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    /** 关联的票价 */
+    ticketPrices: WeChatTicketPrice[] | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -57277,6 +60415,13 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
             this.isEnable = data["isEnable"];
+            this.parentId = data["parentId"];
+            this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
+            if (data["ticketPrices"] && data["ticketPrices"].constructor === Array) {
+                this.ticketPrices = [] as any;
+                for (let item of data["ticketPrices"])
+                    this.ticketPrices.push(WeChatTicketPrice.fromJS(item));
+            }
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -57303,6 +60448,13 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
         data["isEnable"] = this.isEnable;
+        data["parentId"] = this.parentId;
+        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
+        if (this.ticketPrices && this.ticketPrices.constructor === Array) {
+            data["ticketPrices"] = [];
+            for (let item of this.ticketPrices)
+                data["ticketPrices"].push(item.toJSON());
+        }
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -57339,6 +60491,11 @@ export interface IWeChatScenicSpotListDto {
     focusPicture: string | undefined;
     /** 是否启用 */
     isEnable: boolean;
+    /** 上级景点标识 */
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    /** 关联的票价 */
+    ticketPrices: WeChatTicketPrice[] | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;

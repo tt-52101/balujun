@@ -13,42 +13,36 @@
           </nz-form-control>
         </nz-form-item>
 
-
         <nz-form-item class="formitem">
           <nz-form-label nzFor="scheduleCode">票型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 200px" name="boat">
-              <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName">
-              </nz-option>
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear style="width: 200px" name="boat">
+              <nz-option *ngFor="let item of schedulelist;let i = index;" [nzValue]="item.id"
+                [nzLabel]="item.scheduleCode"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
 
-
         <nz-form-item class="formitem">
           <nz-form-label>日期</nz-form-label>
           <nz-form-control>
-            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)"
-              name="collectionTime" [nzDisabledDate]="disabledDate" [(ngModel)]="collectionTime"></nz-range-picker>
+            <nz-range-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="CreationTime"
+              [nzDisabledDate]="disabledDate" [(ngModel)]="CreationTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-
-
         <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
-          <button nz-button [nzType]="'primary'" (click)="refresh()"
-            style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
+          <button nz-button [nzType]="'primary'" (click)="refresh()" style="padding: 0px 20px;height: 32px;">查询</button>
         </nz-form-item>
       </form>
     </nz-row>
   </div>
   <nz-row class="my-md">
-
-    <nz-table #ajaxTable [nzData]="dataList"
-      [nzWidthConfig]="['150px', '100px', '100px', '100px', '100px', '100px', '100px','100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px','100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px','100px', '100px']"
+    <nz-table #ajaxTable [nzData]="dataList1"
+      [nzWidthConfig]="['100px', '100px', '100px', '100px', '100px', '120px', '100px', '120px', '100px', '100px', '120px', '100px', '120px', '100px', '120px','100px']"
       [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="false"
       (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
       [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems"
-      [nzFrontPagination]="false" [nzNoResult]="noDataTemplate" nzBordered [nzScroll]="{ x: '2550px' }"
+      [nzFrontPagination]="false" [nzNoResult]="noDataTemplate" nzBordered [nzScroll]="{ x: '1700px' }"
       style="word-break:break-all">
 
       <ng-template #noDataTemplate>
@@ -59,61 +53,45 @@
           <th rowspan="2" nz-th class="text-center" nzLeft="0px">
             <span>销售员</span>
           </th>
-          <th nz-th class="text-center" colspan="6">
-            <span>现金支付</span>
+          <th nz-th class="text-center" colspan="3">
+            <span>数量</span>
           </th>
-          <th nz-th class="text-center" colspan="6">
-            <span>刷卡支付</span>
+          <th nz-th class="text-center" colspan="5">
+            <span>销售金额</span>
           </th>
-          <th nz-th class="text-center" colspan="6">
-            <span>微信支付</span>
+          <th nz-th class="text-center" colspan="5">
+            <span>退票金额</span>
           </th>
-          <th nz-th class="text-center" colspan="6">
-            <span>支付宝支付</span>
-          </th>
-          <th nz-th class="text-center" colspan="2">
-            <span>合计</span>
+          <th rowspan="2" nz-th class="text-center">
+            <span>应收总金额</span>
           </th>
 
-          <th rowspan="2" class="text-center" nzRight="0px"><span>操作</span></th>
+          <th class="text-center" rowspan="2" nzRight="0px">
+            <span>操作</span>
+          </th>
           <!--          <th nz-th class="text-center" colspan="2" nzRight="0px">
             <span>{{l('Total')}}</span>
           </th> -->
         </tr>
         <tr>
 
-          <th class="text-center">{{l('TicketQuantity')}}</th>
-          <th class="text-center">{{l('RefundQuantity')}}</th>
-          <th class="text-center">{{l('QuantitySubtotal')}}</th>
-          <th class="text-center">{{l('TicketAmount')}}</th>
-          <th class="text-center">{{l('RefundAmount')}}</th>
-          <th class="text-center">{{l('AmountSubtotal')}}</th>
+          <th nz-th class="text-center">{{l('TicketQuantity')}}</th>
+          <th nz-th class="text-center">{{l('RefundQuantity')}}</th>
+          <th nz-th class="text-center">{{l('QuantitySubtotal')}}</th>
 
-          <th class="text-center">{{l('TicketQuantity')}}</th>
-          <th class="text-center">{{l('RefundQuantity')}}</th>
-          <th class="text-center">{{l('QuantitySubtotal')}}</th>
-          <th class="text-center">{{l('TicketAmount')}}</th>
-          <th class="text-center">{{l('RefundAmount')}}</th>
-          <th class="text-center">{{l('AmountSubtotal')}}</th>
+          <th nz-th class="text-center">{{l('CashPay')}}</th>
+          <th nz-th class="text-center">{{l('CardPay')}}</th>
+          <th nz-th class="text-center">{{l('WeChatPay')}}</th>
+          <th nz-th class="text-center">{{l('AlipayPay')}}</th>
+          <th nz-th class="text-center">{{l('Subtotal')}}</th>
 
-          <th class="text-center">{{l('TicketQuantity')}}</th>
-          <th class="text-center">{{l('RefundQuantity')}}</th>
-          <th class="text-center">{{l('QuantitySubtotal')}}</th>
-          <th class="text-center">{{l('TicketAmount')}}</th>
-          <th class="text-center">{{l('RefundAmount')}}</th>
-          <th class="text-center">{{l('AmountSubtotal')}}</th>
-
-          <th class="text-center">{{l('TicketQuantity')}}</th>
-          <th class="text-center">{{l('RefundQuantity')}}</th>
-          <th class="text-center">{{l('QuantitySubtotal')}}</th>
-          <th class="text-center">{{l('TicketAmount')}}</th>
-          <th class="text-center">{{l('RefundAmount')}}</th>
-          <th class="text-center">{{l('AmountSubtotal')}}</th>
-
-
-          <th class="text-center">{{l('TotalQuantity')}}</th>
-          <th class="text-center">{{l('TotalAmount')}}</th>
-
+          <th nz-th class="text-center">{{l('CashPay')}}</th>
+          <th nz-th class="text-center">{{l('CardPay')}}</th>
+          <th nz-th class="text-center">{{l('WeChatPay')}}</th>
+          <th nz-th class="text-center">{{l('AlipayPay')}}</th>
+          <th nz-th class="text-center">{{l('Subtotal')}}</th>
+          <!--          <th class="text-center">{{l('TotalQuantity')}}</th>
+            <th class="text-center">{{l('TotalAmount')}}</th> -->
 
         </tr>
 
@@ -122,59 +100,36 @@
       <!-- 表格内容 -->
       <tbody>
         <tr *ngFor="let item of ajaxTable.data">
-
+          <!-- <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td> -->
 
           <td nz-td class="text-center" nzLeft="0px">
-            <span *ngIf="item.saler">
-              {{item.saler.userName}}
+            <span *ngIf="item.userName">
+              {{item.userName}}
             </span>
-            <span *ngIf="!item.saler">
+            <span *ngIf="!item.userName">
               合计
             </span>
           </td>
+
           <td nz-td class="text-center">
             <span>
-              {{item.cashSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cashRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cashRefundCount}}
+              {{item.saleCount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.cashTotalCount}}
+              {{item.refundCount}}
             </span>
           </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalCount}}
+            </span>
+          </td>
+
           <td nz-td class="text-center">
             <span>
               {{item.cashSaleAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cashRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cashRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cashTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cardRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cardRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardTotalCount}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -182,59 +137,9 @@
               {{item.cardSaleAmount}}
             </span>
           </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cardRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cardRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.weiChatRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.weiChatRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatTotalCount}}
-            </span>
-          </td>
           <td nz-td class="text-center">
             <span>
               {{item.weiChatSaleAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.weiChatRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.weiChatRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.zhiFuBaoSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.zhiFuBaoRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.zhiFuBaoRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.zhiFuBaoTotalCount}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -242,90 +147,83 @@
               {{item.zhiFuBaoSaleAmount}}
             </span>
           </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.zhiFuBaoRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.zhiFuBaoRefundAmount}}
-            </span>
-          </td>
           <td nz-td class="text-center">
             <span>
-              {{item.zhiFuBaoTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.zhiFuBaoRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.zhiFuBaoRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.zhiFuBaoTotalAmount}}
+              {{item.totalSaleAmount}}
             </span>
           </td>
 
+          <td nz-td class="text-center">
+            <span>
+              {{item.cashRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.cardRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.weiChatRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.zhiFuBaoRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalRefundAmount}}
+            </span>
+          </td>
+
+
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalAmount}}
+            </span>
+          </td>
+
+
           <td class="text-center" nzRight="0px">
-            <ng-container *ngIf="item.saler">
-              <a (click)="open(item.saler.id)">
-                <span>{{l('Detail')}}</span> </a>
+            <ng-container>
+              <a (click)="open(1)">
+                <span>详情</span> </a>
             </ng-container>
           </td>
+
         </tr>
-
-
-        <tr *ngFor="let item of total">
-
-
+        <tr *ngFor="let item of total1">
           <td nz-td class="text-center" nzLeft="0px">
             <span *ngIf="item.saler">
-              {{item.saler.userName}}
+              {{item.userName}}
             </span>
             <span *ngIf="!item.saler">
               合计
             </span>
           </td>
+
           <td nz-td class="text-center">
             <span>
-              {{item.cashSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cashRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cashRefundCount}}
+              {{item.saleCount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.cashTotalCount}}
+              {{item.refundCount}}
             </span>
           </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalCount}}
+            </span>
+          </td>
+
           <td nz-td class="text-center">
             <span>
               {{item.cashSaleAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cashRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cashRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cashTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cardRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cardRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardTotalCount}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -333,59 +231,9 @@
               {{item.cardSaleAmount}}
             </span>
           </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.cardRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.cardRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.cardTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.weiChatRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.weiChatRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatTotalCount}}
-            </span>
-          </td>
           <td nz-td class="text-center">
             <span>
               {{item.weiChatSaleAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.weiChatRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.weiChatRefundAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.weiChatTotalAmount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.zhiFuBaoSaleCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.zhiFuBaoRefundCount > 0? 'red':'rgba(0,0,0,0.65)'}">
-            <span>
-              {{item.zhiFuBaoRefundCount}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.zhiFuBaoTotalCount}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -393,116 +241,55 @@
               {{item.zhiFuBaoSaleAmount}}
             </span>
           </td>
-          <td nz-td class="text-center" [ngStyle]="{'color':item.zhiFuBaoRefundAmount > 0? 'red':'rgba(0,0,0,0.65)'}">
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalSaleAmount}}
+            </span>
+          </td>
+
+          <td nz-td class="text-center">
+            <span>
+              {{item.cashRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.cardRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.weiChatRefundAmount}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
             <span>
               {{item.zhiFuBaoRefundAmount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.zhiFuBaoTotalAmount}}
+              {{item.totalRefundAmount}}
             </span>
           </td>
 
-          <td class="text-center" nzRight="0px">
-            <ng-container *ngIf="item.saler">
-              <a (click)="open(item.saler.id)">
-                <span>{{l('Detail')}}</span> </a>
-            </ng-container>
+
+          <td nz-td class="text-center">
+            <span>
+              {{item.totalAmount}}
+            </span>
           </td>
 
 
+          <td class="text-center" nzRight="0px">
+            <ng-container *ngIf="item.saler">
+              <a (click)="open()">
+                <span></span> </a>
+            </ng-container>
+          </td>
 
         </tr>
       </tbody>
     </nz-table>
   </nz-row>
 </nz-card>
-
-
-
-
-
-
-<nz-drawer [nzVisible]="visible" nzPlacement="bottom" [nzHeight]="700" [nzTitle]="l('Detail')" (nzOnClose)="close()">
-
-  <nz-table #ajaxTable2 [nzData]="ticketinfo" [nzScroll]="{ x: '970px',y:'600px' }" style="word-break:break-all;"
-    nzShowPagination='false' nzBordered>
-    <ng-template #noDataTemplate>
-      <no-data></no-data>
-    </ng-template>
-    <thead>
-      <tr>
-        <th class="text-center" style="font-weight: 600" nzWidth="150px">
-          <span>{{l('Ticket')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="200px">
-          <span>{{l('TicketNo')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="120px">
-          <span>{{l('ScheduleCode')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="150px">
-          <span>{{l('StartTime')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="150px">
-          <span>{{l('Price')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="150px">
-          <span>{{l('CustomerName')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="100px">
-          <span>{{l('Mobile')}}</span>
-        </th>
-        <th class="text-center" style="font-weight: 600" nzWidth="100px">
-          <span>{{l('TicketStatus')}}</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of ajaxTable2.data; let i = index;">
-        <td class="text-center" nzWidth="150px">
-          <span>
-            {{item.ticket.ticketName}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="150px">
-          <span>
-            {{item.ticketDetail.ticketNo}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="130px">
-          <span>
-            {{item.schedule.scheduleCode}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="150px">
-          <span>
-            {{item.schedule.startTime |_date}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            ￥{{item.ticket.unitPrice}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            {{item.customer.customerName}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            {{item.customer.mobile}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            {{l(item.ticketDetail.ticketStatus)}}
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
-
-</nz-drawer>

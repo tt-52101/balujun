@@ -1,0 +1,144 @@
+<!-- <page-header [title]="l('Ticket')"></page-header> -->
+<nz-card [nzBordered]="false">
+    <div class="modal-header">
+      <span>订单信息</span>
+    </div>
+    <!-- 实体的表格内容 -->
+    <nz-row class="my-md">
+      <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"
+        (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
+        [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered
+        [nzScroll]="{ x: '1700px' }" style="word-break:break-all">
+        <!-- 暂无数据组件 -->
+        <ng-template #noDataTemplate>
+          <no-data></no-data>
+        </ng-template>
+        <!-- 表头 -->
+        <thead>
+          <tr>
+            <th nz-th class="text-center" nzWidth="100px" nzLeft="0px">
+              <span>是否结账</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>单据号</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>订单来源</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>订单类型</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>订单金额</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>支付状态</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>支付方式</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>数量</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>购票人</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>购票凭证</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="190px">
+              <span>日期</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>制单人</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px">
+              <span>原单号</span>
+            </th>
+            <th nz-th class="text-center" nzWidth="100px" nzRight="0px">
+              <span>操作</span>
+            </th>
+          </tr>
+        </thead>
+        <!-- 表格内容 -->
+        <tbody>
+          <tr *ngFor="let item of ajaxTable.data">
+            <!-- 全选框 -->
+  
+            <td nz-td class="text-center" nzLeft="0px">
+              <span>
+                {{item.aa}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.bb}}
+              </span>
+            </td>
+            <td nz-td class="text-center">
+              <span>
+                {{item.cc}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.dd}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ee}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ff}}
+              </span>
+            </td>
+            <td nz-td class="text-center">
+              <span>
+                {{item.gg}}
+              </span>
+            </td>
+            <td nz-td class="text-center">
+              <span>
+                {{item.hh}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ii}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.jj}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ll}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.mm}}
+              </span>
+            </td>
+            <td nz-td class="text-center">
+              <span>
+                {{item.nn}}
+              </span>
+            </td>
+            <td nz-td class="text-center" nzRight="0px">
+              <ng-container>
+                <a (click)="tao(1)">
+                  <span>详情</span> </a>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-row>
+  </nz-card>
+  

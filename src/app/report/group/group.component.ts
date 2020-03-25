@@ -8,7 +8,7 @@ import {
 	TicketServiceProxy,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
-
+import { CreateOrEditGroupComponent } from './create-or-edit-group/create-or-edit-group.component';
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
@@ -35,6 +35,27 @@ implements OnInit {
 		// console.log(test)
 	}
 
+
+	total1=[
+		{
+			
+			saleCount:'aa',
+			refundCount:'aa',
+			totalCount:'aa',
+			cashSaleAmount:'aa',
+			cardSaleAmount:'aa',
+			weiChatSaleAmount:'aa',
+			zhiFuBaoSaleAmount:'aa',
+			totalSaleAmount:'aa',
+			cashRefundAmount:'aa',
+			cardRefundAmount:'aa',
+			weiChatRefundAmount:'aa',
+			zhiFuBaoRefundAmount:'aa',
+			totalRefundAmount:'aa',
+			totalAmount:'aa',
+
+		}
+	]
 
 	queryData = [{
 		field: "ScheduleId",
@@ -70,6 +91,24 @@ implements OnInit {
 	ticketlist=[]
 	visible = false;
 	childvisible=false
+
+	list=[
+		{
+    aa:'未结账',
+    bb:'10086',
+    cc:'官网',
+    dd:'个人',
+    ee:'50',
+    ff:'已支付',
+    gg:'现金支付',
+    hh:'1',
+    ii:'张三',
+    jj:'1008610010',
+    ll:'2019-10-15 11:11:11',
+    mm:'管理员',
+    nn:'10000',
+		}
+  ]
 
 	disabledDate = (current: Date): boolean => {
 		// Can not select days before today and today
@@ -202,6 +241,15 @@ implements OnInit {
 			this.userList = result.items;
 		});
 	}
+
+	open(id : number): void {
+		this.modalHelper.static(CreateOrEditGroupComponent, { id: id })
+		.subscribe(result => {
+		  if (result) {
+			this.refresh();
+		  }
+		});
+	  }
 
 
 }

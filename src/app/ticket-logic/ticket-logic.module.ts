@@ -37,7 +37,11 @@ import { CreateOrEditTicketStationComponent } from './create-or-edit-ticket-stat
 
 import { CreateOrEditScenicSpotComponent } from './create-or-edit-scenic-spot/create-or-edit-scenic-spot.component';
 
+
+
 import { Datezone } from '../common/datezone.pipe';
+
+import { Group } from '../common/group.pipe';
 
 @NgModule({
   imports: [
@@ -49,6 +53,7 @@ import { Datezone } from '../common/datezone.pipe';
 
   declarations: [
   Datezone,
+  Group,
 
   AccountComponent,
   AccountDetailComponent,
