@@ -604,7 +604,7 @@ export class SellTicketsComponent extends AppComponentBase implements OnInit {
 
 
       getpaymethod(){
-        this._payMethodService.getPaged(null,null,999,0)
+        this._payMethodService.getPagedGet(null,null,999,0)
         .subscribe(result => {
           this.paymethodList = result.items;
           // this.orderinfo.payMethodId=result.items[0].id

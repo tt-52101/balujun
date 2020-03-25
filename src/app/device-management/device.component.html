@@ -24,7 +24,7 @@
         <nz-form-item>
           <nz-form-label>设备类型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 120px" name="status">
+            <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 120px" name="status">
               <nz-option nzValue="TicketMachine" [nzLabel]="l('TicketMachine')"></nz-option>
               <nz-option nzValue="SelfhelpMachine" [nzLabel]="l('SelfhelpMachine')"></nz-option>
               <nz-option nzValue="GateMachine" [nzLabel]="l('GateMachine')"></nz-option>
@@ -37,7 +37,7 @@
         <nz-form-item>
           <nz-form-label>状态</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 120px" name="status">
+            <nz-select [(ngModel)]="queryData[3].value" nzAllowClear style="width: 120px" name="status">
               <nz-option nzValue="Not" [nzLabel]="l('Not')"></nz-option>
               <nz-option nzValue="Using" [nzLabel]="l('Using')"></nz-option>
               <nz-option nzValue="Closing" [nzLabel]="l('Closing')"></nz-option>

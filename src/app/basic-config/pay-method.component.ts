@@ -37,7 +37,7 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		this._payMethodService.getPaged(
+		this._payMethodService.getPagedGet(
 			'',
 			request.sorting,
 			request.maxResultCount,

@@ -80,7 +80,7 @@ implements OnInit {
      }))
      var that = this;
      var ticketlist=[]
-     this._ticketPriceService.getPaged('',null,999,0)
+     this._ticketPriceService.getPaged(null)
      .subscribe(result => {
        result.items.forEach(function(item){
          var ticket={

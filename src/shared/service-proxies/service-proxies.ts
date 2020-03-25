@@ -29,8 +29,151 @@ export class ActivityServiceProxy {
     }
 
     /**
-     * @param list (optional) 
-     * @param rDiscount (optional) 
+     * Web客户端使用，直接将订单创建到activity表中
+     * @param body (optional) {
+        "sourceId": "54D99CD6-D807-4783-70AA-08D798BCBD02",
+        "scheduleId": "829D2F50-D4F8-4D0C-0C2F-08D798BCBD32",
+        "payMethodId": "6253E959-5DFD-4CBA-0A7C-08D798BCBC89",
+        "activityDetails": [
+            {
+                "ticketPriceId": "2744AC36-68C4-45E0-1F19-08D798BCBD8A",
+                "customerId": "",
+            }
+        ]
+    }
+     * @return Success
+     */
+    createActivity(body: CreateActivityModel | undefined): Observable<ActivityResultModel> {
+        let url_ = this.baseUrl + "/api/Activity/CreateActivity";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateActivity(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateActivity(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityResultModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityResultModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateActivity(response: HttpResponseBase): Observable<ActivityResultModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityResultModel.fromJS(resultData200) : new ActivityResultModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityResultModel>(<any>null);
+    }
+
+    /**
+     * 创建团体购票订单
+     * @param body (optional) { 
+      "sourceId":0,
+      "payMethodId":0,
+      "discount":0,
+      "orderType":"OrderTypeOrg",
+      "remark":"string",
+      "createUserId":0,
+      "totalQuantity":0,
+      "totalAmount":0,
+      "ticketPriceId":0,
+      "activityDetails":[
+        {
+          "quantity":0,
+          "customerId":0
+        }],
+      "groupId":0,
+      "availableStart":"2020-03-23T03:10:27.243Z",
+      "availableEnd":"2020-03-23T03:10:27.243Z"
+      }
+     * @return Success
+     */
+    createGroupActivity(body: CreateGroupActivityModel | undefined): Observable<ActivityResultModel> {
+        let url_ = this.baseUrl + "/api/Activity/CreateGroupActivity";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateGroupActivity(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateGroupActivity(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityResultModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityResultModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateGroupActivity(response: HttpResponseBase): Observable<ActivityResultModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityResultModel.fromJS(resultData200) : new ActivityResultModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityResultModel>(<any>null);
+    }
+
+    /**
+     * Web客户端使用，执行退票操作
+     * @param list (optional) 票据Idlist
+     * @param rDiscount (optional) 退票折扣
      * @param remark (optional) 
      * @return Success
      */
@@ -430,41 +573,26 @@ export class ActivityServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfActivityListDto> {
-        let url_ = this.baseUrl + "/api/services/app/Activity/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetActivitysInput | undefined): Observable<PagedResultDtoOfActivityListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Activity/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -5380,7 +5508,7 @@ export class CustomerServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param body (optional) 
+     * @param body (optional) 传入参数
      * @return Success
      */
     getPaged(body: GetCustomersInput | undefined): Observable<PagedResultDtoOfCustomerListDto> {
@@ -9756,41 +9884,26 @@ export class OrganizationServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 传入参数
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfOrganizationListDto> {
-        let url_ = this.baseUrl + "/api/services/app/Organization/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetOrganizationsInput | undefined): Observable<PagedResultDtoOfOrganizationListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Organization/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -11116,7 +11229,7 @@ export class PayMethodServiceProxy {
      * @param skipCount (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfPayMethodListDto> {
+    getPagedGet(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfPayMethodListDto> {
         let url_ = this.baseUrl + "/api/services/app/PayMethod/GetPaged?";
         if (filterText === null)
             throw new Error("The parameter 'filterText' cannot be null.");
@@ -11145,11 +11258,11 @@ export class PayMethodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPaged(response_);
+            return this.processGetPagedGet(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPaged(<any>response_);
+                    return this.processGetPagedGet(<any>response_);
                 } catch (e) {
                     return <Observable<PagedResultDtoOfPayMethodListDto>><any>_observableThrow(e);
                 }
@@ -11158,7 +11271,7 @@ export class PayMethodServiceProxy {
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfPayMethodListDto> {
+    protected processGetPagedGet(response: HttpResponseBase): Observable<PagedResultDtoOfPayMethodListDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -11178,6 +11291,93 @@ export class PayMethodServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfPayMethodListDto>(<any>null);
+    }
+
+    /**
+     * 获取统计结果
+     * @param queryData (optional) CreationTime 日期
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param payMethodId (optional) 
+     * @return Success
+     */
+    getPagedPost(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfPayMethodResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/PayMethod/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (payMethodId === null)
+            throw new Error("The parameter 'payMethodId' cannot be null.");
+        else if (payMethodId !== undefined)
+            url_ += "payMethodId=" + encodeURIComponent("" + payMethodId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedPost(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfPayMethodResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfPayMethodResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedPost(response: HttpResponseBase): Observable<StatsPagedResultDtoOfPayMethodResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfPayMethodResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfPayMethodResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfPayMethodResultDto>(<any>null);
     }
 }
 
@@ -17272,41 +17472,26 @@ export class TicketDetailServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfTicketDetailListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketDetail/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetTicketDetailsInput | undefined): Observable<PagedResultDtoOfTicketDetailListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketDetail/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -18757,41 +18942,26 @@ export class TicketPriceServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetTicketPricesInput | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -18806,6 +18976,120 @@ export class TicketPriceServiceProxy {
     }
 
     protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfTicketPriceListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTicketPriceListDto.fromJS(resultData200) : new PagedResultDtoOfTicketPriceListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTicketPriceListDto>(<any>null);
+    }
+
+    /**
+     * 散客票价查询
+     * @param body (optional) 
+     * @return Success
+     */
+    getPagedCustomer(body: GetTicketPricesInput | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetPagedCustomer";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedCustomer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedCustomer(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedCustomer(response: HttpResponseBase): Observable<PagedResultDtoOfTicketPriceListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTicketPriceListDto.fromJS(resultData200) : new PagedResultDtoOfTicketPriceListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTicketPriceListDto>(<any>null);
+    }
+
+    /**
+     * 团体票价查询
+     * @param body (optional) 
+     * @return Success
+     */
+    getPagedGroup(body: GetTicketPricesInput | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetPagedGroup";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedGroup(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedGroup(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedGroup(response: HttpResponseBase): Observable<PagedResultDtoOfTicketPriceListDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -23448,6 +23732,420 @@ export class WechatAppConfigServiceProxy {
 }
 
 @Injectable()
+export class WeChatHomePageServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 批量删除WeChatHomePage的方法
+     * @param body (optional) 
+     * @return Success
+     */
+    batchDelete(body: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/BatchDelete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBatchDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBatchDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBatchDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 添加或者修改的公共方法
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdate(body: CreateOrUpdateWeChatHomePageInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/CreateOrUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 删除信息
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 通过指定id获取WeChatHomePageListDto信息
+     * @param id (optional) 
+     * @return Success
+     */
+    getById(id: number | undefined): Observable<WeChatHomePageListDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/GetById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(<any>response_);
+                } catch (e) {
+                    return <Observable<WeChatHomePageListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<WeChatHomePageListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<WeChatHomePageListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? WeChatHomePageListDto.fromJS(resultData200) : new WeChatHomePageListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WeChatHomePageListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑
+     * @param id (optional) 
+     * @return Success
+     */
+    getForEdit(id: number | undefined): Observable<GetWeChatHomePageForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/GetForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetWeChatHomePageForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetWeChatHomePageForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForEdit(response: HttpResponseBase): Observable<GetWeChatHomePageForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetWeChatHomePageForEditOutput.fromJS(resultData200) : new GetWeChatHomePageForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetWeChatHomePageForEditOutput>(<any>null);
+    }
+
+    /**
+     * 获取的分页列表信息
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @return Success
+     */
+    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfWeChatHomePageListDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/GetPaged?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfWeChatHomePageListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfWeChatHomePageListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfWeChatHomePageListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfWeChatHomePageListDto.fromJS(resultData200) : new PagedResultDtoOfWeChatHomePageListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfWeChatHomePageListDto>(<any>null);
+    }
+
+    /**
+     * 上传照片
+     * @param body (optional) 
+     * @return Success
+     */
+    weChatPicture(body: Blob | undefined): Observable<UploadWeChatPictureResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatHomePage/WeChatPicture";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWeChatPicture(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWeChatPicture(<any>response_);
+                } catch (e) {
+                    return <Observable<UploadWeChatPictureResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<UploadWeChatPictureResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processWeChatPicture(response: HttpResponseBase): Observable<UploadWeChatPictureResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? UploadWeChatPictureResultDto.fromJS(resultData200) : new UploadWeChatPictureResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UploadWeChatPictureResultDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class WechatMediaServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -23857,7 +24555,7 @@ export class WechatMenuAppSeviceServiceProxy {
 }
 
 @Injectable()
-export class SellerTicketServiceProxy {
+export class WeChatScenicSpotServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -23868,8 +24566,756 @@ export class SellerTicketServiceProxy {
     }
 
     /**
-     * @param queryData (optional) CreatorUserId 售票员
-    CreationTime 日期
+     * 批量删除WeChatScenicSpot的方法
+     * @param body (optional) 
+     * @return Success
+     */
+    batchDelete(body: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/BatchDelete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBatchDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBatchDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBatchDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 添加或者修改的公共方法
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdate(body: CreateOrUpdateWeChatScenicSpotInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/CreateOrUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 删除信息
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 通过指定id获取WeChatScenicSpotListDto信息
+     * @param id (optional) 
+     * @return Success
+     */
+    getById(id: number | undefined): Observable<WeChatScenicSpotListDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/GetById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(<any>response_);
+                } catch (e) {
+                    return <Observable<WeChatScenicSpotListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<WeChatScenicSpotListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<WeChatScenicSpotListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? WeChatScenicSpotListDto.fromJS(resultData200) : new WeChatScenicSpotListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<WeChatScenicSpotListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑
+     * @param id (optional) 
+     * @return Success
+     */
+    getForEdit(id: number | undefined): Observable<GetWeChatScenicSpotForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/GetForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetWeChatScenicSpotForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetWeChatScenicSpotForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForEdit(response: HttpResponseBase): Observable<GetWeChatScenicSpotForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetWeChatScenicSpotForEditOutput.fromJS(resultData200) : new GetWeChatScenicSpotForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetWeChatScenicSpotForEditOutput>(<any>null);
+    }
+
+    /**
+     * 获取的分页列表信息
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @return Success
+     */
+    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfWeChatScenicSpotListDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/GetPaged?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfWeChatScenicSpotListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfWeChatScenicSpotListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfWeChatScenicSpotListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfWeChatScenicSpotListDto.fromJS(resultData200) : new PagedResultDtoOfWeChatScenicSpotListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfWeChatScenicSpotListDto>(<any>null);
+    }
+
+    /**
+     * 上传图片
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadPicture(body: Blob | undefined): Observable<UploadWeChatPictureResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/UploadPicture";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadPicture(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadPicture(<any>response_);
+                } catch (e) {
+                    return <Observable<UploadWeChatPictureResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<UploadWeChatPictureResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadPicture(response: HttpResponseBase): Observable<UploadWeChatPictureResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? UploadWeChatPictureResultDto.fromJS(resultData200) : new UploadWeChatPictureResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<UploadWeChatPictureResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class CommonServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取订单信息
+     * @param sellerId (optional) 
+     * @return Success
+     */
+    getPagedActivities(sellerId: string | undefined): Observable<StatsPagedResultDtoOfActivityResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Common/GetPagedActivities?";
+        if (sellerId === null)
+            throw new Error("The parameter 'sellerId' cannot be null.");
+        else if (sellerId !== undefined)
+            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedActivities(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedActivities(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfActivityResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfActivityResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedActivities(response: HttpResponseBase): Observable<StatsPagedResultDtoOfActivityResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfActivityResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfActivityResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfActivityResultDto>(<any>null);
+    }
+
+    /**
+     * 获取订单明细
+     * @param activityId (optional) 
+     * @return Success
+     */
+    getPagedActivityDetails(activityId: string | undefined): Observable<StatsPagedResultDtoOfActivityDetailResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Common/GetPagedActivityDetails?";
+        if (activityId === null)
+            throw new Error("The parameter 'activityId' cannot be null.");
+        else if (activityId !== undefined)
+            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedActivityDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedActivityDetails(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfActivityDetailResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfActivityDetailResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedActivityDetails(response: HttpResponseBase): Observable<StatsPagedResultDtoOfActivityDetailResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfActivityDetailResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfActivityDetailResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfActivityDetailResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class OrderSourceServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param queryData (optional) CreationTime 日期
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param sourceId (optional) 
+     * @param payMethodId (optional) 
+     * @return Success
+     */
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, sourceId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfOrderSourceResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/OrderSource/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (sourceId === null)
+            throw new Error("The parameter 'sourceId' cannot be null.");
+        else if (sourceId !== undefined)
+            url_ += "sourceId=" + encodeURIComponent("" + sourceId) + "&"; 
+        if (payMethodId === null)
+            throw new Error("The parameter 'payMethodId' cannot be null.");
+        else if (payMethodId !== undefined)
+            url_ += "payMethodId=" + encodeURIComponent("" + payMethodId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfOrderSourceResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfOrderSourceResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfOrderSourceResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfOrderSourceResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfOrderSourceResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfOrderSourceResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class OrganizationSalesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param queryData (optional) CreationTime 日期
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param organizationId (optional) 
+     * @param payMethodId (optional) 
+     * @return Success
+     */
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, organizationId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfOrganizationSalesResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/OrganizationSales/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (organizationId === null)
+            throw new Error("The parameter 'organizationId' cannot be null.");
+        else if (organizationId !== undefined)
+            url_ += "organizationId=" + encodeURIComponent("" + organizationId) + "&"; 
+        if (payMethodId === null)
+            throw new Error("The parameter 'payMethodId' cannot be null.");
+        else if (payMethodId !== undefined)
+            url_ += "payMethodId=" + encodeURIComponent("" + payMethodId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfOrganizationSalesResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfOrganizationSalesResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfOrganizationSalesResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfOrganizationSalesResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfOrganizationSalesResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfOrganizationSalesResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class SellerDailyServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param queryData (optional) CreatorUserId 售票员 CreationTime 日期
      * @param filterText (optional) 
      * @param sorting (optional) 
      * @param maxResultCount (optional) 
@@ -23877,8 +25323,8 @@ export class SellerTicketServiceProxy {
      * @param ticketId (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerTicket/GetPaged?";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSellerDailyResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SellerDaily/GetPaged?";
         if (queryData === null)
             throw new Error("The parameter 'queryData' cannot be null.");
         else if (queryData !== undefined)
@@ -23925,14 +25371,14 @@ export class SellerTicketServiceProxy {
                 try {
                     return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSellerDailyResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSellerDailyResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerDailyResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -23943,7 +25389,7 @@ export class SellerTicketServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerTicketResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSellerDailyResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerDailyResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -23951,19 +25397,62 @@ export class SellerTicketServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfSellerTicketResultDto>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSellerDailyResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class SellerSalesServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
     }
 
     /**
-     * @param sellerId (optional) 
+     * 获取统计结果
+     * @param queryData (optional) CreatorUserId 售票员 CreationTime 日期
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param ticketId (optional) 
      * @return Success
      */
-    getPagedActivitiesBySellerId(sellerId: string | undefined): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerTicket/GetPagedActivitiesBySellerId?";
-        if (sellerId === null)
-            throw new Error("The parameter 'sellerId' cannot be null.");
-        else if (sellerId !== undefined)
-            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSellerSalesResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SellerSales/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (ticketId === null)
+            throw new Error("The parameter 'ticketId' cannot be null.");
+        else if (ticketId !== undefined)
+            url_ += "ticketId=" + encodeURIComponent("" + ticketId) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -23975,20 +25464,20 @@ export class SellerTicketServiceProxy {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedActivitiesBySellerId(response_);
+            return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPagedActivitiesBySellerId(<any>response_);
+                    return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSellerSalesResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSellerSalesResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPagedActivitiesBySellerId(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerSalesResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -23999,7 +25488,7 @@ export class SellerTicketServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerTicketResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSellerSalesResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerSalesResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -24007,170 +25496,7 @@ export class SellerTicketServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfSellerTicketResultDto>(<any>null);
-    }
-
-    /**
-     * @param activityId (optional) 
-     * @return Success
-     */
-    getPagedActivityDetailsByActivityId(activityId: string | undefined): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerTicket/GetPagedActivityDetailsByActivityId?";
-        if (activityId === null)
-            throw new Error("The parameter 'activityId' cannot be null.");
-        else if (activityId !== undefined)
-            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedActivityDetailsByActivityId(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetPagedActivityDetailsByActivityId(<any>response_);
-                } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetPagedActivityDetailsByActivityId(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerTicketResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<StatsPagedResultDtoOfSellerTicketResultDto>(<any>null);
-    }
-
-    /**
-     * @param ticketIds (optional) 
-     * @return Success
-     */
-    reprintTickets(ticketIds: string[] | undefined): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerTicket/ReprintTickets?";
-        if (ticketIds === null)
-            throw new Error("The parameter 'ticketIds' cannot be null.");
-        else if (ticketIds !== undefined)
-            ticketIds && ticketIds.forEach(item => { url_ += "ticketIds=" + encodeURIComponent("" + item) + "&"; });
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processReprintTickets(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processReprintTickets(<any>response_);
-                } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<StatsPagedResultDtoOfSellerTicketResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processReprintTickets(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerTicketResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerTicketResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<StatsPagedResultDtoOfSellerTicketResultDto>(<any>null);
-    }
-
-    /**
-     * @return Success
-     */
-    test(): Observable<string> {
-        let url_ = this.baseUrl + "/api/Stats/SellerTicket/Test";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processTest(<any>response_);
-                } catch (e) {
-                    return <Observable<string>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processTest(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSellerSalesResultDto>(<any>null);
     }
 }
 
@@ -24354,6 +25680,7 @@ export class TokenAuthServiceProxy {
     }
 
     /**
+     * 生成验证码
      * @param name (optional) 
      * @param tid (optional) 
      * @return Success
@@ -24590,9 +25917,10 @@ export class VerificationServiceProxy {
     }
 
     /**
-     * @param name (optional) 
-     * @param t (optional) 
-     * @param tid (optional) 
+     * 生成验证码
+     * @param name (optional) 验证码key
+     * @param t (optional) 验证码类型
+     * @param tid (optional) 租户Id(可空)
      * @return Success
      */
     generateCaptcha(name: string | undefined, t: CaptchaType | undefined, tid: number | undefined): Observable<void> {
@@ -24652,8 +25980,154 @@ export class VerificationServiceProxy {
     }
 }
 
+export enum OrderTypeEnum {
+    OrderTypeCustomer = <any>"OrderTypeCustomer", 
+    OrderTypeOrg = <any>"OrderTypeOrg", 
+}
+
+export class CreateActivityDetailModel implements ICreateActivityDetailModel {
+    quantity: number;
+    ticketPriceId: number;
+    scheduleId: number;
+    customerId: number;
+
+    constructor(data?: ICreateActivityDetailModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.quantity = data["quantity"];
+            this.ticketPriceId = data["ticketPriceId"];
+            this.scheduleId = data["scheduleId"];
+            this.customerId = data["customerId"];
+        }
+    }
+
+    static fromJS(data: any): CreateActivityDetailModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateActivityDetailModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quantity"] = this.quantity;
+        data["ticketPriceId"] = this.ticketPriceId;
+        data["scheduleId"] = this.scheduleId;
+        data["customerId"] = this.customerId;
+        return data; 
+    }
+
+    clone(): CreateActivityDetailModel {
+        const json = this.toJSON();
+        let result = new CreateActivityDetailModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateActivityDetailModel {
+    quantity: number;
+    ticketPriceId: number;
+    scheduleId: number;
+    customerId: number;
+}
+
+export class CreateActivityModel implements ICreateActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    activityDetails: CreateActivityDetailModel[] | undefined;
+    travelAgencyId: number | undefined;
+
+    constructor(data?: ICreateActivityModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.sourceId = data["sourceId"];
+            this.payMethodId = data["payMethodId"];
+            this.voucherNo = data["voucherNo"];
+            this.orderType = data["orderType"];
+            this.remark = data["remark"];
+            this.createUserId = data["createUserId"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(CreateActivityDetailModel.fromJS(item));
+            }
+            this.travelAgencyId = data["travelAgencyId"];
+        }
+    }
+
+    static fromJS(data: any): CreateActivityModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateActivityModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sourceId"] = this.sourceId;
+        data["payMethodId"] = this.payMethodId;
+        data["voucherNo"] = this.voucherNo;
+        data["orderType"] = this.orderType;
+        data["remark"] = this.remark;
+        data["createUserId"] = this.createUserId;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["travelAgencyId"] = this.travelAgencyId;
+        return data; 
+    }
+
+    clone(): CreateActivityModel {
+        const json = this.toJSON();
+        let result = new CreateActivityModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    activityDetails: CreateActivityDetailModel[] | undefined;
+    travelAgencyId: number | undefined;
+}
+
 export class ActivityResultModel implements IActivityResultModel {
-    activityId: string;
     resultCode: string | undefined;
     resultMessage: string | undefined;
     detail: string | undefined;
@@ -24670,7 +26144,6 @@ export class ActivityResultModel implements IActivityResultModel {
 
     init(data?: any) {
         if (data) {
-            this.activityId = data["activityId"];
             this.resultCode = data["resultCode"];
             this.resultMessage = data["resultMessage"];
             this.detail = data["detail"];
@@ -24687,7 +26160,6 @@ export class ActivityResultModel implements IActivityResultModel {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["activityId"] = this.activityId;
         data["resultCode"] = this.resultCode;
         data["resultMessage"] = this.resultMessage;
         data["detail"] = this.detail;
@@ -24704,11 +26176,160 @@ export class ActivityResultModel implements IActivityResultModel {
 }
 
 export interface IActivityResultModel {
-    activityId: string;
     resultCode: string | undefined;
     resultMessage: string | undefined;
     detail: string | undefined;
     data: Data | undefined;
+}
+
+export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetailModel {
+    quantity: number;
+    customerId: number;
+
+    constructor(data?: ICreateGroupActivityDetailModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.quantity = data["quantity"];
+            this.customerId = data["customerId"];
+        }
+    }
+
+    static fromJS(data: any): CreateGroupActivityDetailModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateGroupActivityDetailModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quantity"] = this.quantity;
+        data["customerId"] = this.customerId;
+        return data; 
+    }
+
+    clone(): CreateGroupActivityDetailModel {
+        const json = this.toJSON();
+        let result = new CreateGroupActivityDetailModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateGroupActivityDetailModel {
+    quantity: number;
+    customerId: number;
+}
+
+export class CreateGroupActivityModel implements ICreateGroupActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    discount: number;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    ticketPriceId: number;
+    activityDetails: CreateGroupActivityDetailModel[] | undefined;
+    groupId: number;
+    availableStart: moment.Moment;
+    availableEnd: moment.Moment;
+
+    constructor(data?: ICreateGroupActivityModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.sourceId = data["sourceId"];
+            this.payMethodId = data["payMethodId"];
+            this.voucherNo = data["voucherNo"];
+            this.discount = data["discount"];
+            this.orderType = data["orderType"];
+            this.remark = data["remark"];
+            this.createUserId = data["createUserId"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            this.ticketPriceId = data["ticketPriceId"];
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(CreateGroupActivityDetailModel.fromJS(item));
+            }
+            this.groupId = data["groupId"];
+            this.availableStart = data["availableStart"] ? moment(data["availableStart"].toString()) : <any>undefined;
+            this.availableEnd = data["availableEnd"] ? moment(data["availableEnd"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateGroupActivityModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateGroupActivityModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sourceId"] = this.sourceId;
+        data["payMethodId"] = this.payMethodId;
+        data["voucherNo"] = this.voucherNo;
+        data["discount"] = this.discount;
+        data["orderType"] = this.orderType;
+        data["remark"] = this.remark;
+        data["createUserId"] = this.createUserId;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        data["ticketPriceId"] = this.ticketPriceId;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["groupId"] = this.groupId;
+        data["availableStart"] = this.availableStart ? this.availableStart.toISOString() : <any>undefined;
+        data["availableEnd"] = this.availableEnd ? this.availableEnd.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateGroupActivityModel {
+        const json = this.toJSON();
+        let result = new CreateGroupActivityModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateGroupActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    discount: number;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    ticketPriceId: number;
+    activityDetails: CreateGroupActivityDetailModel[] | undefined;
+    groupId: number;
+    availableStart: moment.Moment;
+    availableEnd: moment.Moment;
 }
 
 export class ActivateEmailInput implements IActivateEmailInput {
@@ -26407,581 +28028,6 @@ export interface ISource {
     id: number;
 }
 
-export enum PayStatusEnum {
-    NotPay = <any>"NotPay", 
-    PayStatusPayment = <any>"PayStatusPayment", 
-    PayStatusRefund = <any>"PayStatusRefund", 
-    PayStatusClose = <any>"PayStatusClose", 
-}
-
-export enum ActivityTypeEnum {
-    ActivityTypePayment = <any>"ActivityTypePayment", 
-    ActivityTypeRefund = <any>"ActivityTypeRefund", 
-}
-
-export enum OrderTypeEnum {
-    OrderTypeCustomer = <any>"OrderTypeCustomer", 
-    OrderTypeTravelAgency = <any>"OrderTypeTravelAgency", 
-}
-
-export enum PayMethodEnum {
-    PaySuccess = <any>"PaySuccess", 
-    PayFalse = <any>"PayFalse", 
-}
-
-export class TravelAgency implements ITravelAgency {
-    branchId: number | undefined;
-    travelName: string | undefined;
-    mobile: string | undefined;
-    contacts: string | undefined;
-    isEnabled: boolean;
-    discount: number;
-    payMethod: PayMethodEnum;
-    totalSum: number;
-    prepaidAmount: number;
-    alarmAmount: number;
-    upperLimit: number | undefined;
-    lowerlimit: number | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITravelAgency) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.travelName = data["travelName"];
-            this.mobile = data["mobile"];
-            this.contacts = data["contacts"];
-            this.isEnabled = data["isEnabled"];
-            this.discount = data["discount"];
-            this.payMethod = data["payMethod"];
-            this.totalSum = data["totalSum"];
-            this.prepaidAmount = data["prepaidAmount"];
-            this.alarmAmount = data["alarmAmount"];
-            this.upperLimit = data["upperLimit"];
-            this.lowerlimit = data["lowerlimit"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TravelAgency {
-        data = typeof data === 'object' ? data : {};
-        let result = new TravelAgency();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["travelName"] = this.travelName;
-        data["mobile"] = this.mobile;
-        data["contacts"] = this.contacts;
-        data["isEnabled"] = this.isEnabled;
-        data["discount"] = this.discount;
-        data["payMethod"] = this.payMethod;
-        data["totalSum"] = this.totalSum;
-        data["prepaidAmount"] = this.prepaidAmount;
-        data["alarmAmount"] = this.alarmAmount;
-        data["upperLimit"] = this.upperLimit;
-        data["lowerlimit"] = this.lowerlimit;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TravelAgency {
-        const json = this.toJSON();
-        let result = new TravelAgency();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITravelAgency {
-    branchId: number | undefined;
-    travelName: string | undefined;
-    mobile: string | undefined;
-    contacts: string | undefined;
-    isEnabled: boolean;
-    discount: number;
-    payMethod: PayMethodEnum;
-    totalSum: number;
-    prepaidAmount: number;
-    alarmAmount: number;
-    upperLimit: number | undefined;
-    lowerlimit: number | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Activity implements IActivity {
-    branchId: number | undefined;
-    activityNo: string | undefined;
-    sourceId: number;
-    source: Source;
-    scheduleId: number | undefined;
-    orgActivityId: number | undefined;
-    activityDate: moment.Moment;
-    playDate: moment.Moment;
-    customerId: number;
-    buyer: string | undefined;
-    mobile: string | undefined;
-    payMethodId: number;
-    payMethod: PayMethod;
-    voucherNo: string | undefined;
-    payStatus: PayStatusEnum;
-    activityType: ActivityTypeEnum;
-    remark: string | undefined;
-    isPrint: boolean;
-    closed: boolean;
-    totalQuantity: number;
-    totalAmount: number;
-    accountsId: number | undefined;
-    account: Account;
-    orderType: OrderTypeEnum;
-    travelAgencyId: number | undefined;
-    travelAgency: TravelAgency;
-    activityDetails: ActivityDetail[] | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IActivity) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.activityNo = data["activityNo"];
-            this.sourceId = data["sourceId"];
-            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
-            this.scheduleId = data["scheduleId"];
-            this.orgActivityId = data["orgActivityId"];
-            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
-            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
-            this.customerId = data["customerId"];
-            this.buyer = data["buyer"];
-            this.mobile = data["mobile"];
-            this.payMethodId = data["payMethodId"];
-            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
-            this.voucherNo = data["voucherNo"];
-            this.payStatus = data["payStatus"];
-            this.activityType = data["activityType"];
-            this.remark = data["remark"];
-            this.isPrint = data["isPrint"];
-            this.closed = data["closed"];
-            this.totalQuantity = data["totalQuantity"];
-            this.totalAmount = data["totalAmount"];
-            this.accountsId = data["accountsId"];
-            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
-            this.orderType = data["orderType"];
-            this.travelAgencyId = data["travelAgencyId"];
-            this.travelAgency = data["travelAgency"] ? TravelAgency.fromJS(data["travelAgency"]) : <any>undefined;
-            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
-                this.activityDetails = [] as any;
-                for (let item of data["activityDetails"])
-                    this.activityDetails.push(ActivityDetail.fromJS(item));
-            }
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Activity {
-        data = typeof data === 'object' ? data : {};
-        let result = new Activity();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["activityNo"] = this.activityNo;
-        data["sourceId"] = this.sourceId;
-        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
-        data["scheduleId"] = this.scheduleId;
-        data["orgActivityId"] = this.orgActivityId;
-        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
-        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
-        data["customerId"] = this.customerId;
-        data["buyer"] = this.buyer;
-        data["mobile"] = this.mobile;
-        data["payMethodId"] = this.payMethodId;
-        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
-        data["voucherNo"] = this.voucherNo;
-        data["payStatus"] = this.payStatus;
-        data["activityType"] = this.activityType;
-        data["remark"] = this.remark;
-        data["isPrint"] = this.isPrint;
-        data["closed"] = this.closed;
-        data["totalQuantity"] = this.totalQuantity;
-        data["totalAmount"] = this.totalAmount;
-        data["accountsId"] = this.accountsId;
-        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
-        data["orderType"] = this.orderType;
-        data["travelAgencyId"] = this.travelAgencyId;
-        data["travelAgency"] = this.travelAgency ? this.travelAgency.toJSON() : <any>undefined;
-        if (this.activityDetails && this.activityDetails.constructor === Array) {
-            data["activityDetails"] = [];
-            for (let item of this.activityDetails)
-                data["activityDetails"].push(item.toJSON());
-        }
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Activity {
-        const json = this.toJSON();
-        let result = new Activity();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IActivity {
-    branchId: number | undefined;
-    activityNo: string | undefined;
-    sourceId: number;
-    source: Source;
-    scheduleId: number | undefined;
-    orgActivityId: number | undefined;
-    activityDate: moment.Moment;
-    playDate: moment.Moment;
-    customerId: number;
-    buyer: string | undefined;
-    mobile: string | undefined;
-    payMethodId: number;
-    payMethod: PayMethod;
-    voucherNo: string | undefined;
-    payStatus: PayStatusEnum;
-    activityType: ActivityTypeEnum;
-    remark: string | undefined;
-    isPrint: boolean;
-    closed: boolean;
-    totalQuantity: number;
-    totalAmount: number;
-    accountsId: number | undefined;
-    account: Account;
-    orderType: OrderTypeEnum;
-    travelAgencyId: number | undefined;
-    travelAgency: TravelAgency;
-    activityDetails: ActivityDetail[] | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum TicketModeEnum {
-    OnebyOne = <any>"OnebyOne", 
-    OneByMore = <any>"OneByMore", 
-}
-
-export enum TicketTypeEnum {
-    Card = <any>"Card", 
-    Paper = <any>"Paper", 
-}
-
-export enum CheckMethodEnum {
-    NumberCheck = <any>"NumberCheck", 
-    TimeCheck = <any>"TimeCheck", 
-    BalanceCheck = <any>"BalanceCheck", 
-}
-
-export enum TicketClassifyEnum {
-    Adult = <any>"Adult", 
-    Children = <any>"Children", 
-    Old = <any>"Old", 
-}
-
-export enum AuditStatusEnum {
-    WaiteAudit = <any>"WaiteAudit", 
-    ThroughAudit = <any>"ThroughAudit", 
-    RejecteAudit = <any>"RejecteAudit", 
-}
-
-export class Ticket implements ITicket {
-    branchId: number | undefined;
-    ticketName: string | undefined;
-    ticketCode: string | undefined;
-    ticketMode: TicketModeEnum;
-    ticketType: TicketTypeEnum;
-    checkMethod: CheckMethodEnum;
-    ticketClassify: TicketClassifyEnum;
-    checkNum: number | undefined;
-    effectiveLong: number | undefined;
-    unitPrice: number;
-    ticketLength: number | undefined;
-    upperLimit: number | undefined;
-    lowerLimit: number | undefined;
-    audioName: string | undefined;
-    auditStatus: AuditStatusEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicket) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketName = data["ticketName"];
-            this.ticketCode = data["ticketCode"];
-            this.ticketMode = data["ticketMode"];
-            this.ticketType = data["ticketType"];
-            this.checkMethod = data["checkMethod"];
-            this.ticketClassify = data["ticketClassify"];
-            this.checkNum = data["checkNum"];
-            this.effectiveLong = data["effectiveLong"];
-            this.unitPrice = data["unitPrice"];
-            this.ticketLength = data["ticketLength"];
-            this.upperLimit = data["upperLimit"];
-            this.lowerLimit = data["lowerLimit"];
-            this.audioName = data["audioName"];
-            this.auditStatus = data["auditStatus"];
-            this.isEnabled = data["isEnabled"];
-            this.sort = data["sort"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Ticket {
-        data = typeof data === 'object' ? data : {};
-        let result = new Ticket();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketName"] = this.ticketName;
-        data["ticketCode"] = this.ticketCode;
-        data["ticketMode"] = this.ticketMode;
-        data["ticketType"] = this.ticketType;
-        data["checkMethod"] = this.checkMethod;
-        data["ticketClassify"] = this.ticketClassify;
-        data["checkNum"] = this.checkNum;
-        data["effectiveLong"] = this.effectiveLong;
-        data["unitPrice"] = this.unitPrice;
-        data["ticketLength"] = this.ticketLength;
-        data["upperLimit"] = this.upperLimit;
-        data["lowerLimit"] = this.lowerLimit;
-        data["audioName"] = this.audioName;
-        data["auditStatus"] = this.auditStatus;
-        data["isEnabled"] = this.isEnabled;
-        data["sort"] = this.sort;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Ticket {
-        const json = this.toJSON();
-        let result = new Ticket();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicket {
-    branchId: number | undefined;
-    ticketName: string | undefined;
-    ticketCode: string | undefined;
-    ticketMode: TicketModeEnum;
-    ticketType: TicketTypeEnum;
-    checkMethod: CheckMethodEnum;
-    ticketClassify: TicketClassifyEnum;
-    checkNum: number | undefined;
-    effectiveLong: number | undefined;
-    unitPrice: number;
-    ticketLength: number | undefined;
-    upperLimit: number | undefined;
-    lowerLimit: number | undefined;
-    audioName: string | undefined;
-    auditStatus: AuditStatusEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum PositionEnum {
-    Windows = <any>"windows", 
-    Online = <any>"Online", 
-}
-
-export class TicketPrice implements ITicketPrice {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    price: number;
-    discount: number;
-    rDiscount: number;
-    upperTime: moment.Moment;
-    lowerTime: moment.Moment;
-    position: PositionEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    ticketName: string | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicketPrice) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.discount = 1;
-            this.rDiscount = 1;
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketId = data["ticketId"];
-            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
-            this.price = data["price"];
-            this.discount = data["discount"] !== undefined ? data["discount"] : 1;
-            this.rDiscount = data["rDiscount"] !== undefined ? data["rDiscount"] : 1;
-            this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
-            this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
-            this.position = data["position"];
-            this.isEnabled = data["isEnabled"];
-            this.sort = data["sort"];
-            this.ticketName = data["ticketName"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TicketPrice {
-        data = typeof data === 'object' ? data : {};
-        let result = new TicketPrice();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketId"] = this.ticketId;
-        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
-        data["price"] = this.price;
-        data["discount"] = this.discount;
-        data["rDiscount"] = this.rDiscount;
-        data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
-        data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
-        data["position"] = this.position;
-        data["isEnabled"] = this.isEnabled;
-        data["sort"] = this.sort;
-        data["ticketName"] = this.ticketName;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TicketPrice {
-        const json = this.toJSON();
-        let result = new TicketPrice();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicketPrice {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    price: number;
-    discount: number;
-    rDiscount: number;
-    upperTime: moment.Moment;
-    lowerTime: moment.Moment;
-    position: PositionEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    ticketName: string | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
 export enum SexEnum {
     Unknown = <any>"Unknown", 
     Man = <any>"Man", 
@@ -27108,6 +28154,550 @@ export interface ICustomer {
     openID: string | undefined;
     photo: string | undefined;
     dateOfBirth: moment.Moment | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum PayStatusEnum {
+    NotPay = <any>"NotPay", 
+    PayStatusPayment = <any>"PayStatusPayment", 
+    PayStatusRefund = <any>"PayStatusRefund", 
+    PayStatusClose = <any>"PayStatusClose", 
+}
+
+export enum ActivityTypeEnum {
+    ActivityTypePayment = <any>"ActivityTypePayment", 
+    ActivityTypeRefund = <any>"ActivityTypeRefund", 
+}
+
+export class Organization implements IOrganization {
+    branchId: number | undefined;
+    groupName: string | undefined;
+    contacts: string | undefined;
+    mobile: string | undefined;
+    remand: string | undefined;
+    discount: string | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IOrganization) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.groupName = data["groupName"];
+            this.contacts = data["contacts"];
+            this.mobile = data["mobile"];
+            this.remand = data["remand"];
+            this.discount = data["discount"];
+            this.isEnabled = data["isEnabled"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Organization {
+        data = typeof data === 'object' ? data : {};
+        let result = new Organization();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["groupName"] = this.groupName;
+        data["contacts"] = this.contacts;
+        data["mobile"] = this.mobile;
+        data["remand"] = this.remand;
+        data["discount"] = this.discount;
+        data["isEnabled"] = this.isEnabled;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Organization {
+        const json = this.toJSON();
+        let result = new Organization();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOrganization {
+    branchId: number | undefined;
+    groupName: string | undefined;
+    contacts: string | undefined;
+    mobile: string | undefined;
+    remand: string | undefined;
+    discount: string | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Activity implements IActivity {
+    branchId: number | undefined;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number;
+    customer: Customer;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    organizationId: number | undefined;
+    organization: Organization;
+    activityDetails: ActivityDetail[] | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IActivity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.activityNo = data["activityNo"];
+            this.sourceId = data["sourceId"];
+            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            this.orgActivityId = data["orgActivityId"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
+            this.customerId = data["customerId"];
+            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
+            this.buyer = data["buyer"];
+            this.mobile = data["mobile"];
+            this.payMethodId = data["payMethodId"];
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.voucherNo = data["voucherNo"];
+            this.payStatus = data["payStatus"];
+            this.activityType = data["activityType"];
+            this.remark = data["remark"];
+            this.isPrint = data["isPrint"];
+            this.closed = data["closed"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            this.accountsId = data["accountsId"];
+            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
+            this.orderType = data["orderType"];
+            this.organizationId = data["organizationId"];
+            this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(ActivityDetail.fromJS(item));
+            }
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Activity {
+        data = typeof data === 'object' ? data : {};
+        let result = new Activity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["activityNo"] = this.activityNo;
+        data["sourceId"] = this.sourceId;
+        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        data["orgActivityId"] = this.orgActivityId;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
+        data["customerId"] = this.customerId;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["buyer"] = this.buyer;
+        data["mobile"] = this.mobile;
+        data["payMethodId"] = this.payMethodId;
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["voucherNo"] = this.voucherNo;
+        data["payStatus"] = this.payStatus;
+        data["activityType"] = this.activityType;
+        data["remark"] = this.remark;
+        data["isPrint"] = this.isPrint;
+        data["closed"] = this.closed;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        data["accountsId"] = this.accountsId;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        data["orderType"] = this.orderType;
+        data["organizationId"] = this.organizationId;
+        data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Activity {
+        const json = this.toJSON();
+        let result = new Activity();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivity {
+    branchId: number | undefined;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number;
+    customer: Customer;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    organizationId: number | undefined;
+    organization: Organization;
+    activityDetails: ActivityDetail[] | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum TicketModeEnum {
+    OnebyOne = <any>"OnebyOne", 
+    OneByMore = <any>"OneByMore", 
+}
+
+export enum TicketTypeEnum {
+    Card = <any>"Card", 
+    Paper = <any>"Paper", 
+}
+
+export enum CheckMethodEnum {
+    NumberCheck = <any>"NumberCheck", 
+    TimeCheck = <any>"TimeCheck", 
+    BalanceCheck = <any>"BalanceCheck", 
+}
+
+export enum TicketClassifyEnum {
+    Adult = <any>"Adult", 
+    Children = <any>"Children", 
+    Old = <any>"Old", 
+}
+
+export enum AuditStatusEnum {
+    WaiteAudit = <any>"WaiteAudit", 
+    ThroughAudit = <any>"ThroughAudit", 
+    RejecteAudit = <any>"RejecteAudit", 
+}
+
+export class Ticket implements ITicket {
+    branchId: number | undefined;
+    ticketName: string | undefined;
+    ticketCode: string | undefined;
+    ticketMode: TicketModeEnum;
+    ticketType: TicketTypeEnum;
+    checkMethod: CheckMethodEnum;
+    ticketClassify: TicketClassifyEnum;
+    checkNum: number | undefined;
+    effectiveLong: number | undefined;
+    unitPrice: number;
+    ticketLength: number | undefined;
+    upperLimit: number | undefined;
+    lowerLimit: number | undefined;
+    audioName: string | undefined;
+    auditStatus: AuditStatusEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    group: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ITicket) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.ticketName = data["ticketName"];
+            this.ticketCode = data["ticketCode"];
+            this.ticketMode = data["ticketMode"];
+            this.ticketType = data["ticketType"];
+            this.checkMethod = data["checkMethod"];
+            this.ticketClassify = data["ticketClassify"];
+            this.checkNum = data["checkNum"];
+            this.effectiveLong = data["effectiveLong"];
+            this.unitPrice = data["unitPrice"];
+            this.ticketLength = data["ticketLength"];
+            this.upperLimit = data["upperLimit"];
+            this.lowerLimit = data["lowerLimit"];
+            this.audioName = data["audioName"];
+            this.auditStatus = data["auditStatus"];
+            this.isEnabled = data["isEnabled"];
+            this.sort = data["sort"];
+            this.group = data["group"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Ticket {
+        data = typeof data === 'object' ? data : {};
+        let result = new Ticket();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["ticketName"] = this.ticketName;
+        data["ticketCode"] = this.ticketCode;
+        data["ticketMode"] = this.ticketMode;
+        data["ticketType"] = this.ticketType;
+        data["checkMethod"] = this.checkMethod;
+        data["ticketClassify"] = this.ticketClassify;
+        data["checkNum"] = this.checkNum;
+        data["effectiveLong"] = this.effectiveLong;
+        data["unitPrice"] = this.unitPrice;
+        data["ticketLength"] = this.ticketLength;
+        data["upperLimit"] = this.upperLimit;
+        data["lowerLimit"] = this.lowerLimit;
+        data["audioName"] = this.audioName;
+        data["auditStatus"] = this.auditStatus;
+        data["isEnabled"] = this.isEnabled;
+        data["sort"] = this.sort;
+        data["group"] = this.group;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Ticket {
+        const json = this.toJSON();
+        let result = new Ticket();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicket {
+    branchId: number | undefined;
+    ticketName: string | undefined;
+    ticketCode: string | undefined;
+    ticketMode: TicketModeEnum;
+    ticketType: TicketTypeEnum;
+    checkMethod: CheckMethodEnum;
+    ticketClassify: TicketClassifyEnum;
+    checkNum: number | undefined;
+    effectiveLong: number | undefined;
+    unitPrice: number;
+    ticketLength: number | undefined;
+    upperLimit: number | undefined;
+    lowerLimit: number | undefined;
+    audioName: string | undefined;
+    auditStatus: AuditStatusEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    group: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum PositionEnum {
+    Windows = <any>"windows", 
+    Online = <any>"Online", 
+}
+
+export class TicketPrice implements ITicketPrice {
+    branchId: number | undefined;
+    ticketId: number;
+    ticket: Ticket;
+    price: number;
+    rDiscount: number;
+    upperTime: moment.Moment;
+    lowerTime: moment.Moment;
+    position: PositionEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    ticketName: string | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ITicketPrice) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.rDiscount = 1;
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.ticketId = data["ticketId"];
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+            this.price = data["price"];
+            this.rDiscount = data["rDiscount"] !== undefined ? data["rDiscount"] : 1;
+            this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
+            this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
+            this.position = data["position"];
+            this.isEnabled = data["isEnabled"];
+            this.sort = data["sort"];
+            this.ticketName = data["ticketName"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): TicketPrice {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketPrice();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["ticketId"] = this.ticketId;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        data["price"] = this.price;
+        data["rDiscount"] = this.rDiscount;
+        data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
+        data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
+        data["position"] = this.position;
+        data["isEnabled"] = this.isEnabled;
+        data["sort"] = this.sort;
+        data["ticketName"] = this.ticketName;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): TicketPrice {
+        const json = this.toJSON();
+        let result = new TicketPrice();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicketPrice {
+    branchId: number | undefined;
+    ticketId: number;
+    ticket: Ticket;
+    price: number;
+    rDiscount: number;
+    upperTime: moment.Moment;
+    lowerTime: moment.Moment;
+    position: PositionEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    ticketName: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -27532,6 +29122,118 @@ export class PagedResultDtoOfAccountDetailListDto implements IPagedResultDtoOfAc
 export interface IPagedResultDtoOfAccountDetailListDto {
     totalCount: number;
     items: AccountDetailListDto[] | undefined;
+}
+
+export enum PayMethodEnum {
+    PaySuccess = <any>"PaySuccess", 
+    PayFalse = <any>"PayFalse", 
+}
+
+export class TravelAgency implements ITravelAgency {
+    branchId: number | undefined;
+    travelName: string | undefined;
+    mobile: string | undefined;
+    contacts: string | undefined;
+    isEnabled: boolean;
+    discount: number;
+    payMethod: PayMethodEnum;
+    totalSum: number;
+    prepaidAmount: number;
+    alarmAmount: number;
+    upperLimit: number | undefined;
+    lowerlimit: number | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ITravelAgency) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.travelName = data["travelName"];
+            this.mobile = data["mobile"];
+            this.contacts = data["contacts"];
+            this.isEnabled = data["isEnabled"];
+            this.discount = data["discount"];
+            this.payMethod = data["payMethod"];
+            this.totalSum = data["totalSum"];
+            this.prepaidAmount = data["prepaidAmount"];
+            this.alarmAmount = data["alarmAmount"];
+            this.upperLimit = data["upperLimit"];
+            this.lowerlimit = data["lowerlimit"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): TravelAgency {
+        data = typeof data === 'object' ? data : {};
+        let result = new TravelAgency();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["travelName"] = this.travelName;
+        data["mobile"] = this.mobile;
+        data["contacts"] = this.contacts;
+        data["isEnabled"] = this.isEnabled;
+        data["discount"] = this.discount;
+        data["payMethod"] = this.payMethod;
+        data["totalSum"] = this.totalSum;
+        data["prepaidAmount"] = this.prepaidAmount;
+        data["alarmAmount"] = this.alarmAmount;
+        data["upperLimit"] = this.upperLimit;
+        data["lowerlimit"] = this.lowerlimit;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): TravelAgency {
+        const json = this.toJSON();
+        let result = new TravelAgency();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITravelAgency {
+    branchId: number | undefined;
+    travelName: string | undefined;
+    mobile: string | undefined;
+    contacts: string | undefined;
+    isEnabled: boolean;
+    discount: number;
+    payMethod: PayMethodEnum;
+    totalSum: number;
+    prepaidAmount: number;
+    alarmAmount: number;
+    upperLimit: number | undefined;
+    lowerlimit: number | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.Activity */
@@ -28120,6 +29822,130 @@ export interface IGetActivityForEditOutput {
     payStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
     activityTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
     orderTypeEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+}
+
+export class QueryData implements IQueryData {
+    field: string | undefined;
+    method: string | undefined;
+    value: string | undefined;
+    logic: string | undefined;
+
+    constructor(data?: IQueryData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.field = data["field"];
+            this.method = data["method"];
+            this.value = data["value"];
+            this.logic = data["logic"];
+        }
+    }
+
+    static fromJS(data: any): QueryData {
+        data = typeof data === 'object' ? data : {};
+        let result = new QueryData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["field"] = this.field;
+        data["method"] = this.method;
+        data["value"] = this.value;
+        data["logic"] = this.logic;
+        return data; 
+    }
+
+    clone(): QueryData {
+        const json = this.toJSON();
+        let result = new QueryData();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IQueryData {
+    field: string | undefined;
+    method: string | undefined;
+    value: string | undefined;
+    logic: string | undefined;
+}
+
+/** 获取的传入参数Dto */
+export class GetActivitysInput implements IGetActivitysInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetActivitysInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetActivitysInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetActivitysInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetActivitysInput {
+        const json = this.toJSON();
+        let result = new GetActivitysInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetActivitysInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 export class PagedResultDtoOfActivityListDto implements IPagedResultDtoOfActivityListDto {
@@ -32693,61 +34519,6 @@ export class GetCustomerForEditOutput implements IGetCustomerForEditOutput {
 export interface IGetCustomerForEditOutput {
     customer: CustomerEditDto;
     sexEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-export class QueryData implements IQueryData {
-    field: string | undefined;
-    method: string | undefined;
-    value: string | undefined;
-    logic: string | undefined;
-
-    constructor(data?: IQueryData) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.field = data["field"];
-            this.method = data["method"];
-            this.value = data["value"];
-            this.logic = data["logic"];
-        }
-    }
-
-    static fromJS(data: any): QueryData {
-        data = typeof data === 'object' ? data : {};
-        let result = new QueryData();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["field"] = this.field;
-        data["method"] = this.method;
-        data["value"] = this.value;
-        data["logic"] = this.logic;
-        return data; 
-    }
-
-    clone(): QueryData {
-        const json = this.toJSON();
-        let result = new QueryData();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IQueryData {
-    field: string | undefined;
-    method: string | undefined;
-    value: string | undefined;
-    logic: string | undefined;
 }
 
 /** 获取的传入参数Dto */
@@ -39079,6 +40850,75 @@ export class GetOrganizationForEditOutput implements IGetOrganizationForEditOutp
 /** 读取可编辑的Dto */
 export interface IGetOrganizationForEditOutput {
     organization: OrganizationEditDto;
+}
+
+/** 获取的传入参数Dto */
+export class GetOrganizationsInput implements IGetOrganizationsInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetOrganizationsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetOrganizationsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetOrganizationsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetOrganizationsInput {
+        const json = this.toJSON();
+        let result = new GetOrganizationsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetOrganizationsInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 export class PagedResultDtoOfOrganizationListDto implements IPagedResultDtoOfOrganizationListDto {
@@ -46356,6 +48196,10 @@ export class TicketEditDto implements ITicketEditDto {
     isEnabled: boolean;
     /** Sort */
     sort: number | undefined;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
 
     constructor(data?: ITicketEditDto) {
         if (data) {
@@ -46385,6 +48229,7 @@ export class TicketEditDto implements ITicketEditDto {
             this.auditStatus = data["auditStatus"];
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
+            this.group = data["group"];
         }
     }
 
@@ -46414,6 +48259,7 @@ export class TicketEditDto implements ITicketEditDto {
         data["auditStatus"] = this.auditStatus;
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
+        data["group"] = this.group;
         return data; 
     }
 
@@ -46456,6 +48302,10 @@ export interface ITicketEditDto {
     isEnabled: boolean;
     /** Sort */
     sort: number | undefined;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
 }
 
 export class CreateOrUpdateTicketInput implements ICreateOrUpdateTicketInput {
@@ -46535,6 +48385,10 @@ export class TicketListDto implements ITicketListDto {
     isEnabled: boolean;
     /** Sort */
     sort: number | undefined;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -46569,6 +48423,7 @@ export class TicketListDto implements ITicketListDto {
             this.auditStatus = data["auditStatus"];
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
+            this.group = data["group"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -46603,6 +48458,7 @@ export class TicketListDto implements ITicketListDto {
         data["auditStatus"] = this.auditStatus;
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
+        data["group"] = this.group;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -46650,6 +48506,10 @@ export interface ITicketListDto {
     isEnabled: boolean;
     /** Sort */
     sort: number | undefined;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -47311,6 +49171,10 @@ export class TicketDetailEditDto implements ITicketDetailEditDto {
     checkTime: moment.Moment | undefined;
     /** IsPrint */
     isPrint: boolean;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
 
     constructor(data?: ITicketDetailEditDto) {
         if (data) {
@@ -47342,6 +49206,7 @@ export class TicketDetailEditDto implements ITicketDetailEditDto {
             this.ticketStatus = data["ticketStatus"];
             this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
             this.isPrint = data["isPrint"];
+            this.group = data["group"];
         }
     }
 
@@ -47373,6 +49238,7 @@ export class TicketDetailEditDto implements ITicketDetailEditDto {
         data["ticketStatus"] = this.ticketStatus;
         data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
         data["isPrint"] = this.isPrint;
+        data["group"] = this.group;
         return data; 
     }
 
@@ -47420,6 +49286,10 @@ export interface ITicketDetailEditDto {
     checkTime: moment.Moment | undefined;
     /** IsPrint */
     isPrint: boolean;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
 }
 
 export class CreateOrUpdateTicketDetailInput implements ICreateOrUpdateTicketDetailInput {
@@ -47504,6 +49374,10 @@ export class TicketDetailListDto implements ITicketDetailListDto {
     checkTime: moment.Moment | undefined;
     /** IsPrint */
     isPrint: boolean;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -47540,6 +49414,7 @@ export class TicketDetailListDto implements ITicketDetailListDto {
             this.ticketStatus = data["ticketStatus"];
             this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
             this.isPrint = data["isPrint"];
+            this.group = data["group"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -47576,6 +49451,7 @@ export class TicketDetailListDto implements ITicketDetailListDto {
         data["ticketStatus"] = this.ticketStatus;
         data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
         data["isPrint"] = this.isPrint;
+        data["group"] = this.group;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -47628,6 +49504,10 @@ export interface ITicketDetailListDto {
     checkTime: moment.Moment | undefined;
     /** IsPrint */
     isPrint: boolean;
+    /** 0.散客票
+1.团体票
+2.卡类 */
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -47704,6 +49584,75 @@ export interface IGetTicketDetailForEditOutput {
     ticketStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
 }
 
+/** 获取的传入参数Dto */
+export class GetTicketDetailsInput implements IGetTicketDetailsInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetTicketDetailsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketDetailsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketDetailsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetTicketDetailsInput {
+        const json = this.toJSON();
+        let result = new GetTicketDetailsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetTicketDetailsInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class PagedResultDtoOfTicketDetailListDto implements IPagedResultDtoOfTicketDetailListDto {
     totalCount: number;
     items: TicketDetailListDto[] | undefined;
@@ -47765,11 +49714,13 @@ export class TicketDetail implements ITicketDetail {
     activityDetailId: number;
     activityDetail: ActivityDetail;
     activityId: number;
+    activity: Activity;
     orgActivityDetailId: number | undefined;
     orgActivityId: number | undefined;
     customerId: number;
     customer: Customer;
     ticketId: number;
+    ticket: Ticket;
     qrCode: string | undefined;
     checkingQuantity: number;
     checkedQuantity: number;
@@ -47779,6 +49730,7 @@ export class TicketDetail implements ITicketDetail {
     ticketStatus: TicketStatusEnum;
     checkTime: moment.Moment | undefined;
     isPrint: boolean;
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -47801,11 +49753,13 @@ export class TicketDetail implements ITicketDetail {
             this.activityDetailId = data["activityDetailId"];
             this.activityDetail = data["activityDetail"] ? ActivityDetail.fromJS(data["activityDetail"]) : <any>undefined;
             this.activityId = data["activityId"];
+            this.activity = data["activity"] ? Activity.fromJS(data["activity"]) : <any>undefined;
             this.orgActivityDetailId = data["orgActivityDetailId"];
             this.orgActivityId = data["orgActivityId"];
             this.customerId = data["customerId"];
             this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
             this.ticketId = data["ticketId"];
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
             this.qrCode = data["qrCode"];
             this.checkingQuantity = data["checkingQuantity"];
             this.checkedQuantity = data["checkedQuantity"];
@@ -47815,6 +49769,7 @@ export class TicketDetail implements ITicketDetail {
             this.ticketStatus = data["ticketStatus"];
             this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
             this.isPrint = data["isPrint"];
+            this.group = data["group"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -47837,11 +49792,13 @@ export class TicketDetail implements ITicketDetail {
         data["activityDetailId"] = this.activityDetailId;
         data["activityDetail"] = this.activityDetail ? this.activityDetail.toJSON() : <any>undefined;
         data["activityId"] = this.activityId;
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
         data["orgActivityDetailId"] = this.orgActivityDetailId;
         data["orgActivityId"] = this.orgActivityId;
         data["customerId"] = this.customerId;
         data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
         data["ticketId"] = this.ticketId;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
         data["qrCode"] = this.qrCode;
         data["checkingQuantity"] = this.checkingQuantity;
         data["checkedQuantity"] = this.checkedQuantity;
@@ -47851,6 +49808,7 @@ export class TicketDetail implements ITicketDetail {
         data["ticketStatus"] = this.ticketStatus;
         data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
         data["isPrint"] = this.isPrint;
+        data["group"] = this.group;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -47873,11 +49831,13 @@ export interface ITicketDetail {
     activityDetailId: number;
     activityDetail: ActivityDetail;
     activityId: number;
+    activity: Activity;
     orgActivityDetailId: number | undefined;
     orgActivityId: number | undefined;
     customerId: number;
     customer: Customer;
     ticketId: number;
+    ticket: Ticket;
     qrCode: string | undefined;
     checkingQuantity: number;
     checkedQuantity: number;
@@ -47887,6 +49847,7 @@ export interface ITicketDetail {
     ticketStatus: TicketStatusEnum;
     checkTime: moment.Moment | undefined;
     isPrint: boolean;
+    group: number;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -49150,12 +51111,10 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
     /** Id */
     id: number | undefined;
     /** TicketId */
-    ticketId: number;
+    ticketId: string;
     ticket: Ticket;
     /** Price */
     price: number;
-    /** Discount */
-    discount: number;
     /** RDiscount */
     rDiscount: number;
     /** UpperTime */
@@ -49185,7 +51144,6 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
             this.ticketId = data["ticketId"];
             this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
             this.price = data["price"];
-            this.discount = data["discount"];
             this.rDiscount = data["rDiscount"];
             this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
             this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
@@ -49209,7 +51167,6 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
         data["ticketId"] = this.ticketId;
         data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
         data["price"] = this.price;
-        data["discount"] = this.discount;
         data["rDiscount"] = this.rDiscount;
         data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
         data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
@@ -49233,12 +51190,10 @@ export interface ITicketPriceEditDto {
     /** Id */
     id: number | undefined;
     /** TicketId */
-    ticketId: number;
+    ticketId: string;
     ticket: Ticket;
     /** Price */
     price: number;
-    /** Discount */
-    discount: number;
     /** RDiscount */
     rDiscount: number;
     /** UpperTime */
@@ -49305,12 +51260,10 @@ export class TicketPriceListDto implements ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
     /** TicketId */
-    ticketId: number;
+    ticketId: string;
     ticket: Ticket;
     /** Price */
     price: number;
-    /** Discount */
-    discount: number;
     /** RDiscount */
     rDiscount: number;
     /** UpperTime */
@@ -49345,7 +51298,6 @@ export class TicketPriceListDto implements ITicketPriceListDto {
             this.ticketId = data["ticketId"];
             this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
             this.price = data["price"];
-            this.discount = data["discount"];
             this.rDiscount = data["rDiscount"];
             this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
             this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
@@ -49374,7 +51326,6 @@ export class TicketPriceListDto implements ITicketPriceListDto {
         data["ticketId"] = this.ticketId;
         data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
         data["price"] = this.price;
-        data["discount"] = this.discount;
         data["rDiscount"] = this.rDiscount;
         data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
         data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
@@ -49403,12 +51354,10 @@ export interface ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
     /** TicketId */
-    ticketId: number;
+    ticketId: string;
     ticket: Ticket;
     /** Price */
     price: number;
-    /** Discount */
-    discount: number;
     /** RDiscount */
     rDiscount: number;
     /** UpperTime */
@@ -49484,6 +51433,75 @@ export class GetTicketPriceForEditOutput implements IGetTicketPriceForEditOutput
 export interface IGetTicketPriceForEditOutput {
     ticketPrice: TicketPriceEditDto;
     positionEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
+}
+
+/** 获取的传入参数Dto */
+export class GetTicketPricesInput implements IGetTicketPricesInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetTicketPricesInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketPricesInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketPricesInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetTicketPricesInput {
+        const json = this.toJSON();
+        let result = new GetTicketPricesInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetTicketPricesInput {
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 export class PagedResultDtoOfTicketPriceListDto implements IPagedResultDtoOfTicketPriceListDto {
@@ -53851,6 +55869,357 @@ export interface IPagedResultDtoOfWechatAppConfigListDto {
     items: WechatAppConfigListDto[] | undefined;
 }
 
+/** 的列表DTO Yozeev.BusinessLogic.Common.WeChatHomePage */
+export class WeChatHomePageEditDto implements IWeChatHomePageEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 主页介绍 */
+    homePageIntro: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 购票须知 */
+    ticketPolicy: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+
+    constructor(data?: IWeChatHomePageEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.homePageIntro = data["homePageIntro"];
+            this.focusPicture = data["focusPicture"];
+            this.ticketPolicy = data["ticketPolicy"];
+            this.isEnable = data["isEnable"];
+        }
+    }
+
+    static fromJS(data: any): WeChatHomePageEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatHomePageEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["homePageIntro"] = this.homePageIntro;
+        data["focusPicture"] = this.focusPicture;
+        data["ticketPolicy"] = this.ticketPolicy;
+        data["isEnable"] = this.isEnable;
+        return data; 
+    }
+
+    clone(): WeChatHomePageEditDto {
+        const json = this.toJSON();
+        let result = new WeChatHomePageEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的列表DTO Yozeev.BusinessLogic.Common.WeChatHomePage */
+export interface IWeChatHomePageEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 主页介绍 */
+    homePageIntro: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 购票须知 */
+    ticketPolicy: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+}
+
+export class CreateOrUpdateWeChatHomePageInput implements ICreateOrUpdateWeChatHomePageInput {
+    weChatHomePage: WeChatHomePageEditDto;
+
+    constructor(data?: ICreateOrUpdateWeChatHomePageInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.weChatHomePage = new WeChatHomePageEditDto();
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.weChatHomePage = data["weChatHomePage"] ? WeChatHomePageEditDto.fromJS(data["weChatHomePage"]) : new WeChatHomePageEditDto();
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateWeChatHomePageInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateWeChatHomePageInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weChatHomePage"] = this.weChatHomePage ? this.weChatHomePage.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateOrUpdateWeChatHomePageInput {
+        const json = this.toJSON();
+        let result = new CreateOrUpdateWeChatHomePageInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateOrUpdateWeChatHomePageInput {
+    weChatHomePage: WeChatHomePageEditDto;
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.WeChatHomePage */
+export class WeChatHomePageListDto implements IWeChatHomePageListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 主页介绍 */
+    homePageIntro: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 购票须知 */
+    ticketPolicy: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IWeChatHomePageListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.homePageIntro = data["homePageIntro"];
+            this.focusPicture = data["focusPicture"];
+            this.ticketPolicy = data["ticketPolicy"];
+            this.isEnable = data["isEnable"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): WeChatHomePageListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatHomePageListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["homePageIntro"] = this.homePageIntro;
+        data["focusPicture"] = this.focusPicture;
+        data["ticketPolicy"] = this.ticketPolicy;
+        data["isEnable"] = this.isEnable;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): WeChatHomePageListDto {
+        const json = this.toJSON();
+        let result = new WeChatHomePageListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.WeChatHomePage */
+export interface IWeChatHomePageListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 主页介绍 */
+    homePageIntro: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 购票须知 */
+    ticketPolicy: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+/** 读取可编辑的Dto */
+export class GetWeChatHomePageForEditOutput implements IGetWeChatHomePageForEditOutput {
+    weChatHomePage: WeChatHomePageEditDto;
+
+    constructor(data?: IGetWeChatHomePageForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.weChatHomePage = data["weChatHomePage"] ? WeChatHomePageEditDto.fromJS(data["weChatHomePage"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetWeChatHomePageForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetWeChatHomePageForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weChatHomePage"] = this.weChatHomePage ? this.weChatHomePage.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetWeChatHomePageForEditOutput {
+        const json = this.toJSON();
+        let result = new GetWeChatHomePageForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 读取可编辑的Dto */
+export interface IGetWeChatHomePageForEditOutput {
+    weChatHomePage: WeChatHomePageEditDto;
+}
+
+export class PagedResultDtoOfWeChatHomePageListDto implements IPagedResultDtoOfWeChatHomePageListDto {
+    totalCount: number;
+    items: WeChatHomePageListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfWeChatHomePageListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(WeChatHomePageListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfWeChatHomePageListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfWeChatHomePageListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfWeChatHomePageListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfWeChatHomePageListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfWeChatHomePageListDto {
+    totalCount: number;
+    items: WeChatHomePageListDto[] | undefined;
+}
+
+export class UploadWeChatPictureResultDto implements IUploadWeChatPictureResultDto {
+    uri: string | undefined;
+
+    constructor(data?: IUploadWeChatPictureResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): UploadWeChatPictureResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UploadWeChatPictureResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): UploadWeChatPictureResultDto {
+        const json = this.toJSON();
+        let result = new UploadWeChatPictureResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUploadWeChatPictureResultDto {
+    uri: string | undefined;
+}
+
 export class GetImageTextMaterialsInput implements IGetImageTextMaterialsInput {
     appId: string | undefined;
     maxResultCount: number;
@@ -54721,59 +57090,28 @@ export interface IGetWechatMenuForEditOutput {
     menuTypeList: KeyValuePairOfStringString[] | undefined;
 }
 
-/** 售票员售票统计 */
-export class SellerTicketResultDto implements ISellerTicketResultDto {
-    saler: User;
-    /** 现金售票数量 */
-    cashSaleCount: number;
-    /** 现金退票数量 */
-    cashRefundCount: number;
-    /** 现金数量小计 */
-    cashSubtotalCount: number;
-    /** 现金售票金额 */
-    cashSaleAmount: number;
-    /** 现金退票金额 */
-    cashRefundAmount: number;
-    /** 现金金额小计 */
-    cashSubtotalAmount: number;
-    /** 刷卡售票数量 */
-    cardSaleCount: number;
-    /** 刷卡退票数量 */
-    cardRefundCount: number;
-    /** 刷卡数量小计 */
-    cardSubtotalCount: number;
-    /** 刷卡售票金额 */
-    cardSaleAmount: number;
-    /** 刷卡退票金额 */
-    cardRefundAmount: number;
-    /** 刷卡金额小计 */
-    cardSubtotalAmount: number;
-    /** 微信售票数量 */
-    weChatSaleCount: number;
-    /** 微信退票数量 */
-    weChatRefundCount: number;
-    /** 微信数量小计 */
-    weChatSubtotalCount: number;
-    /** 微信售票金额 */
-    weChatSaleAmount: number;
-    /** 微信退票金额 */
-    weChatRefundAmount: number;
-    /** 微信金额小计 */
-    weChatSubtotalAmount: number;
-    /** 支付宝售票数量 */
-    alipaySaleCount: number;
-    /** 支付宝退票数量 */
-    alipayRefundCount: number;
-    /** 支付宝数量小计 */
-    alipaySubtotalCount: number;
-    /** 支付宝售票金额 */
-    alipaySaleAmount: number;
-    /** 支付宝退票金额 */
-    alipayRefundAmount: number;
-    /** 支付宝金额小计 */
-    alipaySubtotalAmount: number;
+/** 的列表DTO Yozeev.BusinessLogic.Common.WeChatScenicSpot */
+export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 景点名称 */
+    scenicSpotName: string | undefined;
+    /** 景点封面图 */
+    coverPicture: string | undefined;
+    /** 景点地址 */
+    scenicSpotAddr: string | undefined;
+    /** 开放时间 */
+    openTime: moment.Moment;
+    /** 入团方式 */
+    smokedWay: string | undefined;
+    /** 预定时间 */
+    scheduledTime: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
 
-    constructor(data?: ISellerTicketResultDto) {
+    constructor(data?: IWeChatScenicSpotEditDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -54784,139 +57122,142 @@ export class SellerTicketResultDto implements ISellerTicketResultDto {
 
     init(data?: any) {
         if (data) {
-            this.saler = data["saler"] ? User.fromJS(data["saler"]) : <any>undefined;
-            this.cashSaleCount = data["cashSaleCount"];
-            this.cashRefundCount = data["cashRefundCount"];
-            this.cashSubtotalCount = data["cashSubtotalCount"];
-            this.cashSaleAmount = data["cashSaleAmount"];
-            this.cashRefundAmount = data["cashRefundAmount"];
-            this.cashSubtotalAmount = data["cashSubtotalAmount"];
-            this.cardSaleCount = data["cardSaleCount"];
-            this.cardRefundCount = data["cardRefundCount"];
-            this.cardSubtotalCount = data["cardSubtotalCount"];
-            this.cardSaleAmount = data["cardSaleAmount"];
-            this.cardRefundAmount = data["cardRefundAmount"];
-            this.cardSubtotalAmount = data["cardSubtotalAmount"];
-            this.weChatSaleCount = data["weChatSaleCount"];
-            this.weChatRefundCount = data["weChatRefundCount"];
-            this.weChatSubtotalCount = data["weChatSubtotalCount"];
-            this.weChatSaleAmount = data["weChatSaleAmount"];
-            this.weChatRefundAmount = data["weChatRefundAmount"];
-            this.weChatSubtotalAmount = data["weChatSubtotalAmount"];
-            this.alipaySaleCount = data["alipaySaleCount"];
-            this.alipayRefundCount = data["alipayRefundCount"];
-            this.alipaySubtotalCount = data["alipaySubtotalCount"];
-            this.alipaySaleAmount = data["alipaySaleAmount"];
-            this.alipayRefundAmount = data["alipayRefundAmount"];
-            this.alipaySubtotalAmount = data["alipaySubtotalAmount"];
+            this.id = data["id"];
+            this.scenicSpotName = data["scenicSpotName"];
+            this.coverPicture = data["coverPicture"];
+            this.scenicSpotAddr = data["scenicSpotAddr"];
+            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.smokedWay = data["smokedWay"];
+            this.scheduledTime = data["scheduledTime"];
+            this.focusPicture = data["focusPicture"];
+            this.isEnable = data["isEnable"];
         }
     }
 
-    static fromJS(data: any): SellerTicketResultDto {
+    static fromJS(data: any): WeChatScenicSpotEditDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SellerTicketResultDto();
+        let result = new WeChatScenicSpotEditDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["saler"] = this.saler ? this.saler.toJSON() : <any>undefined;
-        data["cashSaleCount"] = this.cashSaleCount;
-        data["cashRefundCount"] = this.cashRefundCount;
-        data["cashSubtotalCount"] = this.cashSubtotalCount;
-        data["cashSaleAmount"] = this.cashSaleAmount;
-        data["cashRefundAmount"] = this.cashRefundAmount;
-        data["cashSubtotalAmount"] = this.cashSubtotalAmount;
-        data["cardSaleCount"] = this.cardSaleCount;
-        data["cardRefundCount"] = this.cardRefundCount;
-        data["cardSubtotalCount"] = this.cardSubtotalCount;
-        data["cardSaleAmount"] = this.cardSaleAmount;
-        data["cardRefundAmount"] = this.cardRefundAmount;
-        data["cardSubtotalAmount"] = this.cardSubtotalAmount;
-        data["weChatSaleCount"] = this.weChatSaleCount;
-        data["weChatRefundCount"] = this.weChatRefundCount;
-        data["weChatSubtotalCount"] = this.weChatSubtotalCount;
-        data["weChatSaleAmount"] = this.weChatSaleAmount;
-        data["weChatRefundAmount"] = this.weChatRefundAmount;
-        data["weChatSubtotalAmount"] = this.weChatSubtotalAmount;
-        data["alipaySaleCount"] = this.alipaySaleCount;
-        data["alipayRefundCount"] = this.alipayRefundCount;
-        data["alipaySubtotalCount"] = this.alipaySubtotalCount;
-        data["alipaySaleAmount"] = this.alipaySaleAmount;
-        data["alipayRefundAmount"] = this.alipayRefundAmount;
-        data["alipaySubtotalAmount"] = this.alipaySubtotalAmount;
+        data["id"] = this.id;
+        data["scenicSpotName"] = this.scenicSpotName;
+        data["coverPicture"] = this.coverPicture;
+        data["scenicSpotAddr"] = this.scenicSpotAddr;
+        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["smokedWay"] = this.smokedWay;
+        data["scheduledTime"] = this.scheduledTime;
+        data["focusPicture"] = this.focusPicture;
+        data["isEnable"] = this.isEnable;
         return data; 
     }
 
-    clone(): SellerTicketResultDto {
+    clone(): WeChatScenicSpotEditDto {
         const json = this.toJSON();
-        let result = new SellerTicketResultDto();
+        let result = new WeChatScenicSpotEditDto();
         result.init(json);
         return result;
     }
 }
 
-/** 售票员售票统计 */
-export interface ISellerTicketResultDto {
-    saler: User;
-    /** 现金售票数量 */
-    cashSaleCount: number;
-    /** 现金退票数量 */
-    cashRefundCount: number;
-    /** 现金数量小计 */
-    cashSubtotalCount: number;
-    /** 现金售票金额 */
-    cashSaleAmount: number;
-    /** 现金退票金额 */
-    cashRefundAmount: number;
-    /** 现金金额小计 */
-    cashSubtotalAmount: number;
-    /** 刷卡售票数量 */
-    cardSaleCount: number;
-    /** 刷卡退票数量 */
-    cardRefundCount: number;
-    /** 刷卡数量小计 */
-    cardSubtotalCount: number;
-    /** 刷卡售票金额 */
-    cardSaleAmount: number;
-    /** 刷卡退票金额 */
-    cardRefundAmount: number;
-    /** 刷卡金额小计 */
-    cardSubtotalAmount: number;
-    /** 微信售票数量 */
-    weChatSaleCount: number;
-    /** 微信退票数量 */
-    weChatRefundCount: number;
-    /** 微信数量小计 */
-    weChatSubtotalCount: number;
-    /** 微信售票金额 */
-    weChatSaleAmount: number;
-    /** 微信退票金额 */
-    weChatRefundAmount: number;
-    /** 微信金额小计 */
-    weChatSubtotalAmount: number;
-    /** 支付宝售票数量 */
-    alipaySaleCount: number;
-    /** 支付宝退票数量 */
-    alipayRefundCount: number;
-    /** 支付宝数量小计 */
-    alipaySubtotalCount: number;
-    /** 支付宝售票金额 */
-    alipaySaleAmount: number;
-    /** 支付宝退票金额 */
-    alipayRefundAmount: number;
-    /** 支付宝金额小计 */
-    alipaySubtotalAmount: number;
+/** 的列表DTO Yozeev.BusinessLogic.Common.WeChatScenicSpot */
+export interface IWeChatScenicSpotEditDto {
+    /** Id */
+    id: number | undefined;
+    /** 景点名称 */
+    scenicSpotName: string | undefined;
+    /** 景点封面图 */
+    coverPicture: string | undefined;
+    /** 景点地址 */
+    scenicSpotAddr: string | undefined;
+    /** 开放时间 */
+    openTime: moment.Moment;
+    /** 入团方式 */
+    smokedWay: string | undefined;
+    /** 预定时间 */
+    scheduledTime: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
 }
 
-export class StatsPagedResultDtoOfSellerTicketResultDto implements IStatsPagedResultDtoOfSellerTicketResultDto {
-    total: SellerTicketResultDto;
-    filters: { [key: string] : Anonymous5[]; } | undefined;
-    totalCount: number;
-    items: SellerTicketResultDto[] | undefined;
+export class CreateOrUpdateWeChatScenicSpotInput implements ICreateOrUpdateWeChatScenicSpotInput {
+    weChatScenicSpot: WeChatScenicSpotEditDto;
 
-    constructor(data?: IStatsPagedResultDtoOfSellerTicketResultDto) {
+    constructor(data?: ICreateOrUpdateWeChatScenicSpotInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.weChatScenicSpot = new WeChatScenicSpotEditDto();
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.weChatScenicSpot = data["weChatScenicSpot"] ? WeChatScenicSpotEditDto.fromJS(data["weChatScenicSpot"]) : new WeChatScenicSpotEditDto();
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateWeChatScenicSpotInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateWeChatScenicSpotInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weChatScenicSpot"] = this.weChatScenicSpot ? this.weChatScenicSpot.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateOrUpdateWeChatScenicSpotInput {
+        const json = this.toJSON();
+        let result = new CreateOrUpdateWeChatScenicSpotInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateOrUpdateWeChatScenicSpotInput {
+    weChatScenicSpot: WeChatScenicSpotEditDto;
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.WeChatScenicSpot */
+export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 景点名称 */
+    scenicSpotName: string | undefined;
+    /** 景点封面图 */
+    coverPicture: string | undefined;
+    /** 景点地址 */
+    scenicSpotAddr: string | undefined;
+    /** 开放时间 */
+    openTime: moment.Moment;
+    /** 入团方式 */
+    smokedWay: string | undefined;
+    /** 预定时间 */
+    scheduledTime: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IWeChatScenicSpotListDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -54927,7 +57268,323 @@ export class StatsPagedResultDtoOfSellerTicketResultDto implements IStatsPagedRe
 
     init(data?: any) {
         if (data) {
-            this.total = data["total"] ? SellerTicketResultDto.fromJS(data["total"]) : <any>undefined;
+            this.branchId = data["branchId"];
+            this.scenicSpotName = data["scenicSpotName"];
+            this.coverPicture = data["coverPicture"];
+            this.scenicSpotAddr = data["scenicSpotAddr"];
+            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.smokedWay = data["smokedWay"];
+            this.scheduledTime = data["scheduledTime"];
+            this.focusPicture = data["focusPicture"];
+            this.isEnable = data["isEnable"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): WeChatScenicSpotListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatScenicSpotListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["scenicSpotName"] = this.scenicSpotName;
+        data["coverPicture"] = this.coverPicture;
+        data["scenicSpotAddr"] = this.scenicSpotAddr;
+        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["smokedWay"] = this.smokedWay;
+        data["scheduledTime"] = this.scheduledTime;
+        data["focusPicture"] = this.focusPicture;
+        data["isEnable"] = this.isEnable;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): WeChatScenicSpotListDto {
+        const json = this.toJSON();
+        let result = new WeChatScenicSpotListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Common.WeChatScenicSpot */
+export interface IWeChatScenicSpotListDto {
+    /** BranchId */
+    branchId: number | undefined;
+    /** 景点名称 */
+    scenicSpotName: string | undefined;
+    /** 景点封面图 */
+    coverPicture: string | undefined;
+    /** 景点地址 */
+    scenicSpotAddr: string | undefined;
+    /** 开放时间 */
+    openTime: moment.Moment;
+    /** 入团方式 */
+    smokedWay: string | undefined;
+    /** 预定时间 */
+    scheduledTime: string | undefined;
+    /** 焦点图 */
+    focusPicture: string | undefined;
+    /** 是否启用 */
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+/** 读取可编辑的Dto */
+export class GetWeChatScenicSpotForEditOutput implements IGetWeChatScenicSpotForEditOutput {
+    weChatScenicSpot: WeChatScenicSpotEditDto;
+
+    constructor(data?: IGetWeChatScenicSpotForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.weChatScenicSpot = data["weChatScenicSpot"] ? WeChatScenicSpotEditDto.fromJS(data["weChatScenicSpot"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetWeChatScenicSpotForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetWeChatScenicSpotForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["weChatScenicSpot"] = this.weChatScenicSpot ? this.weChatScenicSpot.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetWeChatScenicSpotForEditOutput {
+        const json = this.toJSON();
+        let result = new GetWeChatScenicSpotForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 读取可编辑的Dto */
+export interface IGetWeChatScenicSpotForEditOutput {
+    weChatScenicSpot: WeChatScenicSpotEditDto;
+}
+
+export class PagedResultDtoOfWeChatScenicSpotListDto implements IPagedResultDtoOfWeChatScenicSpotListDto {
+    totalCount: number;
+    items: WeChatScenicSpotListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfWeChatScenicSpotListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(WeChatScenicSpotListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfWeChatScenicSpotListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfWeChatScenicSpotListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfWeChatScenicSpotListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfWeChatScenicSpotListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfWeChatScenicSpotListDto {
+    totalCount: number;
+    items: WeChatScenicSpotListDto[] | undefined;
+}
+
+/** 订单信息 */
+export class ActivityResultDto implements IActivityResultDto {
+    /** Id */
+    id: number;
+    /** 是否结账 */
+    closed: boolean;
+    /** 单据号 */
+    activityNo: string | undefined;
+    /** 订单来源 */
+    sourceName: string | undefined;
+    orderType: OrderTypeEnum;
+    /** 订单金额 */
+    totalAmount: number;
+    payStatus: PayStatusEnum;
+    /** 支付方式 */
+    payName: string | undefined;
+    /** 数量 */
+    totalQuantity: number;
+    /** 购票人 */
+    buyer: string | undefined;
+    /** 购票凭证 */
+    voucherNo: string | undefined;
+    /** 日期 */
+    activityDate: moment.Moment;
+    /** 制单人 */
+    creatorUserName: string | undefined;
+    /** 原单号 */
+    orgActivityNo: string | undefined;
+
+    constructor(data?: IActivityResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.closed = data["closed"];
+            this.activityNo = data["activityNo"];
+            this.sourceName = data["sourceName"];
+            this.orderType = data["orderType"];
+            this.totalAmount = data["totalAmount"];
+            this.payStatus = data["payStatus"];
+            this.payName = data["payName"];
+            this.totalQuantity = data["totalQuantity"];
+            this.buyer = data["buyer"];
+            this.voucherNo = data["voucherNo"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.creatorUserName = data["creatorUserName"];
+            this.orgActivityNo = data["orgActivityNo"];
+        }
+    }
+
+    static fromJS(data: any): ActivityResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["closed"] = this.closed;
+        data["activityNo"] = this.activityNo;
+        data["sourceName"] = this.sourceName;
+        data["orderType"] = this.orderType;
+        data["totalAmount"] = this.totalAmount;
+        data["payStatus"] = this.payStatus;
+        data["payName"] = this.payName;
+        data["totalQuantity"] = this.totalQuantity;
+        data["buyer"] = this.buyer;
+        data["voucherNo"] = this.voucherNo;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["creatorUserName"] = this.creatorUserName;
+        data["orgActivityNo"] = this.orgActivityNo;
+        return data; 
+    }
+
+    clone(): ActivityResultDto {
+        const json = this.toJSON();
+        let result = new ActivityResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 订单信息 */
+export interface IActivityResultDto {
+    /** Id */
+    id: number;
+    /** 是否结账 */
+    closed: boolean;
+    /** 单据号 */
+    activityNo: string | undefined;
+    /** 订单来源 */
+    sourceName: string | undefined;
+    orderType: OrderTypeEnum;
+    /** 订单金额 */
+    totalAmount: number;
+    payStatus: PayStatusEnum;
+    /** 支付方式 */
+    payName: string | undefined;
+    /** 数量 */
+    totalQuantity: number;
+    /** 购票人 */
+    buyer: string | undefined;
+    /** 购票凭证 */
+    voucherNo: string | undefined;
+    /** 日期 */
+    activityDate: moment.Moment;
+    /** 制单人 */
+    creatorUserName: string | undefined;
+    /** 原单号 */
+    orgActivityNo: string | undefined;
+}
+
+export class StatsPagedResultDtoOfActivityResultDto implements IStatsPagedResultDtoOfActivityResultDto {
+    total: ActivityResultDto;
+    filters: { [key: string] : Anonymous5[]; } | undefined;
+    totalCount: number;
+    items: ActivityResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfActivityResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? ActivityResultDto.fromJS(data["total"]) : <any>undefined;
             if (data["filters"]) {
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
@@ -54939,14 +57596,14 @@ export class StatsPagedResultDtoOfSellerTicketResultDto implements IStatsPagedRe
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items.push(SellerTicketResultDto.fromJS(item));
+                    this.items.push(ActivityResultDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): StatsPagedResultDtoOfSellerTicketResultDto {
+    static fromJS(data: any): StatsPagedResultDtoOfActivityResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfSellerTicketResultDto();
+        let result = new StatsPagedResultDtoOfActivityResultDto();
         result.init(data);
         return result;
     }
@@ -54970,19 +57627,1135 @@ export class StatsPagedResultDtoOfSellerTicketResultDto implements IStatsPagedRe
         return data; 
     }
 
-    clone(): StatsPagedResultDtoOfSellerTicketResultDto {
+    clone(): StatsPagedResultDtoOfActivityResultDto {
         const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfSellerTicketResultDto();
+        let result = new StatsPagedResultDtoOfActivityResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStatsPagedResultDtoOfSellerTicketResultDto {
-    total: SellerTicketResultDto;
+export interface IStatsPagedResultDtoOfActivityResultDto {
+    total: ActivityResultDto;
     filters: { [key: string] : Anonymous5[]; } | undefined;
     totalCount: number;
-    items: SellerTicketResultDto[] | undefined;
+    items: ActivityResultDto[] | undefined;
+}
+
+/** 订单明细 */
+export class ActivityDetailResultDto implements IActivityDetailResultDto {
+    /** Id */
+    id: number;
+    /** 票码 */
+    ticketNo: string | undefined;
+    /** 票型名称 */
+    ticketName: string | undefined;
+    /** 可验票数 */
+    checkingQuantity: number;
+    /** 已验票数 */
+    checkedQuantity: number;
+    ticketStatus: TicketStatusEnum;
+    /** 开始有效期 */
+    startDateTime: moment.Moment;
+    /** 结束有效期 */
+    endDateTime: moment.Moment;
+    /** 最后一次使用时间（检票日期） */
+    checkDate: moment.Moment;
+
+    constructor(data?: IActivityDetailResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticketNo = data["ticketNo"];
+            this.ticketName = data["ticketName"];
+            this.checkingQuantity = data["checkingQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.ticketStatus = data["ticketStatus"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.checkDate = data["checkDate"] ? moment(data["checkDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ActivityDetailResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityDetailResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticketNo"] = this.ticketNo;
+        data["ticketName"] = this.ticketName;
+        data["checkingQuantity"] = this.checkingQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["ticketStatus"] = this.ticketStatus;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["checkDate"] = this.checkDate ? this.checkDate.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): ActivityDetailResultDto {
+        const json = this.toJSON();
+        let result = new ActivityDetailResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 订单明细 */
+export interface IActivityDetailResultDto {
+    /** Id */
+    id: number;
+    /** 票码 */
+    ticketNo: string | undefined;
+    /** 票型名称 */
+    ticketName: string | undefined;
+    /** 可验票数 */
+    checkingQuantity: number;
+    /** 已验票数 */
+    checkedQuantity: number;
+    ticketStatus: TicketStatusEnum;
+    /** 开始有效期 */
+    startDateTime: moment.Moment;
+    /** 结束有效期 */
+    endDateTime: moment.Moment;
+    /** 最后一次使用时间（检票日期） */
+    checkDate: moment.Moment;
+}
+
+export class StatsPagedResultDtoOfActivityDetailResultDto implements IStatsPagedResultDtoOfActivityDetailResultDto {
+    total: ActivityDetailResultDto;
+    filters: { [key: string] : Anonymous6[]; } | undefined;
+    totalCount: number;
+    items: ActivityDetailResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfActivityDetailResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? ActivityDetailResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous6.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(ActivityDetailResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfActivityDetailResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfActivityDetailResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfActivityDetailResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfActivityDetailResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfActivityDetailResultDto {
+    total: ActivityDetailResultDto;
+    filters: { [key: string] : Anonymous6[]; } | undefined;
+    totalCount: number;
+    items: ActivityDetailResultDto[] | undefined;
+}
+
+/** 订单来源统计 */
+export class OrderSourceResultDto implements IOrderSourceResultDto {
+    source: Source;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+
+    constructor(data?: IOrderSourceResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.subtotalQuantity = data["subtotalQuantity"];
+            this.saleAmount = data["saleAmount"];
+            this.refundAmount = data["refundAmount"];
+            this.subtotalAmount = data["subtotalAmount"];
+        }
+    }
+
+    static fromJS(data: any): OrderSourceResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderSourceResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["subtotalQuantity"] = this.subtotalQuantity;
+        data["saleAmount"] = this.saleAmount;
+        data["refundAmount"] = this.refundAmount;
+        data["subtotalAmount"] = this.subtotalAmount;
+        return data; 
+    }
+
+    clone(): OrderSourceResultDto {
+        const json = this.toJSON();
+        let result = new OrderSourceResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 订单来源统计 */
+export interface IOrderSourceResultDto {
+    source: Source;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+}
+
+export class StatsPagedResultDtoOfOrderSourceResultDto implements IStatsPagedResultDtoOfOrderSourceResultDto {
+    total: OrderSourceResultDto;
+    filters: { [key: string] : Anonymous7[]; } | undefined;
+    totalCount: number;
+    items: OrderSourceResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfOrderSourceResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? OrderSourceResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous7.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(OrderSourceResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfOrderSourceResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfOrderSourceResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfOrderSourceResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfOrderSourceResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfOrderSourceResultDto {
+    total: OrderSourceResultDto;
+    filters: { [key: string] : Anonymous7[]; } | undefined;
+    totalCount: number;
+    items: OrderSourceResultDto[] | undefined;
+}
+
+/** 团体售票统计 */
+export class OrganizationSalesResultDto implements IOrganizationSalesResultDto {
+    organization: Organization;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+
+    constructor(data?: IOrganizationSalesResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.subtotalQuantity = data["subtotalQuantity"];
+            this.saleAmount = data["saleAmount"];
+            this.refundAmount = data["refundAmount"];
+            this.subtotalAmount = data["subtotalAmount"];
+        }
+    }
+
+    static fromJS(data: any): OrganizationSalesResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrganizationSalesResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["subtotalQuantity"] = this.subtotalQuantity;
+        data["saleAmount"] = this.saleAmount;
+        data["refundAmount"] = this.refundAmount;
+        data["subtotalAmount"] = this.subtotalAmount;
+        return data; 
+    }
+
+    clone(): OrganizationSalesResultDto {
+        const json = this.toJSON();
+        let result = new OrganizationSalesResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 团体售票统计 */
+export interface IOrganizationSalesResultDto {
+    organization: Organization;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+}
+
+export class StatsPagedResultDtoOfOrganizationSalesResultDto implements IStatsPagedResultDtoOfOrganizationSalesResultDto {
+    total: OrganizationSalesResultDto;
+    filters: { [key: string] : Anonymous8[]; } | undefined;
+    totalCount: number;
+    items: OrganizationSalesResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfOrganizationSalesResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? OrganizationSalesResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous8.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(OrganizationSalesResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfOrganizationSalesResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfOrganizationSalesResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfOrganizationSalesResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfOrganizationSalesResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfOrganizationSalesResultDto {
+    total: OrganizationSalesResultDto;
+    filters: { [key: string] : Anonymous8[]; } | undefined;
+    totalCount: number;
+    items: OrganizationSalesResultDto[] | undefined;
+}
+
+/** 支付方式统计 */
+export class PayMethodResultDto implements IPayMethodResultDto {
+    payMethod: PayMethod;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+
+    constructor(data?: IPayMethodResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.subtotalQuantity = data["subtotalQuantity"];
+            this.saleAmount = data["saleAmount"];
+            this.refundAmount = data["refundAmount"];
+            this.subtotalAmount = data["subtotalAmount"];
+        }
+    }
+
+    static fromJS(data: any): PayMethodResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PayMethodResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["subtotalQuantity"] = this.subtotalQuantity;
+        data["saleAmount"] = this.saleAmount;
+        data["refundAmount"] = this.refundAmount;
+        data["subtotalAmount"] = this.subtotalAmount;
+        return data; 
+    }
+
+    clone(): PayMethodResultDto {
+        const json = this.toJSON();
+        let result = new PayMethodResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 支付方式统计 */
+export interface IPayMethodResultDto {
+    payMethod: PayMethod;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 金额小计 */
+    subtotalAmount: number;
+}
+
+export class StatsPagedResultDtoOfPayMethodResultDto implements IStatsPagedResultDtoOfPayMethodResultDto {
+    total: PayMethodResultDto;
+    filters: { [key: string] : Anonymous9[]; } | undefined;
+    totalCount: number;
+    items: PayMethodResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfPayMethodResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? PayMethodResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous9.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(PayMethodResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfPayMethodResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfPayMethodResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfPayMethodResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfPayMethodResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfPayMethodResultDto {
+    total: PayMethodResultDto;
+    filters: { [key: string] : Anonymous9[]; } | undefined;
+    totalCount: number;
+    items: PayMethodResultDto[] | undefined;
+}
+
+/** 售票员日结统计 */
+export class SellerDailyResultDto implements ISellerDailyResultDto {
+    seller: User;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 销售金额小计 */
+    saleSubtotalAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 退票金额小计 */
+    refundSubtotalAmount: number;
+    /** 应收总金额 */
+    totalAmount: number;
+
+    constructor(data?: ISellerDailyResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.subtotalQuantity = data["subtotalQuantity"];
+            this.cashSaleAmount = data["cashSaleAmount"];
+            this.cardSaleAmount = data["cardSaleAmount"];
+            this.weChatSaleAmount = data["weChatSaleAmount"];
+            this.alipaySaleAmount = data["alipaySaleAmount"];
+            this.saleSubtotalAmount = data["saleSubtotalAmount"];
+            this.cashRefundAmount = data["cashRefundAmount"];
+            this.cardRefundAmount = data["cardRefundAmount"];
+            this.weChatRefundAmount = data["weChatRefundAmount"];
+            this.alipayRefundAmount = data["alipayRefundAmount"];
+            this.refundSubtotalAmount = data["refundSubtotalAmount"];
+            this.totalAmount = data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): SellerDailyResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SellerDailyResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["subtotalQuantity"] = this.subtotalQuantity;
+        data["cashSaleAmount"] = this.cashSaleAmount;
+        data["cardSaleAmount"] = this.cardSaleAmount;
+        data["weChatSaleAmount"] = this.weChatSaleAmount;
+        data["alipaySaleAmount"] = this.alipaySaleAmount;
+        data["saleSubtotalAmount"] = this.saleSubtotalAmount;
+        data["cashRefundAmount"] = this.cashRefundAmount;
+        data["cardRefundAmount"] = this.cardRefundAmount;
+        data["weChatRefundAmount"] = this.weChatRefundAmount;
+        data["alipayRefundAmount"] = this.alipayRefundAmount;
+        data["refundSubtotalAmount"] = this.refundSubtotalAmount;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+
+    clone(): SellerDailyResultDto {
+        const json = this.toJSON();
+        let result = new SellerDailyResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 售票员日结统计 */
+export interface ISellerDailyResultDto {
+    seller: User;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 销售金额小计 */
+    saleSubtotalAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 退票金额小计 */
+    refundSubtotalAmount: number;
+    /** 应收总金额 */
+    totalAmount: number;
+}
+
+export class StatsPagedResultDtoOfSellerDailyResultDto implements IStatsPagedResultDtoOfSellerDailyResultDto {
+    total: SellerDailyResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SellerDailyResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSellerDailyResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SellerDailyResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SellerDailyResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSellerDailyResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSellerDailyResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSellerDailyResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSellerDailyResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSellerDailyResultDto {
+    total: SellerDailyResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SellerDailyResultDto[] | undefined;
+}
+
+/** 售票员售票统计 */
+export class SellerSalesResultDto implements ISellerSalesResultDto {
+    seller: User;
+    /** 现金售票数量 */
+    cashSaleQuantity: number;
+    /** 现金退票数量 */
+    cashRefundQuantity: number;
+    /** 现金数量小计 */
+    cashSubtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 现金金额小计 */
+    cashSubtotalAmount: number;
+    /** 刷卡售票数量 */
+    cardSaleQuantity: number;
+    /** 刷卡退票数量 */
+    cardRefundQuantity: number;
+    /** 刷卡数量小计 */
+    cardSubtotalQuantity: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 刷卡金额小计 */
+    cardSubtotalAmount: number;
+    /** 微信售票数量 */
+    weChatSaleQuantity: number;
+    /** 微信退票数量 */
+    weChatRefundQuantity: number;
+    /** 微信数量小计 */
+    weChatSubtotalQuantity: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 微信金额小计 */
+    weChatSubtotalAmount: number;
+    /** 支付宝售票数量 */
+    alipaySaleQuantity: number;
+    /** 支付宝退票数量 */
+    alipayRefundQuantity: number;
+    /** 支付宝数量小计 */
+    alipaySubtotalQuantity: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 支付宝金额小计 */
+    alipaySubtotalAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+
+    constructor(data?: ISellerSalesResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            this.cashSaleQuantity = data["cashSaleQuantity"];
+            this.cashRefundQuantity = data["cashRefundQuantity"];
+            this.cashSubtotalQuantity = data["cashSubtotalQuantity"];
+            this.cashSaleAmount = data["cashSaleAmount"];
+            this.cashRefundAmount = data["cashRefundAmount"];
+            this.cashSubtotalAmount = data["cashSubtotalAmount"];
+            this.cardSaleQuantity = data["cardSaleQuantity"];
+            this.cardRefundQuantity = data["cardRefundQuantity"];
+            this.cardSubtotalQuantity = data["cardSubtotalQuantity"];
+            this.cardSaleAmount = data["cardSaleAmount"];
+            this.cardRefundAmount = data["cardRefundAmount"];
+            this.cardSubtotalAmount = data["cardSubtotalAmount"];
+            this.weChatSaleQuantity = data["weChatSaleQuantity"];
+            this.weChatRefundQuantity = data["weChatRefundQuantity"];
+            this.weChatSubtotalQuantity = data["weChatSubtotalQuantity"];
+            this.weChatSaleAmount = data["weChatSaleAmount"];
+            this.weChatRefundAmount = data["weChatRefundAmount"];
+            this.weChatSubtotalAmount = data["weChatSubtotalAmount"];
+            this.alipaySaleQuantity = data["alipaySaleQuantity"];
+            this.alipayRefundQuantity = data["alipayRefundQuantity"];
+            this.alipaySubtotalQuantity = data["alipaySubtotalQuantity"];
+            this.alipaySaleAmount = data["alipaySaleAmount"];
+            this.alipayRefundAmount = data["alipayRefundAmount"];
+            this.alipaySubtotalAmount = data["alipaySubtotalAmount"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): SellerSalesResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SellerSalesResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        data["cashSaleQuantity"] = this.cashSaleQuantity;
+        data["cashRefundQuantity"] = this.cashRefundQuantity;
+        data["cashSubtotalQuantity"] = this.cashSubtotalQuantity;
+        data["cashSaleAmount"] = this.cashSaleAmount;
+        data["cashRefundAmount"] = this.cashRefundAmount;
+        data["cashSubtotalAmount"] = this.cashSubtotalAmount;
+        data["cardSaleQuantity"] = this.cardSaleQuantity;
+        data["cardRefundQuantity"] = this.cardRefundQuantity;
+        data["cardSubtotalQuantity"] = this.cardSubtotalQuantity;
+        data["cardSaleAmount"] = this.cardSaleAmount;
+        data["cardRefundAmount"] = this.cardRefundAmount;
+        data["cardSubtotalAmount"] = this.cardSubtotalAmount;
+        data["weChatSaleQuantity"] = this.weChatSaleQuantity;
+        data["weChatRefundQuantity"] = this.weChatRefundQuantity;
+        data["weChatSubtotalQuantity"] = this.weChatSubtotalQuantity;
+        data["weChatSaleAmount"] = this.weChatSaleAmount;
+        data["weChatRefundAmount"] = this.weChatRefundAmount;
+        data["weChatSubtotalAmount"] = this.weChatSubtotalAmount;
+        data["alipaySaleQuantity"] = this.alipaySaleQuantity;
+        data["alipayRefundQuantity"] = this.alipayRefundQuantity;
+        data["alipaySubtotalQuantity"] = this.alipaySubtotalQuantity;
+        data["alipaySaleAmount"] = this.alipaySaleAmount;
+        data["alipayRefundAmount"] = this.alipayRefundAmount;
+        data["alipaySubtotalAmount"] = this.alipaySubtotalAmount;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+
+    clone(): SellerSalesResultDto {
+        const json = this.toJSON();
+        let result = new SellerSalesResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 售票员售票统计 */
+export interface ISellerSalesResultDto {
+    seller: User;
+    /** 现金售票数量 */
+    cashSaleQuantity: number;
+    /** 现金退票数量 */
+    cashRefundQuantity: number;
+    /** 现金数量小计 */
+    cashSubtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 现金金额小计 */
+    cashSubtotalAmount: number;
+    /** 刷卡售票数量 */
+    cardSaleQuantity: number;
+    /** 刷卡退票数量 */
+    cardRefundQuantity: number;
+    /** 刷卡数量小计 */
+    cardSubtotalQuantity: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 刷卡金额小计 */
+    cardSubtotalAmount: number;
+    /** 微信售票数量 */
+    weChatSaleQuantity: number;
+    /** 微信退票数量 */
+    weChatRefundQuantity: number;
+    /** 微信数量小计 */
+    weChatSubtotalQuantity: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 微信金额小计 */
+    weChatSubtotalAmount: number;
+    /** 支付宝售票数量 */
+    alipaySaleQuantity: number;
+    /** 支付宝退票数量 */
+    alipayRefundQuantity: number;
+    /** 支付宝数量小计 */
+    alipaySubtotalQuantity: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 支付宝金额小计 */
+    alipaySubtotalAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+}
+
+export class StatsPagedResultDtoOfSellerSalesResultDto implements IStatsPagedResultDtoOfSellerSalesResultDto {
+    total: SellerSalesResultDto;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
+    totalCount: number;
+    items: SellerSalesResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSellerSalesResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SellerSalesResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SellerSalesResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSellerSalesResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSellerSalesResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSellerSalesResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSellerSalesResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSellerSalesResultDto {
+    total: SellerSalesResultDto;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
+    totalCount: number;
+    items: SellerSalesResultDto[] | undefined;
 }
 
 export enum ActivateType {
@@ -54994,6 +58767,7 @@ export class ActivateAccountModel implements IActivateAccountModel {
     emailAddress: string | undefined;
     password: string | undefined;
     userId: string | undefined;
+    /** 验证码 */
     verificationCode: string | undefined;
     activateType: ActivateType;
 
@@ -55045,6 +58819,7 @@ export interface IActivateAccountModel {
     emailAddress: string | undefined;
     password: string | undefined;
     userId: string | undefined;
+    /** 验证码 */
     verificationCode: string | undefined;
     activateType: ActivateType;
 }
@@ -55107,6 +58882,7 @@ export interface IActivateAccountResultModel {
 export class AuthenticateModel implements IAuthenticateModel {
     userNameOrEmailAddress: string | undefined;
     password: string | undefined;
+    /** 验证码 */
     verificationCode: string | undefined;
     rememberClient: boolean;
     returnUrl: string | undefined;
@@ -55158,6 +58934,7 @@ export class AuthenticateModel implements IAuthenticateModel {
 export interface IAuthenticateModel {
     userNameOrEmailAddress: string | undefined;
     password: string | undefined;
+    /** 验证码 */
     verificationCode: string | undefined;
     rememberClient: boolean;
     returnUrl: string | undefined;
@@ -55171,6 +58948,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
     shouldResetPassword: boolean;
     passwordResetCode: string | undefined;
     returnUrl: string | undefined;
+    /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
 
     constructor(data?: IAuthenticateResultModel) {
@@ -55231,6 +59009,7 @@ export interface IAuthenticateResultModel {
     shouldResetPassword: boolean;
     passwordResetCode: string | undefined;
     returnUrl: string | undefined;
+    /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
 }
 
@@ -55922,6 +59701,228 @@ export class Anonymous5 implements IAnonymous5 {
 }
 
 export interface IAnonymous5 {
+}
+
+export class Anonymous6 implements IAnonymous6 {
+
+    constructor(data?: IAnonymous6) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous6 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous6();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous6 {
+        const json = this.toJSON();
+        let result = new Anonymous6();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous6 {
+}
+
+export class Anonymous7 implements IAnonymous7 {
+
+    constructor(data?: IAnonymous7) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous7 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous7();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous7 {
+        const json = this.toJSON();
+        let result = new Anonymous7();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous7 {
+}
+
+export class Anonymous8 implements IAnonymous8 {
+
+    constructor(data?: IAnonymous8) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous8 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous8();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous8 {
+        const json = this.toJSON();
+        let result = new Anonymous8();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous8 {
+}
+
+export class Anonymous9 implements IAnonymous9 {
+
+    constructor(data?: IAnonymous9) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous9 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous9();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous9 {
+        const json = this.toJSON();
+        let result = new Anonymous9();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous9 {
+}
+
+export class Anonymous10 implements IAnonymous10 {
+
+    constructor(data?: IAnonymous10) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous10 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous10();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous10 {
+        const json = this.toJSON();
+        let result = new Anonymous10();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous10 {
+}
+
+export class Anonymous11 implements IAnonymous11 {
+
+    constructor(data?: IAnonymous11) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous11 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous11();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous11 {
+        const json = this.toJSON();
+        let result = new Anonymous11();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous11 {
 }
 
 export class SwaggerException extends Error {

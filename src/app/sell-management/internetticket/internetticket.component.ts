@@ -4,9 +4,11 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 
 import { AppComponentBase } from '@shared/component-base/app-component-base';
 
-import {ActivityServiceProxy,
+import {
+  ActivityServiceProxy,
   // GetActivitysInput,
-  TicketDetailServiceProxy, QueryData} from '@shared/service-proxies/service-proxies';
+  TicketDetailServiceProxy, QueryData, GetTicketDetailsInput
+} from '@shared/service-proxies/service-proxies';
 
 import { NzModalService } from 'ng-zorro-antd';
 
@@ -30,90 +32,90 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     private _activityService: ActivityServiceProxy,
     private _ticketDetailService: TicketDetailServiceProxy,
     private _modalService: NzModalService,
-    ) {
+  ) {
     super(injector);
-    this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
-    this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
+    this.curmenupower = JSON.parse(localStorage.getItem('curmenupower'))
+    this.isAllOperation = eval(localStorage.getItem('isAllOperation'))
   }
 
-  isAllOperation=false
-  curmenupower=[]
+  isAllOperation = false
+  curmenupower = []
 
-  queryData=[{
+  queryData = [{
     field: "qrCode",
     method: "=",
     value: "",
     logic: "and"
-  },{
+  }, {
     field: "activityNo",
     method: "%",
     value: "",
     logic: "and"
-  },{
+  }, {
     field: "mobile",
     method: "%",
     value: "",
     logic: "and"
-  },{
+  }, {
     field: "buyer",
     method: "%",
     value: "",
     logic: "and"
   }]
 
-  certificatesNum=''
-  orderlist=[]
+  certificatesNum = ''
+  orderlist = []
 
-  orderinfo={}
+  orderinfo = {}
 
-  orderticket=[
+  orderticket = [
     {
-      ticketName:'成人票',
-      ticketNo:'张三',
-      customerName:15992591634,
-      mobile:123456,
-      unitPrice:200,
-      ticketStatus:'已激活',
-      stime:'2019-10-14 09:40:00',
-      etime:'2019-10-15 09:40:00'
+      ticketName: '成人票',
+      ticketNo: '张三',
+      customerName: 15992591634,
+      mobile: 123456,
+      unitPrice: 200,
+      ticketStatus: '已激活',
+      stime: '2019-10-14 09:40:00',
+      etime: '2019-10-15 09:40:00'
     }
   ]
 
-  single=false
+  single = false
 
 
-  allChecked=false
-  checkboxIndeterminate=false
-  selectedDataItems=[]
+  allChecked = false
+  checkboxIndeterminate = false
+  selectedDataItems = []
 
   ngOnInit(): void {
     this.init();
   }
 
   init(): void {
-    this.orderlist=[
+    this.orderlist = [
       {
-        activityNo:132456,
-        buyer:'张三',
-        mobile:15992591634,
-        certificatesNum:1.0,
-        totalQuantity:'现金支付',
-        totalAmount:'支付成功',
-        payName:'创建时间',
-        payMethod:true,
-        sourceName:'前台',
-        unitPrice:200,
-        totalQuantity2:9,
-        etime:'2019-10-15 09:40:00',
-        
+        activityNo: 132456,
+        buyer: '张三',
+        mobile: 15992591634,
+        certificatesNum: 1.0,
+        totalQuantity: '现金支付',
+        totalAmount: '支付成功',
+        payName: '创建时间',
+        payMethod: true,
+        sourceName: '前台',
+        unitPrice: 200,
+        totalQuantity2: 9,
+        etime: '2019-10-15 09:40:00',
+
       }
     ]
   }
 
   query(): void {
-    var arr=[]
-    for (var i = 1; i <this.queryData.length; i++) {
-      if(this.queryData[i].value){
+    var arr = []
+    for (var i = 1; i < this.queryData.length; i++) {
+      if (this.queryData[i].value) {
         arr.push(new QueryData(this.queryData[i]))
       }
     }
@@ -136,7 +138,7 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     // });
   }
 
-  checkAll($event){
+  checkAll($event) {
     // console.log($event)
     // if($event){
     //   for (var i =0;i< this.orderticket.length; i++) {
@@ -163,45 +165,50 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
 
   }
 
-  select(item){
+  select(item) {
     console.log(item);
-    
-    this.single=true
-    this.orderinfo=item
 
-    var arr=[new QueryData({
+    this.single = true
+    this.orderinfo = item
+
+    var arr = [new QueryData({
       field: "ActivityDetail.Activity.ActivityNo",
       method: "=",
       value: item.activityNo,
       logic: "and"
     })]
 
+    var formdata = new GetTicketDetailsInput
+    formdata.queryData = []
+    formdata.filterText = ''
+    formdata.sorting = ''
+    formdata.maxResultCount = 990
+    formdata.skipCount = 0
+    this._ticketDetailService.getPaged(formdata)
+      .subscribe(result => {
+        console.log(result);
 
-    this._ticketDetailService.getPaged('','',999,0)
-    .subscribe(result => {
-      console.log(result);
-      
-      // this.orderticket=result.items
-    });
+        // this.orderticket=result.items
+      });
   }
 
 
 
 
 
-  printticket(){
+  printticket() {
     // console.log(this.orderticket)
 
-    var idarr=[]
-    var ticketarr=[]
-    for (var i =0;i< this.orderticket.length; i++) {
+    var idarr = []
+    var ticketarr = []
+    for (var i = 0; i < this.orderticket.length; i++) {
       // if(this.orderticket[i].checked){
       //   idarr.push(this.orderticket[i].id)
       //   ticketarr.push(this.orderticket[i])
       // }
     }
 
-    if(idarr.length==0){
+    if (idarr.length == 0) {
       abp.message.warn(this.l('PleaseSelectAtLeastOneItem'));
       return
     }

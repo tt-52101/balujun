@@ -6,7 +6,7 @@ import {
   RoleServiceProxy,
   CreateOrUpdateRoleInput,
   UserEditDto,
-  TicketPriceServiceProxy,QueryData
+  TicketPriceServiceProxy,QueryData, GetTicketDetailsInput
 } from '@shared/service-proxies/service-proxies';
 import { PermissionTreeComponent } from '@app/admin/shared/permission-tree/permission-tree.component';
 
@@ -81,7 +81,15 @@ implements OnInit {
      }))
      var that = this;
      var ticketlist=[]
-     this._ticketPriceService.getPaged('',null,999,0)
+
+     var formdata = new GetTicketDetailsInput
+     formdata.queryData = []
+     formdata.filterText = ''
+     formdata.sorting = ''
+     formdata.maxResultCount = 990
+     formdata.skipCount = 0
+
+     this._ticketPriceService.getPaged(formdata)
      .subscribe(result => {
        result.items.forEach(function(item){
          var ticket={

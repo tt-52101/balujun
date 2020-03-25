@@ -6,23 +6,21 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
 	UserServiceProxy ,QueryData,
 	TicketServiceProxy,
-	// SellerTicketResultDto,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
 
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
-import { CreateOrEditSalerdailyComponent } from './create-or-edit-salerdaily/create-or-edit-salerdaily.component';
 
 @Component({
-	templateUrl: './salerdaily.component.html',
-	styleUrls: ['./salerdaily.component.less'],
+	templateUrl: './group.component.html',
+	styleUrls: ['./group.component.less'],
 	animations: [appModuleAnimation()],
 })
 
 
-export class  SalerDailyComponent extends PagedListingComponentBase<''>
+export class  GroupComponent extends PagedListingComponentBase<''>
 implements OnInit {
 
 	constructor(
@@ -82,48 +80,6 @@ implements OnInit {
 	userList=[]
 	schedulelist=[]
 
-	dataList1=[
-		{
-			userName:'张三',
-			saleCount:'aa',
-			refundCount:'aa',
-			totalCount:'aa',
-			cashSaleAmount:'aa',
-			cardSaleAmount:'aa',
-			weiChatSaleAmount:'aa',
-			zhiFuBaoSaleAmount:'aa',
-			totalSaleAmount:'aa',
-			cashRefundAmount:'aa',
-			cardRefundAmount:'aa',
-			weiChatRefundAmount:'aa',
-			zhiFuBaoRefundAmount:'aa',
-			totalRefundAmount:'aa',
-			totalAmount:'aa',
-
-		}
-	]
-
-	total1=[
-		{
-			
-			saleCount:'aa',
-			refundCount:'aa',
-			totalCount:'aa',
-			cashSaleAmount:'aa',
-			cardSaleAmount:'aa',
-			weiChatSaleAmount:'aa',
-			zhiFuBaoSaleAmount:'aa',
-			totalSaleAmount:'aa',
-			cashRefundAmount:'aa',
-			cardRefundAmount:'aa',
-			weiChatRefundAmount:'aa',
-			zhiFuBaoRefundAmount:'aa',
-			totalRefundAmount:'aa',
-			totalAmount:'aa',
-
-		}
-	]
-
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
 		var arr=[]
 		for (var i = this.queryData.length - 1; i >= 0; i--) {
@@ -131,20 +87,19 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		
-	// 	this._sellerdailyService.getPaged(arr,null,request.maxResultCount,request.skipCount,this.boatId,this.ticketId)
-	// 	.finally(() => {
-	// 		finishedCallback();
-	// 	})
-	// 	.subscribe(result => {
-	// 		// if(result.totalCount>0){
-	// 			this.dataList = result.items;
-	// 		if(result.totalCount>0){
-	// 			this.total= [result.total]
-	// 		}
-	// 			this.showPaging(result);
-	// 			// }
-	// 		});
+		// this._sellerdailyService.getPaged(arr,null,request.maxResultCount,request.skipCount,this.boatId,this.ticketId)
+		// .finally(() => {
+		// 	finishedCallback();
+		// })
+		// .subscribe(result => {
+		// 	// if(result.totalCount>0){
+		// 		this.dataList = result.items;
+		// 	if(result.totalCount>0){
+		// 		this.total= [result.total]
+		// 	}
+		// 		this.showPaging(result);
+		// 		// }
+		// 	});
 
 	// 	this.getuser()
 	// 	this.getschedule()
@@ -192,19 +147,18 @@ implements OnInit {
 	// }
 
 
+
+	// open(id): void {
+	// 	this._sellerdailyService.detail(id)
+	// 	.subscribe(result => {
+	// 		this.visible = true;
+	// 		this.orderlist = result;
+	// 	});
 	}
 
 	close(): void {
 		this.visible = false;
 	}
-	open(id : number): void {
-		this.modalHelper.static(CreateOrEditSalerdailyComponent, { id: id })
-		.subscribe(result => {
-		  if (result) {
-			this.refresh();
-		  }
-		});
-	  }
 
 
 	openchild(tickets): void {

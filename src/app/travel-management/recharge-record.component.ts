@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {RechargeRecordServiceProxy, PagedResultDtoOfRechargeRecordListDto, RechargeRecordListDto } from '@shared/service-proxies/service-proxies';
+import { RechargeRecordServiceProxy, PagedResultDtoOfRechargeRecordListDto, RechargeRecordListDto } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditRechargeRecordComponent } from './create-or-edit-recharge-record/create-or-edit-recharge-record.component';
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
@@ -15,21 +15,21 @@ import { CreateOrEditRechargeRecordComponent } from './create-or-edit-recharge-r
 })
 
 
-export class  RechargeRecordComponent extends PagedListingComponentBase<RechargeRecordListDto>
-implements OnInit {
-	
+export class RechargeRecordComponent extends PagedListingComponentBase<RechargeRecordListDto>
+	implements OnInit {
+
 	constructor(
 		injector: Injector,
 		private _rechargeRecordService: RechargeRecordServiceProxy
-		) {
+	) {
 		super(injector);
-		this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
-		this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
+		this.curmenupower = JSON.parse(localStorage.getItem('curmenupower'))
+		this.isAllOperation = eval(localStorage.getItem('isAllOperation'))
 	}
 
-	isAllOperation=false
-	curmenupower=[]
-	
+	isAllOperation = false
+	curmenupower = []
+
 	queryData = [];
 
 	/**
@@ -38,53 +38,53 @@ implements OnInit {
 	* @param pageNumber 当前页码
 	* @param finishedCallback 完成后回调函数
 	*/
-	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
+	protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
 
 
 		this._rechargeRecordService.getPaged(
 			'',
-			 request.sorting,
- request.maxResultCount,
- request.skipCount,
+			request.sorting,
+			request.maxResultCount,
+			request.skipCount,
 		)
-		.finally(() => {
-			finishedCallback();
-		})
-		.subscribe(result => {
-			this.dataList = result.items;
-			this.showPaging(result);
-		});
+			.finally(() => {
+				finishedCallback();
+			})
+			.subscribe(result => {
+				this.dataList = result.items;
+				this.showPaging(result);
+			});
 	}
-	
+
 	/**
 	* 新增或编辑DTO信息
 	* @param id 当前DTO的Id
 	*/
 	createOrEdit(id?: number): void {
 		this.modalHelper.static(CreateOrEditRechargeRecordComponent, { id: id })
-		.subscribe(result => {
-			if (result) {
-				this.refresh();
-			}
-		});
+			.subscribe(result => {
+				if (result) {
+					this.refresh();
+				}
+			});
 	}
-	
-	
+
+
 	/**
 	* 删除功能
 	* @param entity 角色的实体信息
 	*/
 	delete(entity: RechargeRecordListDto): void {
 		this._rechargeRecordService.delete(entity.id)
-		.subscribe(() => {
-		/**
-		* 刷新表格数据并跳转到第一页（`pageNumber = 1`）
-		*/
-		this.refreshGoFirstPage();
-		this.notify.success(this.l('SuccessfullyDeleted'));
-	});
+			.subscribe(() => {
+				/**
+				* 刷新表格数据并跳转到第一页（`pageNumber = 1`）
+				*/
+				this.refreshGoFirstPage();
+				this.notify.success(this.l('SuccessfullyDeleted'));
+			});
 	}
-	
+
 	/**
 	* 批量删除
 	*/
@@ -106,19 +106,19 @@ implements OnInit {
 					});
 				}
 			},
-			);
+		);
 	}
-	
-	
+
+
 	/**
 	* 导出为Excel表
 	*/
 	exportToExcel(): void {
 		abp.message.error('功能开发中！！！！');
 		// this._rechargeRecordService.getRechargeRecordexportToExcel().subscribe(result => {
-			// this._fileDownloadService.downloadTempFile(result);
-			// });
-		}
-		
+		// this._fileDownloadService.downloadTempFile(result);
+		// });
 	}
+
+}
 

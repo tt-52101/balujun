@@ -3,7 +3,10 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {SellerTicketServiceProxy, SellerTicketResultDto,UserServiceProxy ,QueryData,
+import {
+  // SellerTicketServiceProxy, 
+  // SellerTicketResultDto,
+  UserServiceProxy ,QueryData,
   
   TicketServiceProxy,
   // GetTicketsInput
@@ -20,12 +23,12 @@ import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
 })
 
 
-export class  SalerTicketComponent extends PagedListingComponentBase<SellerTicketResultDto>
+export class  SalerTicketComponent extends PagedListingComponentBase<''>
 implements OnInit {
 
   constructor(
     injector: Injector,
-    private _sellerticketService: SellerTicketServiceProxy,
+    // private _sellerticketService: SellerTicketServiceProxy,
     private _userService: UserServiceProxy,
 
     private _ticketService: TicketServiceProxy,

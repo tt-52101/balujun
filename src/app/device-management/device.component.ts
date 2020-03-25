@@ -66,7 +66,9 @@ implements OnInit {
     }
 
     formdata.queryData = arr;
+    formdata.filterText = ''
     formdata.sorting = request.sorting
+
     formdata.maxResultCount = request.maxResultCount;
     formdata.skipCount = request.skipCount;
 
@@ -79,14 +81,14 @@ implements OnInit {
       this.showPaging(result);
     });
 
-    this.getstation()
+    // this.getstation()
   }
 
   getstation(){
-    this._ticketStationService.getPaged(null,null,999,0)
-    .subscribe(result => {
-      this.stationList = result.items;
-    });
+    // this._ticketStationService.getPaged(null,null,999,0)
+    // .subscribe(result => {
+    //   this.stationList = result.items;
+    // });
   }
 
   createOrEdit(id ? : number): void {

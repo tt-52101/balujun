@@ -142,7 +142,7 @@ implements OnInit {
 
 
 	open(id): void {
-			this.visible = true;
+			// this.visible = true;
 		// this._payMethodService.payMethodStatDetail(id)
 		// .subscribe(result => {
 		// 	this.visible = true;

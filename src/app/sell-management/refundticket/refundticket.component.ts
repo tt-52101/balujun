@@ -5,8 +5,8 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { AppComponentBase } from '@shared/component-base/app-component-base';
 
 import {ActivityServiceProxy,
-  // GetActivitysInput,
-  TicketDetailServiceProxy, QueryData} from '@shared/service-proxies/service-proxies';
+  GetActivitysInput,
+  TicketDetailServiceProxy, QueryData, GetTicketDetailsInput} from '@shared/service-proxies/service-proxies';
 
 import { NzModalService } from 'ng-zorro-antd';
 
@@ -123,7 +123,14 @@ export class RefundTicketComponent extends AppComponentBase implements OnInit {
         }
       }
 
-      this._ticketDetailService.getPaged('',null,999,0)
+      var formdata = new GetTicketDetailsInput
+      formdata.queryData = []
+      formdata.filterText = ''
+      formdata.sorting = ''
+      formdata.maxResultCount = 990
+      formdata.skipCount = 0
+      
+      this._ticketDetailService.getPaged(formdata)
       .subscribe(result => {
         if(result.items.length>0){
           this.single=true
@@ -197,8 +204,14 @@ export class RefundTicketComponent extends AppComponentBase implements OnInit {
       logic: "and"
     })]
 
+    var formdata = new GetTicketDetailsInput
+    formdata.queryData = []
+    formdata.filterText = ''
+    formdata.sorting = ''
+    formdata.maxResultCount = 990
+    formdata.skipCount = 0
 
-    this._ticketDetailService.getPaged('',null,999,0)
+    this._ticketDetailService.getPaged(formdata)
     .subscribe(result => {
       // this.orderticket=result.items
     });
