@@ -19,9 +19,6 @@ export class CreateOrEditTicketComponent
 extends ModalComponentBase
 implements OnInit {
 
-  /**
-   * 编辑时DTO的id
-   */
 
   entity: CustomerEditDto=new CustomerEditDto();
 
@@ -282,7 +279,6 @@ submitForm(): void {
         .subscribe(res => {
           console.log(res)
           this.notify.success(this.l('SavedSuccessfully'));
-          // abp.message.success(this.l('SavedSuccessfully'));
           this.success(res.customer);
         });
       });

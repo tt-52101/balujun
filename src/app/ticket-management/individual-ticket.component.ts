@@ -5,6 +5,19 @@ import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-e
 
 import { AppComponentBase } from '@shared/component-base/app-component-base';
 
+import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
+import * as moment from 'moment';
+
+import {
+    ActivityServiceProxy,
+    CreateActivityModel,
+    TicketPriceServiceProxy,
+    GetTicketPricesInput,
+    PayMethodServiceProxy,
+    SourceServiceProxy,
+    QueryData,
+    OrderTypeEnum
+} from '@shared/service-proxies/service-proxies';
 
 @Component({
     templateUrl: './individual-ticket.component.html',
@@ -16,119 +29,209 @@ import { AppComponentBase } from '@shared/component-base/app-component-base';
 export class IndividualTicket extends AppComponentBase implements OnInit {
 
     constructor(
-		injector: Injector,
-		// private _powerService: PowerServiceProxy
-		) {
-		super(injector);
-    this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
-    this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
-  }
-
-  isAllOperation=false
-  curmenupower=[]
-
-    protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
-        throw new Error("Method not implemented.");
+        injector: Injector,
+        private _ticketPriceService: TicketPriceServiceProxy,
+        private _payMethodService: PayMethodServiceProxy,
+        private _sourceService: SourceServiceProxy,
+        private _activityService: ActivityServiceProxy,
+        ) {
+        super(injector);
+        this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
+        this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
     }
 
+    isAllOperation=false
+    curmenupower=[]
+    sourceId=0
+
+    effectivetime=''
+    paymethodList=[]
+
+    orderticket = [];
+    startDateTime=''
+    endDateTime=''
     
-    i = 0;
-    demoValue=110
-    editId: string | null;
+    ticketlist=[]
 
-    selectedValue = ['jack','lucy','disabled'];
-    selected='jack'
+    editindex=-1;
+    discountlist=[]
+    discount = 100;
+    totalprice=0
+    totalnum=0
 
-    listOfData: any[] = [
-        {
-            id: '0',
-            name: '儿童票',
-            age: '￥352',
-            address: 334,
-            aa: 448,
-            bb: 5544,
-            cc: 66
-        },
-        {
-            id: '1',
-            name: '儿童票5',
-            age: '￥32',
-            address: 3354,
-            aa: 4488,
-            bb: 554,
-            cc: 77
-        },
-        {
-            id: '2',
-            name: '儿童票4',
-            age: '￥326',
-            address: 33,
-            aa: 4477,
-            bb: 5522,
-            cc: 88
-        },
+    receive=0
 
-    ];
-    
+    orderinfo={
+        payMethodId: 0,
+    }
 
-  
-    /**
-	* 新增或编辑DTO信息
-	* @param id 当前DTO的Id
-	*/
-	createOrEdit(id?: number): void {
-        console.log(123);
+    disabledDate = (current: Date): boolean => {
+        return differenceInCalendarDays(current, new Date()) < 0;
+    };
+
+    ngOnInit(): void {
+        this.getticket()
+        this.getpaymethod()
+        for (var i = 100; i >= 1; i--) {
+            this.discountlist.push(i)
+        }
+    }
+
+    getsource(){
+        this._sourceService.getPaged('','',999,0)
+        .subscribe(result => {
+            for (var i = 0; i<result.items.length;i++) {
+                if(result.items[i].sourceCode=='Reception'){
+                    this.sourceId=result.items[i].id
+                }
+            }
+        });
+    }
+
+
+    getpaymethod(){
+        this._payMethodService.getPagedGet('','',999,0)
+        .subscribe(result => {
+            this.paymethodList = result.items;
+            this.orderinfo.payMethodId=result.items[0].id
+        });
+    }
+
+    getticket(){
+        var arr=[]
+        arr.push(new QueryData({
+            field: "isEnabled",
+            method: "=",
+            value: 'true',
+            logic: "and"
+        }))
+        var formdata=new GetTicketPricesInput
+        formdata.queryData=arr
+        formdata.filterText=''
+        formdata.sorting=''
+        formdata.maxResultCount=999
+        formdata.skipCount=0
         
-		this.modalHelper.static(CreateOrEditTicketComponent, { id: id })
-		.subscribe(result => {
-			if (result) {
-				// this.refresh();
-			}
-		});
-	}
-
-    deleteRow(id: string): void {
-        this.listOfData = this.listOfData.filter(d => d.id !== id);
-    }
-
-    startEdit(id: string): void {
-        this.editId = id;
- 
-    }
-
-    aa(e){
-        console.log(this.listOfData[e].name);
-        console.log(this.listOfData[e].cc);
+        this._ticketPriceService.getPagedCustomer(formdata)
+        .subscribe(result => {
+            this.ticketlist = result.items;
+        });
     }
 
     addRow(): void {
-
-        this.listOfData = [
-          ...this.listOfData,
-          {
-            id: this.i+4,
-            name: `${this.i}儿童票`,
-            age: `${this.i}￥30`,
-            address: `${this.i}22`,
-            aa:`${this.i}33`,
-            bb:`${this.i}44`,
-            cc:`${this.i}11`
-          }
-        ];
-        this.i++;
-      }
-
-    ngOnInit(): void {
-        // throw new Error("Method not implemented.");
+        this.editindex= this.orderticket.length
+        this.orderticket =this.orderticket.concat([{
+            ticketid:'',
+            ticketname:'请选择票型',
+            ticketprice:0,
+            ticketcount:0,
+            num:1,
+            curstomer:[]
+        }])
+        this.countprice()
     }
 
+    startEdit(i: number): void {
+        this.editindex = i;
+    }
+
+    ticketchange($event){
+        var ticket=this.ticketlist.filter(d => d.id == $event)
+        this.orderticket[this.editindex].ticketname=ticket[0].ticketName
+        this.orderticket[this.editindex].ticketprice=ticket[0].price
+        this.countprice()
+    }
+
+    numchange(i){
+        if(i>0){
+            var curstomer=this.orderticket[this.editindex].curstomer
+            if(curstomer.length > i){
+                this.orderticket[this.editindex].curstomer =curstomer.splice(0,i)
+            }else if(curstomer.length < i){
+                var len = i - curstomer.length
+                for (var j =0;j < len; j++) {
+                    curstomer.push({
+                        name:''
+                    })
+                }
+            }
+        }
+        this.countprice()
+    }
+
+    deleteRow(i): void {
+        this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
+    }
+
+    createOrEdit(id?: number): void {
+        console.log(123);
+        
+        this.modalHelper.static(CreateOrEditTicketComponent, { id: id })
+        .subscribe(result => {
+            if (result) {
+                // this.refresh();
+            }
+        });
+    }
+
+    datechange($event): void {
+        this.startDateTime=$event[0]
+        this.endDateTime=$event[1]
+    }
+
+    discountchange($event){
+        this.discount=$event
+        this.countprice()  
+    }
+
+    countprice(){
+        var totalprice=0
+        var totalnum=0
+        this.orderticket.forEach(function(item){
+            if(item.ticketid){
+                item.ticketcount=item.ticketprice * item.num
+                totalprice +=item.ticketcount
+                totalnum +=item.num
+            }
+        })
+        this.totalprice=totalprice * this.discount / 100
+        this.totalnum=totalnum
+    }
 
 
     settlement(){
-        
-    }
+        if(this.totalnum==0){
+            abp.message.warn('请添加票型');
+            return
+        }
+        var orderdata = new CreateActivityModel()
+        orderdata.sourceId= this.sourceId;
+        orderdata.payMethodId= this.orderinfo.payMethodId;
+        orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
+        orderdata.startDateTime=moment(this.startDateTime);
+        orderdata.endDateTime= moment(this.endDateTime);
+        // orderdata.startDateTime=this.startDateTime;
+        // orderdata.endDateTime= this.endDateTime;
+
+        console.log(orderdata.startDateTime)
+        console.log(orderdata.endDateTime)
+
+        orderdata.activityDetails=[]
+
+        // this._activityService.createActivity(orderdata)
+        // .subscribe(result => {
+            //     if(result.resultCode == "000"){
+                //         this.notify.success(result.resultMessage);
+                //         this.orderticket=[]
+                //         this.countprice()
+                //     }else{
+                    //         abp.message.warn(result.resultMessage);
+                    //     }
+                    // });
+
+                }
 
 
 
 
-}
+            }
