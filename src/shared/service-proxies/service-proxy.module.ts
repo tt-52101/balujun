@@ -28,6 +28,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.EditionServiceProxy,
   ApiServiceProxies.TimingServiceProxy,
   ApiServiceProxies.CommonLookupServiceProxy,
+  ApiServiceProxies.TicketRoleServiceProxy,
   // ============= Hangfire ==================
   // ApiServiceProxies.HangfireServiceServiceProxy,
 

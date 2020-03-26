@@ -114,8 +114,8 @@ export class ActivityServiceProxy {
             }
         ],
         "groupId": 1,
-        "availableStart": "2020-03-23T03:19:08.349Z",
-        "availableEnd": "2020-03-29T03:19:08.349Z"
+        "availableStart": "2020-03-23",
+        "availableEnd": "2020-03-29"
     }
      * @return Success
      */
@@ -20807,63 +20807,6 @@ export class TicketRoleServiceProxy {
     }
 
     /**
-     * 通过指定id获取TicketRoleListDto信息
-     * @param id (optional) 
-     * @return Success
-     */
-    getById(id: number | undefined): Observable<TicketRoleListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketRole/GetById?";
-        if (id === null)
-            throw new Error("The parameter 'id' cannot be null.");
-        else if (id !== undefined)
-            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetById(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetById(<any>response_);
-                } catch (e) {
-                    return <Observable<TicketRoleListDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<TicketRoleListDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetById(response: HttpResponseBase): Observable<TicketRoleListDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? TicketRoleListDto.fromJS(resultData200) : new TicketRoleListDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<TicketRoleListDto>(<any>null);
-    }
-
-    /**
      * 获取编辑
      * @param id (optional) 
      * @return Success
@@ -20921,15 +20864,84 @@ export class TicketRoleServiceProxy {
     }
 
     /**
-     * 获取的分页列表信息
+     * 编辑初始化
+     * @param roleId (optional) 
+     * @return Success
+     */
+    getForUpdate(roleId: number | undefined): Observable<GetTicketRoleForUpdateOutput> {
+        let url_ = this.baseUrl + "/api/services/app/TicketRole/GetForUpdate?";
+        if (roleId === null)
+            throw new Error("The parameter 'roleId' cannot be null.");
+        else if (roleId !== undefined)
+            url_ += "roleId=" + encodeURIComponent("" + roleId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<GetTicketRoleForUpdateOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetTicketRoleForUpdateOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForUpdate(response: HttpResponseBase): Observable<GetTicketRoleForUpdateOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetTicketRoleForUpdateOutput.fromJS(resultData200) : new GetTicketRoleForUpdateOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetTicketRoleForUpdateOutput>(<any>null);
+    }
+
+    /**
+     * 查询
+     * @param queryData (optional) RoleId 角色
      * @param filterText (optional) 
      * @param sorting (optional) 
      * @param maxResultCount (optional) 
      * @param skipCount (optional) 
+     * @param username (optional) 
+     * @param ticketname (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, username: string | undefined, ticketname: string | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
         let url_ = this.baseUrl + "/api/services/app/TicketRole/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
         if (filterText === null)
             throw new Error("The parameter 'filterText' cannot be null.");
         else if (filterText !== undefined)
@@ -20946,6 +20958,14 @@ export class TicketRoleServiceProxy {
             throw new Error("The parameter 'skipCount' cannot be null.");
         else if (skipCount !== undefined)
             url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (username === null)
+            throw new Error("The parameter 'username' cannot be null.");
+        else if (username !== undefined)
+            url_ += "username=" + encodeURIComponent("" + username) + "&"; 
+        if (ticketname === null)
+            throw new Error("The parameter 'ticketname' cannot be null.");
+        else if (ticketname !== undefined)
+            url_ += "ticketname=" + encodeURIComponent("" + ticketname) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -20990,6 +21010,69 @@ export class TicketRoleServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfTicketRoleListDto>(<any>null);
+    }
+
+    /**
+     * 编辑
+     * @param roleId (optional) 角色ID
+     * @param availableTicketPriceIds (optional) 可售票型ID集合
+     * @param isEnabled (optional) 是否启用
+     * @return Success
+     */
+    update(roleId: number | undefined, availableTicketPriceIds: number[] | undefined, isEnabled: boolean | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/TicketRole/Update?";
+        if (roleId === null)
+            throw new Error("The parameter 'roleId' cannot be null.");
+        else if (roleId !== undefined)
+            url_ += "roleId=" + encodeURIComponent("" + roleId) + "&"; 
+        if (availableTicketPriceIds === null)
+            throw new Error("The parameter 'availableTicketPriceIds' cannot be null.");
+        else if (availableTicketPriceIds !== undefined)
+            availableTicketPriceIds && availableTicketPriceIds.forEach(item => { url_ += "availableTicketPriceIds=" + encodeURIComponent("" + item) + "&"; });
+        if (isEnabled === null)
+            throw new Error("The parameter 'isEnabled' cannot be null.");
+        else if (isEnabled !== undefined)
+            url_ += "isEnabled=" + encodeURIComponent("" + isEnabled) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 }
 
@@ -27446,6 +27529,142 @@ export class VerificationServiceProxy {
     }
 }
 
+@Injectable()
+export class WechatPayServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取OpenId
+     * @param code (optional) 
+     * @return Success
+     */
+    getOpenId(code: string | undefined): Observable<AjaxResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/GetOpenId?";
+        if (code === null)
+            throw new Error("The parameter 'code' cannot be null.");
+        else if (code !== undefined)
+            url_ += "code=" + encodeURIComponent("" + code) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOpenId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOpenId(<any>response_);
+                } catch (e) {
+                    return <Observable<AjaxResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AjaxResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetOpenId(response: HttpResponseBase): Observable<AjaxResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AjaxResult.fromJS(resultData200) : new AjaxResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AjaxResult>(<any>null);
+    }
+
+    /**
+     * 获取OpenId
+     * @param appid (optional) 
+     * @param secret (optional) 
+     * @param grant_type (optional) 
+     * @return Success
+     */
+    getToken(appid: string | undefined, secret: string | undefined, grant_type: string | undefined): Observable<AccessTokenResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/GetToken?";
+        if (appid === null)
+            throw new Error("The parameter 'appid' cannot be null.");
+        else if (appid !== undefined)
+            url_ += "appid=" + encodeURIComponent("" + appid) + "&"; 
+        if (secret === null)
+            throw new Error("The parameter 'secret' cannot be null.");
+        else if (secret !== undefined)
+            url_ += "secret=" + encodeURIComponent("" + secret) + "&"; 
+        if (grant_type === null)
+            throw new Error("The parameter 'grant_type' cannot be null.");
+        else if (grant_type !== undefined)
+            url_ += "grant_type=" + encodeURIComponent("" + grant_type) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetToken(<any>response_);
+                } catch (e) {
+                    return <Observable<AccessTokenResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AccessTokenResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetToken(response: HttpResponseBase): Observable<AccessTokenResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AccessTokenResult.fromJS(resultData200) : new AccessTokenResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AccessTokenResult>(<any>null);
+    }
+}
+
 export enum OrderTypeEnum {
     OrderTypeCustomer = <any>"OrderTypeCustomer", 
     OrderTypeOrg = <any>"OrderTypeOrg", 
@@ -27517,8 +27736,8 @@ export class CreateActivityModel implements ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
-    startDateTime: moment.Moment | undefined;
-    endDateTime: moment.Moment | undefined;
+    startDateTime: string | undefined;
+    endDateTime: string | undefined;
     discount: number;
 
     constructor(data?: ICreateActivityModel) {
@@ -27546,8 +27765,8 @@ export class CreateActivityModel implements ICreateActivityModel {
                     this.activityDetails.push(CreateActivityDetailModel.fromJS(item));
             }
             this.travelAgencyId = data["travelAgencyId"];
-            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
-            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.startDateTime = data["startDateTime"];
+            this.endDateTime = data["endDateTime"];
             this.discount = data["discount"];
         }
     }
@@ -27575,8 +27794,8 @@ export class CreateActivityModel implements ICreateActivityModel {
                 data["activityDetails"].push(item.toJSON());
         }
         data["travelAgencyId"] = this.travelAgencyId;
-        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
-        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["startDateTime"] = this.startDateTime;
+        data["endDateTime"] = this.endDateTime;
         data["discount"] = this.discount;
         return data; 
     }
@@ -27600,8 +27819,8 @@ export interface ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
-    startDateTime: moment.Moment | undefined;
-    endDateTime: moment.Moment | undefined;
+    startDateTime: string | undefined;
+    endDateTime: string | undefined;
     discount: number;
 }
 
@@ -27720,8 +27939,8 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
     ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
-    availableStart: moment.Moment;
-    availableEnd: moment.Moment;
+    availableStart: string | undefined;
+    availableEnd: string | undefined;
 
     constructor(data?: ICreateGroupActivityModel) {
         if (data) {
@@ -27750,8 +27969,8 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
                     this.activityDetails.push(CreateGroupActivityDetailModel.fromJS(item));
             }
             this.groupId = data["groupId"];
-            this.availableStart = data["availableStart"] ? moment(data["availableStart"].toString()) : <any>undefined;
-            this.availableEnd = data["availableEnd"] ? moment(data["availableEnd"].toString()) : <any>undefined;
+            this.availableStart = data["availableStart"];
+            this.availableEnd = data["availableEnd"];
         }
     }
 
@@ -27780,8 +27999,8 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
                 data["activityDetails"].push(item.toJSON());
         }
         data["groupId"] = this.groupId;
-        data["availableStart"] = this.availableStart ? this.availableStart.toISOString() : <any>undefined;
-        data["availableEnd"] = this.availableEnd ? this.availableEnd.toISOString() : <any>undefined;
+        data["availableStart"] = this.availableStart;
+        data["availableEnd"] = this.availableEnd;
         return data; 
     }
 
@@ -27806,8 +28025,8 @@ export interface ICreateGroupActivityModel {
     ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
-    availableStart: moment.Moment;
-    availableEnd: moment.Moment;
+    availableStart: string | undefined;
+    availableEnd: string | undefined;
 }
 
 export class CheckResult implements ICheckResult {
@@ -36710,6 +36929,8 @@ export class CustomerListDto implements ICustomerListDto {
     photo: string | undefined;
     /** 出生日期 */
     dateOfBirth: moment.Moment | undefined;
+    readonly dateOfBirthStr: string | undefined;
+    readonly creationTimeStr: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -36742,6 +36963,8 @@ export class CustomerListDto implements ICustomerListDto {
             this.openID = data["openID"];
             this.photo = data["photo"];
             this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
+            (<any>this).dateOfBirthStr = data["dateOfBirthStr"];
+            (<any>this).creationTimeStr = data["creationTimeStr"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -36774,6 +36997,8 @@ export class CustomerListDto implements ICustomerListDto {
         data["openID"] = this.openID;
         data["photo"] = this.photo;
         data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["dateOfBirthStr"] = this.dateOfBirthStr;
+        data["creationTimeStr"] = this.creationTimeStr;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -36820,6 +37045,8 @@ export interface ICustomerListDto {
     photo: string | undefined;
     /** 出生日期 */
     dateOfBirth: moment.Moment | undefined;
+    dateOfBirthStr: string | undefined;
+    creationTimeStr: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -54189,6 +54416,8 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
     upperTime: moment.Moment;
     /** LowerTime */
     lowerTime: moment.Moment;
+    upperTimeStr: string | undefined;
+    lowerTimeStr: string | undefined;
     position: PositionEnum;
     /** IsEnabled */
     isEnabled: boolean;
@@ -54217,6 +54446,8 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
             this.rDiscount = data["rDiscount"];
             this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
             this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
+            this.upperTimeStr = data["upperTimeStr"];
+            this.lowerTimeStr = data["lowerTimeStr"];
             this.position = data["position"];
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
@@ -54241,6 +54472,8 @@ export class TicketPriceEditDto implements ITicketPriceEditDto {
         data["rDiscount"] = this.rDiscount;
         data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
         data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
+        data["upperTimeStr"] = this.upperTimeStr;
+        data["lowerTimeStr"] = this.lowerTimeStr;
         data["position"] = this.position;
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
@@ -54272,6 +54505,8 @@ export interface ITicketPriceEditDto {
     upperTime: moment.Moment;
     /** LowerTime */
     lowerTime: moment.Moment;
+    upperTimeStr: string | undefined;
+    lowerTimeStr: string | undefined;
     position: PositionEnum;
     /** IsEnabled */
     isEnabled: boolean;
@@ -54329,7 +54564,7 @@ export interface ICreateOrUpdateTicketPriceInput {
     ticketPrice: TicketPriceEditDto;
 }
 
-/** 的编辑DTO Yozeev.BusinessLogic.TicketPrice */
+/** 票价DTO Yozeev.BusinessLogic.TicketPrice */
 export class TicketPriceListDto implements ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
@@ -54344,6 +54579,9 @@ export class TicketPriceListDto implements ITicketPriceListDto {
     upperTime: moment.Moment;
     /** LowerTime */
     lowerTime: moment.Moment;
+    readonly upperTimeStr: string | undefined;
+    readonly lowerTimeStr: string | undefined;
+    readonly creationTimeStr: string | undefined;
     position: PositionEnum;
     /** IsEnabled */
     isEnabled: boolean;
@@ -54377,6 +54615,9 @@ export class TicketPriceListDto implements ITicketPriceListDto {
             this.rDiscount = data["rDiscount"];
             this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
             this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
+            (<any>this).upperTimeStr = data["upperTimeStr"];
+            (<any>this).lowerTimeStr = data["lowerTimeStr"];
+            (<any>this).creationTimeStr = data["creationTimeStr"];
             this.position = data["position"];
             this.isEnabled = data["isEnabled"];
             this.sort = data["sort"];
@@ -54406,6 +54647,9 @@ export class TicketPriceListDto implements ITicketPriceListDto {
         data["rDiscount"] = this.rDiscount;
         data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
         data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
+        data["upperTimeStr"] = this.upperTimeStr;
+        data["lowerTimeStr"] = this.lowerTimeStr;
+        data["creationTimeStr"] = this.creationTimeStr;
         data["position"] = this.position;
         data["isEnabled"] = this.isEnabled;
         data["sort"] = this.sort;
@@ -54427,7 +54671,7 @@ export class TicketPriceListDto implements ITicketPriceListDto {
     }
 }
 
-/** 的编辑DTO Yozeev.BusinessLogic.TicketPrice */
+/** 票价DTO Yozeev.BusinessLogic.TicketPrice */
 export interface ITicketPriceListDto {
     /** BranchId */
     branchId: number | undefined;
@@ -54442,6 +54686,9 @@ export interface ITicketPriceListDto {
     upperTime: moment.Moment;
     /** LowerTime */
     lowerTime: moment.Moment;
+    upperTimeStr: string | undefined;
+    lowerTimeStr: string | undefined;
+    creationTimeStr: string | undefined;
     position: PositionEnum;
     /** IsEnabled */
     isEnabled: boolean;
@@ -54752,93 +54999,6 @@ export interface ICreateOrUpdateTicketRoleInput {
     ticketRole: TicketRoleEditDto;
 }
 
-/** 的编辑DTO Yozeev.BusinessLogic.TicketRole */
-export class TicketRoleListDto implements ITicketRoleListDto {
-    /** BranchId */
-    branchId: number | undefined;
-    /** RoleId */
-    roleId: number;
-    role: Role;
-    /** TicketPriceId */
-    ticketPriceId: number;
-    ticketPrice: TicketPrice;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicketRoleListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.roleId = data["roleId"];
-            this.role = data["role"] ? Role.fromJS(data["role"]) : <any>undefined;
-            this.ticketPriceId = data["ticketPriceId"];
-            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TicketRoleListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new TicketRoleListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["roleId"] = this.roleId;
-        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
-        data["ticketPriceId"] = this.ticketPriceId;
-        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TicketRoleListDto {
-        const json = this.toJSON();
-        let result = new TicketRoleListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 的编辑DTO Yozeev.BusinessLogic.TicketRole */
-export interface ITicketRoleListDto {
-    /** BranchId */
-    branchId: number | undefined;
-    /** RoleId */
-    roleId: number;
-    role: Role;
-    /** TicketPriceId */
-    ticketPriceId: number;
-    ticketPrice: TicketPrice;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
 /** 读取可编辑的Dto */
 export class GetTicketRoleForEditOutput implements IGetTicketRoleForEditOutput {
     ticketRole: TicketRoleEditDto;
@@ -54882,6 +55042,272 @@ export class GetTicketRoleForEditOutput implements IGetTicketRoleForEditOutput {
 /** 读取可编辑的Dto */
 export interface IGetTicketRoleForEditOutput {
     ticketRole: TicketRoleEditDto;
+}
+
+/** 票型票价 */
+export class TicketPriceOutput implements ITicketPriceOutput {
+    /** 票价ID */
+    id: number;
+    ticketPrice: TicketPrice;
+    ticket: Ticket;
+    /** 是否可售 */
+    isAvailable: boolean;
+
+    constructor(data?: ITicketPriceOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+            this.isAvailable = data["isAvailable"];
+        }
+    }
+
+    static fromJS(data: any): TicketPriceOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketPriceOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        data["isAvailable"] = this.isAvailable;
+        return data; 
+    }
+
+    clone(): TicketPriceOutput {
+        const json = this.toJSON();
+        let result = new TicketPriceOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型票价 */
+export interface ITicketPriceOutput {
+    /** 票价ID */
+    id: number;
+    ticketPrice: TicketPrice;
+    ticket: Ticket;
+    /** 是否可售 */
+    isAvailable: boolean;
+}
+
+/** 角色可售票型管理 - 编辑（参数） */
+export class GetTicketRoleForUpdateOutput implements IGetTicketRoleForUpdateOutput {
+    /** 角色ID */
+    id: number;
+    role: Role;
+    /** 票型票价集合 */
+    allTicketPrices: TicketPriceOutput[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
+
+    constructor(data?: IGetTicketRoleForUpdateOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.role = data["role"] ? Role.fromJS(data["role"]) : <any>undefined;
+            if (data["allTicketPrices"] && data["allTicketPrices"].constructor === Array) {
+                this.allTicketPrices = [] as any;
+                for (let item of data["allTicketPrices"])
+                    this.allTicketPrices.push(TicketPriceOutput.fromJS(item));
+            }
+            this.isEnabled = data["isEnabled"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketRoleForUpdateOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketRoleForUpdateOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (this.allTicketPrices && this.allTicketPrices.constructor === Array) {
+            data["allTicketPrices"] = [];
+            for (let item of this.allTicketPrices)
+                data["allTicketPrices"].push(item.toJSON());
+        }
+        data["isEnabled"] = this.isEnabled;
+        return data; 
+    }
+
+    clone(): GetTicketRoleForUpdateOutput {
+        const json = this.toJSON();
+        let result = new GetTicketRoleForUpdateOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 角色可售票型管理 - 编辑（参数） */
+export interface IGetTicketRoleForUpdateOutput {
+    /** 角色ID */
+    id: number;
+    role: Role;
+    /** 票型票价集合 */
+    allTicketPrices: TicketPriceOutput[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
+}
+
+/** 可售票型 */
+export class AvailableTicketPriceDto implements IAvailableTicketPriceDto {
+    ticketPrice: TicketPrice;
+    ticket: Ticket;
+
+    constructor(data?: IAvailableTicketPriceDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AvailableTicketPriceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AvailableTicketPriceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): AvailableTicketPriceDto {
+        const json = this.toJSON();
+        let result = new AvailableTicketPriceDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 可售票型 */
+export interface IAvailableTicketPriceDto {
+    ticketPrice: TicketPrice;
+    ticket: Ticket;
+}
+
+/** 角色可售票型管理 - 查询（结果） */
+export class TicketRoleListDto implements ITicketRoleListDto {
+    /** 角色ID */
+    id: number;
+    role: Role;
+    /** 包含人员集合 */
+    users: User[] | undefined;
+    /** 可售票型集合 */
+    availableTicketPrices: AvailableTicketPriceDto[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
+
+    constructor(data?: ITicketRoleListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.role = data["role"] ? Role.fromJS(data["role"]) : <any>undefined;
+            if (data["users"] && data["users"].constructor === Array) {
+                this.users = [] as any;
+                for (let item of data["users"])
+                    this.users.push(User.fromJS(item));
+            }
+            if (data["availableTicketPrices"] && data["availableTicketPrices"].constructor === Array) {
+                this.availableTicketPrices = [] as any;
+                for (let item of data["availableTicketPrices"])
+                    this.availableTicketPrices.push(AvailableTicketPriceDto.fromJS(item));
+            }
+            this.isEnabled = data["isEnabled"];
+        }
+    }
+
+    static fromJS(data: any): TicketRoleListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketRoleListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["role"] = this.role ? this.role.toJSON() : <any>undefined;
+        if (this.users && this.users.constructor === Array) {
+            data["users"] = [];
+            for (let item of this.users)
+                data["users"].push(item.toJSON());
+        }
+        if (this.availableTicketPrices && this.availableTicketPrices.constructor === Array) {
+            data["availableTicketPrices"] = [];
+            for (let item of this.availableTicketPrices)
+                data["availableTicketPrices"].push(item.toJSON());
+        }
+        data["isEnabled"] = this.isEnabled;
+        return data; 
+    }
+
+    clone(): TicketRoleListDto {
+        const json = this.toJSON();
+        let result = new TicketRoleListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 角色可售票型管理 - 查询（结果） */
+export interface ITicketRoleListDto {
+    /** 角色ID */
+    id: number;
+    role: Role;
+    /** 包含人员集合 */
+    users: User[] | undefined;
+    /** 可售票型集合 */
+    availableTicketPrices: AvailableTicketPriceDto[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
 }
 
 export class PagedResultDtoOfTicketRoleListDto implements IPagedResultDtoOfTicketRoleListDto {
@@ -62453,6 +62879,314 @@ export enum CaptchaType {
     TenantUserLogin = <any>"TenantUserLogin", 
 }
 
+export class AjaxResult implements IAjaxResult {
+    isSuccess: boolean;
+    message: string | undefined;
+    absoluteUri: string | undefined;
+    isException: boolean;
+    primaryId: PrimaryId | undefined;
+    data: Data2 | undefined;
+
+    constructor(data?: IAjaxResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.isSuccess = data["isSuccess"];
+            this.message = data["message"];
+            this.absoluteUri = data["absoluteUri"];
+            this.isException = data["isException"];
+            this.primaryId = data["primaryId"] ? PrimaryId.fromJS(data["primaryId"]) : <any>undefined;
+            this.data = data["data"] ? Data2.fromJS(data["data"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AjaxResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new AjaxResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isSuccess"] = this.isSuccess;
+        data["message"] = this.message;
+        data["absoluteUri"] = this.absoluteUri;
+        data["isException"] = this.isException;
+        data["primaryId"] = this.primaryId ? this.primaryId.toJSON() : <any>undefined;
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): AjaxResult {
+        const json = this.toJSON();
+        let result = new AjaxResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAjaxResult {
+    isSuccess: boolean;
+    message: string | undefined;
+    absoluteUri: string | undefined;
+    isException: boolean;
+    primaryId: PrimaryId | undefined;
+    data: Data2 | undefined;
+}
+
+export enum ReturnCode {
+    请求成功 = <any>"系统繁忙此时请开发者稍候再试", 
+    工商数据返回_企业已注销 = <any>"请求成功", 
+    工商数据返回_企业不存在或企业信息未更新 = <any>"获取access_token时AppSecret错误或者access_token无效", 
+    工商数据返回_企业法定代表人姓名不一致 = <any>"不合法的凭证类型", 
+    工商数据返回_企业法定代表人身份证号码不一致 = <any>"不合法的OpenID", 
+    法定代表人身份证号码_工商数据未更新_请5_15个工作日之后尝试 = <any>"不合法的媒体文件类型", 
+    工商数据返回_企业信息或法定代表人信息不一致 = <any>"不合法的文件类型", 
+    对方不是粉丝 = <any>"不合法的文件大小", 
+    发送消息失败_对方关闭了接收消息 = <any>"不合法的媒体文件id", 
+    发送消息失败_48小时内用户未互动 = <any>"不合法的消息类型_40008", 
+    POST参数非法 = <any>"不合法的图片文件大小", 
+    获取access_token时AppSecret错误或者access_token无效 = <any>"不合法的语音文件大小", 
+    不合法的凭证类型 = <any>"不合法的视频文件大小", 
+    不合法的OpenID = <any>"不合法的缩略图文件大小", 
+    不合法的媒体文件类型 = <any>"不合法的APPID", 
+    不合法的文件类型 = <any>"不合法的access_token", 
+    不合法的文件大小 = <any>"不合法的菜单类型", 
+    不合法的媒体文件id = <any>"不合法的按钮个数1", 
+    不合法的消息类型_40008 = <any>"不合法的按钮个数2", 
+    不合法的图片文件大小 = <any>"不合法的按钮名字长度", 
+    不合法的语音文件大小 = <any>"不合法的按钮KEY长度", 
+    不合法的视频文件大小 = <any>"不合法的按钮URL长度", 
+    不合法的缩略图文件大小 = <any>"不合法的菜单版本号", 
+    不合法的APPID = <any>"不合法的子菜单级数", 
+    不合法的access_token = <any>"不合法的子菜单按钮个数", 
+    不合法的菜单类型 = <any>"不合法的子菜单按钮类型", 
+    不合法的按钮个数1 = <any>"不合法的子菜单按钮名字长度", 
+    不合法的按钮个数2 = <any>"不合法的子菜单按钮KEY长度", 
+    不合法的按钮名字长度 = <any>"不合法的子菜单按钮URL长度", 
+    不合法的按钮KEY长度 = <any>"不合法的自定义菜单使用用户", 
+    不合法的按钮URL长度 = <any>"不合法的oauth_code", 
+    不合法的菜单版本号 = <any>"不合法的refresh_token", 
+    不合法的子菜单级数 = <any>"不合法的openid列表", 
+    不合法的子菜单按钮个数 = <any>"不合法的openid列表长度", 
+    不合法的子菜单按钮类型 = <any>"不合法的请求字符不能包含uxxxx格式的字符", 
+    不合法的子菜单按钮名字长度 = <any>"不合法的参数", 
+    不合法的子菜单按钮KEY长度 = <any>"template_id不正确", 
+    不合法的子菜单按钮URL长度 = <any>"不合法的请求格式", 
+    不合法的自定义菜单使用用户 = <any>"不合法的URL长度", 
+    不合法的oauth_code = <any>"不合法的分组id", 
+    不合法的refresh_token = <any>"分组名字不合法", 
+    不合法的openid列表 = <any>"appsecret不正确", 
+    不合法的openid列表长度 = <any>"小程序Appid不存在", 
+    不合法的请求字符不能包含uxxxx格式的字符 = <any>"缺少access_token参数", 
+    不合法的参数 = <any>"缺少appid参数", 
+    Template_id不正确 = <any>"缺少refresh_token参数", 
+    不合法的请求格式 = <any>"缺少secret参数", 
+    不合法的URL长度 = <any>"缺少多媒体文件数据", 
+    不合法的分组id = <any>"缺少media_id参数", 
+    分组名字不合法 = <any>"缺少子菜单数据", 
+    输入参数有误 = <any>"缺少oauth_code", 
+    Appsecret不正确 = <any>"缺少openid", 
+    小程序Appid不存在 = <any>"form_id不正确_或者过期", 
+    缺少access_token参数 = <any>"form_id已被使用", 
+    缺少appid参数 = <any>"page不正确", 
+    缺少refresh_token参数 = <any>"access_token超时", 
+    缺少secret参数 = <any>"refresh_token超时", 
+    缺少多媒体文件数据 = <any>"oauth_code超时", 
+    缺少media_id参数 = <any>"需要GET请求", 
+    缺少子菜单数据 = <any>"需要POST请求", 
+    缺少oauth_code = <any>"需要HTTPS请求", 
+    缺少openid = <any>"需要接收者关注", 
+    Form_id不正确_或者过期 = <any>"需要好友关系", 
+    Form_id已被使用 = <any>"多媒体文件为空", 
+    Page不正确 = <any>"POST的数据包为空", 
+    Access_token超时 = <any>"图文消息内容为空", 
+    Refresh_token超时 = <any>"文本消息内容为空", 
+    Oauth_code超时 = <any>"多媒体文件大小超过限制", 
+    需要GET请求 = <any>"消息内容超过限制", 
+    需要POST请求 = <any>"标题字段超过限制", 
+    需要HTTPS请求 = <any>"描述字段超过限制", 
+    需要接收者关注 = <any>"链接字段超过限制", 
+    需要好友关系 = <any>"图片链接字段超过限制", 
+    没有权限 = <any>"语音播放时间超过限制", 
+    多媒体文件为空 = <any>"图文消息超过限制", 
+    POST的数据包为空 = <any>"接口调用超过限制", 
+    图文消息内容为空 = <any>"创建菜单个数超过限制", 
+    文本消息内容为空 = <any>"回复时间超过限制", 
+    多媒体文件大小超过限制 = <any>"系统分组不允许修改", 
+    消息内容超过限制 = <any>"分组名字过长", 
+    标题字段超过限制 = <any>"分组数量超过上限", 
+    描述字段超过限制 = <any>"不存在媒体数据", 
+    链接字段超过限制 = <any>"不存在的菜单版本", 
+    图片链接字段超过限制 = <any>"不存在的菜单数据", 
+    语音播放时间超过限制 = <any>"解析JSON_XML内容错误", 
+    图文消息超过限制 = <any>"api功能未授权", 
+    接口调用超过限制 = <any>"用户未授权该api", 
+    创建菜单个数超过限制 = <any>"参数错误invalid_parameter", 
+    回复时间超过限制 = <any>"无效客服账号invalid_kf_account", 
+    系统分组不允许修改 = <any>"客服帐号已存在kf_account_exsited", 
+    分组名字过长 = <any>"客服帐号名长度超过限制", 
+    分组数量超过上限 = <any>"客服帐号名包含非法字符", 
+    不存在媒体数据 = <any>"客服帐号个数超过限制", 
+    不存在的菜单版本 = <any>"无效头像文件类型invalid_file_type", 
+    不存在的菜单数据 = <any>"系统错误system_error", 
+    解析JSON_XML内容错误 = <any>"日期格式错误", 
+    Api功能未授权 = <any>"日期范围错误", 
+    用户未授权该api = <any>"发送消息失败_48小时内用户未互动", 
+    法人姓名与微信号不一致 = <any>"发送消息失败_该用户已被加入黑名单_无法向此发送消息", 
+    系统错误system_error = <any>"发送消息失败_对方关闭了接收消息", 
+    参数错误invalid_parameter = <any>"对方不是粉丝", 
+    无效客服账号invalid_kf_account = <any>"没有留言权限", 
+    客服帐号已存在kf_account_exsited = <any>"该图文不存在", 
+    客服帐号名长度超过限制 = <any>"文章存在敏感信息", 
+    客服帐号名包含非法字符 = <any>"精选评论数已达上限", 
+    客服帐号个数超过限制 = <any>"已被用户删除_无法精选", 
+    无效头像文件类型invalid_file_type = <any>"已经回复过了", 
+    日期格式错误 = <any>"回复超过长度限制或为0", 
+    日期范围错误 = <any>"该评论不存在", 
+    发送消息失败_该用户已被加入黑名单_无法向此发送消息 = <any>"获取评论数目不合法", 
+    门店不存在 = <any>"该公众号_小程序已经绑定了开放平台帐号", 
+    该门店状态不允许更新 = <any>"该主体已有任务执行中_距上次任务24h后再试", 
+    标签格式错误 = <any>"内部错误", 
+    页面路径错误 = <any>"无效微信号", 
+    类目填写错误 = <any>"法人姓名与微信号不一致", 
+    已经有正在审核的版本 = <any>"企业代码类型无效_请选择正确类型填写", 
+    Item_list有项目为空 = <any>"未找到该任务", 
+    标题填写错误 = <any>"待法人人脸核身校验", 
+    无效的审核id = <any>"法人_企业信息一致性校验中", 
+    没有审核版本 = <any>"缺少参数", 
+    审核状态未满足发布 = <any>"第三方权限集不全_补全权限集全网发布后生效", 
+    状态不可变 = <any>"已下发的模板消息法人并未确认且已超时_24h_未进行身份证校验", 
+    Action非法 = <any>"已下发的模板消息法人并未确认且已超时_24h_未进行人脸识别校验", 
+    审核列表填写的项目数不在1到5以内 = <any>"已下发的模板消息法人并未确认且已超时_24h", 
+    需要补充相应资料_填写org_code和other_files参数 = <any>"工商数据返回_企业已注销", 
+    管理员手机登记数量已超过上限 = <any>"工商数据返回_企业不存在或企业信息未更新", 
+    该微信号已绑定5个管理员 = <any>"工商数据返回_企业法定代表人姓名不一致", 
+    管理员身份证已登记过5次 = <any>"工商数据返回_企业法定代表人身份证号码不一致", 
+    该主体登记数量已超过上限 = <any>"法定代表人身份证号码_工商数据未更新_请5_15个工作日之后尝试", 
+    商家名称已被占用 = <any>"工商数据返回_企业信息或法定代表人信息不一致", 
+    不能使用该名称 = <any>"不是由第三方代小程序进行调用", 
+    该名称在侵权投诉保护期 = <any>"不存在第三方的已经提交的代码", 
+    名称包含违规内容或微信等保留字 = <any>"标签格式错误", 
+    商家名称在改名15天保护期内 = <any>"页面路径错误", 
+    需与该帐号相同主体才可申请 = <any>"类目填写错误", 
+    介绍中含有虚假混淆内容 = <any>"已经有正在审核的版本", 
+    头像或者简介修改达到每个月上限 = <any>"item_list有项目为空", 
+    正在审核中_请勿重复提交 = <any>"标题填写错误", 
+    请先成功创建门店后再调用 = <any>"无效的审核id", 
+    临时mediaid无效 = <any>"没有审核版本", 
+    不是由第三方代小程序进行调用 = <any>"审核状态未满足发布", 
+    不存在第三方的已经提交的代码 = <any>"状态不可变", 
+    小程序还未设置昵称_头像_简介_请先设置完后再重新提交 = <any>"action非法", 
+    无效微信号 = <any>"审核列表填写的项目数不在1到5以内", 
+    签名错误 = <any>"小程序还未设置昵称_头像_简介_请先设置完后再重新提交", 
+    内容含有违法违规内容 = <any>"签名错误", 
+    没有留言权限 = <any>"内容含有违法违规内容", 
+    该图文不存在 = <any>"POST参数非法", 
+    文章存在敏感信息 = <any>"该经营资质已添加_请勿重复添加", 
+    精选评论数已达上限 = <any>"附近地点添加数量达到上线_无法继续添加", 
+    已被用户删除_无法精选 = <any>"地点已被其它小程序占用", 
+    已经回复过了 = <any>"附近功能被封禁", 
+    回复超过长度限制或为0 = <any>"地点正在审核中", 
+    该评论不存在 = <any>"地点正在展示小程序", 
+    获取评论数目不合法 = <any>"地点审核失败", 
+    该公众号_小程序已经绑定了开放平台帐号 = <any>"程序未展示在该地点", 
+    内部错误 = <any>"小程序未上架或不可见", 
+    企业代码类型无效_请选择正确类型填写 = <any>"地点不存在", 
+    该主体已有任务执行中_距上次任务24h后再试 = <any>"个人类型小程序不可用", 
+    未找到该任务 = <any>"需要补充相应资料_填写org_code和other_files参数", 
+    待法人人脸核身校验 = <any>"管理员手机登记数量已超过上限", 
+    法人_企业信息一致性校验中 = <any>"该微信号已绑定5个管理员", 
+    缺少参数 = <any>"管理员身份证已登记过5次", 
+    第三方权限集不全_补全权限集全网发布后生效 = <any>"该主体登记数量已超过上限", 
+    该经营资质已添加_请勿重复添加 = <any>"商家名称已被占用", 
+    附近地点添加数量达到上线_无法继续添加 = <any>"不能使用该名称", 
+    地点已被其它小程序占用 = <any>"该名称在侵权投诉保护期", 
+    附近功能被封禁 = <any>"名称包含违规内容或微信等保留字", 
+    地点正在审核中 = <any>"商家名称在改名15天保护期内", 
+    地点正在展示小程序 = <any>"需与该帐号相同主体才可申请", 
+    地点审核失败 = <any>"介绍中含有虚假混淆内容", 
+    程序未展示在该地点 = <any>"头像或者简介修改达到每个月上限", 
+    小程序未上架或不可见 = <any>"没有权限", 
+    地点不存在 = <any>"正在审核中_请勿重复提交", 
+    个人类型小程序不可用 = <any>"请先成功创建门店后再调用", 
+    已下发的模板消息法人并未确认且已超时_24h_未进行身份证校验 = <any>"临时mediaid无效", 
+    已下发的模板消息法人并未确认且已超时_24h_未进行人脸识别校验 = <any>"输入参数有误", 
+    已下发的模板消息法人并未确认且已超时_24h = <any>"门店不存在", 
+    系统繁忙此时请开发者稍候再试 = <any>"该门店状态不允许更新", 
+}
+
+export class AccessTokenResult implements IAccessTokenResult {
+    access_token: string | undefined;
+    expires_in: number;
+    errcode: ReturnCode;
+    readonly errorCodeValue: number;
+    errmsg: string | undefined;
+    p2PData: P2PData | undefined;
+
+    constructor(data?: IAccessTokenResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.access_token = data["access_token"];
+            this.expires_in = data["expires_in"];
+            this.errcode = data["errcode"];
+            (<any>this).errorCodeValue = data["errorCodeValue"];
+            this.errmsg = data["errmsg"];
+            this.p2PData = data["p2PData"] ? P2PData.fromJS(data["p2PData"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AccessTokenResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccessTokenResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["access_token"] = this.access_token;
+        data["expires_in"] = this.expires_in;
+        data["errcode"] = this.errcode;
+        data["errorCodeValue"] = this.errorCodeValue;
+        data["errmsg"] = this.errmsg;
+        data["p2PData"] = this.p2PData ? this.p2PData.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): AccessTokenResult {
+        const json = this.toJSON();
+        let result = new AccessTokenResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAccessTokenResult {
+    access_token: string | undefined;
+    expires_in: number;
+    errcode: ReturnCode;
+    errorCodeValue: number;
+    errmsg: string | undefined;
+    p2PData: P2PData | undefined;
+}
+
 export class Data implements IData {
 
     constructor(data?: IData) {
@@ -63080,6 +63814,117 @@ export class Anonymous11 implements IAnonymous11 {
 }
 
 export interface IAnonymous11 {
+}
+
+export class PrimaryId implements IPrimaryId {
+
+    constructor(data?: IPrimaryId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): PrimaryId {
+        data = typeof data === 'object' ? data : {};
+        let result = new PrimaryId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): PrimaryId {
+        const json = this.toJSON();
+        let result = new PrimaryId();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPrimaryId {
+}
+
+export class Data2 implements IData2 {
+
+    constructor(data?: IData2) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Data2 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Data2();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Data2 {
+        const json = this.toJSON();
+        let result = new Data2();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IData2 {
+}
+
+export class P2PData implements IP2PData {
+
+    constructor(data?: IP2PData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): P2PData {
+        data = typeof data === 'object' ? data : {};
+        let result = new P2PData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): P2PData {
+        const json = this.toJSON();
+        let result = new P2PData();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IP2PData {
 }
 
 export class SwaggerException extends Error {

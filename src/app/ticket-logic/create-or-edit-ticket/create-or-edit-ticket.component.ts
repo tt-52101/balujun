@@ -1,7 +1,7 @@
 import { Component, OnInit, Injector, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { ModalComponentBase } from '@shared/component-base/modal-component-base';
 import { CreateOrUpdateTicketInput,TicketEditDto, TicketServiceProxy } from '@shared/service-proxies/service-proxies';
-import { Validators, AbstractControl, FormControl } from '@angular/forms';
+
 
 
 import { UtilsService } from '@abp/utils/utils.service';
@@ -99,6 +99,7 @@ export class CreateOrEditTicketComponent
 
       const input = new CreateOrUpdateTicketInput();
       console.log(input);
+      // this.entity.ticketId = 1
       input.ticket = this.entity;
 
       this.saving = true;
