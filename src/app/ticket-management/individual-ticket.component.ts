@@ -208,8 +208,8 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
         orderdata.sourceId= this.sourceId;
         orderdata.payMethodId= this.orderinfo.payMethodId;
         orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
-        orderdata.startDateTime=moment(this.startDateTime);
-        orderdata.endDateTime= moment(this.endDateTime);
+        // orderdata.startDateTime=moment(this.startDateTime);
+        // orderdata.endDateTime= moment(this.endDateTime);
         // orderdata.startDateTime=this.startDateTime;
         // orderdata.endDateTime= this.endDateTime;
 
