@@ -20922,42 +20922,13 @@ export class TicketRoleServiceProxy {
 
     /**
      * 查询
-     * @param queryData (optional) RoleId 角色
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
      * @param username (optional) 
      * @param ticketname (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, username: string | undefined, ticketname: string | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
+    getPaged(username: string | undefined, ticketname: string | undefined, body: GetTicketRolesInput | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
         let url_ = this.baseUrl + "/api/services/app/TicketRole/GetPaged?";
-        if (queryData === null)
-            throw new Error("The parameter 'queryData' cannot be null.");
-        else if (queryData !== undefined)
-            queryData && queryData.forEach((item, index) => { 
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         if (username === null)
             throw new Error("The parameter 'username' cannot be null.");
         else if (username !== undefined)
@@ -20968,15 +20939,19 @@ export class TicketRoleServiceProxy {
             url_ += "ticketname=" + encodeURIComponent("" + ticketname) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -21014,35 +20989,25 @@ export class TicketRoleServiceProxy {
 
     /**
      * 编辑
-     * @param roleId (optional) 角色ID
-     * @param availableTicketPriceIds (optional) 可售票型ID集合
-     * @param isEnabled (optional) 是否启用
+     * @param body (optional) 
      * @return Success
      */
-    update(roleId: number | undefined, availableTicketPriceIds: number[] | undefined, isEnabled: boolean | undefined): Observable<void> {
-        let url_ = this.baseUrl + "/api/services/app/TicketRole/Update?";
-        if (roleId === null)
-            throw new Error("The parameter 'roleId' cannot be null.");
-        else if (roleId !== undefined)
-            url_ += "roleId=" + encodeURIComponent("" + roleId) + "&"; 
-        if (availableTicketPriceIds === null)
-            throw new Error("The parameter 'availableTicketPriceIds' cannot be null.");
-        else if (availableTicketPriceIds !== undefined)
-            availableTicketPriceIds && availableTicketPriceIds.forEach(item => { url_ += "availableTicketPriceIds=" + encodeURIComponent("" + item) + "&"; });
-        if (isEnabled === null)
-            throw new Error("The parameter 'isEnabled' cannot be null.");
-        else if (isEnabled !== undefined)
-            url_ += "isEnabled=" + encodeURIComponent("" + isEnabled) + "&"; 
+    update(body: UpdateTicketRoleInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/TicketRole/Update";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processUpdate(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -27530,6 +27495,132 @@ export class VerificationServiceProxy {
 }
 
 @Injectable()
+export class WechatServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取微信常用游客
+     * @param openId (optional) 
+     * @return Success
+     */
+    getCustomersByOpenId(openId: string | undefined): Observable<PagedResultDtoOfCustomer> {
+        let url_ = this.baseUrl + "/api/Wechat/GetCustomersByOpenId?";
+        if (openId === null)
+            throw new Error("The parameter 'openId' cannot be null.");
+        else if (openId !== undefined)
+            url_ += "openId=" + encodeURIComponent("" + openId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomersByOpenId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomersByOpenId(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfCustomer>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfCustomer>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomersByOpenId(response: HttpResponseBase): Observable<PagedResultDtoOfCustomer> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfCustomer.fromJS(resultData200) : new PagedResultDtoOfCustomer();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfCustomer>(<any>null);
+    }
+
+    /**
+     * 获取微信用户的订单
+     * @param openId (optional) 
+     * @return Success
+     */
+    getWechatActivitys(openId: string | undefined): Observable<PagedResultDtoOfActivity> {
+        let url_ = this.baseUrl + "/api/Wechat/GetWechatActivitys?";
+        if (openId === null)
+            throw new Error("The parameter 'openId' cannot be null.");
+        else if (openId !== undefined)
+            url_ += "openId=" + encodeURIComponent("" + openId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetWechatActivitys(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetWechatActivitys(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfActivity>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfActivity>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetWechatActivitys(response: HttpResponseBase): Observable<PagedResultDtoOfActivity> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfActivity.fromJS(resultData200) : new PagedResultDtoOfActivity();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfActivity>(<any>null);
+    }
+}
+
+@Injectable()
 export class WechatPayServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -27663,6 +27754,378 @@ export class WechatPayServiceProxy {
         }
         return _observableOf<AccessTokenResult>(<any>null);
     }
+
+    /**
+     * 支付回调URL，对应于Service.Config.TenPayV3Notify
+     * @return Success
+     */
+    payNotifyUrlGet(): Observable<void> {
+        let url_ = this.baseUrl + "/api/WechatPay/PayNotifyUrl";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPayNotifyUrlGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPayNotifyUrlGet(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPayNotifyUrlGet(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 支付回调URL，对应于Service.Config.TenPayV3Notify
+     * @return Success
+     */
+    payNotifyUrlPost(): Observable<void> {
+        let url_ = this.baseUrl + "/api/WechatPay/PayNotifyUrl";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPayNotifyUrlPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPayNotifyUrlPost(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPayNotifyUrlPost(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 支付回调URL，对应于Service.Config.TenPayV3Notify
+     * @return Success
+     */
+    payNotifyUrlPut(): Observable<void> {
+        let url_ = this.baseUrl + "/api/WechatPay/PayNotifyUrl";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPayNotifyUrlPut(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPayNotifyUrlPut(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processPayNotifyUrlPut(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 根据票据Id退票，暂存订单支付状态不变，只修改票据状态，可以调用/api/services/app/ActivityTempDetail/GetDetailListByTempId查询状态
+     * @param ticketDetailId (optional) 票据id
+     * @return Success
+     */
+    refundGet(ticketDetailId: number | undefined): Observable<AjaxResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/Refund?";
+        if (ticketDetailId === null)
+            throw new Error("The parameter 'ticketDetailId' cannot be null.");
+        else if (ticketDetailId !== undefined)
+            url_ += "ticketDetailId=" + encodeURIComponent("" + ticketDetailId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefundGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefundGet(<any>response_);
+                } catch (e) {
+                    return <Observable<AjaxResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AjaxResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRefundGet(response: HttpResponseBase): Observable<AjaxResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AjaxResult.fromJS(resultData200) : new AjaxResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AjaxResult>(<any>null);
+    }
+
+    /**
+     * 根据票据Id退票，暂存订单支付状态不变，只修改票据状态，可以调用/api/services/app/ActivityTempDetail/GetDetailListByTempId查询状态
+     * @param ticketDetailId (optional) 票据id
+     * @return Success
+     */
+    refundPost(ticketDetailId: number | undefined): Observable<AjaxResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/Refund?";
+        if (ticketDetailId === null)
+            throw new Error("The parameter 'ticketDetailId' cannot be null.");
+        else if (ticketDetailId !== undefined)
+            url_ += "ticketDetailId=" + encodeURIComponent("" + ticketDetailId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRefundPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRefundPost(<any>response_);
+                } catch (e) {
+                    return <Observable<AjaxResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AjaxResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processRefundPost(response: HttpResponseBase): Observable<AjaxResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AjaxResult.fromJS(resultData200) : new AjaxResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AjaxResult>(<any>null);
+    }
+
+    /**
+     * 发起支付请求,生成暂存订单
+     * @param body (optional) 
+     * @return Success
+     */
+    wechatPayOrder(body: CreateActivityModel | undefined): Observable<AjaxResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/WechatPayOrder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWechatPayOrder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWechatPayOrder(<any>response_);
+                } catch (e) {
+                    return <Observable<AjaxResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AjaxResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processWechatPayOrder(response: HttpResponseBase): Observable<AjaxResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AjaxResult.fromJS(resultData200) : new AjaxResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AjaxResult>(<any>null);
+    }
+
+    /**
+     * 重新支付暂存订单
+     * @param activityTempId (optional) 暂存订单Id
+     * @return Success
+     */
+    wechatPayOrderAgain(activityTempId: number | undefined): Observable<AjaxResult> {
+        let url_ = this.baseUrl + "/api/WechatPay/WechatPayOrderAgain?";
+        if (activityTempId === null)
+            throw new Error("The parameter 'activityTempId' cannot be null.");
+        else if (activityTempId !== undefined)
+            url_ += "activityTempId=" + encodeURIComponent("" + activityTempId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWechatPayOrderAgain(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWechatPayOrderAgain(<any>response_);
+                } catch (e) {
+                    return <Observable<AjaxResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AjaxResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processWechatPayOrderAgain(response: HttpResponseBase): Observable<AjaxResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AjaxResult.fromJS(resultData200) : new AjaxResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AjaxResult>(<any>null);
+    }
 }
 
 export enum OrderTypeEnum {
@@ -27736,9 +28199,11 @@ export class CreateActivityModel implements ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
+    organizationId: number | undefined;
     startDateTime: string | undefined;
     endDateTime: string | undefined;
     discount: number;
+    openId: string | undefined;
 
     constructor(data?: ICreateActivityModel) {
         if (data) {
@@ -27765,9 +28230,11 @@ export class CreateActivityModel implements ICreateActivityModel {
                     this.activityDetails.push(CreateActivityDetailModel.fromJS(item));
             }
             this.travelAgencyId = data["travelAgencyId"];
+            this.organizationId = data["organizationId"];
             this.startDateTime = data["startDateTime"];
             this.endDateTime = data["endDateTime"];
             this.discount = data["discount"];
+            this.openId = data["openId"];
         }
     }
 
@@ -27794,9 +28261,11 @@ export class CreateActivityModel implements ICreateActivityModel {
                 data["activityDetails"].push(item.toJSON());
         }
         data["travelAgencyId"] = this.travelAgencyId;
+        data["organizationId"] = this.organizationId;
         data["startDateTime"] = this.startDateTime;
         data["endDateTime"] = this.endDateTime;
         data["discount"] = this.discount;
+        data["openId"] = this.openId;
         return data; 
     }
 
@@ -27819,9 +28288,11 @@ export interface ICreateActivityModel {
     totalAmount: number;
     activityDetails: CreateActivityDetailModel[] | undefined;
     travelAgencyId: number | undefined;
+    organizationId: number | undefined;
     startDateTime: string | undefined;
     endDateTime: string | undefined;
     discount: number;
+    openId: string | undefined;
 }
 
 export class ActivityResultModel implements IActivityResultModel {
@@ -32546,9 +33017,10 @@ export class ActivityTemp implements IActivityTemp {
     collectionCode: string | undefined;
     payTime: moment.Moment | undefined;
     activityId: number | undefined;
-    travelAgencyId: number | undefined;
-    travelAgency: TravelAgency;
+    organizationId: number | undefined;
+    organization: Organization;
     activityDetails: ActivityTempDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -32589,13 +33061,14 @@ export class ActivityTemp implements IActivityTemp {
             this.collectionCode = data["collectionCode"];
             this.payTime = data["payTime"] ? moment(data["payTime"].toString()) : <any>undefined;
             this.activityId = data["activityId"];
-            this.travelAgencyId = data["travelAgencyId"];
-            this.travelAgency = data["travelAgency"] ? TravelAgency.fromJS(data["travelAgency"]) : <any>undefined;
+            this.organizationId = data["organizationId"];
+            this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
             if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
                 this.activityDetails = [] as any;
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityTempDetail.fromJS(item));
             }
+            this.openId = data["openId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -32636,13 +33109,14 @@ export class ActivityTemp implements IActivityTemp {
         data["collectionCode"] = this.collectionCode;
         data["payTime"] = this.payTime ? this.payTime.toISOString() : <any>undefined;
         data["activityId"] = this.activityId;
-        data["travelAgencyId"] = this.travelAgencyId;
-        data["travelAgency"] = this.travelAgency ? this.travelAgency.toJSON() : <any>undefined;
+        data["organizationId"] = this.organizationId;
+        data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
         if (this.activityDetails && this.activityDetails.constructor === Array) {
             data["activityDetails"] = [];
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -32683,9 +33157,10 @@ export interface IActivityTemp {
     collectionCode: string | undefined;
     payTime: moment.Moment | undefined;
     activityId: number | undefined;
-    travelAgencyId: number | undefined;
-    travelAgency: TravelAgency;
+    organizationId: number | undefined;
+    organization: Organization;
     activityDetails: ActivityTempDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -55176,6 +55651,77 @@ export interface IGetTicketRoleForUpdateOutput {
     isEnabled: boolean;
 }
 
+/** 角色可售票型管理 - 查询（参数） */
+export class GetTicketRolesInput implements IGetTicketRolesInput {
+    /** RoleId 角色 */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetTicketRolesInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketRolesInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketRolesInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetTicketRolesInput {
+        const json = this.toJSON();
+        let result = new GetTicketRolesInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 角色可售票型管理 - 查询（参数） */
+export interface IGetTicketRolesInput {
+    /** RoleId 角色 */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 /** 可售票型 */
 export class AvailableTicketPriceDto implements IAvailableTicketPriceDto {
     ticketPrice: TicketPrice;
@@ -55363,6 +55909,73 @@ export class PagedResultDtoOfTicketRoleListDto implements IPagedResultDtoOfTicke
 export interface IPagedResultDtoOfTicketRoleListDto {
     totalCount: number;
     items: TicketRoleListDto[] | undefined;
+}
+
+/** 角色可售票型管理 - 编辑（参数） */
+export class UpdateTicketRoleInput implements IUpdateTicketRoleInput {
+    /** 角色ID */
+    roleId: number;
+    /** 可售票型ID集合 */
+    availableTicketPriceIds: number[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
+
+    constructor(data?: IUpdateTicketRoleInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.roleId = data["roleId"];
+            if (data["availableTicketPriceIds"] && data["availableTicketPriceIds"].constructor === Array) {
+                this.availableTicketPriceIds = [] as any;
+                for (let item of data["availableTicketPriceIds"])
+                    this.availableTicketPriceIds.push(item);
+            }
+            this.isEnabled = data["isEnabled"];
+        }
+    }
+
+    static fromJS(data: any): UpdateTicketRoleInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTicketRoleInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["roleId"] = this.roleId;
+        if (this.availableTicketPriceIds && this.availableTicketPriceIds.constructor === Array) {
+            data["availableTicketPriceIds"] = [];
+            for (let item of this.availableTicketPriceIds)
+                data["availableTicketPriceIds"].push(item);
+        }
+        data["isEnabled"] = this.isEnabled;
+        return data; 
+    }
+
+    clone(): UpdateTicketRoleInput {
+        const json = this.toJSON();
+        let result = new UpdateTicketRoleInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 角色可售票型管理 - 编辑（参数） */
+export interface IUpdateTicketRoleInput {
+    /** 角色ID */
+    roleId: number;
+    /** 可售票型ID集合 */
+    availableTicketPriceIds: number[] | undefined;
+    /** 是否启用 */
+    isEnabled: boolean;
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.TicketScheduleEnable */
@@ -60739,6 +61352,8 @@ export interface ICreateOrUpdateWeChatScenicSpotInput {
 
 /** 关联的标价 */
 export class WeChatTicketPrice implements IWeChatTicketPrice {
+    /** 小程序景点票价ID */
+    ticketPriceId: number | undefined;
     /** 小程序票名称 */
     ticketName: string | undefined;
     /** 小程序票价 */
@@ -60755,6 +61370,7 @@ export class WeChatTicketPrice implements IWeChatTicketPrice {
 
     init(data?: any) {
         if (data) {
+            this.ticketPriceId = data["ticketPriceId"];
             this.ticketName = data["ticketName"];
             this.price = data["price"];
         }
@@ -60769,6 +61385,7 @@ export class WeChatTicketPrice implements IWeChatTicketPrice {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["ticketPriceId"] = this.ticketPriceId;
         data["ticketName"] = this.ticketName;
         data["price"] = this.price;
         return data; 
@@ -60784,6 +61401,8 @@ export class WeChatTicketPrice implements IWeChatTicketPrice {
 
 /** 关联的标价 */
 export interface IWeChatTicketPrice {
+    /** 小程序景点票价ID */
+    ticketPriceId: number | undefined;
     /** 小程序票名称 */
     ticketName: string | undefined;
     /** 小程序票价 */
@@ -62877,6 +63496,116 @@ export enum CaptchaType {
     HostUserLogin = <any>"HostUserLogin", 
     TenantUserRegister = <any>"TenantUserRegister", 
     TenantUserLogin = <any>"TenantUserLogin", 
+}
+
+export class PagedResultDtoOfCustomer implements IPagedResultDtoOfCustomer {
+    totalCount: number;
+    items: Customer[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfCustomer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(Customer.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfCustomer {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfCustomer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfCustomer {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfCustomer();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfCustomer {
+    totalCount: number;
+    items: Customer[] | undefined;
+}
+
+export class PagedResultDtoOfActivity implements IPagedResultDtoOfActivity {
+    totalCount: number;
+    items: Activity[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfActivity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(Activity.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfActivity {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfActivity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfActivity {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfActivity();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfActivity {
+    totalCount: number;
+    items: Activity[] | undefined;
 }
 
 export class AjaxResult implements IAjaxResult {

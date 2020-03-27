@@ -1,9 +1,7 @@
 import { Component, OnInit, Injector, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { ModalComponentBase } from '@shared/component-base/modal-component-base';
-import {TicketRoleEditDto, QueryData, TicketRoleServiceProxy,GetTicketRoleForUpdateOutput } from '@shared/service-proxies/service-proxies';
+import { TicketRoleEditDto, QueryData, TicketRoleServiceProxy, GetTicketRoleForUpdateOutput,UpdateTicketRoleInput } from '@shared/service-proxies/service-proxies';
 
-import { UtilsService } from '@abp/utils/utils.service';
-import { AppConsts } from 'abpPro/AppConsts';
 
 @Component({
   selector: 'app-create-or-edit-conductor',
@@ -27,13 +25,13 @@ export class CreateOrEditConductorComponent extends ModalComponentBase implement
   }
 
 
-  allChecked=true;
+  allChecked = true;
   indeterminate = false;
   checked = true;
 
   checkOptionsOne = [];
 
-  
+
 
 
   ngOnInit() {
@@ -44,33 +42,33 @@ export class CreateOrEditConductorComponent extends ModalComponentBase implement
 
   init(): void {
     this._ticketRoleServiceProxy.getForUpdate(this.id)
-    .subscribe(result => {
-      let i = 0
-      result.allTicketPrices.forEach(item => {
-        if(!item.isAvailable){
-          this.allChecked=false
-        }
-        this.checkOptionsOne[i]={
-          label:'',
-          value:Number,
-          checked:false,
-        }
-        this.checkOptionsOne[i].label=item.ticket.ticketName
-        this.checkOptionsOne[i].value = item.id
-        this.checkOptionsOne[i].checked = item.isAvailable
-        i++
+      .subscribe(result => {
+        let i = 0
+        result.allTicketPrices.forEach(item => {
+          if (!item.isAvailable) {
+            this.allChecked = false
+          }
+          this.checkOptionsOne[i] = {
+            label: '',
+            value: Number,
+            checked: false,
+          }
+          this.checkOptionsOne[i].label = item.ticket.ticketName
+          this.checkOptionsOne[i].value = item.id
+          this.checkOptionsOne[i].checked = item.isAvailable
+          i++
+        });
+        this.entity = result
+        console.log(this.entity);
+
       });
-      this.entity = result
-     console.log(this.entity);
-     
-    });
   }
 
 
 
 
   updateAllChecked(): void {
-  
+
     this.indeterminate = false;
     if (this.allChecked) {
       this.checkOptionsOne = this.checkOptionsOne.map(item => {
@@ -103,16 +101,23 @@ export class CreateOrEditConductorComponent extends ModalComponentBase implement
   }
 
   submitForm() {
-
-    const input = new TicketRoleEditDto
-    console.log(this.entity);
-    
-
-    // console.log('是否启用' + this.checked);
-    console.log('全选',this.allChecked);
-    console.log('中间',this.indeterminate);
-    console.log(this.checkOptionsOne);
-
+    let arr = []
+    this.checkOptionsOne.forEach(item => {
+      if (item.checked == true) {
+        arr.push(item.value)
+      }
+    })
+    console.log(arr);
+    const formdata = new UpdateTicketRoleInput();
+    formdata.roleId = this.entity.id
+    formdata.availableTicketPriceIds = arr
+    formdata.isEnabled = this.entity.isEnabled
+    // this._ticketRoleServiceProxy.update(this.entity.id,arr,this.entity.isEnabled) 
+    this._ticketRoleServiceProxy.update(formdata) 
+    .subscribe(result => {
+      this.notify.success(this.l('SavedSuccessfully'));
+      this.success(true);
+  });
   }
 
 }

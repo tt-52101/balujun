@@ -2,7 +2,10 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import { TicketRoleListDto, QueryData, TicketRoleServiceProxy } from '@shared/service-proxies/service-proxies';
+import { TicketRoleListDto, QueryData, TicketRoleServiceProxy, GetTicketRolesInput, PagedResultDtoOfUserListDto, UserServiceProxy, TicketPriceServiceProxy, GetTicketPricesInput } from '@shared/service-proxies/service-proxies';
+import { RoleListDto, RoleServiceProxy } from '@shared/service-proxies/service-proxies';
+
+
 import { CreateOrEditConductorComponent } from './create-or-edit-conductor/create-or-edit-conductor.component';
 @Component({
     templateUrl: './conductor.component.html',
@@ -16,89 +19,72 @@ import { CreateOrEditConductorComponent } from './create-or-edit-conductor/creat
 export class Conductor extends PagedListingComponentBase<TicketRoleListDto> implements OnInit {
     constructor(
         injector: Injector,
-        private _ticketRoleServiceProxy: TicketRoleServiceProxy
+        private _ticketRoleServiceProxy: TicketRoleServiceProxy,
+        private _roleService: RoleServiceProxy,
+        private _userService: UserServiceProxy,
+        private _ticketPriceService: TicketPriceServiceProxy,
     ) {
         super(injector);
     }
 
     queryData = [{
-        field: "position",
+        field: "id",
         method: "=",
         value: "",
         logic: "and"
-      }, {
-        field: "ticketName",
-        method: "%",
-        value: "",
-        logic: "and"
-      }, {
-        field: "ticketId",
+    }, {
+        field: "username",
         method: "=",
         value: "",
         logic: "and"
-      }]
+    }, {
+        field: "ticketname",
+        method: "=",
+        value: "",
+        logic: "and"
+    }]
 
+    selectedPermission: string[] = [];
 
+    rolelist = []
+    userlist = []
+    ticketlist=[]
     protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
 
-    
+
+
+
+
+        const formdata = new GetTicketRolesInput();
         var arr = []
-        for (var i = this.queryData.length - 1; i >= 0; i--) {
-          if (this.queryData[i].value) {
-            arr.push(new QueryData(this.queryData[i]))
-          }
+        for (var i = 0; i = 0; i--) {
+            if (this.queryData[i].value) {
+                arr.push(new QueryData(this.queryData[i]))
+            }
         }
 
-     
-        this._ticketRoleServiceProxy.getPaged(arr,'',request.sorting,request.maxResultCount,request.skipCount,'','')
+        formdata.queryData = arr;
+        formdata.sorting = request.sorting
+        formdata.maxResultCount = request.maxResultCount;
+        formdata.skipCount = request.skipCount;
+
+
+
+        this._ticketRoleServiceProxy.getPaged(this.queryData[1].value, this.queryData[2].value, formdata)
             .finally(() => {
                 finishedCallback();
             })
             .subscribe(result => {
-              
-                
                 this.dataList = result.items;
-                console.log(result.items);
-
                 this.showPaging(result);
             });
+        this.rolelists()
+        this.userlists()
+        this.ticketlistlists()
     }
-   
 
 
 
-
-
-
-    scqueryData = [
-        {
-            id: 0,
-            value: [
-                '后台',
-                '官网',
-                '小程序',
-                '自助机',
-                '手持机'
-            ]
-        },
-        {
-            id: 1,
-            value: ''
-        },
-        {
-            id: 2,
-            value: ''
-        },
-
-    ]
-   
-
-  
-
-    getlist() {
-        console.log('点击查询');
-
-    }
 
 
 
@@ -110,11 +96,43 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         this.modalHelper.static(CreateOrEditConductorComponent, { id: id })
             .subscribe(result => {
                 if (result) {
-                    // this.refresh();
+                    this.refresh();
                 }
             });
     }
 
+    rolelists() {
+        this._roleService.getPaged(this.selectedPermission, '', '', 99, 0)
+            .subscribe(result => {
+                console.log(result.items);
+                
+                this.rolelist = result.items
+            });
+    }
+
+    userlists(){
+        this._userService
+        .getPaged(this.selectedPermission,[],undefined,undefined,undefined,'','',99,0)
+        .subscribe(result => {       
+            this.userlist = result.items
+        });
+    }
+
+    ticketlistlists(){
+
+        const formdata = new GetTicketPricesInput();
+
+        formdata.queryData = [];
+        formdata.sorting = ''
+        formdata.maxResultCount = 99;
+        formdata.skipCount = 0;
+    
+        this._ticketPriceService.getPaged(formdata)
+          .subscribe(result => {
+            this.ticketlist=result.items
+          });
+         
+    }
 
 
 

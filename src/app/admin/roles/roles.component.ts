@@ -45,20 +45,9 @@ export class RolesComponent extends PagedListingComponentBase<RoleListDto> {
    isAllOperation=false
    curmenupower=[]
 
-   protected fetchDataList(
-     request: PagedRequestDto,
-     pageNumber: number,
-     finishedCallback: Function,
-     ): void {
-     this._roleService
-     .getPaged(
-       this.selectedPermission,
+   protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function,): void {
 
-       this.filterText,
-       request.sorting,
-       request.maxResultCount,
-       request.skipCount,
-       )
+     this._roleService.getPaged(this.selectedPermission,this.filterText,request.sorting,request.maxResultCount,request.skipCount,)
      .finally(() => {
        finishedCallback();
      })

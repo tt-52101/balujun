@@ -48,54 +48,54 @@ implements OnInit {
     */
     init(): void {
 
-      // this.getrolepower()
+      this.getrolepower()
 
     }
 
     getrolepower(){
-      // this._powerRoleService.getPowerRoleListById(this.id)
-      // .subscribe(result => {
-      //   // console.log(result)
-      //   var items= result.items;
-      //   var powerList=[];
-      //   var hadmenu=0;
-      //   for (var i =0;i<items.length;i++) {
+      this._powerRoleService.getPowerRoleListById(this.id)
+      .subscribe(result => {
+        // console.log(result)
+        var items= result.items;
+        var powerList=[];
+        var hadmenu=0;
+        for (var i =0;i<items.length;i++) {
 
-      //     if(items[i].isEnabled){
-      //       for (var j =0;j<powerList.length;j++) {
-      //         if(items[i].menuId == powerList[j].menuId){
-      //           powerList[j].child.push({
-      //             label:items[i].powerName,
-      //             value:items[i].id,
-      //             checked:items[i].isCheck
-      //           })
-      //           hadmenu=1
-      //         }
-      //       }
-      //       if(hadmenu == 0){
-      //         powerList.push({
-      //           menuId:items[i].menuId,
-      //           menuname:items[i].menu.menuName,
-      //           child:[{
-      //             label:items[i].powerName,
-      //             value:items[i].id,
-      //             checked:items[i].isCheck
-      //           }]
-      //         })
-      //       }
-      //       if(hadmenu == 1){
-      //         hadmenu = 0
-      //       }
-      //       if(items[i].isCheck){
-      //         this.powerIdList.push(items[i].id)
-      //       }
-      //     }
-      //   };
+          if(items[i].isEnabled){
+            for (var j =0;j<powerList.length;j++) {
+              if(items[i].menuId == powerList[j].menuId){
+                powerList[j].child.push({
+                  label:items[i].powerName,
+                  value:items[i].id,
+                  checked:items[i].isCheck
+                })
+                hadmenu=1
+              }
+            }
+            if(hadmenu == 0){
+              powerList.push({
+                menuId:items[i].menuId,
+                menuname:items[i].menu.menuName,
+                child:[{
+                  label:items[i].powerName,
+                  value:items[i].id,
+                  checked:items[i].isCheck
+                }]
+              })
+            }
+            if(hadmenu == 1){
+              hadmenu = 0
+            }
+            if(items[i].isCheck){
+              this.powerIdList.push(items[i].id)
+            }
+          }
+        };
 
-      //   // console.log(powerList)
-      //   // console.log(this.powerIdList)
-      //   this.powerList=powerList
-      // });
+        // console.log(powerList)
+        // console.log(this.powerIdList)
+        this.powerList=powerList
+      });
     }
 
     ngModelChange(a){
@@ -141,16 +141,16 @@ implements OnInit {
     */
     submitForm(): void {
 
-      // this.saving = true;
-      // console.log(this.powerIdList)
-      // this._powerRoleService.batchAddOrUpdate(
-      //   this.id,
-      //   this.powerIdList
-      //   )
-      // .finally(() => (this.saving = false))
-      // .subscribe(() => {
-      //   this.notify.success(this.l('SavedSuccessfully'));
-      //   this.success(true);
-      // });
+      this.saving = true;
+      console.log(this.powerIdList)
+      this._powerRoleService.batchAddOrUpdate(
+        this.id,
+        this.powerIdList
+        )
+      .finally(() => (this.saving = false))
+      .subscribe(() => {
+        this.notify.success(this.l('SavedSuccessfully'));
+        this.success(true);
+      });
     }
   }

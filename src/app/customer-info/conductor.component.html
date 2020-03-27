@@ -3,39 +3,62 @@
     <!-- 模糊搜索框 -->
     <nz-row nzGutter="16">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
-        <nz-form-item class="formitem">
-          <nz-form-label>角色名称</nz-form-label>
+
+
+        <!-- <nz-form-item class="formitem">
+          <nz-form-label nzFor="role.name">角色名称</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="scqueryData[0]" nzAllowClear style="width: 130px" name="route">
-              <nz-option *ngFor="let item of scqueryData[0].value;let i = index;" [nzValue]="item.id" [nzLabel]="item">
-              </nz-option>
+            <nz-select required [(ngModel)]="queryData[0].value" name="role.name" nzAllowClear style="width: 120px">
+              <nz-option *ngFor="let item of rolelist" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+
+
+        <nz-form-item>
+          <nz-form-label nzFor="position">角色名称</nz-form-label>
+          <nz-form-control>
+            <nz-select required [(ngModel)]="queryData[0].value" name="role.name" nzAllowClear style="width: 120px">
+              <nz-option *ngFor="let item of rolelist" [nzValue]="item.id" [nzLabel]="item.name"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
+
         <nz-form-item class="formitem">
-          <nz-form-label nzFor="scheduleCode">人员姓名</nz-form-label>
+          <nz-form-label nzFor="username">人员姓名</nz-form-label>
           <nz-form-control>
-            <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[1].value" style="width: 130px">
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item class="formitem">
-          <nz-form-label nzFor="scheduleCode">可售票别名</nz-form-label>
-          <nz-form-control>
-            <input type="text" nz-input name="scheduleCode" [(ngModel)]="scqueryData[2].value" style="width: 130px">
+            <nz-select required [(ngModel)]="queryData[1].value" name="userName" nzAllowClear style="width: 120px">
+              <nz-option *ngFor="let item of userlist" [nzValue]="item.userName" [nzLabel]="item.userName"></nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
 
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
-          <button nz-button [nzType]="'primary'" (click)="getlist()" style="padding: 0px 20px;height: 32px;">查询</button>
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="ticketname">可售票别名</nz-form-label>
+          <nz-form-control>
+            <nz-select required [(ngModel)]="queryData[2].value" name="ticketname" nzAllowClear style="width: 120px">
+              <nz-option *ngFor="let item of ticketlist" [nzValue]="item.ticketName" [nzLabel]="item.ticketName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-form-item>
+          <button nz-button nzType="primary" type="submit" (click)="refresh()">
+            <span>
+              {{l("Query")}}
+            </span>
+          </button>
         </nz-form-item>
 
       </form>
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true"
-      [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered style="word-break:break-all">
-      <!-- [nzTotal]="totalItems" [nzLoading]="isTableLoading" -->
+    <nz-table #ajaxTable [nzData]="dataList" [nzShowQuickJumper]="true" [nzFrontPagination]="false" nzBordered
+      style="word-break:break-all" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" 
+      (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
+      [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -68,13 +91,16 @@
           </td>
           <td nz-td class="text-center" nzLeft="150px">
             <span *ngFor="let items of item.users">
-              {{items.normalizedUserName}}，
+              {{items.userName}},
             </span>
 
           </td>
           <td nz-td class="text-center">
             <span *ngFor="let itemss of item.availableTicketPrices" style="color: #000;">
-               {{itemss.ticketPrice.ticketName}}(标识码{{itemss.ticket.ticketCode}}) - ￥{{itemss.ticketPrice.price}}<br>
+              <span *ngIf="itemss.ticketPrice">
+                {{itemss.ticketPrice.ticketName}}(标识码{{itemss.ticket.ticketCode}})
+                - ￥{{itemss.ticketPrice.price}}<br>
+              </span>
             </span>
           </td>
           <td nz-td class="text-center" [innerHTML]='item.isEnabled | yn'></td>
