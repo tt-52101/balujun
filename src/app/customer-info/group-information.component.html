@@ -1,130 +1,106 @@
 <!-- <page-header [title]="l('Ticket')"></page-header> -->
 <nz-card [nzBordered]="false">
-    <div class="mb-md">
-      <!-- 模糊搜索框 -->
-      <nz-row nzGutter="16">
-        <nz-col nzMd="6" nzSm="6" class="btn-gutter">
-          <button nz-button [nzType]="'primary'"  (click)="createOrEdit()"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
-            <span>
-              新增
+  <div class="mb-md">
+    <!-- 模糊搜索框 -->
+    <nz-row nzGutter="16">
+      <nz-col nzMd="6" nzSm="6" class="btn-gutter">
+        <button nz-button [nzType]="'primary'"  (click)="createOrEdit()"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+          <span>
+            新增
+          </span>
+        </button>
+        <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+          <span>
+            批量删除
+          </span>
+        </button>
+      </nz-col>
+    </nz-row>
+  </div>
+  <!-- 实体的表格内容 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
+      <!-- 暂无数据组件 -->
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <!-- 表头 -->
+      <thead (nzSortChange)="gridSort($event)">
+        <tr>
+          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+          <th nz-th class="text-center" nzWidth="140px" nzLeft="60px">
+            <span>团体名称</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>联系人</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>联系电话</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>备注</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>折扣</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>是否启用</span>
+          </th>
+          <th nz-th class="text-center" nzWidth="135px">
+            <span>操作</span>
+          </th>
+        </tr>
+      </thead>
+      <!-- 表格内容 -->
+      <tbody>
+        <tr *ngFor="let item of ajaxTable.data">
+          <!-- 全选框 -->
+          <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
+          <td nz-td class="text-center" nzWidth="140px" nzLeft="60px">
+            <span >
+              {{item.groupName}}
             </span>
-          </button>
-          <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
-            <span>
-              批量删除
+          </td>
+          <td nz-td class="text-center" nzWidth="135px">
+            <span >
+              {{item.contacts}}
             </span>
-          </button>
-        </nz-col>
-      </nz-row>
-    </div>
-    <!-- 实体的表格内容 -->
-    <nz-row class="my-md">
-      <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
-        <!-- 暂无数据组件 -->
-        <ng-template #noDataTemplate>
-          <no-data></no-data>
-        </ng-template>
-        <!-- 表头 -->
-        <thead (nzSortChange)="gridSort($event)">
-          <tr>
-            <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
-            <th nz-th class="text-center" nzWidth="140px" nzLeft="60px">
-              <span>团体名称</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>联系人</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>联系电话</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>备注</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>折扣</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>是否启用</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-              <span>创建人</span>
-            </th>
-            <th nz-th class="text-center" nzWidth="135px">
-                <span>操作</span>
-              </th>
-          </tr>
-        </thead>
-        <!-- 表格内容 -->
-        <tbody>
-          <tr *ngFor="let item of ajaxTable.data">
-            <!-- 全选框 -->
-            <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
-            <td nz-td class="text-center" nzWidth="140px" nzLeft="60px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.ticketName">
-                  {{item.ticketName}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.ticketCode">
-                  {{item.ticketCode}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.ticketMode">
-                  {{l(item.ticketMode)}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.ticketType">
-                  {{l(item.ticketType)}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.checkMethod">
-                  {{l(item.checkMethod)}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-              <ellipsis lines="1">
-                <span nz-tooltip [nzTitle]="item.ticketClassify">
-                  {{l(item.ticketClassify)}}
-                </span>
-              </ellipsis>
-            </td>
-            <td nz-td class="text-center" nzWidth="135px">
-                <span nz-tooltip [nzTitle]="item.sort">
-                  {{item.sort}}
-                </span>
-            </td>
-            <td nz-td class="text-center" nzRight="0px" nzWidth="150px">
-              <!-- 编辑 -->
-              <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
-                <a (click)="createOrEdit(item.id)">
-                  <!-- <i class="anticon anticon-edit mr-sm"></i> -->
-                  <span>{{l('Edit')}}</span>
+          </td>
+          <td nz-td class="text-center" nzWidth="135px">
+            <span >
+              {{l(item.mobile)}}
+            </span>
+          </td>
+          <td nz-td class="text-center" nzWidth="135px">
+            <span >
+              {{l(item.remand)}}
+            </span>
+          </td>
+          <td nz-td class="text-center" nzWidth="135px">
+            <span >
+              {{l(item.discount)}}
+            </span>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
+          <td nz-td class="text-center" nzRight="0px" nzWidth="150px">
+            <!-- 编辑 -->
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+              <a (click)="createOrEdit(item.id)">
+                <!-- <i class="anticon anticon-edit mr-sm"></i> -->
+                <span>{{l('Edit')}}</span>
+              </a>
+              <nz-divider nzType="vertical"></nz-divider>
+            </ng-container>
+            <!-- 删除 -->
+            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')">
+                <a nz-popconfirm>
+                  <!-- <i class="anticon anticon-delete mr-sm"></i> -->
+                  <span>{{l('Delete')}}</span>
                 </a>
-                <nz-divider nzType="vertical"></nz-divider>
-              </ng-container>
-              <!-- 删除 -->
-              <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
-                <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')">
-                  <a nz-popconfirm>
-                    <!-- <i class="anticon anticon-delete mr-sm"></i> -->
-                    <span>{{l('Delete')}}</span>
-                  </a>
-                </nz-popconfirm>
-              </ng-container>
-              <!-- 更多 -->
+              </nz-popconfirm>
+            </ng-container>
+            <!-- 更多 -->
               <!--             <ng-container *ngIf="isGrantedAny('Pages.Ticket', 'Pages.Ticket.Create', 'Pages.Ticket.Edit')">
                 <nz-divider nzType="vertical"></nz-divider>
                 <nz-dropdown>

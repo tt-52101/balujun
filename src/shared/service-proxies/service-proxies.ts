@@ -36614,10 +36614,10 @@ export interface IPagedResultDtoOfCheckRecordListDto {
 
 export enum DeviceTypeEnum {
     TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"SelfhelpMachine", 
-    FaceMachine = <any>"GateMachine", 
-    SelfhelpMachine = <any>"HandMachine", 
-    HandMachine = <any>"FaceMachine", 
+    GateMachine = <any>"GateMachine", 
+    FaceMachine = <any>"FaceMachine", 
+    SelfhelpMachine = <any>"SelfhelpMachine", 
+    HandMachine = <any>"HandMachine", 
 }
 
 /** 的列表DTO Yozeev.SystemConfig.ClientVersion */

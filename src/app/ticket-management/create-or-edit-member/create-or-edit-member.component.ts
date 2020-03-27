@@ -11,11 +11,11 @@ import { UtilsService } from '@abp/utils/utils.service';
 import { AppConsts } from 'abpPro/AppConsts';
 
 @Component({
-  selector: 'app-create-or-edit-ticket',
-  templateUrl: './create-or-edit-ticket.component.html',
-  styleUrls: ['./create-or-edit-ticket.component.less'],
+  selector: 'app-create-or-edit-member',
+  templateUrl: './create-or-edit-member.component.html',
+  styleUrls: ['./create-or-edit-member.component.less'],
 })
-export class CreateOrEditTicketComponent 
+export class CreateOrEditMemberComponent 
 extends ModalComponentBase
 implements OnInit {
 

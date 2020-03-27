@@ -6,14 +6,16 @@ import { SharedModule } from '@shared/shared.module';
 import { IndividualTicket } from './individual-ticket.component';
 import { GroupBooking } from './group-booking.component';
 
-import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
+import { CreateOrEditCustomerComponent } from './create-or-edit-customer/create-or-edit-customer.component';
+import { CreateOrEditMemberComponent } from './create-or-edit-member/create-or-edit-member.component';
 
 
 @NgModule({
   declarations: [
     IndividualTicket,
     GroupBooking,
-    CreateOrEditTicketComponent
+    CreateOrEditCustomerComponent,
+    CreateOrEditMemberComponent
   ],
   imports: [
     CommonModule,
@@ -22,7 +24,8 @@ import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-e
 
   ],
   entryComponents: [
-    CreateOrEditTicketComponent
+    CreateOrEditCustomerComponent,
+    CreateOrEditMemberComponent
   ]
 })
 

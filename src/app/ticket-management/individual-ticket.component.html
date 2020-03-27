@@ -12,7 +12,7 @@
             <th class="text-center" nzWidth="150px">单价</th>
             <th class="text-center" nzWidth="150px">数量</th>
             <th class="text-center" nzWidth="150px">小计</th>
-            <th class="text-center" nzWidth="150px">操作</th>
+            <!-- <th class="text-center" nzWidth="150px">操作</th> -->
           </tr>
         </thead>
         <tbody>
@@ -42,14 +42,14 @@
             <td class="text-center">
               <div>￥{{ item.ticketcount }}</div>
             </td>
-            <td class="text-center">
+<!--             <td class="text-center">
               <div class="btn" (click)='createOrEdit(i)'>登记资料</div>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </nz-table>
       <!-- <div class="adds" (click)="addRow()"><i nz-icon nzType="plus-circle" nzTheme="outline"></i>添加票型</div> -->
-      <button nz-button class="adds" type="button" (click)="addRow()">
+      <button nz-button class="adds" type="button" (click)="addRow()" style="font-size: 16px">
         <i nz-icon nzType="plus-circle" nzTheme="outline"></i> 添加票型
       </button>
     </div>
@@ -63,7 +63,7 @@
         <nz-form-item class="botton-item">
           <nz-form-label class="botton-form" [nzSpan]="6"><span>售票类型</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
-            <div>散客</div>
+            <div style="font-size: 16px">散客</div>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
@@ -91,7 +91,7 @@
         <nz-form-item class="botton-item">
           <nz-form-label class="botton-form" [nzSpan]="6"><span>备注</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
-            <input nz-input name="email">
+            <input nz-input name="remark" [(ngModel)]="remark" name="remark">
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
@@ -117,7 +117,7 @@
         <nz-form-item class="botton-item">
           <nz-form-label class="botton-form" [nzSpan]="6"><span>找零</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
-            <span class="botton-num">￥{{totalprice - receive}}</span>
+            <span class="botton-num">￥{{parsenum()}}</span>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item" style="margin-top: 20px">
@@ -129,4 +129,3 @@
     </div>
   </div>
 </div>
-<div nz-row>
