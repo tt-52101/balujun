@@ -147,7 +147,7 @@ export class GroupBooking extends AppComponentBase implements OnInit {
 
 
     getpaymethod(){
-        this._payMethodService.getPagedGet('','',999,0)
+        this._payMethodService.getPaged('','',999,0)
         .subscribe(result => {
             this.paymethodList = result.items;
             this.orderinfo.payMethodId=result.items[0].id

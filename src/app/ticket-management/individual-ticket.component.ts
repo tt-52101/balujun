@@ -272,7 +272,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                                     ticketPriceId:item.ticketid,
                                     quantity:item.num,
 
-                                    scheduleId:0,
+                                    // scheduleId:0,
                                     customerId:0,
 
                                 }))

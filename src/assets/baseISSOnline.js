@@ -1,5 +1,5 @@
-import ZK from 'assets/baseISSObject.js';
-import * as $ from 'jquery';
+// import ZK from 'assets/baseISSObject.js';
+// import * as $ from 'jquery';
 
 var issOnlineUrl = "http://127.0.0.1:24010/ZKIDROnline";
 
