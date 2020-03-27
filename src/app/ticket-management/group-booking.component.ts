@@ -1,7 +1,7 @@
 import { Component, Injector, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
+import { CreateOrEditMemberComponent } from './create-or-edit-member/create-or-edit-member.component';
 import { AppComponentBase } from '@shared/component-base/app-component-base';
 
 
@@ -128,7 +128,7 @@ export class GroupBooking extends AppComponentBase implements OnInit {
     createOrEdit(id?: number): void {
         console.log(123);
 
-        this.modalHelper.static(CreateOrEditTicketComponent, { id: id })
+        this.modalHelper.static(CreateOrEditMemberComponent, { id: id })
             .subscribe(result => {
                 if (result) {
                     // this.refresh();

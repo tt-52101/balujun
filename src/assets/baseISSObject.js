@@ -48,16 +48,15 @@ var ZK = {
 
 	apply: function(o, c, defaults) {
 		if (defaults) {
-      // no "this" reference for friendly out of scope calls  
-      ZK.apply(o, defaults);
-  }
-  if (o && c && typeof c == 'object') {
-  	for (var p in c) {
-  		o[p] = c[p];
-  	}
-  }
-  return o;
-}
+			ZK.apply(o, defaults);
+		}
+		if (o && c && typeof c == 'object') {
+			for (var p in c) {
+				o[p] = c[p];
+			}
+		}
+		return o;
+	}
 };
 
 export default ZK

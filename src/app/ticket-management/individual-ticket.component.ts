@@ -1,12 +1,16 @@
 import { Component, Injector, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
+import { CreateOrEditCustomerComponent } from './create-or-edit-customer/create-or-edit-customer.component';
 
 import { AppComponentBase } from '@shared/component-base/app-component-base';
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
+
+import { getLodop } from '../common/lodop.js';
+
+let LODOP;
 
 import {
     ActivityServiceProxy,
@@ -16,7 +20,8 @@ import {
     PayMethodServiceProxy,
     SourceServiceProxy,
     QueryData,
-    OrderTypeEnum
+    OrderTypeEnum,
+    CreateActivityDetailModel
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
@@ -57,10 +62,11 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     discountlist=[]
     discount = 100;
     totalprice=0
+    change=0
     totalnum=0
 
     receive=0
-
+    remark=''
     orderinfo={
         payMethodId: 0,
     }
@@ -72,6 +78,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     ngOnInit(): void {
         this.getticket()
         this.getpaymethod()
+        this.getsource()
         for (var i = 100; i >= 1; i--) {
             this.discountlist.push(i)
         }
@@ -121,13 +128,19 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     addRow(): void {
         this.editindex= this.orderticket.length
         this.orderticket =this.orderticket.concat([{
-            ticketid:'',
-            ticketname:'请选择票型',
-            ticketprice:0,
-            ticketcount:0,
+            ticketid:this.ticketlist[0].id,
+            ticketname:this.ticketlist[0].ticketName,
+            ticketprice:this.ticketlist[0].price,
+            ticketcount:this.ticketlist[0].price,
             num:1,
-            curstomer:[]
-        }])
+            // curstomer:[{
+                //     certificatesNum:'',
+                //     customerName:'',
+                //     mobile:'',
+                //     sex:'Man',
+                //     verifiableType:'IdentityCard',
+                // }]
+            }])
         this.countprice()
     }
 
@@ -136,102 +149,177 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     }
 
     ticketchange($event){
-        var ticket=this.ticketlist.filter(d => d.id == $event)
-        this.orderticket[this.editindex].ticketname=ticket[0].ticketName
-        this.orderticket[this.editindex].ticketprice=ticket[0].price
-        this.countprice()
+        if($event){
+            var ticket=this.ticketlist.filter(d => d.id == $event)
+            this.orderticket[this.editindex].ticketname=ticket[0].ticketName
+            this.orderticket[this.editindex].ticketprice=ticket[0].price
+            this.countprice()
+        }
     }
 
     numchange(i){
-        if(i>0){
-            var curstomer=this.orderticket[this.editindex].curstomer
-            if(curstomer.length > i){
-                this.orderticket[this.editindex].curstomer =curstomer.splice(0,i)
-            }else if(curstomer.length < i){
-                var len = i - curstomer.length
-                for (var j =0;j < len; j++) {
-                    curstomer.push({
-                        name:''
-                    })
-                }
-            }
-        }
-        this.countprice()
-    }
+        // if(i>0){
+            //     var curstomer=this.orderticket[this.editindex].curstomer
+            //     if(curstomer.length > i){
+                //         this.orderticket[this.editindex].curstomer =curstomer.splice(0,i)
+                //     }else if(curstomer.length < i){
+                    //         var len = i - curstomer.length
+                    //         for (var j =0;j < len; j++) {
+                        //             curstomer.push({
+                            //                 certificatesNum:'',
+                            //                 customerName:'',
+                            //                 mobile:'',
+                            //                 sex:'Man',
+                            //                 verifiableType:'IdentityCard',
+                            //             })
+                            //         }
+                            //     }
+                            // }
+                            this.countprice()
+                        }
 
-    deleteRow(i): void {
-        this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
-    }
+                        deleteRow(i): void {
+                            this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
+                        }
 
-    createOrEdit(id?: number): void {
-        console.log(123);
-        
-        this.modalHelper.static(CreateOrEditTicketComponent, { id: id })
-        .subscribe(result => {
-            if (result) {
-                // this.refresh();
-            }
-        });
-    }
+                        createOrEdit(i): void {
+                            localStorage.setItem('orderticket',JSON.stringify(this.orderticket))
+                            this.modalHelper.static(CreateOrEditCustomerComponent, { tindex: i })
+                            .subscribe(result => {
+                                if (result) {
+                                    // this.refresh();
+                                }
+                            });
+                        }
 
-    datechange($event): void {
-        this.startDateTime=$event[0]
-        this.endDateTime=$event[1]
-    }
+                        datechange($event): void {
+                            this.startDateTime=$event[0]
+                            this.endDateTime=$event[1]
+                        }
 
-    discountchange($event){
-        this.discount=$event
-        this.countprice()  
-    }
+                        discountchange($event){
+                            this.discount=$event
+                            this.countprice()  
+                        }
 
-    countprice(){
-        var totalprice=0
-        var totalnum=0
-        this.orderticket.forEach(function(item){
-            if(item.ticketid){
-                item.ticketcount=item.ticketprice * item.num
-                totalprice +=item.ticketcount
-                totalnum +=item.num
-            }
-        })
-        this.totalprice=totalprice * this.discount / 100
-        this.totalnum=totalnum
-    }
+                        countprice(){
+                            var totalprice=0
+                            var totalnum=0
+                            this.orderticket.forEach(function(item){
+                                if(item.ticketid){
+                                    item.ticketcount=item.ticketprice * item.num
+                                    totalprice +=item.ticketcount
+                                    totalnum +=item.num
+                                }
+                            })
+                            this.totalprice=totalprice * this.discount / 100
+                            console.log(this.totalprice)
+                            // this.change=this.totalprice - receive
+                            
+                            this.totalnum=totalnum
+                        }
+                        parsenum(){
+                            var change=parseFloat((this.receive - this.totalprice)+'').toFixed(2)
+                            return change
+                        }
 
+                        settlement(){
+                            if(this.totalnum==0){
+                                abp.message.warn('请添加票型');
+                                return
+                            }
 
-    settlement(){
-        if(this.totalnum==0){
-            abp.message.warn('请添加票型');
-            return
-        }
-        var orderdata = new CreateActivityModel()
-        orderdata.sourceId= this.sourceId;
-        orderdata.payMethodId= this.orderinfo.payMethodId;
-        orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
-        // orderdata.startDateTime=moment(this.startDateTime);
-        // orderdata.endDateTime= moment(this.endDateTime);
-        // orderdata.startDateTime=this.startDateTime;
-        // orderdata.endDateTime= this.endDateTime;
+                            if(!this.startDateTime || !this.endDateTime){
+                                abp.message.warn('请选择有效日期');
+                                return
+                            }
 
-        console.log(orderdata.startDateTime)
-        console.log(orderdata.endDateTime)
-
-        orderdata.activityDetails=[]
-
-        // this._activityService.createActivity(orderdata)
-        // .subscribe(result => {
-            //     if(result.resultCode == "000"){
-                //         this.notify.success(result.resultMessage);
-                //         this.orderticket=[]
-                //         this.countprice()
-                //     }else{
-                    //         abp.message.warn(result.resultMessage);
-                    //     }
-                    // });
-
-                }
+                            if(this.receive<this.totalprice){
+                                abp.message.warn('实收金额小于应收金额');
+                                return
+                            }
 
 
+                            var orderdata = new CreateActivityModel()
+                            orderdata.sourceId= this.sourceId;
+                            orderdata.payMethodId= this.orderinfo.payMethodId;
+                            orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
+                            orderdata.startDateTime=this.startDateTime;
+                            orderdata.endDateTime= this.endDateTime;
+
+                            var activityDetails=[]
+                            this.orderticket.forEach(function(item){
+                                activityDetails.push(new CreateActivityDetailModel({
+                                    ticketPriceId:item.ticketid,
+                                    quantity:item.num,
+
+                                    scheduleId:0,
+                                    customerId:0,
+
+                                }))
+                            })
+                            orderdata.discount=this.discount / 100
+
+                            orderdata.activityDetails=activityDetails
+
+                            this._activityService.createActivity(orderdata)
+                            .subscribe(result => {
+                                console.log(result)
+                                if(result.resultCode == "000"){
+                                    this.notify.success(result.resultMessage);
+                                    this.orderticket=[]
+                                    this.countprice()
+                                }else{
+                                    abp.message.warn(result.resultMessage);
+                                }
+                            });
 
 
-            }
+                            // LODOP=getLodop();
+                            // var top = 22; //最高坐标
+                            // var left = 100; //最左坐标
+                            // var width = 10; //上边距
+                            // var height = 12; //右边距
+                            // var QRcodeWidth = 120; //二维码大小
+                            // var paperWidth = 700; //纸张宽度
+                            // var paperHeight = 1200; //纸张长度
+                            // var fontWidth = 400; //文字区域宽度
+                            // var fontHeight = 20; //文字区域高度
+                            // LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
+                            // LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
+                            // LODOP.PRINT_INITA("");
+                            // LODOP.SET_PRINT_STYLE("FontSize", 10);
+                            // //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+                            // LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
+                            // // for (var i = 0; i < orderticket.length; i++) {
+                                // //   var item = orderticket[i];
+
+                                // //   var saleDate=moment(item.schedule.saleDate).format('YYYY-MM-DD');
+                                // //   var startTime=moment(item.schedule.startTime).format('HH:mm:ss');
+
+                                // //   LODOP.NewPage(); //创建新的打印页
+                                // //   LODOP.ADD_PRINT_BARCODE(top + 15, left + height, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
+
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
+                                // //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票    号：" + item.ticketNo);
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                                // //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "船    名：" + item.schedule.boat.boatName);
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                                // //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "航班日期：" + saleDate);
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                                // //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "开船时间：" + startTime);
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                                // //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 1 * fontHeight, fontWidth, fontHeight, "乘客姓名：" + item.customer.customerName);
+                                // //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                                // // }
+
+                                // LODOP.PREVIEW()
+                                // // LODOP.PRINT();
+
+
+                            }
+
+
+
+
+                        }
