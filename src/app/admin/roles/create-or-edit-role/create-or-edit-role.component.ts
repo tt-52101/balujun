@@ -60,43 +60,43 @@ implements OnInit {
    */
    init(): void {
      const self = this;
-
+    
      self._roleService.getForEdit(self.id).subscribe(result => {
        self.role = result.role;
-      //  self.ticketPriceIds= result.ticketPriceIds;
-       this.getticket()
+       self.ticketPriceIds= result.ticketPriceIds;
+      //  this.getticket()
        // self.permissionTree.editData = result;
      });
    }
 
 
-   getticket(){
-     var arr=[]
-     arr.push(new QueryData({
-       field: "isEnabled",
-       method: "=",
-       value: 'true',
-       logic: "and"
-     }))
-     var that = this;
-     var ticketlist=[]
-     this._ticketPriceService.getPaged(null)
-     .subscribe(result => {
-       result.items.forEach(function(item){
-         var ticket={
-           label:item.ticketName,
-           value:item.id,
-           checked:false
-         }
-         if(that.ticketPriceIds.indexOf(item.id) > -1){
-           ticket.checked=true
-         }
-         ticketlist.push(ticket)
-       })
-       this.ticketlist = ticketlist;
-       this.updateSingleChecked()
-     });
-   }
+  //  getticket(){
+  //    var arr=[]
+  //    arr.push(new QueryData({
+  //      field: "isEnabled",
+  //      method: "=",
+  //      value: 'true',
+  //      logic: "and"
+  //    }))
+  //    var that = this;
+  //    var ticketlist=[]
+  //    this._ticketPriceService.getPaged(null)
+  //    .subscribe(result => {
+  //      result.items.forEach(function(item){
+  //        var ticket={
+  //          label:item.ticketName,
+  //          value:item.id,
+  //          checked:false
+  //        }
+  //        if(that.ticketPriceIds.indexOf(item.id) > -1){
+  //          ticket.checked=true
+  //        }
+  //        ticketlist.push(ticket)
+  //      })
+  //      this.ticketlist = ticketlist;
+  //      this.updateSingleChecked()
+  //    });
+  //  }
 
    ngModelChange(a){
      this.ticketPriceIds=a
