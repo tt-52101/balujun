@@ -5,6 +5,7 @@
     </div>
   </div>
   <fieldset>
+    
     <div class="flexbox">
       <div class="leftbox">
         <div class="boxtitle">证件信息</div>
@@ -67,8 +68,8 @@
 
           </div>
           <div class="imgbox">
-            <!-- <button nz-button type="button" class="readfile" id="button_readID">读取证件</button> -->
-            <canvas id="canvas" width="190" height="200" style="margin-top: 20px;"></canvas>
+            <button nz-button type="button" class="readfile" id="button_readID">读取证件</button>
+            <!-- <canvas id="canvas" width="190" height="200" style="margin-top: 20px;"></canvas> -->
           </div>
         </div>
       </div>
@@ -83,6 +84,7 @@
     <div style="width: 100%;display: flex;justify-content: center;">
     </div>
   </fieldset>
+
   <div class="modal-footer">
     <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">取消</button>
     <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">确认添加</button>
