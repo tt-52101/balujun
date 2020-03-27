@@ -126,22 +126,26 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     }
 
     addRow(): void {
-        this.editindex= this.orderticket.length
-        this.orderticket =this.orderticket.concat([{
-            ticketid:this.ticketlist[0].id,
-            ticketname:this.ticketlist[0].ticketName,
-            ticketprice:this.ticketlist[0].price,
-            ticketcount:this.ticketlist[0].price,
-            num:1,
-            // curstomer:[{
-                //     certificatesNum:'',
-                //     customerName:'',
-                //     mobile:'',
-                //     sex:'Man',
-                //     verifiableType:'IdentityCard',
-                // }]
-            }])
-        this.countprice()
+        if(this.ticketlist.length>0){
+            this.editindex= this.orderticket.length
+            this.orderticket =this.orderticket.concat([{
+                ticketid:this.ticketlist[0].id,
+                ticketname:this.ticketlist[0].ticketName,
+                ticketprice:this.ticketlist[0].price,
+                ticketcount:this.ticketlist[0].price,
+                num:1,
+                // curstomer:[{
+                    //     certificatesNum:'',
+                    //     customerName:'',
+                    //     mobile:'',
+                    //     sex:'Man',
+                    //     verifiableType:'IdentityCard',
+                    // }]
+                }])
+            this.countprice()
+        }else{
+            abp.message.warn('暂无散客票');
+        }
     }
 
     startEdit(i: number): void {
@@ -193,8 +197,22 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                         }
 
                         datechange($event): void {
-                            this.startDateTime=$event[0]
-                            this.endDateTime=$event[1]
+
+                            var year=$event[0].getFullYear();
+                            var month = $event[0].getMonth() + 1;
+                            var day = $event[0].getDate();
+
+                            var fulldate1=year+'-'+month+'-'+day;
+
+                            var year=$event[1].getFullYear();
+                            var month = $event[1].getMonth() + 1;
+                            var day = $event[1].getDate();
+
+                            var fulldate2=year+'-'+month+'-'+day;
+
+                            this.startDateTime=fulldate1
+                            this.endDateTime=fulldate2
+
                         }
 
                         discountchange($event){
@@ -246,6 +264,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                             orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
                             orderdata.startDateTime=this.startDateTime;
                             orderdata.endDateTime= this.endDateTime;
+                            orderdata.remark=this.remark
 
                             var activityDetails=[]
                             this.orderticket.forEach(function(item){

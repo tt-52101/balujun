@@ -90,6 +90,8 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.TravelAgencyServiceProxy,
   ApiServiceProxies.RechargeRecordServiceProxy,
 
+  ApiServiceProxies.OrganizationServiceProxy,
+
   //设备
   ApiServiceProxies.DeviceServiceProxy,
   ApiServiceProxies.GateRecordServiceProxy,

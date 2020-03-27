@@ -55,43 +55,47 @@
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
     <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
-      [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
-      (nzPageSizeChange)="refresh()" [nzScroll]="{ x: '1390px'}" style="word-break:break-all" [nzShowSizeChanger]="true"
-      [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
-      <!-- 暂无数据组件 -->
-      <ng-template #noDataTemplate>
-        <no-data></no-data>
-      </ng-template>
+    [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
+    (nzPageSizeChange)="refresh()" [nzScroll]="{ x: '1390px'}" style="word-break:break-all" [nzShowSizeChanger]="true"
+    [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
+    <!-- 暂无数据组件 -->
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
 
-      <!-- 表头 -->
-      <thead (nzSortChange)="gridSort($event)">
-        <tr>
-          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
-            [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>显示位置</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>票型别名</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>别名标识码</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>票价</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>源票型</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
+    <!-- 表头 -->
+    <thead (nzSortChange)="gridSort($event)">
+      <tr>
+        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
+        [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
+      </th>
+
+      <th nz-th class="text-center" nzWidth="130px">
+        <span>票型别名</span>
+      </th>
+      <th nz-th class="text-center" nzWidth="130px">
+        <span>别名标识码</span>
+      </th>
+      <th nz-th class="text-center" nzWidth="130px">
+        <span>票价</span>
+      </th>
+      <th nz-th class="text-center" nzWidth="130px">
+        <span>源票型</span>
+      </th>
+<!--           <th nz-th class="text-center" nzWidth="130px">
             <span>源标识码</span>
-          </th>
+          </th> -->
           <th nz-th class="text-center" nzWidth="130px">
             <span>是否启用</span>
           </th>
           <th nz-th class="text-center" nzWidth="130px">
+            <span>是否团体</span>
+          </th>
+<!--           <th nz-th class="text-center" nzWidth="130px">
             <span>音频</span>
+          </th> -->
+          <th nz-th class="text-center" nzWidth="130px">
+            <span>显示位置</span>
           </th>
           <th nz-th class="text-center" nzWidth="200px">
             <span>开始有效期</span>
@@ -115,13 +119,9 @@
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
           <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"
-            nzWidth="60px" nzLeft="0px"></td>
+          nzWidth="60px" nzLeft="0px"></td>
 
-          <td nz-td class="text-center">
-            <span>
-              {{l(item.position)}}
-            </span>
-          </td>
+
           <td nz-td class="text-center">
             <span>
               {{item.ticketName}}
@@ -142,17 +142,28 @@
               {{l(item.ticket.ticketName)}}
             </span>
           </td>
-          <td nz-td class="text-center">
+<!--           <td nz-td class="text-center">
             <span>
               {{item.ticket.ticketCode}}
             </span>
-          </td>
+          </td> -->
 
           <td nz-td class="text-center" [innerHTML]='item.isEnabled | yn'>
           </td>
-          <td nz-td class="text-center">
+          <td nz-td class="text-center" >
+            <span *ngIf="item.ticket.group == 0">散客票</span>
+            <span *ngIf="item.ticket.group == 1">团体票</span>
+            <span *ngIf="item.ticket.group == 2">卡类</span>
+          </td>
+
+<!--           <td nz-td class="text-center">
             <span>
               {{l(item.ticket.audioName)}}
+            </span>
+          </td> -->
+          <td nz-td class="text-center">
+            <span>
+              {{l(item.position)}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -186,17 +197,17 @@
 
             <ng-container>
               <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)"
-                [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')" [nzOkType]="'danger'">
-                <a nz-popconfirm>
-                  <span>{{l('Delete')}}</span>
-                </a>
-              </nz-popconfirm>
-            </ng-container>
+              [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')" [nzOkType]="'danger'">
+              <a nz-popconfirm>
+                <span>{{l('Delete')}}</span>
+              </a>
+            </nz-popconfirm>
+          </ng-container>
 
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
 
-  </nz-row>
+</nz-row>
 </nz-card>

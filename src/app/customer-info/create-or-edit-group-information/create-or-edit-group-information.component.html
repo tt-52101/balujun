@@ -11,48 +11,47 @@
     <fieldset>
         <!-- 提示信息 -->
         <nz-form-item nz-row>
-            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketName">团体名称
+            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="groupName">团体名称
             </nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input nz-input name="ticketName" #ticketName="ngModel" [(ngModel)]="entity.ticketName" required>
+                <input nz-input name="groupName" #groupName="ngModel" [(ngModel)]="entity.groupName" required>
                 <!-- 校验 -->
-                <nz-form-explain *ngIf="ticketName.control.dirty&&ticketName.control.errors">
-                    <ng-container *ngIf="ticketName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                <nz-form-explain *ngIf="groupName.control.dirty&&groupName.control.errors">
+                    <ng-container *ngIf="groupName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
                 </nz-form-explain>
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ticketCode">联系人</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="contacts">联系人</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input required nz-input name="ticketCode" #ticketCode="ngModel" [(ngModel)]="entity.ticketCode">
+                <input required nz-input name="contacts" #contacts="ngModel" [(ngModel)]="entity.contacts">
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="checkNum">联系电话</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="mobile">联系电话</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input required nz-input name="checkNum" #checkNum="ngModel" [(ngModel)]="entity.checkNum">
+                <input required nz-input name="mobile" #mobile="ngModel" [(ngModel)]="entity.mobile">
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="effectiveLong">备注
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="remand">备注
             </nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input required nz-input name="effectiveLong" #effectiveLong="ngModel"
-                    [(ngModel)]="entity.effectiveLong" >
+                <input required nz-input name="remand" #remand="ngModel" [(ngModel)]="entity.remand" >
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="unitPrice">折扣</nz-form-label>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="discount">折扣</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input required nz-input name="unitPrice" #unitPrice="ngModel" [(ngModel)]="entity.unitPrice"
-                   >
+                <input required nz-input name="discount" #discount="ngModel" [(ngModel)]="entity.discount"
+                >
             </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-row>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="isEnabled">是否启用</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
                 <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
-                    [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
+                [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
             </nz-form-control>
         </nz-form-item>
     </fieldset>
@@ -63,9 +62,9 @@
             {{l("Cancel")}}
         </button>
         <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
-            [nzLoading]="saving">
-            <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
-            {{l("Save")}}
-        </button>
-    </div>
+        [nzLoading]="saving">
+        <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+        {{l("Save")}}
+    </button>
+</div>
 </form>

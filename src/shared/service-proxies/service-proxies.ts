@@ -631,152 +631,6 @@ export class ActivityServiceProxy {
 }
 
 @Injectable()
-export class CheckTicketServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    /**
-     * 卡验票
-     * @param gateNumber (optional) 
-     * @param jqmpass (optional) 
-     * @param rdindex (optional) 
-     * @return Success
-     */
-    cardOpen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
-        let url_ = this.baseUrl + "/api/CheckTicket/CardOpen?";
-        if (gateNumber === null)
-            throw new Error("The parameter 'gateNumber' cannot be null.");
-        else if (gateNumber !== undefined)
-            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
-        if (jqmpass === null)
-            throw new Error("The parameter 'jqmpass' cannot be null.");
-        else if (jqmpass !== undefined)
-            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
-        if (rdindex === null)
-            throw new Error("The parameter 'rdindex' cannot be null.");
-        else if (rdindex !== undefined)
-            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCardOpen(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCardOpen(<any>response_);
-                } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processCardOpen(response: HttpResponseBase): Observable<CheckResult> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CheckResult>(<any>null);
-    }
-
-    /**
-     * 二维码验票
-     * @param gateNumber (optional) 
-     * @param jqmpass (optional) 
-     * @param rdindex (optional) 
-     * @return Success
-     */
-    scancodeopen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
-        let url_ = this.baseUrl + "/api/CheckTicket/Scancodeopen?";
-        if (gateNumber === null)
-            throw new Error("The parameter 'gateNumber' cannot be null.");
-        else if (gateNumber !== undefined)
-            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
-        if (jqmpass === null)
-            throw new Error("The parameter 'jqmpass' cannot be null.");
-        else if (jqmpass !== undefined)
-            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
-        if (rdindex === null)
-            throw new Error("The parameter 'rdindex' cannot be null.");
-        else if (rdindex !== undefined)
-            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processScancodeopen(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processScancodeopen(<any>response_);
-                } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CheckResult>(<any>null);
-    }
-}
-
-@Injectable()
 export class HistoryServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -872,6 +726,286 @@ export class HistoryServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfGateHistoryResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class CheckTicketServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 二维码验票
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @return Success
+     */
+    scancodeopen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/Scancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processScancodeopen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processScancodeopen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 二维码验票(一人一票)
+     * @param gateNumber (optional) 设备号
+     * @param jqmpass (optional) 卡号
+     * @param rdindex (optional) 串口号
+     * @return Success
+     */
+    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestScancodeopenGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestScancodeopenGet(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestScancodeopenGet(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 二维码验票(一人一票)
+     * @param gateNumber (optional) 设备号
+     * @param jqmpass (optional) 卡号
+     * @param rdindex (optional) 串口号
+     * @return Success
+     */
+    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestScancodeopenPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestScancodeopenPost(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestScancodeopenPost(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 根据票据Id验票
+     * @param qrcode (optional) 
+     * @param ticketNo (optional) 
+     * @param ticketdetailId (optional) 
+     * @return Success
+     */
+    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TicketDetailIdOpen?";
+        if (qrcode === null)
+            throw new Error("The parameter 'qrcode' cannot be null.");
+        else if (qrcode !== undefined)
+            url_ += "qrcode=" + encodeURIComponent("" + qrcode) + "&"; 
+        if (ticketNo === null)
+            throw new Error("The parameter 'ticketNo' cannot be null.");
+        else if (ticketNo !== undefined)
+            url_ += "ticketNo=" + encodeURIComponent("" + ticketNo) + "&"; 
+        if (ticketdetailId === null)
+            throw new Error("The parameter 'ticketdetailId' cannot be null.");
+        else if (ticketdetailId !== undefined)
+            url_ += "ticketdetailId=" + encodeURIComponent("" + ticketdetailId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTicketDetailIdOpen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTicketDetailIdOpen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTicketDetailIdOpen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
     }
 }
 
@@ -28353,6 +28487,7 @@ export interface IActivityResultModel {
 export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetailModel {
     quantity: number;
     customerId: number;
+    ticketPriceId: number;
 
     constructor(data?: ICreateGroupActivityDetailModel) {
         if (data) {
@@ -28367,6 +28502,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
         if (data) {
             this.quantity = data["quantity"];
             this.customerId = data["customerId"];
+            this.ticketPriceId = data["ticketPriceId"];
         }
     }
 
@@ -28381,6 +28517,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
         data = typeof data === 'object' ? data : {};
         data["quantity"] = this.quantity;
         data["customerId"] = this.customerId;
+        data["ticketPriceId"] = this.ticketPriceId;
         return data; 
     }
 
@@ -28395,6 +28532,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
 export interface ICreateGroupActivityDetailModel {
     quantity: number;
     customerId: number;
+    ticketPriceId: number;
 }
 
 export class CreateGroupActivityModel implements ICreateGroupActivityModel {
@@ -28407,7 +28545,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
     createUserId: number;
     totalQuantity: number;
     totalAmount: number;
-    ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
     availableStart: string | undefined;
@@ -28433,7 +28570,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
             this.createUserId = data["createUserId"];
             this.totalQuantity = data["totalQuantity"];
             this.totalAmount = data["totalAmount"];
-            this.ticketPriceId = data["ticketPriceId"];
             if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
                 this.activityDetails = [] as any;
                 for (let item of data["activityDetails"])
@@ -28463,7 +28599,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
         data["createUserId"] = this.createUserId;
         data["totalQuantity"] = this.totalQuantity;
         data["totalAmount"] = this.totalAmount;
-        data["ticketPriceId"] = this.ticketPriceId;
         if (this.activityDetails && this.activityDetails.constructor === Array) {
             data["activityDetails"] = [];
             for (let item of this.activityDetails)
@@ -28493,70 +28628,10 @@ export interface ICreateGroupActivityModel {
     createUserId: number;
     totalQuantity: number;
     totalAmount: number;
-    ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
     availableStart: string | undefined;
     availableEnd: string | undefined;
-}
-
-export class CheckResult implements ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
-
-    constructor(data?: ICheckResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.status = data["status"];
-            this.msg = data["msg"];
-            this.count = data["count"];
-            this.audio = data["audio"];
-            this.show_msg = data["show_msg"];
-        }
-    }
-
-    static fromJS(data: any): CheckResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new CheckResult();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["msg"] = this.msg;
-        data["count"] = this.count;
-        data["audio"] = this.audio;
-        data["show_msg"] = this.show_msg;
-        return data; 
-    }
-
-    clone(): CheckResult {
-        const json = this.toJSON();
-        let result = new CheckResult();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
 }
 
 export class QueryData implements IQueryData {
@@ -28797,6 +28872,65 @@ export class PagedResultDtoOfGateHistoryResultDto implements IPagedResultDtoOfGa
 export interface IPagedResultDtoOfGateHistoryResultDto {
     totalCount: number;
     items: GateHistoryResultDto[] | undefined;
+}
+
+export class CheckResult implements ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+
+    constructor(data?: ICheckResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.status = data["status"];
+            this.msg = data["msg"];
+            this.count = data["count"];
+            this.audio = data["audio"];
+            this.show_msg = data["show_msg"];
+        }
+    }
+
+    static fromJS(data: any): CheckResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["msg"] = this.msg;
+        data["count"] = this.count;
+        data["audio"] = this.audio;
+        data["show_msg"] = this.show_msg;
+        return data; 
+    }
+
+    clone(): CheckResult {
+        const json = this.toJSON();
+        let result = new CheckResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
 }
 
 export class AudioResultDto implements IAudioResultDto {
@@ -36467,10 +36601,10 @@ export interface IPagedResultDtoOfCheckRecordListDto {
 
 export enum DeviceTypeEnum {
     TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"SelfhelpMachine", 
-    FaceMachine = <any>"GateMachine", 
-    SelfhelpMachine = <any>"HandMachine", 
-    HandMachine = <any>"FaceMachine", 
+    GateMachine = <any>"GateMachine", 
+    FaceMachine = <any>"FaceMachine", 
+    SelfhelpMachine = <any>"SelfhelpMachine", 
+    HandMachine = <any>"HandMachine", 
 }
 
 /** 的列表DTO Yozeev.SystemConfig.ClientVersion */

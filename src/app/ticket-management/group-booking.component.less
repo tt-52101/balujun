@@ -6,7 +6,7 @@
   position: relative;
 
   .ticketleft-top {
-    height: 321px;
+    padding-bottom: 25px;
 
     .ticketleft-top-title {
       color: rgba(60, 67, 83, 1);
@@ -16,7 +16,7 @@
     }
 
     .search {
-      width: 30vw;
+      width: 50%;
       margin: -30px auto 0;
     }
 
@@ -24,6 +24,8 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
+      font-size:  15px;
+      margin-top: 10px;
 
       .ticketleft-list-item {
         display: flex;
@@ -31,30 +33,35 @@
         align-items: center;
 
         :nth-child(2n-1) {
-          margin: 10px 0px 10px 50px;
-        }
 
-        :nth-child(2n) {
-          margin: 10px 50px 10px 0px;
-        }
+       }
 
-        span {
-          text-align: center;
-          width: 25%;
-        }
+       :nth-child(2n) {
+        border:2px solid rgba(221,226,238,1);
+        border-radius: 4px;
+        padding-left: 10px;
+        margin: 10px 0;
+        height: 36px;
+        line-height: 36px;
+      }
 
-        input {
-          width: 100%;
-          vertical-align: middle
-        }
+      span {
+        text-align: right;
+        width: 30%;
+      }
+
+      div {
+        width: 50%;
+        text-align: left;
       }
     }
   }
+}
 
-  .ticketleft-center {
-    height: 20px;
-    background-color: #ebf1f5;
-  }
+.ticketleft-center {
+  height: 20px;
+  background-color: #ebf1f5;
+}
 }
 
 .ant-select {
@@ -118,9 +125,9 @@ button {
   line-height: 44px;
   background: rgba(109, 212, 139, 1);
   border-radius: 4px;
-  position: absolute;
-  bottom: 6%;
-  left: 50%;
+  margin-left: calc(50% - 66px);
+  margin-top: 20px;
+  border: 1px solid rgba(109, 212, 139, 1);
 
   i {
     margin-right: 6px;
@@ -132,84 +139,85 @@ button {
   height: 820px;
 
   .ticketright-top {
-    height: 40%;
-    border-bottom: 1px solid #DDE2EE;
+/*    height: 40%;
+border-bottom: 1px solid #DDE2EE;*/
 
-    .carttitle {
-      font-size: 18px;
-      font-weight: 600;
-      color: #3C4353;
-      margin: 10px 20px;
-    }
+.carttitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #3C4353;
+  margin: 10px 20px;
+}
 
-    .cartlist {
-      font-size: 14px;
-      font-weight: 500;
-      color: #3C4353;
-      margin-left: 40px;
-      border-bottom: 1px solid #DDE2EE;
-      display: flex;
-      justify-content: space-between;
-      padding: 15px;
+.cartlist {
+  font-size: 14px;
+  font-weight: 500;
+  color: #3C4353;
+  margin-left: 40px;
+  border-bottom: 1px solid #DDE2EE;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
 
-      span {
-        i {
-          margin-right: 10px;
-        }
-      }
-      :nth-child(4) {
-        cursor: pointer;
-        color: #5D77FF;
-      }
-    }
-
-    .ticketright-sum {
-      margin-top: 135px;
+  span {
+    i {
       margin-right: 10px;
-      text-align: right;
+    }
+  }
+  :nth-child(4) {
+    cursor: pointer;
+    color: #5D77FF;
+  }
+}
+
+.ticketright-sum {
+  margin-top: 135px;
+  margin-right: 10px;
+  text-align: right;
+
+  span {
+    color: #3C4353;
+    font-weight: 500;
+    font-size: 20px;
+    padding: 30px;
+  }
+}
+
+}
+
+.ticketright-botton {
+  .botton-item {
+    margin: 10px 0;
+
+    .botton-form {
+      padding-right: 10px;
 
       span {
-        color: #3C4353;
-        font-weight: 500;
-        font-size: 20px;
-        padding: 30px;
-      }
-    }
-
-  }
-
-  .ticketright-botton {
-    .botton-item {
-      margin: 10px 0;
-
-      .botton-form {
-        padding-right: 10px;
-
-        span {
           color: #838A9D;
-        }
-      }
-
-      .botton-num {
-        font-size: 24px;
-        font-weight: 500;
-        color: #A981F3;
+          font-size: 16px;
       }
     }
 
+    .botton-num {
+      font-size: 24px;
+      font-weight: 500;
+      color: #A981F3;
+    }
   }
+
+}
 }
 
 .submitbtn {
-  width: 24vw;
-  height: 40px;
-  margin: 0 12%;
+  width: 84%;
+  margin: 0 8%;
   background: #5D77FF;
   color: #fff;
+  height: 40px;
   line-height: 40px;
   font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+  border-radius:4px;
 }
 
-.ant-calendar-picker {
-  width: 100%;
-}

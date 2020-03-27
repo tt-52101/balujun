@@ -29,13 +29,13 @@
     [nzPageSizeOptions]="pageSizes"
     [nzTotal]="totalItems"
     [nzFrontPagination]="false" nzBordered  style="word-break:break-all">
-      <!-- 暂无数据组件 -->
-      <ng-template #noDataTemplate>
-        <no-data></no-data>
-      </ng-template>
-      <thead (nzSortChange)="gridSort($event)">
-        <tr>
-          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+    <!-- 暂无数据组件 -->
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+    <thead (nzSortChange)="gridSort($event)">
+      <tr>
+        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
 <!--           <th nz-th nzWidth="180px" class="text-center" nzLeft="60px">
             <span>{{l('TicketId')}}</span>
           </th> -->
@@ -83,91 +83,94 @@
           <!-- 全选框 -->
           <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
           <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
-              <span nz-tooltip [nzTitle]="item.ticket">
-                {{item.ticketName}}
-              </span>
-            </ellipsis>
+
+            <span nz-tooltip [nzTitle]="item.ticket">
+              {{item.ticketName}}
+            </span>
+
           </td>
           <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
-              <span nz-tooltip [nzTitle]="item.scenicSpot">
-                {{item.ticketCode}}
-              </span>
-            </ellipsis>
+
+            <span nz-tooltip [nzTitle]="item.scenicSpot">
+              {{item.ticketCode}}
+            </span>
+
           </td>
           <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
-              <span nz-tooltip [nzTitle]="item.tradeName">
-                {{item.audioName}}
-              </span>
-            </ellipsis>
+
+            <span nz-tooltip [nzTitle]="item.tradeName">
+              {{item.audioName}}
+            </span>
+
           </td>
           <!-- <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
+            
               <span nz-tooltip [nzTitle]="item.tradeInfo">
                 {{item.creationTime|_date}}
               </span>
-            </ellipsis>
-          </td> -->
+
+            </td> -->
           <!-- <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
+            
               <span nz-tooltip [nzTitle]="item.address">
                 {{item.address}}
               </span>
-            </ellipsis>
-          </td> -->
-          <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
+
+            </td> -->
+            <td nz-td nzWidth="135px" class="text-center">
+
               <span nz-tooltip [nzTitle]="item.abstract">
                 {{item.sort}}
               </span>
-            </ellipsis>
-          </td>
-          <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.group | group' ></td>
-          <td nz-td nzWidth="135px" class="text-center" >
-            <ellipsis lines="1">
+
+            </td>
+            <td nz-td nzWidth="135px" class="text-center" >
+              <span *ngIf="item.group == 0">散客票</span>
+              <span *ngIf="item.group == 1">团体票</span>
+              <span *ngIf="item.group == 2">卡类</span>
+            </td>
+
+            <td nz-td nzWidth="135px" class="text-center" >
               <span>
                 {{l(item.ticketMode)}}
               </span>
-            </ellipsis>
-          </td>
-          <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
+            </td>
+            <td nz-td nzWidth="135px" class="text-center">
+
               <span nz-tooltip [nzTitle]="item.abstract">
                 {{l(item.checkMethod)}}
               </span>
-            </ellipsis>
-          </td>
-          <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
-          <td nz-td nzWidth="135px" class="text-center">
-            <ellipsis lines="1">
+
+            </td>
+            <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
+            <td nz-td nzWidth="135px" class="text-center">
+
               <span nz-tooltip [nzTitle]="item.abstract">
                 {{item.creatorUser}}
               </span>
-            </ellipsis>
-          </td>
-          <td na-td nzRight="0px" nzWidth="135px" class="text-center">
-            <!-- 编辑 -->
-            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
-              <a (click)="createOrEdit(item.id)">
-                <!-- <i class="anticon anticon-edit mr-sm"></i> -->
-                <span>编辑</span>
-              </a>
-              <nz-divider nzType="vertical"></nz-divider>
-            </ng-container>
-            <!-- 删除 -->
-            <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
-              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')">
-                <a nz-popconfirm>
-                  <!-- <i class="anticon anticon-delete mr-sm"></i> -->
-                  <span>删除</span>
+
+            </td>
+            <td na-td nzRight="0px" nzWidth="135px" class="text-center">
+              <!-- 编辑 -->
+              <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+                <a (click)="createOrEdit(item.id)">
+                  <!-- <i class="anticon anticon-edit mr-sm"></i> -->
+                  <span>编辑</span>
                 </a>
-              </nz-popconfirm>
-            </ng-container>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </nz-row>
-</nz-card>
+                <nz-divider nzType="vertical"></nz-divider>
+              </ng-container>
+              <!-- 删除 -->
+              <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
+                <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Confirm')" [nzCancelText]="l('Cancel')">
+                  <a nz-popconfirm>
+                    <!-- <i class="anticon anticon-delete mr-sm"></i> -->
+                    <span>删除</span>
+                  </a>
+                </nz-popconfirm>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-row>
+  </nz-card>
