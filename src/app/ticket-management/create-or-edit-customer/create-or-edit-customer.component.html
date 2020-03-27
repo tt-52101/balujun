@@ -1,0 +1,98 @@
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+  <div class="modal-header" style="text-align: center;width: 100%;">
+    <div class="modal-title" style="font-weight: 600;font-size: 20px;">
+      <span>登记资料</span>
+    </div>
+  </div>
+  <fieldset>
+
+    <div class="flexbox">
+      <div class="tablist">
+        <nz-tabset class="tabset" nzTabPosition="left" [(nzSelectedIndex)]="selectedIndex" (nzSelectChange)="selectChange($event)">
+          <nz-tab *ngFor="let item of customerlist;let i =index" [nzTitle]="item.customerName ? item.customerName:'游客'+i" style="text-align: center"></nz-tab>
+        </nz-tabset>
+      </div>
+
+
+      <div class="leftbox">
+        <div class="boxtitle">证件信息</div>
+        <div class="left-bottom-box">
+          <div class="formbox">
+            <nz-form-item nz-row>
+              <nz-form-label nz-col [nzSm]="6" nzRequired nzFor="verifiableType">{{l('VerifiableType')}}</nz-form-label>
+              <nz-form-control nz-col [nzSm]="17" nzHasFeedback>
+                <nz-select [(ngModel)]="entity.verifiableType" name="verifiableType">
+                  <nz-option nzValue="IdentityCard" [nzLabel]="l('IdentityCard')"></nz-option>
+                  <nz-option nzValue="ReturnCard" [nzLabel]="l('ReturnCard')"></nz-option>
+                  <nz-option nzValue="TaiwanCard" [nzLabel]="l('TaiwanCard')"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label nz-col [nzSm]="6" nzRequired nzFor="certificatesNum">{{l('CertificatesNum')}}</nz-form-label>
+              <nz-form-control nz-col [nzSm]="17">
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixButton">
+                  <input nz-input name="certificatesNum" #certificatesNum="ngModel" [(ngModel)]="entity.certificatesNum" [placeholder]="l('CertificatesNum')" required (blur)="legal(certificatesNum.control)">
+                  <ng-template #suffixButton>
+                    <button nz-button nzType="primary" nzSearch type="button" (click)="search()">查询</button>
+                  </ng-template>
+                </nz-input-group>
+                <nz-form-explain *ngIf="certificatesNum.control.dirty&&certificatesNum.control.errors">
+                  <ng-container *ngIf="certificatesNum.control.hasError('legal')">请输入正确的证件号码</ng-container>
+                  <ng-container *ngIf="certificatesNum.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label nz-col [nzSm]="6" nzFor="sex">{{l('Sex')}}</nz-form-label>
+              <nz-form-control nz-col [nzSm]="17" nzHasFeedback>
+                <nz-select [(ngModel)]="entity.sex" name="sex">
+                  <nz-option nzValue="Woman" [nzLabel]="l('Woman')"></nz-option>
+                  <nz-option nzValue="Man" [nzLabel]="l('Man')"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label nz-col [nzSm]="6" nzRequired nzFor="customerName">{{l('CustomerName')}}</nz-form-label>
+              <nz-form-control nz-col [nzSm]="17" nzHasFeedback>
+                <input nz-input name="customerName" #customerName="ngModel" [(ngModel)]="entity.customerName" [placeholder]="l('CustomerName')" required>
+                <!-- 校验 -->
+                <nz-form-explain *ngIf="customerName.control.dirty&&customerName.control.errors">
+                  <ng-container *ngIf="customerName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item nz-row>
+              <nz-form-label [nzSm]="6" nzFor="mobile" nzRequired>{{l('Mobile')}}</nz-form-label>
+              <nz-form-control nz-col [nzSm]="17" nzHasFeedback>
+                <input nz-input name="mobile" #mobile="ngModel" required [(ngModel)]="entity.mobile" [placeholder]="l('Mobile')" type="tel" maxlength="11" (blur)="mobilelegal(mobile.control)">
+                <nz-form-explain *ngIf="mobile.control.dirty&&mobile.control.errors">
+                  <ng-container *ngIf="mobile.control.hasError('mobilelegal')">请输入正确的手机号码</ng-container>
+                </nz-form-explain>
+              </nz-form-control>
+            </nz-form-item>
+
+
+          </div>
+          <div class="imgbox">
+            <button nz-button type="button" class="readfile" id="button_readID" (click)="createshebei()">读取证件</button>
+            <canvas id="canvas" width="190" height="200" style="margin-top: 20px;"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="rightbox">
+        <div class="boxtitle">人脸信息</div>
+        <div class="prebox">
+          <video id="video" width="190" height="200" controls *ngIf="cantakepic"></video>
+        </div>
+        <button nz-button type="button" class="imgbtn" (click)="makepic()">拍照</button>
+      </div>
+    </div>
+
+  </fieldset>
+
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">取消</button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">确认添加</button>
+  </div>
+</form>
