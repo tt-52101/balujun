@@ -92,11 +92,11 @@ implements OnInit {
     */
     init(): void {
       this._powerService.getForEdit(this.id).subscribe(result => {
-        // this._menuService.getMenuDropDown().subscribe(res => {
-        //   this.menuarr = res
-        // });
+        this._menuService.getMenuDropDown().subscribe(res => {
+          this.menuarr = res
+        });
 
-        this._menuService.getPaged('',null,999,0).subscribe(result => {
+        this._menuService.getPaged('','',999,0).subscribe(result => {
           this.menulist = result.items;
         })
 
@@ -173,9 +173,9 @@ implements OnInit {
     */
     submitForm(): void {
       const input = new CreateOrUpdatePowerInput();
-      this.entity.method='null'
-      this.entity.params='null'
-      this.entity.groupName='null'
+      this.entity.method=''
+      this.entity.params=''
+      this.entity.groupName=''
       input.power = this.entity;
       this.saving = true;
 

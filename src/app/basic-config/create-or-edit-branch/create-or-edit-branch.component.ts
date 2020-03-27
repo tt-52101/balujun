@@ -45,7 +45,7 @@ implements OnInit {
     */
     init(): void {
       this._branchService.getForEdit(this.id).subscribe(result => {
-        this._branchService.getPaged('',null,999,0)
+        this._branchService.getPaged('','',999,0)
         .subscribe(result => {
             this.branchList = result.items;
         });

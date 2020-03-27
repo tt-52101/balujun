@@ -1,17 +1,17 @@
 <form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
-    <!-- 模态框头部 -->
-    <div class="modal-header">
-        <div class="modal-title">
-            <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
-            <span *ngIf="entity.id">{{l('Edit')}}</span>
-            <span *ngIf="!entity.id">{{l('Create')}}</span>
-        </div>
+  <!-- 模态框头部 -->
+  <div class="modal-header">
+    <div class="modal-title">
+      <!-- <i class="anticon anticon-medicine-box mr-sm"></i> -->
+      <span *ngIf="entity.id">{{l('Edit')}}</span>
+      <span *ngIf="!entity.id">{{l('Create')}}</span>
     </div>
-    <!-- 模态框内容 -->
-    <fieldset>
-        <!-- 提示信息 -->
-        <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
-<!--         <nz-form-item nz-row>
+  </div>
+  <!-- 模态框内容 -->
+  <fieldset>
+    <!-- 提示信息 -->
+    <!-- <nz-alert nzType="info" nzCloseable [nzShowIcon]="true" nzMessage="l('我想提示点什么内容给你说')"></nz-alert> -->
+    <!--         <nz-form-item nz-row>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="parentId">{{l('ParentId')}}</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
                 <input nz-input name="parentId" #parentId="ngModel"
@@ -19,74 +19,70 @@
                 [placeholder]="l('ParentId')" >
             </nz-form-control>
         </nz-form-item> -->
-        <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="parent">{{l('Parent')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-<!--                 <input nz-input name="parent" #parent="ngModel"
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="parent">{{l('Parent')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <!--                 <input nz-input name="parent" #parent="ngModel"
                 [(ngModel)]="entity.parent"
                 [placeholder]="l('Parent')" > -->
-                <nz-select  [(ngModel)]="entity.parentId" name="parentId" nzAllowClear (ngModelChange)="onChange($event)">
-                    <nz-option *ngFor="let item of branchList;let i = index;" [nzValue]="item.id" [nzLabel]="item.branchName"></nz-option>
-                </nz-select>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="branchCode">{{l('BranchCode')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input nz-input name="branchCode" #branchCode="ngModel"
-                [(ngModel)]="entity.branchCode"
-                [placeholder]="l('BranchCode')"  required >
-                <!-- 校验 -->
-                <nz-form-explain *ngIf="branchCode.control.dirty&&branchCode.control.errors">
-                    <ng-container *ngIf="branchCode.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-                </nz-form-explain>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-            <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="branchName">{{l('BranchName')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input nz-input name="branchName" #branchName="ngModel"
-                [(ngModel)]="entity.branchName"
-                [placeholder]="l('BranchName')"  required >
-                <!-- 校验 -->
-                <nz-form-explain *ngIf="branchName.control.dirty&&branchName.control.errors">
-                    <ng-container *ngIf="branchName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-                </nz-form-explain>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sort" nzRequired>{{l('Sort')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input nz-input name="sort" #sort="ngModel"
-                [(ngModel)]="entity.sort"
-                [placeholder]="l('Sort')" required>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="level" nzRequired>{{l('Level')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <input nz-input name="level" #level="ngModel"
-                [(ngModel)]="entity.level"
-                [placeholder]="l('Level')" required>
-            </nz-form-control>
-        </nz-form-item>
-        <nz-form-item nz-row>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
-            <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-                <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
-                [(ngModel)]="entity.isEnabled" >{{l('IsEnabled')}}</label>
-            </nz-form-control>
-        </nz-form-item>
-    </fieldset>
-    <!-- 模态框底部 -->
-    <div class="modal-footer">
-        <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
-            <!-- <i class="anticon anticon-close-circle-o"></i> -->
-            {{l("Cancel")}}
-        </button>
-        <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
-            <!-- <i class="anticon anticon-save" *ngIf="!saving"></i> -->
-            {{l("Save")}}
-        </button>
-    </div>
+        <nz-select [(ngModel)]="entity.parentId" name="parentId" nzAllowClear (ngModelChange)="onChange($event)">
+          <nz-option *ngFor="let item of branchList;let i = index;" [nzValue]="item.id" [nzLabel]="item.branchName">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="branchCode">{{l('BranchCode')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="branchCode" #branchCode="ngModel" [(ngModel)]="entity.branchCode"
+          [placeholder]="l('BranchCode')" required>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="branchCode.control.dirty&&branchCode.control.errors">
+          <ng-container *ngIf="branchCode.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="branchName">{{l('BranchName')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="branchName" #branchName="ngModel" [(ngModel)]="entity.branchName"
+          [placeholder]="l('BranchName')" required>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="branchName.control.dirty&&branchName.control.errors">
+          <ng-container *ngIf="branchName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sort" nzRequired>{{l('Sort')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="sort" #sort="ngModel" [(ngModel)]="entity.sort" [placeholder]="l('Sort')" required>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="level" nzRequired>{{l('Level')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="level" #level="ngModel" [(ngModel)]="entity.level" [placeholder]="l('Level')" required>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">{{l('IsEnabled')}}</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
+          [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
+      </nz-form-control>
+    </nz-form-item>
+  </fieldset>
+  <!-- 模态框底部 -->
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+      <!-- <i class="anticon anticon-close-circle-o"></i> -->
+      {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
+      [nzLoading]="saving">
+      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i> -->
+      {{l("Save")}}
+    </button>
+  </div>
 </form>

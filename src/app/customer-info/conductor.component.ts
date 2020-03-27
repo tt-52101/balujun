@@ -28,7 +28,7 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
     }
 
     queryData = [{
-        field: "id",
+        field: "rolename",
         method: "=",
         value: "",
         logic: "and"
@@ -51,10 +51,6 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
     ticketlist=[]
     protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
 
-
-
-
-
         const formdata = new GetTicketRolesInput();
         var arr = []
         for (var i = 0; i = 0; i--) {
@@ -63,14 +59,13 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
             }
         }
 
-        formdata.queryData = arr;
         formdata.sorting = request.sorting
         formdata.maxResultCount = request.maxResultCount;
         formdata.skipCount = request.skipCount;
 
 
 
-        this._ticketRoleServiceProxy.getPaged(this.queryData[1].value, this.queryData[2].value, formdata)
+        this._ticketRoleServiceProxy.getPaged(this.queryData[0].value,this.queryData[1].value,this.queryData[2].value,formdata)
             .finally(() => {
                 finishedCallback();
             })

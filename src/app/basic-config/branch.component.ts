@@ -38,11 +38,13 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		this._branchService.getPaged('',null,999,0)
+		this._branchService.getPaged('','',999,0)
 		.finally(() => {
 			finishedCallback();
 		})
 		.subscribe(result => {
+			console.log(result.items);
+			
 			this.dataList = result.items;
 			this.showPaging(result);
 		});

@@ -631,152 +631,6 @@ export class ActivityServiceProxy {
 }
 
 @Injectable()
-export class CheckTicketServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    /**
-     * 卡验票
-     * @param gateNumber (optional) 
-     * @param jqmpass (optional) 
-     * @param rdindex (optional) 
-     * @return Success
-     */
-    cardOpen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
-        let url_ = this.baseUrl + "/api/CheckTicket/CardOpen?";
-        if (gateNumber === null)
-            throw new Error("The parameter 'gateNumber' cannot be null.");
-        else if (gateNumber !== undefined)
-            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
-        if (jqmpass === null)
-            throw new Error("The parameter 'jqmpass' cannot be null.");
-        else if (jqmpass !== undefined)
-            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
-        if (rdindex === null)
-            throw new Error("The parameter 'rdindex' cannot be null.");
-        else if (rdindex !== undefined)
-            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCardOpen(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processCardOpen(<any>response_);
-                } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processCardOpen(response: HttpResponseBase): Observable<CheckResult> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CheckResult>(<any>null);
-    }
-
-    /**
-     * 二维码验票
-     * @param gateNumber (optional) 
-     * @param jqmpass (optional) 
-     * @param rdindex (optional) 
-     * @return Success
-     */
-    scancodeopen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
-        let url_ = this.baseUrl + "/api/CheckTicket/Scancodeopen?";
-        if (gateNumber === null)
-            throw new Error("The parameter 'gateNumber' cannot be null.");
-        else if (gateNumber !== undefined)
-            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
-        if (jqmpass === null)
-            throw new Error("The parameter 'jqmpass' cannot be null.");
-        else if (jqmpass !== undefined)
-            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
-        if (rdindex === null)
-            throw new Error("The parameter 'rdindex' cannot be null.");
-        else if (rdindex !== undefined)
-            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processScancodeopen(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processScancodeopen(<any>response_);
-                } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<CheckResult>(<any>null);
-    }
-}
-
-@Injectable()
 export class HistoryServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -872,6 +726,286 @@ export class HistoryServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfGateHistoryResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class CheckTicketServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 二维码验票
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @return Success
+     */
+    scancodeopen(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/Scancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processScancodeopen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processScancodeopen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 二维码验票(一人一票)
+     * @param gateNumber (optional) 设备号
+     * @param jqmpass (optional) 卡号
+     * @param rdindex (optional) 串口号
+     * @return Success
+     */
+    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestScancodeopenGet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestScancodeopenGet(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestScancodeopenGet(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 二维码验票(一人一票)
+     * @param gateNumber (optional) 设备号
+     * @param jqmpass (optional) 卡号
+     * @param rdindex (optional) 串口号
+     * @return Success
+     */
+    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
+        if (gateNumber === null)
+            throw new Error("The parameter 'gateNumber' cannot be null.");
+        else if (gateNumber !== undefined)
+            url_ += "gateNumber=" + encodeURIComponent("" + gateNumber) + "&"; 
+        if (jqmpass === null)
+            throw new Error("The parameter 'jqmpass' cannot be null.");
+        else if (jqmpass !== undefined)
+            url_ += "jqmpass=" + encodeURIComponent("" + jqmpass) + "&"; 
+        if (rdindex === null)
+            throw new Error("The parameter 'rdindex' cannot be null.");
+        else if (rdindex !== undefined)
+            url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestScancodeopenPost(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestScancodeopenPost(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestScancodeopenPost(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
+    }
+
+    /**
+     * 根据票据Id验票
+     * @param qrcode (optional) 
+     * @param ticketNo (optional) 
+     * @param ticketdetailId (optional) 
+     * @return Success
+     */
+    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined): Observable<CheckResult> {
+        let url_ = this.baseUrl + "/api/CheckTicket/TicketDetailIdOpen?";
+        if (qrcode === null)
+            throw new Error("The parameter 'qrcode' cannot be null.");
+        else if (qrcode !== undefined)
+            url_ += "qrcode=" + encodeURIComponent("" + qrcode) + "&"; 
+        if (ticketNo === null)
+            throw new Error("The parameter 'ticketNo' cannot be null.");
+        else if (ticketNo !== undefined)
+            url_ += "ticketNo=" + encodeURIComponent("" + ticketNo) + "&"; 
+        if (ticketdetailId === null)
+            throw new Error("The parameter 'ticketdetailId' cannot be null.");
+        else if (ticketdetailId !== undefined)
+            url_ += "ticketdetailId=" + encodeURIComponent("" + ticketdetailId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTicketDetailIdOpen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTicketDetailIdOpen(<any>response_);
+                } catch (e) {
+                    return <Observable<CheckResult>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<CheckResult>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTicketDetailIdOpen(response: HttpResponseBase): Observable<CheckResult> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<CheckResult>(<any>null);
     }
 }
 
@@ -12657,7 +12791,7 @@ export class PayMethodServiceProxy {
      * @param skipCount (optional) 
      * @return Success
      */
-    getPagedGet(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfPayMethodListDto> {
+    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfPayMethodListDto> {
         let url_ = this.baseUrl + "/api/services/app/PayMethod/GetPaged?";
         if (filterText === null)
             throw new Error("The parameter 'filterText' cannot be null.");
@@ -12686,11 +12820,11 @@ export class PayMethodServiceProxy {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedGet(response_);
+            return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetPagedGet(<any>response_);
+                    return this.processGetPaged(<any>response_);
                 } catch (e) {
                     return <Observable<PagedResultDtoOfPayMethodListDto>><any>_observableThrow(e);
                 }
@@ -12699,7 +12833,7 @@ export class PayMethodServiceProxy {
         }));
     }
 
-    protected processGetPagedGet(response: HttpResponseBase): Observable<PagedResultDtoOfPayMethodListDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfPayMethodListDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -12719,93 +12853,6 @@ export class PayMethodServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfPayMethodListDto>(<any>null);
-    }
-
-    /**
-     * 获取统计结果
-     * @param queryData (optional) CreationTime 日期
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @param payMethodId (optional) 
-     * @return Success
-     */
-    getPagedPost(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfPayMethodResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/PayMethod/GetPaged?";
-        if (queryData === null)
-            throw new Error("The parameter 'queryData' cannot be null.");
-        else if (queryData !== undefined)
-            queryData && queryData.forEach((item, index) => { 
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        if (payMethodId === null)
-            throw new Error("The parameter 'payMethodId' cannot be null.");
-        else if (payMethodId !== undefined)
-            url_ += "payMethodId=" + encodeURIComponent("" + payMethodId) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedPost(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetPagedPost(<any>response_);
-                } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfPayMethodResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<StatsPagedResultDtoOfPayMethodResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetPagedPost(response: HttpResponseBase): Observable<StatsPagedResultDtoOfPayMethodResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfPayMethodResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfPayMethodResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<StatsPagedResultDtoOfPayMethodResultDto>(<any>null);
     }
 }
 
@@ -20922,13 +20969,18 @@ export class TicketRoleServiceProxy {
 
     /**
      * 查询
+     * @param rolename (optional) 
      * @param username (optional) 
      * @param ticketname (optional) 
      * @param body (optional) 
      * @return Success
      */
-    getPaged(username: string | undefined, ticketname: string | undefined, body: GetTicketRolesInput | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
+    getPaged(rolename: string | undefined, username: string | undefined, ticketname: string | undefined, body: GetTicketRolesInput | undefined): Observable<PagedResultDtoOfTicketRoleListDto> {
         let url_ = this.baseUrl + "/api/services/app/TicketRole/GetPaged?";
+        if (rolename === null)
+            throw new Error("The parameter 'rolename' cannot be null.");
+        else if (rolename !== undefined)
+            url_ += "rolename=" + encodeURIComponent("" + rolename) + "&"; 
         if (username === null)
             throw new Error("The parameter 'username' cannot be null.");
         else if (username !== undefined)
@@ -26483,133 +26535,7 @@ export class WeChatScenicSpotServiceProxy {
 }
 
 @Injectable()
-export class CommonServiceProxy {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    /**
-     * 获取订单信息
-     * @param sellerId (optional) 
-     * @return Success
-     */
-    getPagedActivities(sellerId: string | undefined): Observable<StatsPagedResultDtoOfActivityResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/Common/GetPagedActivities?";
-        if (sellerId === null)
-            throw new Error("The parameter 'sellerId' cannot be null.");
-        else if (sellerId !== undefined)
-            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedActivities(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetPagedActivities(<any>response_);
-                } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfActivityResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<StatsPagedResultDtoOfActivityResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetPagedActivities(response: HttpResponseBase): Observable<StatsPagedResultDtoOfActivityResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfActivityResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfActivityResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<StatsPagedResultDtoOfActivityResultDto>(<any>null);
-    }
-
-    /**
-     * 获取订单明细
-     * @param activityId (optional) 
-     * @return Success
-     */
-    getPagedActivityDetails(activityId: string | undefined): Observable<StatsPagedResultDtoOfActivityDetailResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/Common/GetPagedActivityDetails?";
-        if (activityId === null)
-            throw new Error("The parameter 'activityId' cannot be null.");
-        else if (activityId !== undefined)
-            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetPagedActivityDetails(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processGetPagedActivityDetails(<any>response_);
-                } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfActivityDetailResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<StatsPagedResultDtoOfActivityDetailResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processGetPagedActivityDetails(response: HttpResponseBase): Observable<StatsPagedResultDtoOfActivityDetailResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfActivityDetailResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfActivityDetailResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<StatsPagedResultDtoOfActivityDetailResultDto>(<any>null);
-    }
-}
-
-@Injectable()
-export class OrderSourceServiceProxy {
+export class SalesByOrderSourceServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -26630,8 +26556,8 @@ export class OrderSourceServiceProxy {
      * @param payMethodId (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, sourceId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfOrderSourceResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/OrderSource/GetPaged?";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, sourceId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfSalesByOrderSourceResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesByOrderSource/GetPaged?";
         if (queryData === null)
             throw new Error("The parameter 'queryData' cannot be null.");
         else if (queryData !== undefined)
@@ -26682,14 +26608,14 @@ export class OrderSourceServiceProxy {
                 try {
                     return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfOrderSourceResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSalesByOrderSourceResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfOrderSourceResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSalesByOrderSourceResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfOrderSourceResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesByOrderSourceResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -26700,7 +26626,7 @@ export class OrderSourceServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfOrderSourceResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfOrderSourceResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesByOrderSourceResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesByOrderSourceResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -26708,12 +26634,12 @@ export class OrderSourceServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfOrderSourceResultDto>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSalesByOrderSourceResultDto>(<any>null);
     }
 }
 
 @Injectable()
-export class OrganizationSalesServiceProxy {
+export class SalesByOrganizationServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -26734,8 +26660,8 @@ export class OrganizationSalesServiceProxy {
      * @param payMethodId (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, organizationId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfOrganizationSalesResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/OrganizationSales/GetPaged?";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, organizationId: string | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfSalesByOrganizationResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesByOrganization/GetPaged?";
         if (queryData === null)
             throw new Error("The parameter 'queryData' cannot be null.");
         else if (queryData !== undefined)
@@ -26786,14 +26712,14 @@ export class OrganizationSalesServiceProxy {
                 try {
                     return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfOrganizationSalesResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSalesByOrganizationResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfOrganizationSalesResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSalesByOrganizationResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfOrganizationSalesResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesByOrganizationResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -26804,7 +26730,7 @@ export class OrganizationSalesServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfOrganizationSalesResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfOrganizationSalesResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesByOrganizationResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesByOrganizationResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -26812,12 +26738,111 @@ export class OrganizationSalesServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfOrganizationSalesResultDto>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSalesByOrganizationResultDto>(<any>null);
     }
 }
 
 @Injectable()
-export class SellerDailyServiceProxy {
+export class SalesByPayMethodServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param queryData (optional) CreationTime 日期
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param payMethodId (optional) 
+     * @return Success
+     */
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, payMethodId: string | undefined): Observable<StatsPagedResultDtoOfSalesByPayMethodResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesByPayMethod/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (payMethodId === null)
+            throw new Error("The parameter 'payMethodId' cannot be null.");
+        else if (payMethodId !== undefined)
+            url_ += "payMethodId=" + encodeURIComponent("" + payMethodId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfSalesByPayMethodResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfSalesByPayMethodResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesByPayMethodResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesByPayMethodResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesByPayMethodResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfSalesByPayMethodResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class SalesBySellerServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -26837,8 +26862,8 @@ export class SellerDailyServiceProxy {
      * @param ticketId (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSellerDailyResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerDaily/GetPaged?";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSalesBySellerResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesBySeller/GetPaged?";
         if (queryData === null)
             throw new Error("The parameter 'queryData' cannot be null.");
         else if (queryData !== undefined)
@@ -26885,14 +26910,14 @@ export class SellerDailyServiceProxy {
                 try {
                     return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerDailyResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSalesBySellerResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfSellerDailyResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSalesBySellerResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerDailyResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesBySellerResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -26903,7 +26928,7 @@ export class SellerDailyServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerDailyResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerDailyResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesBySellerResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesBySellerResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -26911,12 +26936,12 @@ export class SellerDailyServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfSellerDailyResultDto>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSalesBySellerResultDto>(<any>null);
     }
 }
 
 @Injectable()
-export class SellerSalesServiceProxy {
+export class SalesBySellerDailyServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -26936,8 +26961,8 @@ export class SellerSalesServiceProxy {
      * @param ticketId (optional) 
      * @return Success
      */
-    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSellerSalesResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SellerSales/GetPaged?";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, ticketId: string | undefined): Observable<StatsPagedResultDtoOfSalesBySellerDailyResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesBySellerDaily/GetPaged?";
         if (queryData === null)
             throw new Error("The parameter 'queryData' cannot be null.");
         else if (queryData !== undefined)
@@ -26984,14 +27009,14 @@ export class SellerSalesServiceProxy {
                 try {
                     return this.processGetPaged(<any>response_);
                 } catch (e) {
-                    return <Observable<StatsPagedResultDtoOfSellerSalesResultDto>><any>_observableThrow(e);
+                    return <Observable<StatsPagedResultDtoOfSalesBySellerDailyResultDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<StatsPagedResultDtoOfSellerSalesResultDto>><any>_observableThrow(response_);
+                return <Observable<StatsPagedResultDtoOfSalesBySellerDailyResultDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSellerSalesResultDto> {
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesBySellerDailyResultDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -27002,7 +27027,7 @@ export class SellerSalesServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? StatsPagedResultDtoOfSellerSalesResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSellerSalesResultDto();
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesBySellerDailyResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesBySellerDailyResultDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -27010,7 +27035,133 @@ export class SellerSalesServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<StatsPagedResultDtoOfSellerSalesResultDto>(<any>null);
+        return _observableOf<StatsPagedResultDtoOfSalesBySellerDailyResultDto>(<any>null);
+    }
+}
+
+@Injectable()
+export class SalesCommonServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取订单信息
+     * @param sellerId (optional) 
+     * @return Success
+     */
+    getPagedActivities(sellerId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities?";
+        if (sellerId === null)
+            throw new Error("The parameter 'sellerId' cannot be null.");
+        else if (sellerId !== undefined)
+            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedActivities(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedActivities(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfSalesActivityResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfSalesActivityResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedActivities(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesActivityResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesActivityResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfSalesActivityResultDto>(<any>null);
+    }
+
+    /**
+     * 获取订单明细
+     * @param activityId (optional) 
+     * @return Success
+     */
+    getPagedActivityDetails(activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails?";
+        if (activityId === null)
+            throw new Error("The parameter 'activityId' cannot be null.");
+        else if (activityId !== undefined)
+            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPagedActivityDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPagedActivityDetails(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPagedActivityDetails(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesActivityDetailResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesActivityDetailResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfSalesActivityDetailResultDto>(<any>null);
     }
 }
 
@@ -28136,7 +28287,6 @@ export enum OrderTypeEnum {
 export class CreateActivityDetailModel implements ICreateActivityDetailModel {
     quantity: number;
     ticketPriceId: number;
-    scheduleId: number;
     customerId: number;
 
     constructor(data?: ICreateActivityDetailModel) {
@@ -28152,7 +28302,6 @@ export class CreateActivityDetailModel implements ICreateActivityDetailModel {
         if (data) {
             this.quantity = data["quantity"];
             this.ticketPriceId = data["ticketPriceId"];
-            this.scheduleId = data["scheduleId"];
             this.customerId = data["customerId"];
         }
     }
@@ -28168,7 +28317,6 @@ export class CreateActivityDetailModel implements ICreateActivityDetailModel {
         data = typeof data === 'object' ? data : {};
         data["quantity"] = this.quantity;
         data["ticketPriceId"] = this.ticketPriceId;
-        data["scheduleId"] = this.scheduleId;
         data["customerId"] = this.customerId;
         return data; 
     }
@@ -28184,7 +28332,6 @@ export class CreateActivityDetailModel implements ICreateActivityDetailModel {
 export interface ICreateActivityDetailModel {
     quantity: number;
     ticketPriceId: number;
-    scheduleId: number;
     customerId: number;
 }
 
@@ -28353,6 +28500,7 @@ export interface IActivityResultModel {
 export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetailModel {
     quantity: number;
     customerId: number;
+    ticketPriceId: number;
 
     constructor(data?: ICreateGroupActivityDetailModel) {
         if (data) {
@@ -28367,6 +28515,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
         if (data) {
             this.quantity = data["quantity"];
             this.customerId = data["customerId"];
+            this.ticketPriceId = data["ticketPriceId"];
         }
     }
 
@@ -28381,6 +28530,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
         data = typeof data === 'object' ? data : {};
         data["quantity"] = this.quantity;
         data["customerId"] = this.customerId;
+        data["ticketPriceId"] = this.ticketPriceId;
         return data; 
     }
 
@@ -28395,6 +28545,7 @@ export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetai
 export interface ICreateGroupActivityDetailModel {
     quantity: number;
     customerId: number;
+    ticketPriceId: number;
 }
 
 export class CreateGroupActivityModel implements ICreateGroupActivityModel {
@@ -28407,7 +28558,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
     createUserId: number;
     totalQuantity: number;
     totalAmount: number;
-    ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
     availableStart: string | undefined;
@@ -28433,7 +28583,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
             this.createUserId = data["createUserId"];
             this.totalQuantity = data["totalQuantity"];
             this.totalAmount = data["totalAmount"];
-            this.ticketPriceId = data["ticketPriceId"];
             if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
                 this.activityDetails = [] as any;
                 for (let item of data["activityDetails"])
@@ -28463,7 +28612,6 @@ export class CreateGroupActivityModel implements ICreateGroupActivityModel {
         data["createUserId"] = this.createUserId;
         data["totalQuantity"] = this.totalQuantity;
         data["totalAmount"] = this.totalAmount;
-        data["ticketPriceId"] = this.ticketPriceId;
         if (this.activityDetails && this.activityDetails.constructor === Array) {
             data["activityDetails"] = [];
             for (let item of this.activityDetails)
@@ -28493,70 +28641,10 @@ export interface ICreateGroupActivityModel {
     createUserId: number;
     totalQuantity: number;
     totalAmount: number;
-    ticketPriceId: number;
     activityDetails: CreateGroupActivityDetailModel[] | undefined;
     groupId: number;
     availableStart: string | undefined;
     availableEnd: string | undefined;
-}
-
-export class CheckResult implements ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
-
-    constructor(data?: ICheckResult) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.status = data["status"];
-            this.msg = data["msg"];
-            this.count = data["count"];
-            this.audio = data["audio"];
-            this.show_msg = data["show_msg"];
-        }
-    }
-
-    static fromJS(data: any): CheckResult {
-        data = typeof data === 'object' ? data : {};
-        let result = new CheckResult();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["msg"] = this.msg;
-        data["count"] = this.count;
-        data["audio"] = this.audio;
-        data["show_msg"] = this.show_msg;
-        return data; 
-    }
-
-    clone(): CheckResult {
-        const json = this.toJSON();
-        let result = new CheckResult();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
 }
 
 export class QueryData implements IQueryData {
@@ -28797,6 +28885,65 @@ export class PagedResultDtoOfGateHistoryResultDto implements IPagedResultDtoOfGa
 export interface IPagedResultDtoOfGateHistoryResultDto {
     totalCount: number;
     items: GateHistoryResultDto[] | undefined;
+}
+
+export class CheckResult implements ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+
+    constructor(data?: ICheckResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.status = data["status"];
+            this.msg = data["msg"];
+            this.count = data["count"];
+            this.audio = data["audio"];
+            this.show_msg = data["show_msg"];
+        }
+    }
+
+    static fromJS(data: any): CheckResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["msg"] = this.msg;
+        data["count"] = this.count;
+        data["audio"] = this.audio;
+        data["show_msg"] = this.show_msg;
+        return data; 
+    }
+
+    clone(): CheckResult {
+        const json = this.toJSON();
+        let result = new CheckResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
 }
 
 export class AudioResultDto implements IAudioResultDto {
@@ -30786,7 +30933,7 @@ export class Activity implements IActivity {
     orgActivityId: number | undefined;
     activityDate: moment.Moment;
     playDate: moment.Moment;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     buyer: string | undefined;
     mobile: string | undefined;
@@ -30926,7 +31073,7 @@ export interface IActivity {
     orgActivityId: number | undefined;
     activityDate: moment.Moment;
     playDate: moment.Moment;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     buyer: string | undefined;
     mobile: string | undefined;
@@ -33001,7 +33148,7 @@ export class ActivityTemp implements IActivityTemp {
     scheduleId: number;
     activityDate: moment.Moment;
     playDate: moment.Moment;
-    customerId: number;
+    customerId: number | undefined;
     orderType: OrderTypeEnum;
     payStatus: PayStatusEnum;
     buyer: string | undefined;
@@ -33141,7 +33288,7 @@ export interface IActivityTemp {
     scheduleId: number;
     activityDate: moment.Moment;
     playDate: moment.Moment;
-    customerId: number;
+    customerId: number | undefined;
     orderType: OrderTypeEnum;
     payStatus: PayStatusEnum;
     buyer: string | undefined;
@@ -33180,7 +33327,7 @@ export class ActivityTempDetail implements IActivityTempDetail {
     uniPrice: number;
     discount: number;
     totalAmount: number;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     creatorUser: User;
     branch: Branch;
@@ -33270,7 +33417,7 @@ export interface IActivityTempDetail {
     uniPrice: number;
     discount: number;
     totalAmount: number;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     creatorUser: User;
     branch: Branch;
@@ -53416,7 +53563,7 @@ export class TicketDetail implements ITicketDetail {
     activity: Activity;
     orgActivityDetailId: number | undefined;
     orgActivityId: number | undefined;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     ticketId: number;
     ticket: Ticket;
@@ -53533,7 +53680,7 @@ export interface ITicketDetail {
     activity: Activity;
     orgActivityDetailId: number | undefined;
     orgActivityId: number | undefined;
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     ticketId: number;
     ticket: Ticket;
@@ -55653,8 +55800,6 @@ export interface IGetTicketRoleForUpdateOutput {
 
 /** 角色可售票型管理 - 查询（参数） */
 export class GetTicketRolesInput implements IGetTicketRolesInput {
-    /** RoleId 角色 */
-    queryData: QueryData[] | undefined;
     filterText: string | undefined;
     sorting: string | undefined;
     maxResultCount: number;
@@ -55671,11 +55816,6 @@ export class GetTicketRolesInput implements IGetTicketRolesInput {
 
     init(data?: any) {
         if (data) {
-            if (data["queryData"] && data["queryData"].constructor === Array) {
-                this.queryData = [] as any;
-                for (let item of data["queryData"])
-                    this.queryData.push(QueryData.fromJS(item));
-            }
             this.filterText = data["filterText"];
             this.sorting = data["sorting"];
             this.maxResultCount = data["maxResultCount"];
@@ -55692,11 +55832,6 @@ export class GetTicketRolesInput implements IGetTicketRolesInput {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (this.queryData && this.queryData.constructor === Array) {
-            data["queryData"] = [];
-            for (let item of this.queryData)
-                data["queryData"].push(item.toJSON());
-        }
         data["filterText"] = this.filterText;
         data["sorting"] = this.sorting;
         data["maxResultCount"] = this.maxResultCount;
@@ -55714,8 +55849,6 @@ export class GetTicketRolesInput implements IGetTicketRolesInput {
 
 /** 角色可售票型管理 - 查询（参数） */
 export interface IGetTicketRolesInput {
-    /** RoleId 角色 */
-    queryData: QueryData[] | undefined;
     filterText: string | undefined;
     sorting: string | undefined;
     maxResultCount: number;
@@ -61648,372 +61781,8 @@ export interface IPagedResultDtoOfWeChatScenicSpotListDto {
     items: WeChatScenicSpotListDto[] | undefined;
 }
 
-/** 订单信息 */
-export class ActivityResultDto implements IActivityResultDto {
-    /** Id */
-    id: number;
-    /** 是否结账 */
-    closed: boolean;
-    /** 单据号 */
-    activityNo: string | undefined;
-    /** 订单来源 */
-    sourceName: string | undefined;
-    orderType: OrderTypeEnum;
-    /** 订单金额 */
-    totalAmount: number;
-    payStatus: PayStatusEnum;
-    /** 支付方式 */
-    payName: string | undefined;
-    /** 数量 */
-    totalQuantity: number;
-    /** 购票人 */
-    buyer: string | undefined;
-    /** 购票凭证 */
-    voucherNo: string | undefined;
-    /** 日期 */
-    activityDate: moment.Moment;
-    /** 制单人 */
-    creatorUserName: string | undefined;
-    /** 原单号 */
-    orgActivityNo: string | undefined;
-
-    constructor(data?: IActivityResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.id = data["id"];
-            this.closed = data["closed"];
-            this.activityNo = data["activityNo"];
-            this.sourceName = data["sourceName"];
-            this.orderType = data["orderType"];
-            this.totalAmount = data["totalAmount"];
-            this.payStatus = data["payStatus"];
-            this.payName = data["payName"];
-            this.totalQuantity = data["totalQuantity"];
-            this.buyer = data["buyer"];
-            this.voucherNo = data["voucherNo"];
-            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
-            this.creatorUserName = data["creatorUserName"];
-            this.orgActivityNo = data["orgActivityNo"];
-        }
-    }
-
-    static fromJS(data: any): ActivityResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActivityResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["closed"] = this.closed;
-        data["activityNo"] = this.activityNo;
-        data["sourceName"] = this.sourceName;
-        data["orderType"] = this.orderType;
-        data["totalAmount"] = this.totalAmount;
-        data["payStatus"] = this.payStatus;
-        data["payName"] = this.payName;
-        data["totalQuantity"] = this.totalQuantity;
-        data["buyer"] = this.buyer;
-        data["voucherNo"] = this.voucherNo;
-        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
-        data["creatorUserName"] = this.creatorUserName;
-        data["orgActivityNo"] = this.orgActivityNo;
-        return data; 
-    }
-
-    clone(): ActivityResultDto {
-        const json = this.toJSON();
-        let result = new ActivityResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 订单信息 */
-export interface IActivityResultDto {
-    /** Id */
-    id: number;
-    /** 是否结账 */
-    closed: boolean;
-    /** 单据号 */
-    activityNo: string | undefined;
-    /** 订单来源 */
-    sourceName: string | undefined;
-    orderType: OrderTypeEnum;
-    /** 订单金额 */
-    totalAmount: number;
-    payStatus: PayStatusEnum;
-    /** 支付方式 */
-    payName: string | undefined;
-    /** 数量 */
-    totalQuantity: number;
-    /** 购票人 */
-    buyer: string | undefined;
-    /** 购票凭证 */
-    voucherNo: string | undefined;
-    /** 日期 */
-    activityDate: moment.Moment;
-    /** 制单人 */
-    creatorUserName: string | undefined;
-    /** 原单号 */
-    orgActivityNo: string | undefined;
-}
-
-export class StatsPagedResultDtoOfActivityResultDto implements IStatsPagedResultDtoOfActivityResultDto {
-    total: ActivityResultDto;
-    filters: { [key: string] : Anonymous5[]; } | undefined;
-    totalCount: number;
-    items: ActivityResultDto[] | undefined;
-
-    constructor(data?: IStatsPagedResultDtoOfActivityResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.total = data["total"] ? ActivityResultDto.fromJS(data["total"]) : <any>undefined;
-            if (data["filters"]) {
-                this.filters = {} as any;
-                for (let key in data["filters"]) {
-                    if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous5.fromJS(i)) : [];
-                }
-            }
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(ActivityResultDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): StatsPagedResultDtoOfActivityResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfActivityResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
-        if (this.filters) {
-            data["filters"] = {};
-            for (let key in this.filters) {
-                if (this.filters.hasOwnProperty(key))
-                    data["filters"][key] = this.filters[key];
-            }
-        }
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): StatsPagedResultDtoOfActivityResultDto {
-        const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfActivityResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IStatsPagedResultDtoOfActivityResultDto {
-    total: ActivityResultDto;
-    filters: { [key: string] : Anonymous5[]; } | undefined;
-    totalCount: number;
-    items: ActivityResultDto[] | undefined;
-}
-
-/** 订单明细 */
-export class ActivityDetailResultDto implements IActivityDetailResultDto {
-    /** Id */
-    id: number;
-    /** 票码 */
-    ticketNo: string | undefined;
-    /** 票型名称 */
-    ticketName: string | undefined;
-    /** 可验票数 */
-    checkingQuantity: number;
-    /** 已验票数 */
-    checkedQuantity: number;
-    ticketStatus: TicketStatusEnum;
-    /** 开始有效期 */
-    startDateTime: moment.Moment;
-    /** 结束有效期 */
-    endDateTime: moment.Moment;
-    /** 最后一次使用时间（检票日期） */
-    checkDate: moment.Moment;
-
-    constructor(data?: IActivityDetailResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.id = data["id"];
-            this.ticketNo = data["ticketNo"];
-            this.ticketName = data["ticketName"];
-            this.checkingQuantity = data["checkingQuantity"];
-            this.checkedQuantity = data["checkedQuantity"];
-            this.ticketStatus = data["ticketStatus"];
-            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
-            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
-            this.checkDate = data["checkDate"] ? moment(data["checkDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ActivityDetailResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActivityDetailResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["ticketNo"] = this.ticketNo;
-        data["ticketName"] = this.ticketName;
-        data["checkingQuantity"] = this.checkingQuantity;
-        data["checkedQuantity"] = this.checkedQuantity;
-        data["ticketStatus"] = this.ticketStatus;
-        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
-        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
-        data["checkDate"] = this.checkDate ? this.checkDate.toISOString() : <any>undefined;
-        return data; 
-    }
-
-    clone(): ActivityDetailResultDto {
-        const json = this.toJSON();
-        let result = new ActivityDetailResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 订单明细 */
-export interface IActivityDetailResultDto {
-    /** Id */
-    id: number;
-    /** 票码 */
-    ticketNo: string | undefined;
-    /** 票型名称 */
-    ticketName: string | undefined;
-    /** 可验票数 */
-    checkingQuantity: number;
-    /** 已验票数 */
-    checkedQuantity: number;
-    ticketStatus: TicketStatusEnum;
-    /** 开始有效期 */
-    startDateTime: moment.Moment;
-    /** 结束有效期 */
-    endDateTime: moment.Moment;
-    /** 最后一次使用时间（检票日期） */
-    checkDate: moment.Moment;
-}
-
-export class StatsPagedResultDtoOfActivityDetailResultDto implements IStatsPagedResultDtoOfActivityDetailResultDto {
-    total: ActivityDetailResultDto;
-    filters: { [key: string] : Anonymous6[]; } | undefined;
-    totalCount: number;
-    items: ActivityDetailResultDto[] | undefined;
-
-    constructor(data?: IStatsPagedResultDtoOfActivityDetailResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.total = data["total"] ? ActivityDetailResultDto.fromJS(data["total"]) : <any>undefined;
-            if (data["filters"]) {
-                this.filters = {} as any;
-                for (let key in data["filters"]) {
-                    if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous6.fromJS(i)) : [];
-                }
-            }
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(ActivityDetailResultDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): StatsPagedResultDtoOfActivityDetailResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfActivityDetailResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
-        if (this.filters) {
-            data["filters"] = {};
-            for (let key in this.filters) {
-                if (this.filters.hasOwnProperty(key))
-                    data["filters"][key] = this.filters[key];
-            }
-        }
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): StatsPagedResultDtoOfActivityDetailResultDto {
-        const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfActivityDetailResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IStatsPagedResultDtoOfActivityDetailResultDto {
-    total: ActivityDetailResultDto;
-    filters: { [key: string] : Anonymous6[]; } | undefined;
-    totalCount: number;
-    items: ActivityDetailResultDto[] | undefined;
-}
-
 /** 订单来源统计 */
-export class OrderSourceResultDto implements IOrderSourceResultDto {
+export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto {
     source: Source;
     /** 售票数量 */
     saleQuantity: number;
@@ -62028,7 +61797,7 @@ export class OrderSourceResultDto implements IOrderSourceResultDto {
     /** 金额小计 */
     subtotalAmount: number;
 
-    constructor(data?: IOrderSourceResultDto) {
+    constructor(data?: ISalesByOrderSourceResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62049,9 +61818,9 @@ export class OrderSourceResultDto implements IOrderSourceResultDto {
         }
     }
 
-    static fromJS(data: any): OrderSourceResultDto {
+    static fromJS(data: any): SalesByOrderSourceResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new OrderSourceResultDto();
+        let result = new SalesByOrderSourceResultDto();
         result.init(data);
         return result;
     }
@@ -62068,16 +61837,16 @@ export class OrderSourceResultDto implements IOrderSourceResultDto {
         return data; 
     }
 
-    clone(): OrderSourceResultDto {
+    clone(): SalesByOrderSourceResultDto {
         const json = this.toJSON();
-        let result = new OrderSourceResultDto();
+        let result = new SalesByOrderSourceResultDto();
         result.init(json);
         return result;
     }
 }
 
 /** 订单来源统计 */
-export interface IOrderSourceResultDto {
+export interface ISalesByOrderSourceResultDto {
     source: Source;
     /** 售票数量 */
     saleQuantity: number;
@@ -62093,13 +61862,13 @@ export interface IOrderSourceResultDto {
     subtotalAmount: number;
 }
 
-export class StatsPagedResultDtoOfOrderSourceResultDto implements IStatsPagedResultDtoOfOrderSourceResultDto {
-    total: OrderSourceResultDto;
-    filters: { [key: string] : Anonymous7[]; } | undefined;
+export class StatsPagedResultDtoOfSalesByOrderSourceResultDto implements IStatsPagedResultDtoOfSalesByOrderSourceResultDto {
+    total: SalesByOrderSourceResultDto;
+    filters: { [key: string] : Anonymous5[]; } | undefined;
     totalCount: number;
-    items: OrderSourceResultDto[] | undefined;
+    items: SalesByOrderSourceResultDto[] | undefined;
 
-    constructor(data?: IStatsPagedResultDtoOfOrderSourceResultDto) {
+    constructor(data?: IStatsPagedResultDtoOfSalesByOrderSourceResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62110,26 +61879,26 @@ export class StatsPagedResultDtoOfOrderSourceResultDto implements IStatsPagedRes
 
     init(data?: any) {
         if (data) {
-            this.total = data["total"] ? OrderSourceResultDto.fromJS(data["total"]) : <any>undefined;
+            this.total = data["total"] ? SalesByOrderSourceResultDto.fromJS(data["total"]) : <any>undefined;
             if (data["filters"]) {
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous7.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous5.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items.push(OrderSourceResultDto.fromJS(item));
+                    this.items.push(SalesByOrderSourceResultDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): StatsPagedResultDtoOfOrderSourceResultDto {
+    static fromJS(data: any): StatsPagedResultDtoOfSalesByOrderSourceResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfOrderSourceResultDto();
+        let result = new StatsPagedResultDtoOfSalesByOrderSourceResultDto();
         result.init(data);
         return result;
     }
@@ -62153,23 +61922,23 @@ export class StatsPagedResultDtoOfOrderSourceResultDto implements IStatsPagedRes
         return data; 
     }
 
-    clone(): StatsPagedResultDtoOfOrderSourceResultDto {
+    clone(): StatsPagedResultDtoOfSalesByOrderSourceResultDto {
         const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfOrderSourceResultDto();
+        let result = new StatsPagedResultDtoOfSalesByOrderSourceResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStatsPagedResultDtoOfOrderSourceResultDto {
-    total: OrderSourceResultDto;
-    filters: { [key: string] : Anonymous7[]; } | undefined;
+export interface IStatsPagedResultDtoOfSalesByOrderSourceResultDto {
+    total: SalesByOrderSourceResultDto;
+    filters: { [key: string] : Anonymous5[]; } | undefined;
     totalCount: number;
-    items: OrderSourceResultDto[] | undefined;
+    items: SalesByOrderSourceResultDto[] | undefined;
 }
 
 /** 团体售票统计 */
-export class OrganizationSalesResultDto implements IOrganizationSalesResultDto {
+export class SalesByOrganizationResultDto implements ISalesByOrganizationResultDto {
     organization: Organization;
     /** 售票数量 */
     saleQuantity: number;
@@ -62184,7 +61953,7 @@ export class OrganizationSalesResultDto implements IOrganizationSalesResultDto {
     /** 金额小计 */
     subtotalAmount: number;
 
-    constructor(data?: IOrganizationSalesResultDto) {
+    constructor(data?: ISalesByOrganizationResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62205,9 +61974,9 @@ export class OrganizationSalesResultDto implements IOrganizationSalesResultDto {
         }
     }
 
-    static fromJS(data: any): OrganizationSalesResultDto {
+    static fromJS(data: any): SalesByOrganizationResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new OrganizationSalesResultDto();
+        let result = new SalesByOrganizationResultDto();
         result.init(data);
         return result;
     }
@@ -62224,16 +61993,16 @@ export class OrganizationSalesResultDto implements IOrganizationSalesResultDto {
         return data; 
     }
 
-    clone(): OrganizationSalesResultDto {
+    clone(): SalesByOrganizationResultDto {
         const json = this.toJSON();
-        let result = new OrganizationSalesResultDto();
+        let result = new SalesByOrganizationResultDto();
         result.init(json);
         return result;
     }
 }
 
 /** 团体售票统计 */
-export interface IOrganizationSalesResultDto {
+export interface ISalesByOrganizationResultDto {
     organization: Organization;
     /** 售票数量 */
     saleQuantity: number;
@@ -62249,13 +62018,13 @@ export interface IOrganizationSalesResultDto {
     subtotalAmount: number;
 }
 
-export class StatsPagedResultDtoOfOrganizationSalesResultDto implements IStatsPagedResultDtoOfOrganizationSalesResultDto {
-    total: OrganizationSalesResultDto;
-    filters: { [key: string] : Anonymous8[]; } | undefined;
+export class StatsPagedResultDtoOfSalesByOrganizationResultDto implements IStatsPagedResultDtoOfSalesByOrganizationResultDto {
+    total: SalesByOrganizationResultDto;
+    filters: { [key: string] : Anonymous6[]; } | undefined;
     totalCount: number;
-    items: OrganizationSalesResultDto[] | undefined;
+    items: SalesByOrganizationResultDto[] | undefined;
 
-    constructor(data?: IStatsPagedResultDtoOfOrganizationSalesResultDto) {
+    constructor(data?: IStatsPagedResultDtoOfSalesByOrganizationResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62266,26 +62035,26 @@ export class StatsPagedResultDtoOfOrganizationSalesResultDto implements IStatsPa
 
     init(data?: any) {
         if (data) {
-            this.total = data["total"] ? OrganizationSalesResultDto.fromJS(data["total"]) : <any>undefined;
+            this.total = data["total"] ? SalesByOrganizationResultDto.fromJS(data["total"]) : <any>undefined;
             if (data["filters"]) {
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous8.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous6.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items.push(OrganizationSalesResultDto.fromJS(item));
+                    this.items.push(SalesByOrganizationResultDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): StatsPagedResultDtoOfOrganizationSalesResultDto {
+    static fromJS(data: any): StatsPagedResultDtoOfSalesByOrganizationResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfOrganizationSalesResultDto();
+        let result = new StatsPagedResultDtoOfSalesByOrganizationResultDto();
         result.init(data);
         return result;
     }
@@ -62309,23 +62078,23 @@ export class StatsPagedResultDtoOfOrganizationSalesResultDto implements IStatsPa
         return data; 
     }
 
-    clone(): StatsPagedResultDtoOfOrganizationSalesResultDto {
+    clone(): StatsPagedResultDtoOfSalesByOrganizationResultDto {
         const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfOrganizationSalesResultDto();
+        let result = new StatsPagedResultDtoOfSalesByOrganizationResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStatsPagedResultDtoOfOrganizationSalesResultDto {
-    total: OrganizationSalesResultDto;
-    filters: { [key: string] : Anonymous8[]; } | undefined;
+export interface IStatsPagedResultDtoOfSalesByOrganizationResultDto {
+    total: SalesByOrganizationResultDto;
+    filters: { [key: string] : Anonymous6[]; } | undefined;
     totalCount: number;
-    items: OrganizationSalesResultDto[] | undefined;
+    items: SalesByOrganizationResultDto[] | undefined;
 }
 
 /** 支付方式统计 */
-export class PayMethodResultDto implements IPayMethodResultDto {
+export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
     payMethod: PayMethod;
     /** 售票数量 */
     saleQuantity: number;
@@ -62340,7 +62109,7 @@ export class PayMethodResultDto implements IPayMethodResultDto {
     /** 金额小计 */
     subtotalAmount: number;
 
-    constructor(data?: IPayMethodResultDto) {
+    constructor(data?: ISalesByPayMethodResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62361,9 +62130,9 @@ export class PayMethodResultDto implements IPayMethodResultDto {
         }
     }
 
-    static fromJS(data: any): PayMethodResultDto {
+    static fromJS(data: any): SalesByPayMethodResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new PayMethodResultDto();
+        let result = new SalesByPayMethodResultDto();
         result.init(data);
         return result;
     }
@@ -62380,16 +62149,16 @@ export class PayMethodResultDto implements IPayMethodResultDto {
         return data; 
     }
 
-    clone(): PayMethodResultDto {
+    clone(): SalesByPayMethodResultDto {
         const json = this.toJSON();
-        let result = new PayMethodResultDto();
+        let result = new SalesByPayMethodResultDto();
         result.init(json);
         return result;
     }
 }
 
 /** 支付方式统计 */
-export interface IPayMethodResultDto {
+export interface ISalesByPayMethodResultDto {
     payMethod: PayMethod;
     /** 售票数量 */
     saleQuantity: number;
@@ -62405,13 +62174,13 @@ export interface IPayMethodResultDto {
     subtotalAmount: number;
 }
 
-export class StatsPagedResultDtoOfPayMethodResultDto implements IStatsPagedResultDtoOfPayMethodResultDto {
-    total: PayMethodResultDto;
-    filters: { [key: string] : Anonymous9[]; } | undefined;
+export class StatsPagedResultDtoOfSalesByPayMethodResultDto implements IStatsPagedResultDtoOfSalesByPayMethodResultDto {
+    total: SalesByPayMethodResultDto;
+    filters: { [key: string] : Anonymous7[]; } | undefined;
     totalCount: number;
-    items: PayMethodResultDto[] | undefined;
+    items: SalesByPayMethodResultDto[] | undefined;
 
-    constructor(data?: IStatsPagedResultDtoOfPayMethodResultDto) {
+    constructor(data?: IStatsPagedResultDtoOfSalesByPayMethodResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62422,26 +62191,26 @@ export class StatsPagedResultDtoOfPayMethodResultDto implements IStatsPagedResul
 
     init(data?: any) {
         if (data) {
-            this.total = data["total"] ? PayMethodResultDto.fromJS(data["total"]) : <any>undefined;
+            this.total = data["total"] ? SalesByPayMethodResultDto.fromJS(data["total"]) : <any>undefined;
             if (data["filters"]) {
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous9.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous7.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items.push(PayMethodResultDto.fromJS(item));
+                    this.items.push(SalesByPayMethodResultDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): StatsPagedResultDtoOfPayMethodResultDto {
+    static fromJS(data: any): StatsPagedResultDtoOfSalesByPayMethodResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfPayMethodResultDto();
+        let result = new StatsPagedResultDtoOfSalesByPayMethodResultDto();
         result.init(data);
         return result;
     }
@@ -62465,227 +62234,23 @@ export class StatsPagedResultDtoOfPayMethodResultDto implements IStatsPagedResul
         return data; 
     }
 
-    clone(): StatsPagedResultDtoOfPayMethodResultDto {
+    clone(): StatsPagedResultDtoOfSalesByPayMethodResultDto {
         const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfPayMethodResultDto();
+        let result = new StatsPagedResultDtoOfSalesByPayMethodResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStatsPagedResultDtoOfPayMethodResultDto {
-    total: PayMethodResultDto;
-    filters: { [key: string] : Anonymous9[]; } | undefined;
+export interface IStatsPagedResultDtoOfSalesByPayMethodResultDto {
+    total: SalesByPayMethodResultDto;
+    filters: { [key: string] : Anonymous7[]; } | undefined;
     totalCount: number;
-    items: PayMethodResultDto[] | undefined;
-}
-
-/** 售票员日结统计 */
-export class SellerDailyResultDto implements ISellerDailyResultDto {
-    seller: User;
-    /** 售票数量 */
-    saleQuantity: number;
-    /** 退票数量 */
-    refundQuantity: number;
-    /** 数量小计 */
-    subtotalQuantity: number;
-    /** 现金售票金额 */
-    cashSaleAmount: number;
-    /** 刷卡售票金额 */
-    cardSaleAmount: number;
-    /** 微信售票金额 */
-    weChatSaleAmount: number;
-    /** 支付宝售票金额 */
-    alipaySaleAmount: number;
-    /** 销售金额小计 */
-    saleSubtotalAmount: number;
-    /** 现金退票金额 */
-    cashRefundAmount: number;
-    /** 刷卡退票金额 */
-    cardRefundAmount: number;
-    /** 微信退票金额 */
-    weChatRefundAmount: number;
-    /** 支付宝退票金额 */
-    alipayRefundAmount: number;
-    /** 退票金额小计 */
-    refundSubtotalAmount: number;
-    /** 应收总金额 */
-    totalAmount: number;
-
-    constructor(data?: ISellerDailyResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
-            this.saleQuantity = data["saleQuantity"];
-            this.refundQuantity = data["refundQuantity"];
-            this.subtotalQuantity = data["subtotalQuantity"];
-            this.cashSaleAmount = data["cashSaleAmount"];
-            this.cardSaleAmount = data["cardSaleAmount"];
-            this.weChatSaleAmount = data["weChatSaleAmount"];
-            this.alipaySaleAmount = data["alipaySaleAmount"];
-            this.saleSubtotalAmount = data["saleSubtotalAmount"];
-            this.cashRefundAmount = data["cashRefundAmount"];
-            this.cardRefundAmount = data["cardRefundAmount"];
-            this.weChatRefundAmount = data["weChatRefundAmount"];
-            this.alipayRefundAmount = data["alipayRefundAmount"];
-            this.refundSubtotalAmount = data["refundSubtotalAmount"];
-            this.totalAmount = data["totalAmount"];
-        }
-    }
-
-    static fromJS(data: any): SellerDailyResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SellerDailyResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
-        data["saleQuantity"] = this.saleQuantity;
-        data["refundQuantity"] = this.refundQuantity;
-        data["subtotalQuantity"] = this.subtotalQuantity;
-        data["cashSaleAmount"] = this.cashSaleAmount;
-        data["cardSaleAmount"] = this.cardSaleAmount;
-        data["weChatSaleAmount"] = this.weChatSaleAmount;
-        data["alipaySaleAmount"] = this.alipaySaleAmount;
-        data["saleSubtotalAmount"] = this.saleSubtotalAmount;
-        data["cashRefundAmount"] = this.cashRefundAmount;
-        data["cardRefundAmount"] = this.cardRefundAmount;
-        data["weChatRefundAmount"] = this.weChatRefundAmount;
-        data["alipayRefundAmount"] = this.alipayRefundAmount;
-        data["refundSubtotalAmount"] = this.refundSubtotalAmount;
-        data["totalAmount"] = this.totalAmount;
-        return data; 
-    }
-
-    clone(): SellerDailyResultDto {
-        const json = this.toJSON();
-        let result = new SellerDailyResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 售票员日结统计 */
-export interface ISellerDailyResultDto {
-    seller: User;
-    /** 售票数量 */
-    saleQuantity: number;
-    /** 退票数量 */
-    refundQuantity: number;
-    /** 数量小计 */
-    subtotalQuantity: number;
-    /** 现金售票金额 */
-    cashSaleAmount: number;
-    /** 刷卡售票金额 */
-    cardSaleAmount: number;
-    /** 微信售票金额 */
-    weChatSaleAmount: number;
-    /** 支付宝售票金额 */
-    alipaySaleAmount: number;
-    /** 销售金额小计 */
-    saleSubtotalAmount: number;
-    /** 现金退票金额 */
-    cashRefundAmount: number;
-    /** 刷卡退票金额 */
-    cardRefundAmount: number;
-    /** 微信退票金额 */
-    weChatRefundAmount: number;
-    /** 支付宝退票金额 */
-    alipayRefundAmount: number;
-    /** 退票金额小计 */
-    refundSubtotalAmount: number;
-    /** 应收总金额 */
-    totalAmount: number;
-}
-
-export class StatsPagedResultDtoOfSellerDailyResultDto implements IStatsPagedResultDtoOfSellerDailyResultDto {
-    total: SellerDailyResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
-    totalCount: number;
-    items: SellerDailyResultDto[] | undefined;
-
-    constructor(data?: IStatsPagedResultDtoOfSellerDailyResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.total = data["total"] ? SellerDailyResultDto.fromJS(data["total"]) : <any>undefined;
-            if (data["filters"]) {
-                this.filters = {} as any;
-                for (let key in data["filters"]) {
-                    if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
-                }
-            }
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(SellerDailyResultDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): StatsPagedResultDtoOfSellerDailyResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfSellerDailyResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
-        if (this.filters) {
-            data["filters"] = {};
-            for (let key in this.filters) {
-                if (this.filters.hasOwnProperty(key))
-                    data["filters"][key] = this.filters[key];
-            }
-        }
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): StatsPagedResultDtoOfSellerDailyResultDto {
-        const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfSellerDailyResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IStatsPagedResultDtoOfSellerDailyResultDto {
-    total: SellerDailyResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
-    totalCount: number;
-    items: SellerDailyResultDto[] | undefined;
+    items: SalesByPayMethodResultDto[] | undefined;
 }
 
 /** 售票员售票统计 */
-export class SellerSalesResultDto implements ISellerSalesResultDto {
+export class SalesBySellerResultDto implements ISalesBySellerResultDto {
     seller: User;
     /** 现金售票数量 */
     cashSaleQuantity: number;
@@ -62740,7 +62305,7 @@ export class SellerSalesResultDto implements ISellerSalesResultDto {
     /** 总金额 */
     totalAmount: number;
 
-    constructor(data?: ISellerSalesResultDto) {
+    constructor(data?: ISalesBySellerResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62781,9 +62346,9 @@ export class SellerSalesResultDto implements ISellerSalesResultDto {
         }
     }
 
-    static fromJS(data: any): SellerSalesResultDto {
+    static fromJS(data: any): SalesBySellerResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new SellerSalesResultDto();
+        let result = new SalesBySellerResultDto();
         result.init(data);
         return result;
     }
@@ -62820,16 +62385,16 @@ export class SellerSalesResultDto implements ISellerSalesResultDto {
         return data; 
     }
 
-    clone(): SellerSalesResultDto {
+    clone(): SalesBySellerResultDto {
         const json = this.toJSON();
-        let result = new SellerSalesResultDto();
+        let result = new SalesBySellerResultDto();
         result.init(json);
         return result;
     }
 }
 
 /** 售票员售票统计 */
-export interface ISellerSalesResultDto {
+export interface ISalesBySellerResultDto {
     seller: User;
     /** 现金售票数量 */
     cashSaleQuantity: number;
@@ -62885,13 +62450,13 @@ export interface ISellerSalesResultDto {
     totalAmount: number;
 }
 
-export class StatsPagedResultDtoOfSellerSalesResultDto implements IStatsPagedResultDtoOfSellerSalesResultDto {
-    total: SellerSalesResultDto;
-    filters: { [key: string] : Anonymous11[]; } | undefined;
+export class StatsPagedResultDtoOfSalesBySellerResultDto implements IStatsPagedResultDtoOfSalesBySellerResultDto {
+    total: SalesBySellerResultDto;
+    filters: { [key: string] : Anonymous8[]; } | undefined;
     totalCount: number;
-    items: SellerSalesResultDto[] | undefined;
+    items: SalesBySellerResultDto[] | undefined;
 
-    constructor(data?: IStatsPagedResultDtoOfSellerSalesResultDto) {
+    constructor(data?: IStatsPagedResultDtoOfSalesBySellerResultDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -62902,26 +62467,26 @@ export class StatsPagedResultDtoOfSellerSalesResultDto implements IStatsPagedRes
 
     init(data?: any) {
         if (data) {
-            this.total = data["total"] ? SellerSalesResultDto.fromJS(data["total"]) : <any>undefined;
+            this.total = data["total"] ? SalesBySellerResultDto.fromJS(data["total"]) : <any>undefined;
             if (data["filters"]) {
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous8.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
             if (data["items"] && data["items"].constructor === Array) {
                 this.items = [] as any;
                 for (let item of data["items"])
-                    this.items.push(SellerSalesResultDto.fromJS(item));
+                    this.items.push(SalesBySellerResultDto.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): StatsPagedResultDtoOfSellerSalesResultDto {
+    static fromJS(data: any): StatsPagedResultDtoOfSalesBySellerResultDto {
         data = typeof data === 'object' ? data : {};
-        let result = new StatsPagedResultDtoOfSellerSalesResultDto();
+        let result = new StatsPagedResultDtoOfSalesBySellerResultDto();
         result.init(data);
         return result;
     }
@@ -62945,19 +62510,587 @@ export class StatsPagedResultDtoOfSellerSalesResultDto implements IStatsPagedRes
         return data; 
     }
 
-    clone(): StatsPagedResultDtoOfSellerSalesResultDto {
+    clone(): StatsPagedResultDtoOfSalesBySellerResultDto {
         const json = this.toJSON();
-        let result = new StatsPagedResultDtoOfSellerSalesResultDto();
+        let result = new StatsPagedResultDtoOfSalesBySellerResultDto();
         result.init(json);
         return result;
     }
 }
 
-export interface IStatsPagedResultDtoOfSellerSalesResultDto {
-    total: SellerSalesResultDto;
+export interface IStatsPagedResultDtoOfSalesBySellerResultDto {
+    total: SalesBySellerResultDto;
+    filters: { [key: string] : Anonymous8[]; } | undefined;
+    totalCount: number;
+    items: SalesBySellerResultDto[] | undefined;
+}
+
+/** 售票员日结统计 */
+export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto {
+    seller: User;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 销售金额小计 */
+    saleSubtotalAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 退票金额小计 */
+    refundSubtotalAmount: number;
+    /** 应收总金额 */
+    totalAmount: number;
+
+    constructor(data?: ISalesBySellerDailyResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.subtotalQuantity = data["subtotalQuantity"];
+            this.cashSaleAmount = data["cashSaleAmount"];
+            this.cardSaleAmount = data["cardSaleAmount"];
+            this.weChatSaleAmount = data["weChatSaleAmount"];
+            this.alipaySaleAmount = data["alipaySaleAmount"];
+            this.saleSubtotalAmount = data["saleSubtotalAmount"];
+            this.cashRefundAmount = data["cashRefundAmount"];
+            this.cardRefundAmount = data["cardRefundAmount"];
+            this.weChatRefundAmount = data["weChatRefundAmount"];
+            this.alipayRefundAmount = data["alipayRefundAmount"];
+            this.refundSubtotalAmount = data["refundSubtotalAmount"];
+            this.totalAmount = data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): SalesBySellerDailyResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesBySellerDailyResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["subtotalQuantity"] = this.subtotalQuantity;
+        data["cashSaleAmount"] = this.cashSaleAmount;
+        data["cardSaleAmount"] = this.cardSaleAmount;
+        data["weChatSaleAmount"] = this.weChatSaleAmount;
+        data["alipaySaleAmount"] = this.alipaySaleAmount;
+        data["saleSubtotalAmount"] = this.saleSubtotalAmount;
+        data["cashRefundAmount"] = this.cashRefundAmount;
+        data["cardRefundAmount"] = this.cardRefundAmount;
+        data["weChatRefundAmount"] = this.weChatRefundAmount;
+        data["alipayRefundAmount"] = this.alipayRefundAmount;
+        data["refundSubtotalAmount"] = this.refundSubtotalAmount;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+
+    clone(): SalesBySellerDailyResultDto {
+        const json = this.toJSON();
+        let result = new SalesBySellerDailyResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 售票员日结统计 */
+export interface ISalesBySellerDailyResultDto {
+    seller: User;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 数量小计 */
+    subtotalQuantity: number;
+    /** 现金售票金额 */
+    cashSaleAmount: number;
+    /** 刷卡售票金额 */
+    cardSaleAmount: number;
+    /** 微信售票金额 */
+    weChatSaleAmount: number;
+    /** 支付宝售票金额 */
+    alipaySaleAmount: number;
+    /** 销售金额小计 */
+    saleSubtotalAmount: number;
+    /** 现金退票金额 */
+    cashRefundAmount: number;
+    /** 刷卡退票金额 */
+    cardRefundAmount: number;
+    /** 微信退票金额 */
+    weChatRefundAmount: number;
+    /** 支付宝退票金额 */
+    alipayRefundAmount: number;
+    /** 退票金额小计 */
+    refundSubtotalAmount: number;
+    /** 应收总金额 */
+    totalAmount: number;
+}
+
+export class StatsPagedResultDtoOfSalesBySellerDailyResultDto implements IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
+    total: SalesBySellerDailyResultDto;
+    filters: { [key: string] : Anonymous9[]; } | undefined;
+    totalCount: number;
+    items: SalesBySellerDailyResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSalesBySellerDailyResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SalesBySellerDailyResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous9.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SalesBySellerDailyResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSalesBySellerDailyResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSalesBySellerDailyResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSalesBySellerDailyResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSalesBySellerDailyResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
+    total: SalesBySellerDailyResultDto;
+    filters: { [key: string] : Anonymous9[]; } | undefined;
+    totalCount: number;
+    items: SalesBySellerDailyResultDto[] | undefined;
+}
+
+/** 订单信息 */
+export class SalesActivityResultDto implements ISalesActivityResultDto {
+    /** Id */
+    id: number;
+    /** 是否结账 */
+    closed: boolean;
+    /** 单据号 */
+    activityNo: string | undefined;
+    /** 订单来源 */
+    sourceName: string | undefined;
+    orderType: OrderTypeEnum;
+    /** 订单金额 */
+    totalAmount: number;
+    payStatus: PayStatusEnum;
+    /** 支付方式 */
+    payName: string | undefined;
+    /** 数量 */
+    totalQuantity: number;
+    /** 购票人 */
+    buyer: string | undefined;
+    /** 购票凭证 */
+    voucherNo: string | undefined;
+    /** 日期 */
+    activityDate: moment.Moment;
+    /** 制单人 */
+    creatorUserName: string | undefined;
+    /** 原单号 */
+    orgActivityNo: string | undefined;
+
+    constructor(data?: ISalesActivityResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.closed = data["closed"];
+            this.activityNo = data["activityNo"];
+            this.sourceName = data["sourceName"];
+            this.orderType = data["orderType"];
+            this.totalAmount = data["totalAmount"];
+            this.payStatus = data["payStatus"];
+            this.payName = data["payName"];
+            this.totalQuantity = data["totalQuantity"];
+            this.buyer = data["buyer"];
+            this.voucherNo = data["voucherNo"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.creatorUserName = data["creatorUserName"];
+            this.orgActivityNo = data["orgActivityNo"];
+        }
+    }
+
+    static fromJS(data: any): SalesActivityResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesActivityResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["closed"] = this.closed;
+        data["activityNo"] = this.activityNo;
+        data["sourceName"] = this.sourceName;
+        data["orderType"] = this.orderType;
+        data["totalAmount"] = this.totalAmount;
+        data["payStatus"] = this.payStatus;
+        data["payName"] = this.payName;
+        data["totalQuantity"] = this.totalQuantity;
+        data["buyer"] = this.buyer;
+        data["voucherNo"] = this.voucherNo;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["creatorUserName"] = this.creatorUserName;
+        data["orgActivityNo"] = this.orgActivityNo;
+        return data; 
+    }
+
+    clone(): SalesActivityResultDto {
+        const json = this.toJSON();
+        let result = new SalesActivityResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 订单信息 */
+export interface ISalesActivityResultDto {
+    /** Id */
+    id: number;
+    /** 是否结账 */
+    closed: boolean;
+    /** 单据号 */
+    activityNo: string | undefined;
+    /** 订单来源 */
+    sourceName: string | undefined;
+    orderType: OrderTypeEnum;
+    /** 订单金额 */
+    totalAmount: number;
+    payStatus: PayStatusEnum;
+    /** 支付方式 */
+    payName: string | undefined;
+    /** 数量 */
+    totalQuantity: number;
+    /** 购票人 */
+    buyer: string | undefined;
+    /** 购票凭证 */
+    voucherNo: string | undefined;
+    /** 日期 */
+    activityDate: moment.Moment;
+    /** 制单人 */
+    creatorUserName: string | undefined;
+    /** 原单号 */
+    orgActivityNo: string | undefined;
+}
+
+export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedResultDtoOfSalesActivityResultDto {
+    total: SalesActivityResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesActivityResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSalesActivityResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SalesActivityResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SalesActivityResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSalesActivityResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSalesActivityResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSalesActivityResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSalesActivityResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSalesActivityResultDto {
+    total: SalesActivityResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesActivityResultDto[] | undefined;
+}
+
+/** 订单明细 */
+export class SalesActivityDetailResultDto implements ISalesActivityDetailResultDto {
+    /** Id */
+    id: number;
+    /** 票码 */
+    ticketNo: string | undefined;
+    /** 票型名称 */
+    ticketName: string | undefined;
+    /** 可验票数 */
+    checkingQuantity: number;
+    /** 已验票数 */
+    checkedQuantity: number;
+    ticketStatus: TicketStatusEnum;
+    /** 开始有效期 */
+    startDateTime: moment.Moment;
+    /** 结束有效期 */
+    endDateTime: moment.Moment;
+    /** 最后一次使用时间（检票日期） */
+    checkDate: moment.Moment;
+
+    constructor(data?: ISalesActivityDetailResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticketNo = data["ticketNo"];
+            this.ticketName = data["ticketName"];
+            this.checkingQuantity = data["checkingQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.ticketStatus = data["ticketStatus"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.checkDate = data["checkDate"] ? moment(data["checkDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): SalesActivityDetailResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesActivityDetailResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticketNo"] = this.ticketNo;
+        data["ticketName"] = this.ticketName;
+        data["checkingQuantity"] = this.checkingQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["ticketStatus"] = this.ticketStatus;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["checkDate"] = this.checkDate ? this.checkDate.toISOString() : <any>undefined;
+        return data; 
+    }
+
+    clone(): SalesActivityDetailResultDto {
+        const json = this.toJSON();
+        let result = new SalesActivityDetailResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 订单明细 */
+export interface ISalesActivityDetailResultDto {
+    /** Id */
+    id: number;
+    /** 票码 */
+    ticketNo: string | undefined;
+    /** 票型名称 */
+    ticketName: string | undefined;
+    /** 可验票数 */
+    checkingQuantity: number;
+    /** 已验票数 */
+    checkedQuantity: number;
+    ticketStatus: TicketStatusEnum;
+    /** 开始有效期 */
+    startDateTime: moment.Moment;
+    /** 结束有效期 */
+    endDateTime: moment.Moment;
+    /** 最后一次使用时间（检票日期） */
+    checkDate: moment.Moment;
+}
+
+export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStatsPagedResultDtoOfSalesActivityDetailResultDto {
+    total: SalesActivityDetailResultDto;
     filters: { [key: string] : Anonymous11[]; } | undefined;
     totalCount: number;
-    items: SellerSalesResultDto[] | undefined;
+    items: SalesActivityDetailResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSalesActivityDetailResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SalesActivityDetailResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SalesActivityDetailResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSalesActivityDetailResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSalesActivityDetailResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSalesActivityDetailResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSalesActivityDetailResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSalesActivityDetailResultDto {
+    total: SalesActivityDetailResultDto;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
+    totalCount: number;
+    items: SalesActivityDetailResultDto[] | undefined;
 }
 
 export enum ActivateType {

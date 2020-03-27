@@ -85,6 +85,8 @@ implements OnInit {
 
 		this._deviceService.getPaged(formdata)
 		.subscribe(result => {
+		
+			
 			this.devicList = result.items;
 		});
 	}

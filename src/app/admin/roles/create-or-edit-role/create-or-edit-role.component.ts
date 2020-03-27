@@ -65,7 +65,7 @@ implements OnInit {
        self.role = result.role;
        self.ticketPriceIds= result.ticketPriceIds;
       //  this.getticket()
-       // self.permissionTree.editData = result;
+      //  self.permissionTree.editData = result;
      });
    }
 
@@ -139,7 +139,7 @@ implements OnInit {
      const input: CreateOrUpdateRoleInput = new CreateOrUpdateRoleInput();
      input.role = this.role;
      input.grantedPermissionNames = [];
-
+     
      var ticketPriceIds=[]
      this.ticketlist.forEach(function(item){
        if(item.checked){

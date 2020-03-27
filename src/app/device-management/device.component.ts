@@ -78,18 +78,21 @@ implements OnInit {
     })
     .subscribe(result => {
       this.dataList = result.items;
+
+      console.log(result.items);
+      
       this.showPaging(result);
     });
 
     // this.getstation()
   }
 
-  getstation(){
-    // this._ticketStationService.getPaged(null,null,999,0)
-    // .subscribe(result => {
-    //   this.stationList = result.items;
-    // });
-  }
+  // getstation(){
+  //   this._ticketStationService.getPaged('','',999,0)
+  //   .subscribe(result => {
+  //     this.stationList = result.items;
+  //   });
+  // }
 
   createOrEdit(id ? : number): void {
     this.modalHelper.static(CreateOrEditDeviceComponent, { id: id })

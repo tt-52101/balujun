@@ -11,7 +11,7 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
+        <!-- <nz-form-item>
           <nz-form-label nzFor="deviceId">票码</nz-form-label>
           <nz-form-control>
             <input type="text" nz-input name='ticketcode' [(ngModel)]="queryData[1].value" style="width: 150px">
@@ -34,7 +34,7 @@
                 [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>
-        </nz-form-item>
+        </nz-form-item> -->
         <nz-form-item class="formitem">
           <nz-form-label>检票时间</nz-form-label>
           <nz-form-control>
@@ -53,11 +53,20 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
-      [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
-      (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
-      [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1330px'}" style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" 
+    [(nzPageIndex)]="pageNumber"
+    [(nzPageSize)]="pageSize"
+    [nzLoading]="isTableLoading"
+    (nzPageIndexChange)="pageNumberChange()"
+    (nzPageSizeChange)="refresh()"
+    [nzShowSizeChanger]="true"
+    [nzNoResult]="noDataTemplate"
+    [nzPageSizeOptions]="pageSizes"
+    [nzTotal]="totalItems"
+      nzBordered style="word-break:break-all">
       <!-- 暂无数据组件 -->
+
+    
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -118,22 +127,7 @@
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.ticketId}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.ticketId}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.ticketId}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.visitValue}}
+              {{item.ticketNo}}
             </span>
           </td>
           <td nz-td class="text-center">
@@ -143,17 +137,32 @@
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.ticketName}}
+              {{item.visitValue}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{l(item.statusCode)}}
+              {{item.statusCode}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
               {{item.statusText}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.deviceName}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{l(item.ticketDetailId)}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.checker}}
             </span>
           </td>
           <td class="text-center">

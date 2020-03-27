@@ -46,7 +46,7 @@ implements OnInit {
 
 
     getstation(){
-        this._ticketStationService.getPaged(null,null,999,0)
+        this._ticketStationService.getPaged('','',999,0)
         .subscribe(result => {
             this.stationList = result.items;
         });

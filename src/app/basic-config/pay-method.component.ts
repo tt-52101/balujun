@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {PayMethodServiceProxy, PagedResultDtoOfPayMethodListDto, PayMethodListDto } from '@shared/service-proxies/service-proxies';
+import {PayMethodServiceProxy, PayMethodListDto } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditPayMethodComponent } from './create-or-edit-pay-method/create-or-edit-pay-method.component';
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
@@ -20,7 +20,7 @@ implements OnInit {
 	
 	constructor(
 		injector: Injector,
-		private _payMethodService: PayMethodServiceProxy
+		private _payMethodService: PayMethodServiceProxy,
 		) {
 		super(injector);
 		this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
@@ -37,7 +37,7 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		this._payMethodService.getPagedGet(
+		this._payMethodService.getPaged(
 			'',
 			request.sorting,
 			request.maxResultCount,

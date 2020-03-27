@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {ActivityServiceProxy, PagedResultDtoOfActivityListDto, ActivityListDto,
-	// GetActivitysInput,
+	GetActivitysInput,
 	TicketDetailServiceProxy,
 	AccountServiceProxy,
 	PayMethodServiceProxy,
@@ -95,27 +95,29 @@ implements OnInit {
 	allChecked1=false
 
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		// const formdata = new GetActivitysInput();
-		// var arr=[]
-		// for (var i = 0;i<this.queryData.length; i++) {
+		const formdata = new GetActivitysInput();
+		var arr=[]
+		for (var i = 0;i<this.queryData.length; i++) {
 
-		// 	if(this.queryData[i].value){
-		// 		arr.push(new QueryData(this.queryData[i]))
-		// 	}
-		// }
-		// formdata.queryData = arr;
-		// formdata.sorting = request.sorting
-		// formdata.maxResultCount = request.maxResultCount;
-		// formdata.skipCount = request.skipCount;
+			if(this.queryData[i].value){
+				arr.push(new QueryData(this.queryData[i]))
+			}
+		}
+		formdata.queryData = arr;
+		formdata.sorting = request.sorting
+		formdata.maxResultCount = request.maxResultCount;
+		formdata.skipCount = request.skipCount;
 
-		// this._activityService.getPaged(formdata)
-		// .finally(() => {
-		// 	finishedCallback();
-		// })
-		// .subscribe(result => {
-		// 	this.dataList = result.items;
-		// 	this.showPaging(result);
-		// });
+		this._activityService.getPaged(formdata)
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			console.log(result.items);
+			
+			this.dataList = result.items;
+			this.showPaging(result);
+		});
 
 		this.getsource()
 		this.getpayMethod()
@@ -123,23 +125,23 @@ implements OnInit {
 
 
 	search(){
-		// var formdata = new GetActivitysInput
-		// var arr=[]
-		// for (var i = 0;i<this.queryData.length; i++) {
-		// 	if(this.queryData[i].value){
-		// 		arr.push(new QueryData(this.queryData[i]))
-		// 	}
-		// }
-		// formdata.queryData = arr;
-		// formdata.sorting = null;
-		// formdata.maxResultCount = 999;
-		// formdata.skipCount = 0;
+		var formdata = new GetActivitysInput
+		var arr=[]
+		for (var i = 0;i<this.queryData.length; i++) {
+			if(this.queryData[i].value){
+				arr.push(new QueryData(this.queryData[i]))
+			}
+		}
+		formdata.queryData = arr;
+		formdata.sorting = null;
+		formdata.maxResultCount = 999;
+		formdata.skipCount = 0;
 
-		// this._activityService.getPaged(formdata)
-		// .subscribe(result => {
-		// 	this.dataList = result.items;
-		// 	this.showPaging(result);
-		// });
+		this._activityService.getPaged(formdata)
+		.subscribe(result => {
+			this.dataList = result.items;
+			this.showPaging(result);
+		});
 	}
 
 	settle(){
