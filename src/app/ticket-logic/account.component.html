@@ -178,9 +178,7 @@
         <th nz-th class="text-center" nzWidth="190px">
           <span>收款日期</span>
         </th>
-        <th nz-th class="text-center" nzWidth="130px">
-          <span>操作</span>
-        </th>
+
       </tr>
     </thead>
     <!-- 表格内容 -->
@@ -210,11 +208,7 @@
             {{item.payMethod.payName}}
           </span>
         </td>
-        <td class="text-center" nz-td>
-          <span>
-            {{item.remark}}
-          </span>
-        </td>
+
         <td class="text-center" nz-td>
           <span>
             {{item.quantity}}
@@ -254,12 +248,6 @@
           <th class="text-center" nzWidth="180px">
             <span>{{l('TicketNo')}}</span>
           </th>
-          <th class="text-center" nzWidth="130px">
-            <span>{{l('Name')}}</span>
-          </th>
-          <th class="text-center" nzWidth="150px">
-            <span>{{l('Mobile')}}</span>
-          </th>
           <th class="text-center" nzWidth="100px">
             <span>{{l('UnitPrice')}}</span>
           </th>
@@ -274,36 +262,27 @@
       <tbody>
         <tr *ngFor="let item of ajaxTable2.data; let i = index;">
           <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus1(ticketlist)" nzLeft="0px"></td>
-          <td class="text-center">
-            <span>
-              {{item.ticket.ticketName}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{item.ticketNo}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{item.customer.customerName}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{item.customer.mobile}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{item.activityDetail.unitPrice}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{l(item.ticketStatus)}}
-            </span>
-          </td>
+        <td class="text-center" nzWidth="150px">
+          <span>
+            {{item.ticketPriceName}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="180px">
+          <span>
+            {{item.ticketNo}}
+          </span>
+        </td>
+
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.ticketPrice}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{l(item.ticketStatus)}}
+          </span>
+        </td>
           <td nz-td class="text-center" [innerHTML]="item.isPrint | yn" nzRight="0px"> </td>
         </tr>
       </tbody>

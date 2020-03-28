@@ -1,5 +1,5 @@
 <nz-card [nzBordered]="false">
-<!--   <div class="mb-md">
+  <div class="mb-md">
     <nz-row nzGutter="16">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
         <nz-form-item>
@@ -28,7 +28,7 @@
         </nz-form-item>
       </form>
     </nz-row>
-  </div> -->
+  </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
     <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" nzBordered [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">

@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {GateRecordServiceProxy, PagedResultDtoOfGateRecordListDto, GateRecordListDto,DeviceServiceProxy,GetDevicesInput, } from '@shared/service-proxies/service-proxies';
+import {GateRecordServiceProxy, PagedResultDtoOfGateRecordListDto, GateRecordListDto,DeviceServiceProxy,GetDevicesInput,QueryData } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditGateRecordComponent } from './create-or-edit-gate-record/create-or-edit-gate-record.component';
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
@@ -19,7 +19,7 @@ import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
 })
 
 
-	
+
 
 export class  GateRecordComponent extends PagedListingComponentBase<GateRecordListDto>
 implements OnInit {
@@ -50,6 +50,7 @@ implements OnInit {
 		logic: "and"
 	}]
 
+collectionTime=''
 	
 	/**
 	* 获取后端数据列表信息
@@ -58,13 +59,20 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		const formdata0 = new GetDevicesInput();
-		formdata0.filterText = ''
-		formdata0.sorting = request.sorting,
-		formdata0.maxResultCount = request.maxResultCount;
-		formdata0.skipCount =request.skipCount;
+		var formdata = new GetDevicesInput();
+		var arr = []
+		for (var i = this.queryData.length - 1; i >= 0; i--) {
+			if (this.queryData[i].value) {
+				arr.push(new QueryData(this.queryData[i]))
+			}
+		}
+		formdata.queryData = arr;
+		formdata.filterText = ''
+		formdata.sorting = request.sorting,
+		formdata.maxResultCount = request.maxResultCount;
+		formdata.skipCount =request.skipCount;
 
-		this._gateRecordService.getPaged(formdata0)
+		this._gateRecordService.getPaged(formdata)
 		.finally(() => {
 			finishedCallback();
 		})
@@ -77,7 +85,7 @@ implements OnInit {
 
 
 		
-		const formdata = new GetDevicesInput();
+		var formdata = new GetDevicesInput();
 		formdata.queryData = []
 		formdata.sorting = null
 		formdata.maxResultCount = 999;
@@ -85,7 +93,7 @@ implements OnInit {
 
 		this._deviceService.getPaged(formdata)
 		.subscribe(result => {
-		
+
 			
 			this.devicList = result.items;
 		});

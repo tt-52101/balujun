@@ -200,7 +200,7 @@ implements OnInit, AfterViewInit {
 
    getbranch(){
      console.log(10)
-     this._branchService.getPaged('',null,999,0)
+     this._branchService.getPaged('','',999,0)
      .subscribe(result => {
        this.branchList = result.items;
      });

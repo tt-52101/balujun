@@ -126,11 +126,11 @@ implements OnInit {
       console.log(this.powerCodeList)
       this.saving = true;
 
-      // this._powerService.batchCreate(this.menuId,this.powerCodeList)
-      // .finally(() => (this.saving = false))
-      // .subscribe(() => {
-      //   this.notify.success(this.l('SavedSuccessfully'));
-      //   this.success(true);
-      // });
+      this._powerService.batchCreate(this.menuId,this.powerCodeList)
+      .finally(() => (this.saving = false))
+      .subscribe(() => {
+        this.notify.success(this.l('SavedSuccessfully'));
+        this.success(true);
+      });
     }
   }

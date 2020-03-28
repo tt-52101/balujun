@@ -6,8 +6,7 @@ import {
   RoleServiceProxy,
   CreateOrUpdateRoleInput,
   UserEditDto,
-  TicketPriceServiceProxy,QueryData, 
-  // GetTicketDetailsInput
+  TicketPriceServiceProxy,QueryData,GetTicketPricesInput
 } from '@shared/service-proxies/service-proxies';
 import { PermissionTreeComponent } from '@app/admin/shared/permission-tree/permission-tree.component';
 
@@ -66,47 +65,47 @@ implements OnInit {
      self._roleService.getForEdit(self.id).subscribe(result => {
        self.role = result.role;
       //  self.ticketPriceIds= result.ticketPriceIds;
-      //  this.getticket()
+       this.getticket()
        // self.permissionTree.editData = result;
      });
    }
 
 
-  //  getticket(){
-  //    var arr=[]
-  //    arr.push(new QueryData({
-  //      field: "isEnabled",
-  //      method: "=",
-  //      value: 'true',
-  //      logic: "and"
-  //    }))
-  //    var that = this;
-  //    var ticketlist=[]
+   getticket(){
+     var arr=[]
+     arr.push(new QueryData({
+       field: "isEnabled",
+       method: "=",
+       value: 'true',
+       logic: "and"
+     }))
+     var that = this;
+     var ticketlist=[]
 
-  //    var formdata = new GetTicketDetailsInput
-  //    formdata.queryData = []
-  //    formdata.filterText = ''
-  //    formdata.sorting = ''
-  //    formdata.maxResultCount = 990
-  //    formdata.skipCount = 0
+     var formdata = new GetTicketPricesInput
+     formdata.queryData = []
+     formdata.filterText = ''
+     formdata.sorting = ''
+     formdata.maxResultCount = 990
+     formdata.skipCount = 0
 
-  //    this._ticketPriceService.getPaged(formdata)
-  //    .subscribe(result => {
-  //      result.items.forEach(function(item){
-  //        var ticket={
-  //          label:item.ticketName,
-  //          value:item.id,
-  //          checked:false
-  //        }
-  //        if(that.ticketPriceIds.indexOf(item.id) > -1){
-  //          ticket.checked=true
-  //        }
-  //        ticketlist.push(ticket)
-  //      })
-  //      this.ticketlist = ticketlist;
-  //      this.updateSingleChecked()
-  //    });
-  //  }
+     this._ticketPriceService.getPaged(formdata)
+     .subscribe(result => {
+       result.items.forEach(function(item){
+         var ticket={
+           label:item.ticketName,
+           value:item.id,
+           checked:false
+         }
+         if(that.ticketPriceIds.indexOf(item.id) > -1){
+           ticket.checked=true
+         }
+         ticketlist.push(ticket)
+       })
+       this.ticketlist = ticketlist;
+       this.updateSingleChecked()
+     });
+   }
 
    ngModelChange(a){
      this.ticketPriceIds=a

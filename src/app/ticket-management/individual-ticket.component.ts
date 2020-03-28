@@ -156,172 +156,155 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     }
 
     numchange(i){
-        // if(i>0){
-            //     var curstomer=this.orderticket[this.editindex].curstomer
-            //     if(curstomer.length > i){
-                //         this.orderticket[this.editindex].curstomer =curstomer.splice(0,i)
-                //     }else if(curstomer.length < i){
-                    //         var len = i - curstomer.length
-                    //         for (var j =0;j < len; j++) {
-                        //             curstomer.push({
-                            //                 certificatesNum:'',
-                            //                 customerName:'',
-                            //                 mobile:'',
-                            //                 sex:'Man',
-                            //                 verifiableType:'IdentityCard',
-                            //             })
-                            //         }
-                            //     }
-                            // }
-                            this.countprice()
-                        }
+        this.countprice()
+    }
 
-                        deleteRow(i): void {
-                            this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
-                        }
+    deleteRow(i): void {
+        this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
+    }
 
-                        createOrEdit(i): void {
-                            localStorage.setItem('orderticket',JSON.stringify(this.orderticket))
-                            this.modalHelper.static(CreateOrEditCustomerComponent, { tindex: i })
-                            .subscribe(result => {
-                                if (result) {
-                                    // this.refresh();
-                                }
-                            });
-                        }
+    createOrEdit(i): void {
+        localStorage.setItem('orderticket',JSON.stringify(this.orderticket))
+        this.modalHelper.static(CreateOrEditCustomerComponent, { tindex: i })
+        .subscribe(result => {
+            if (result) {
+                // this.refresh();
+            }
+        });
+    }
 
-                        datechange($event): void {
+    datechange($event): void {
 
-                            var year=$event[0].getFullYear();
-                            var month = $event[0].getMonth() + 1;
-                            var day = $event[0].getDate();
+        var year=$event[0].getFullYear();
+        var month = $event[0].getMonth() + 1;
+        var day = $event[0].getDate();
 
-                            var fulldate1=year+'-'+month+'-'+day;
+        var fulldate1=year+'-'+month+'-'+day;
 
-                            var year=$event[1].getFullYear();
-                            var month = $event[1].getMonth() + 1;
-                            var day = $event[1].getDate();
+        var year=$event[1].getFullYear();
+        var month = $event[1].getMonth() + 1;
+        var day = $event[1].getDate();
 
-                            var fulldate2=year+'-'+month+'-'+day;
+        var fulldate2=year+'-'+month+'-'+day;
 
-                            this.startDateTime=fulldate1
-                            this.endDateTime=fulldate2
+        this.startDateTime=fulldate1
+        this.endDateTime=fulldate2
 
-                        }
+    }
 
-                        discountchange($event){
-                            this.discount=$event
-                            this.countprice()  
-                        }
+    discountchange($event){
+        this.discount=$event
+        this.countprice()  
+    }
 
-                        countprice(){
-                            var totalprice=0
-                            var totalnum=0
-                            this.orderticket.forEach(function(item){
-                                if(item.ticketid){
-                                    item.ticketcount=item.ticketprice * item.num
-                                    totalprice +=item.ticketcount
-                                    totalnum +=item.num
-                                }
-                            })
-                            this.totalprice=totalprice * this.discount / 100
+    countprice(){
+        var totalprice=0
+        var totalnum=0
+        this.orderticket.forEach(function(item){
+            if(item.ticketid){
+                item.ticketcount=item.ticketprice * item.num
+                totalprice +=item.ticketcount
+                totalnum +=item.num
+            }
+        })
+        this.totalprice=totalprice * this.discount / 100
 
-                            this.totalnum=totalnum
-                        }
-                        parsenum(){
-                            var change=parseFloat((this.receive - this.totalprice)+'').toFixed(2)
-                            return change
-                        }
+        this.totalnum=totalnum
+    }
+    parsenum(){
+        var change=parseFloat((this.receive - this.totalprice)+'').toFixed(2)
+        return change
+    }
 
-                        settlement(){
-                            if(this.totalnum==0){
-                                abp.message.warn('请添加票型');
-                                return
-                            }
+    settlement(){
+        if(this.totalnum==0){
+            abp.message.warn('请添加票型');
+            return
+        }
 
-                            if(!this.startDateTime || !this.endDateTime){
-                                abp.message.warn('请选择有效日期');
-                                return
-                            }
+        if(!this.startDateTime || !this.endDateTime){
+            abp.message.warn('请选择有效日期');
+            return
+        }
 
-                            if(this.receive<this.totalprice){
-                                abp.message.warn('实收金额小于应收金额');
-                                return
-                            }
+        if(this.receive<this.totalprice){
+            abp.message.warn('实收金额小于应收金额');
+            return
+        }
 
-                            var orderdata = new CreateActivityModel()
-                            orderdata.sourceId= this.sourceId;
-                            orderdata.payMethodId= this.orderinfo.payMethodId;
-                            orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
-                            orderdata.startDateTime=this.startDateTime;
-                            orderdata.endDateTime= this.endDateTime;
-                            orderdata.remark=this.remark
+        var orderdata = new CreateActivityModel()
+        orderdata.sourceId= this.sourceId;
+        orderdata.payMethodId= this.orderinfo.payMethodId;
+        orderdata.orderType=OrderTypeEnum.OrderTypeCustomer
+        orderdata.startDateTime=this.startDateTime;
+        orderdata.endDateTime= this.endDateTime;
+        orderdata.remark=this.remark
 
-                            var activityDetails=[]
-                            this.orderticket.forEach(function(item){
-                                activityDetails.push(new CreateActivityDetailModel({
-                                    ticketPriceId:item.ticketid,
-                                    quantity:item.num,
-                                    customerId:0,
-                                }))
-                            })
-                            orderdata.discount=this.discount / 100
+        var activityDetails=[]
+        this.orderticket.forEach(function(item){
+            activityDetails.push(new CreateActivityDetailModel({
+                ticketPriceId:item.ticketid,
+                quantity:item.num,
+                customerId:0,
+            }))
+        })
+        orderdata.discount=this.discount / 100
 
-                            orderdata.activityDetails=activityDetails
+        orderdata.activityDetails=activityDetails
 
-                            this._activityService.createActivity(orderdata)
-                            .subscribe(result => {
-                                console.log(result)
-                                if(result.resultCode == "000"){
-                                    this.notify.success(result.resultMessage);
+        this._activityService.createActivity(orderdata)
+        .subscribe(result => {
+            console.log(result)
+            if(result.resultCode == "000"){
+                this.notify.success(result.resultMessage);
 
-                                    this.orderticket=[]
-                                    this.countprice()
+                this.orderticket=[]
+                this.countprice()
 
-                                    LODOP=getLodop();
-                                    var top = 100; //最高坐标
-                                    var left = 90; //最左坐标
-                                    var width = 10; //上边距
-                                    var height = 12; //右边距
-                                    var QRcodeWidth = 95; //二维码大小
-                                    var paperWidth = 700; //纸张宽度
-                                    var paperHeight = 1200; //纸张长度
-                                    var fontWidth = 400; //文字区域宽度
-                                    var fontHeight = 17; //文字区域高度
-                                    LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
-                                    LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
-                                    LODOP.PRINT_INITA("");
-                                    LODOP.SET_PRINT_STYLE("FontSize", 10);
-                                    //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
-                                    LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
-                                    // for (var i = 0; i < result.data.length; i++) {
-                                        //     var item = result.data[i];
+                LODOP=getLodop();
+                var top = 100; //最高坐标
+                var left = 90; //最左坐标
+                var width = 10; //上边距
+                var height = 12; //右边距
+                var QRcodeWidth = 95; //二维码大小
+                var paperWidth = 700; //纸张宽度
+                var paperHeight = 1200; //纸张长度
+                var fontWidth = 400; //文字区域宽度
+                var fontHeight = 17; //文字区域高度
+                LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
+                LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
+                LODOP.PRINT_INITA("");
+                LODOP.SET_PRINT_STYLE("FontSize", 10);
+                //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+                LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
+                for (var i = 0; i < result.data.details.length; i++) {
+                    var item = result.data.details[i];
 
-                                        //     LODOP.NewPage();
-                                        //     LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", 123);
+                    LODOP.NewPage();
+                    LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", 123);
 
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketName);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 6 * fontHeight, fontWidth, fontHeight, "票　　价：" + item.price);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270)
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票　　号：" + item.ticketNo);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "开始日期：" + item.playDate);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "结束日期：" + item.playTime);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                                        //     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "可验次数：" + item.checkingQuantity);
-                                        //     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                                        // }
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketName);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 6 * fontHeight, fontWidth, fontHeight, "票　　价：" + item.ticketPrice);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270)
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票　　号：" + item.ticketNo);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "开始日期：" + item.playDate);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "结束日期：" + item.playTime);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "可验次数：" + item.checkingQuantity);
+                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                }
 
-                                        LODOP.PREVIEW()
-                                        // // LODOP.PRINT();
-                                    }else{
-                                        abp.message.warn(result.resultMessage);
-                                    }
-                                });
+                // LODOP.PREVIEW()
+                LODOP.PRINT();
+            }else{
+                abp.message.warn(result.resultMessage);
+            }
+        });
 
-                        }
+    }
 
-                    }
+}
