@@ -5,6 +5,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
   UserServiceProxy, QueryData,
   TicketServiceProxy,
+  SalesByPayMethodResultDto
   // SellerTicketResultDto,
   // GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
@@ -15,7 +16,7 @@ import {
   styles: []
 })
 
-export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBase<''> implements OnInit {
+export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBase<SalesByPayMethodResultDto> implements OnInit {
   protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
     throw new Error("Method not implemented.");
   }
