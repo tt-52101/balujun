@@ -86,6 +86,7 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
 
       this._ticketDetailService.getPaged(formdata)
         .subscribe(result => {
+    
           if (result.items.length > 0) {
             this.single = true
             for (var i = 0; i < result.items.length; i++) {
@@ -115,6 +116,8 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
   
       this._activityService.getPaged(formdata)
       .subscribe(result => {
+        console.log(result);
+        
         if(result.items.length==0){
           abp.message.warn(this.l('NoOrder'));
         }else{

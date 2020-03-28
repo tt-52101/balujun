@@ -18366,41 +18366,26 @@ export class TicketAccountServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfAccountListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketAccount/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetAccountsInput | undefined): Observable<PagedResultDtoOfAccountListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketAccount/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -26535,6 +26520,718 @@ export class WeChatScenicSpotServiceProxy {
 }
 
 @Injectable()
+export class OperationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 游客年龄
+     * @return Success
+     */
+    getCustomerAgeResult(): Observable<OperCustomerAgeResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerAgeResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerAgeResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerAgeResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerAgeResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerAgeResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerAgeResult(response: HttpResponseBase): Observable<OperCustomerAgeResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerAgeResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerAgeResultDto[]>(<any>null);
+    }
+
+    /**
+     * 游客性别
+     * @return Success
+     */
+    getCustomerGenderResult(): Observable<OperCustomerGenderResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerGenderResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerGenderResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerGenderResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerGenderResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerGenderResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerGenderResult(response: HttpResponseBase): Observable<OperCustomerGenderResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerGenderResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerGenderResultDto[]>(<any>null);
+    }
+
+    /**
+     * 游客地区
+     * @return Success
+     */
+    getCustomerRegionResult(): Observable<OperCustomerRegionResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerRegionResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerRegionResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerRegionResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerRegionResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerRegionResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerRegionResult(response: HttpResponseBase): Observable<OperCustomerRegionResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerRegionResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerRegionResultDto[]>(<any>null);
+    }
+
+    /**
+     * 首页（匿名制）
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getMainForAnonymousResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperMainForAnonymousResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetMainForAnonymousResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMainForAnonymousResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMainForAnonymousResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperMainForAnonymousResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperMainForAnonymousResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMainForAnonymousResult(response: HttpResponseBase): Observable<OperMainForAnonymousResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperMainForAnonymousResultDto.fromJS(resultData200) : new OperMainForAnonymousResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperMainForAnonymousResultDto>(<any>null);
+    }
+
+    /**
+     * 首页（实名制）
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getMainForRealNameResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperMainForRealNameResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetMainForRealNameResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMainForRealNameResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMainForRealNameResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperMainForRealNameResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperMainForRealNameResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMainForRealNameResult(response: HttpResponseBase): Observable<OperMainForRealNameResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperMainForRealNameResultDto.fromJS(resultData200) : new OperMainForRealNameResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperMainForRealNameResultDto>(<any>null);
+    }
+
+    /**
+     * 退票情况
+     * @return Success
+     */
+    getRefundResult(): Observable<OperRefundResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetRefundResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRefundResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRefundResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperRefundResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperRefundResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRefundResult(response: HttpResponseBase): Observable<OperRefundResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperRefundResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperRefundResultDto[]>(<any>null);
+    }
+
+    /**
+     * 营收状况
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getRevenueResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperRevenueResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetRevenueResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRevenueResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRevenueResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperRevenueResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperRevenueResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRevenueResult(response: HttpResponseBase): Observable<OperRevenueResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperRevenueResultDto.fromJS(resultData200) : new OperRevenueResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperRevenueResultDto>(<any>null);
+    }
+
+    /**
+     * 销售情况（按来源）
+     * @return Success
+     */
+    getSalesBySourceResult(): Observable<OperSalesBySourceResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetSalesBySourceResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSalesBySourceResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSalesBySourceResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperSalesBySourceResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperSalesBySourceResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSalesBySourceResult(response: HttpResponseBase): Observable<OperSalesBySourceResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperSalesBySourceResultDto[]>(<any>null);
+    }
+
+    /**
+     * 销售情况（按票型）
+     * @return Success
+     */
+    getSalesByTicketResult(): Observable<OperSalesByTicketResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetSalesByTicketResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSalesByTicketResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSalesByTicketResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperSalesByTicketResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperSalesByTicketResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSalesByTicketResult(response: HttpResponseBase): Observable<OperSalesByTicketResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperSalesByTicketResultDto[]>(<any>null);
+    }
+
+    /**
+     * 检票情况
+     * @return Success
+     */
+    getTicketCheckResult(): Observable<OperTicketCheckResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetTicketCheckResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTicketCheckResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTicketCheckResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperTicketCheckResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperTicketCheckResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTicketCheckResult(response: HttpResponseBase): Observable<OperTicketCheckResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperTicketCheckResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperTicketCheckResultDto[]>(<any>null);
+    }
+
+    /**
+     * 票型比例
+     * @return Success
+     */
+    getTicketRatioResult(): Observable<OperTicketRatioResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetTicketRatioResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTicketRatioResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTicketRatioResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperTicketRatioResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperTicketRatioResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTicketRatioResult(response: HttpResponseBase): Observable<OperTicketRatioResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperTicketRatioResultDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    test(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/Test";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTest(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTest(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+}
+
+@Injectable()
 export class SalesByOrderSourceServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -27052,15 +27749,35 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单信息
-     * @param sellerId (optional) 
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param activityIds (optional) 
      * @return Success
      */
-    getPagedActivities(sellerId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+    getPagedActivities(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityIds: string[] | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
         let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities?";
-        if (sellerId === null)
-            throw new Error("The parameter 'sellerId' cannot be null.");
-        else if (sellerId !== undefined)
-            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (activityIds === null)
+            throw new Error("The parameter 'activityIds' cannot be null.");
+        else if (activityIds !== undefined)
+            activityIds && activityIds.forEach(item => { url_ += "activityIds=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -27109,11 +27826,31 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单明细
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
      * @param activityId (optional) 
      * @return Success
      */
-    getPagedActivityDetails(activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+    getPagedActivityDetails(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
         let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         if (activityId === null)
             throw new Error("The parameter 'activityId' cannot be null.");
         else if (activityId !== undefined)
@@ -53127,6 +53864,81 @@ export interface IGetAccountForEditOutput {
     accountStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
 }
 
+/** 获取的传入参数Dto */
+export class GetAccountsInput implements IGetAccountsInput {
+    /** 收款日期 CollectionTime
+结账单号 AccountNo
+收款状态 AccountStatus */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetAccountsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetAccountsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAccountsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetAccountsInput {
+        const json = this.toJSON();
+        let result = new GetAccountsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetAccountsInput {
+    /** 收款日期 CollectionTime
+结账单号 AccountNo
+收款状态 AccountStatus */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class PagedResultDtoOfAccountListDto implements IPagedResultDtoOfAccountListDto {
     totalCount: number;
     items: AccountListDto[] | undefined;
@@ -53936,7 +54748,7 @@ export class TicketDetailHistoryEditDto implements ITicketDetailHistoryEditDto {
     /** TicketNo */
     ticketNo: string | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     /** VisitValue */
     visitValue: string | undefined;
     /** ValidationType */
@@ -54073,7 +54885,7 @@ export interface ITicketDetailHistoryEditDto {
     /** TicketNo */
     ticketNo: string | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     /** VisitValue */
     visitValue: string | undefined;
     /** ValidationType */
@@ -61994,9 +62806,952 @@ export interface IPagedResultDtoOfWeChatScenicSpotListDto {
     items: WeChatScenicSpotListDto[] | undefined;
 }
 
+/** 游客年龄 */
+export class OperCustomerAgeResultDto implements IOperCustomerAgeResultDto {
+    /** 年龄段 */
+    ageRange: string | undefined;
+    /** 百分比 */
+    percentage: number;
+
+    constructor(data?: IOperCustomerAgeResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ageRange = data["ageRange"];
+            this.percentage = data["percentage"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerAgeResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerAgeResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ageRange"] = this.ageRange;
+        data["percentage"] = this.percentage;
+        return data; 
+    }
+
+    clone(): OperCustomerAgeResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerAgeResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客年龄 */
+export interface IOperCustomerAgeResultDto {
+    /** 年龄段 */
+    ageRange: string | undefined;
+    /** 百分比 */
+    percentage: number;
+}
+
+/** 游客性别 */
+export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto {
+    /** 性别 */
+    gender: string | undefined;
+    /** 百分比 */
+    percentage: number;
+
+    constructor(data?: IOperCustomerGenderResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.gender = data["gender"];
+            this.percentage = data["percentage"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerGenderResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerGenderResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["gender"] = this.gender;
+        data["percentage"] = this.percentage;
+        return data; 
+    }
+
+    clone(): OperCustomerGenderResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerGenderResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客性别 */
+export interface IOperCustomerGenderResultDto {
+    /** 性别 */
+    gender: string | undefined;
+    /** 百分比 */
+    percentage: number;
+}
+
+/** 游客地区 */
+export class OperCustomerRegionResultDto implements IOperCustomerRegionResultDto {
+    /** 地区 */
+    region: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: IOperCustomerRegionResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.region = data["region"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerRegionResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerRegionResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["region"] = this.region;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): OperCustomerRegionResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerRegionResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客地区 */
+export interface IOperCustomerRegionResultDto {
+    /** 地区 */
+    region: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+export enum DateRange {
+    Today = <any>"Today", 
+    ThisWeek = <any>"ThisWeek", 
+    ThisMonth = <any>"ThisMonth", 
+    ThisYear = <any>"ThisYear", 
+    Custom = <any>"Custom", 
+}
+
+/** 简单数量类 */
+export class SimpleQuantity implements ISimpleQuantity {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: ISimpleQuantity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.time = data["time"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): SimpleQuantity {
+        data = typeof data === 'object' ? data : {};
+        let result = new SimpleQuantity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["time"] = this.time;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): SimpleQuantity {
+        const json = this.toJSON();
+        let result = new SimpleQuantity();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 简单数量类 */
+export interface ISimpleQuantity {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+/** 简单金额类 */
+export class SimpleAmount implements ISimpleAmount {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 金额 */
+    amount: number;
+
+    constructor(data?: ISimpleAmount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.time = data["time"];
+            this.amount = data["amount"];
+        }
+    }
+
+    static fromJS(data: any): SimpleAmount {
+        data = typeof data === 'object' ? data : {};
+        let result = new SimpleAmount();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["time"] = this.time;
+        data["amount"] = this.amount;
+        return data; 
+    }
+
+    clone(): SimpleAmount {
+        const json = this.toJSON();
+        let result = new SimpleAmount();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 简单金额类 */
+export interface ISimpleAmount {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 金额 */
+    amount: number;
+}
+
+/** 营收状况 */
+export class OperRevenueResultDto implements IOperRevenueResultDto {
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
+    /** 按时间推移的数量 */
+    quantityByTime: SimpleQuantity[] | undefined;
+    /** 按时间推移的金额 */
+    amountByTime: SimpleAmount[] | undefined;
+
+    constructor(data?: IOperRevenueResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.todayQuantity = data["todayQuantity"];
+            this.todayAmount = data["todayAmount"];
+            if (data["quantityByTime"] && data["quantityByTime"].constructor === Array) {
+                this.quantityByTime = [] as any;
+                for (let item of data["quantityByTime"])
+                    this.quantityByTime.push(SimpleQuantity.fromJS(item));
+            }
+            if (data["amountByTime"] && data["amountByTime"].constructor === Array) {
+                this.amountByTime = [] as any;
+                for (let item of data["amountByTime"])
+                    this.amountByTime.push(SimpleAmount.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperRevenueResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperRevenueResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["todayQuantity"] = this.todayQuantity;
+        data["todayAmount"] = this.todayAmount;
+        if (this.quantityByTime && this.quantityByTime.constructor === Array) {
+            data["quantityByTime"] = [];
+            for (let item of this.quantityByTime)
+                data["quantityByTime"].push(item.toJSON());
+        }
+        if (this.amountByTime && this.amountByTime.constructor === Array) {
+            data["amountByTime"] = [];
+            for (let item of this.amountByTime)
+                data["amountByTime"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperRevenueResultDto {
+        const json = this.toJSON();
+        let result = new OperRevenueResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 营收状况 */
+export interface IOperRevenueResultDto {
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
+    /** 按时间推移的数量 */
+    quantityByTime: SimpleQuantity[] | undefined;
+    /** 按时间推移的金额 */
+    amountByTime: SimpleAmount[] | undefined;
+}
+
+/** 票型比例 */
+export class OperTicketRatioResultDto implements IOperTicketRatioResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: IOperTicketRatioResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): OperTicketRatioResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperTicketRatioResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): OperTicketRatioResultDto {
+        const json = this.toJSON();
+        let result = new OperTicketRatioResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型比例 */
+export interface IOperTicketRatioResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+/** 退票情况 */
+export class OperRefundResultDto implements IOperRefundResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 退票率 */
+    refundRatio: number;
+
+    constructor(data?: IOperRefundResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.refundQuantity = data["refundQuantity"];
+            this.refundAmount = data["refundAmount"];
+            this.refundRatio = data["refundRatio"];
+        }
+    }
+
+    static fromJS(data: any): OperRefundResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperRefundResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["refundQuantity"] = this.refundQuantity;
+        data["refundAmount"] = this.refundAmount;
+        data["refundRatio"] = this.refundRatio;
+        return data; 
+    }
+
+    clone(): OperRefundResultDto {
+        const json = this.toJSON();
+        let result = new OperRefundResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 退票情况 */
+export interface IOperRefundResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 退票率 */
+    refundRatio: number;
+}
+
+/** 销售情况（按票型） */
+export class OperSalesByTicketResultDto implements IOperSalesByTicketResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 金额 */
+    amount: number;
+
+    constructor(data?: IOperSalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.soldQuantity = data["soldQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.amount = data["amount"];
+        }
+    }
+
+    static fromJS(data: any): OperSalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperSalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["soldQuantity"] = this.soldQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["amount"] = this.amount;
+        return data; 
+    }
+
+    clone(): OperSalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new OperSalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 销售情况（按票型） */
+export interface IOperSalesByTicketResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 金额 */
+    amount: number;
+}
+
+/** 销售情况（按来源） */
+export class OperSalesBySourceResultDto implements IOperSalesBySourceResultDto {
+    /** 来源名称 */
+    sourceName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 比例 */
+    ratio: number;
+
+    constructor(data?: IOperSalesBySourceResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.sourceName = data["sourceName"];
+            this.soldQuantity = data["soldQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.ratio = data["ratio"];
+        }
+    }
+
+    static fromJS(data: any): OperSalesBySourceResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperSalesBySourceResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sourceName"] = this.sourceName;
+        data["soldQuantity"] = this.soldQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["ratio"] = this.ratio;
+        return data; 
+    }
+
+    clone(): OperSalesBySourceResultDto {
+        const json = this.toJSON();
+        let result = new OperSalesBySourceResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 销售情况（按来源） */
+export interface IOperSalesBySourceResultDto {
+    /** 来源名称 */
+    sourceName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 比例 */
+    ratio: number;
+}
+
+/** 检票情况 */
+export class OperTicketCheckResultDto implements IOperTicketCheckResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 检票成功次数 */
+    okCount: number;
+    /** 检票失败次数 */
+    ngCount: number;
+    /** 比例 */
+    ratio: number;
+
+    constructor(data?: IOperTicketCheckResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceName = data["deviceName"];
+            this.okCount = data["okCount"];
+            this.ngCount = data["ngCount"];
+            this.ratio = data["ratio"];
+        }
+    }
+
+    static fromJS(data: any): OperTicketCheckResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperTicketCheckResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceName"] = this.deviceName;
+        data["okCount"] = this.okCount;
+        data["ngCount"] = this.ngCount;
+        data["ratio"] = this.ratio;
+        return data; 
+    }
+
+    clone(): OperTicketCheckResultDto {
+        const json = this.toJSON();
+        let result = new OperTicketCheckResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 检票情况 */
+export interface IOperTicketCheckResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 检票成功次数 */
+    okCount: number;
+    /** 检票失败次数 */
+    ngCount: number;
+    /** 比例 */
+    ratio: number;
+}
+
+/** 首页（匿名制） */
+export class OperMainForAnonymousResultDto implements IOperMainForAnonymousResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+
+    constructor(data?: IOperMainForAnonymousResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.revenueResult = data["revenueResult"] ? OperRevenueResultDto.fromJS(data["revenueResult"]) : <any>undefined;
+            if (data["ticketRatioResult"] && data["ticketRatioResult"].constructor === Array) {
+                this.ticketRatioResult = [] as any;
+                for (let item of data["ticketRatioResult"])
+                    this.ticketRatioResult.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            if (data["refundResult"] && data["refundResult"].constructor === Array) {
+                this.refundResult = [] as any;
+                for (let item of data["refundResult"])
+                    this.refundResult.push(OperRefundResultDto.fromJS(item));
+            }
+            if (data["salesByTicketResult"] && data["salesByTicketResult"].constructor === Array) {
+                this.salesByTicketResult = [] as any;
+                for (let item of data["salesByTicketResult"])
+                    this.salesByTicketResult.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            if (data["salesBySourceResult"] && data["salesBySourceResult"].constructor === Array) {
+                this.salesBySourceResult = [] as any;
+                for (let item of data["salesBySourceResult"])
+                    this.salesBySourceResult.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            if (data["ticketCheckResult"] && data["ticketCheckResult"].constructor === Array) {
+                this.ticketCheckResult = [] as any;
+                for (let item of data["ticketCheckResult"])
+                    this.ticketCheckResult.push(OperTicketCheckResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperMainForAnonymousResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperMainForAnonymousResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["revenueResult"] = this.revenueResult ? this.revenueResult.toJSON() : <any>undefined;
+        if (this.ticketRatioResult && this.ticketRatioResult.constructor === Array) {
+            data["ticketRatioResult"] = [];
+            for (let item of this.ticketRatioResult)
+                data["ticketRatioResult"].push(item.toJSON());
+        }
+        if (this.refundResult && this.refundResult.constructor === Array) {
+            data["refundResult"] = [];
+            for (let item of this.refundResult)
+                data["refundResult"].push(item.toJSON());
+        }
+        if (this.salesByTicketResult && this.salesByTicketResult.constructor === Array) {
+            data["salesByTicketResult"] = [];
+            for (let item of this.salesByTicketResult)
+                data["salesByTicketResult"].push(item.toJSON());
+        }
+        if (this.salesBySourceResult && this.salesBySourceResult.constructor === Array) {
+            data["salesBySourceResult"] = [];
+            for (let item of this.salesBySourceResult)
+                data["salesBySourceResult"].push(item.toJSON());
+        }
+        if (this.ticketCheckResult && this.ticketCheckResult.constructor === Array) {
+            data["ticketCheckResult"] = [];
+            for (let item of this.ticketCheckResult)
+                data["ticketCheckResult"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperMainForAnonymousResultDto {
+        const json = this.toJSON();
+        let result = new OperMainForAnonymousResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 首页（匿名制） */
+export interface IOperMainForAnonymousResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+}
+
+/** 首页（实名制） */
+export class OperMainForRealNameResultDto implements IOperMainForRealNameResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 游客地区 */
+    customerRegionResult: OperCustomerRegionResultDto[] | undefined;
+    /** 游客年龄 */
+    customerAgeResult: OperCustomerAgeResultDto[] | undefined;
+    /** 游客性别 */
+    customerGenderResult: OperCustomerGenderResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+
+    constructor(data?: IOperMainForRealNameResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.revenueResult = data["revenueResult"] ? OperRevenueResultDto.fromJS(data["revenueResult"]) : <any>undefined;
+            if (data["ticketRatioResult"] && data["ticketRatioResult"].constructor === Array) {
+                this.ticketRatioResult = [] as any;
+                for (let item of data["ticketRatioResult"])
+                    this.ticketRatioResult.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            if (data["refundResult"] && data["refundResult"].constructor === Array) {
+                this.refundResult = [] as any;
+                for (let item of data["refundResult"])
+                    this.refundResult.push(OperRefundResultDto.fromJS(item));
+            }
+            if (data["customerRegionResult"] && data["customerRegionResult"].constructor === Array) {
+                this.customerRegionResult = [] as any;
+                for (let item of data["customerRegionResult"])
+                    this.customerRegionResult.push(OperCustomerRegionResultDto.fromJS(item));
+            }
+            if (data["customerAgeResult"] && data["customerAgeResult"].constructor === Array) {
+                this.customerAgeResult = [] as any;
+                for (let item of data["customerAgeResult"])
+                    this.customerAgeResult.push(OperCustomerAgeResultDto.fromJS(item));
+            }
+            if (data["customerGenderResult"] && data["customerGenderResult"].constructor === Array) {
+                this.customerGenderResult = [] as any;
+                for (let item of data["customerGenderResult"])
+                    this.customerGenderResult.push(OperCustomerGenderResultDto.fromJS(item));
+            }
+            if (data["salesByTicketResult"] && data["salesByTicketResult"].constructor === Array) {
+                this.salesByTicketResult = [] as any;
+                for (let item of data["salesByTicketResult"])
+                    this.salesByTicketResult.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            if (data["salesBySourceResult"] && data["salesBySourceResult"].constructor === Array) {
+                this.salesBySourceResult = [] as any;
+                for (let item of data["salesBySourceResult"])
+                    this.salesBySourceResult.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            if (data["ticketCheckResult"] && data["ticketCheckResult"].constructor === Array) {
+                this.ticketCheckResult = [] as any;
+                for (let item of data["ticketCheckResult"])
+                    this.ticketCheckResult.push(OperTicketCheckResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperMainForRealNameResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperMainForRealNameResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["revenueResult"] = this.revenueResult ? this.revenueResult.toJSON() : <any>undefined;
+        if (this.ticketRatioResult && this.ticketRatioResult.constructor === Array) {
+            data["ticketRatioResult"] = [];
+            for (let item of this.ticketRatioResult)
+                data["ticketRatioResult"].push(item.toJSON());
+        }
+        if (this.refundResult && this.refundResult.constructor === Array) {
+            data["refundResult"] = [];
+            for (let item of this.refundResult)
+                data["refundResult"].push(item.toJSON());
+        }
+        if (this.customerRegionResult && this.customerRegionResult.constructor === Array) {
+            data["customerRegionResult"] = [];
+            for (let item of this.customerRegionResult)
+                data["customerRegionResult"].push(item.toJSON());
+        }
+        if (this.customerAgeResult && this.customerAgeResult.constructor === Array) {
+            data["customerAgeResult"] = [];
+            for (let item of this.customerAgeResult)
+                data["customerAgeResult"].push(item.toJSON());
+        }
+        if (this.customerGenderResult && this.customerGenderResult.constructor === Array) {
+            data["customerGenderResult"] = [];
+            for (let item of this.customerGenderResult)
+                data["customerGenderResult"].push(item.toJSON());
+        }
+        if (this.salesByTicketResult && this.salesByTicketResult.constructor === Array) {
+            data["salesByTicketResult"] = [];
+            for (let item of this.salesByTicketResult)
+                data["salesByTicketResult"].push(item.toJSON());
+        }
+        if (this.salesBySourceResult && this.salesBySourceResult.constructor === Array) {
+            data["salesBySourceResult"] = [];
+            for (let item of this.salesBySourceResult)
+                data["salesBySourceResult"].push(item.toJSON());
+        }
+        if (this.ticketCheckResult && this.ticketCheckResult.constructor === Array) {
+            data["ticketCheckResult"] = [];
+            for (let item of this.ticketCheckResult)
+                data["ticketCheckResult"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperMainForRealNameResultDto {
+        const json = this.toJSON();
+        let result = new OperMainForRealNameResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 首页（实名制） */
+export interface IOperMainForRealNameResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 游客地区 */
+    customerRegionResult: OperCustomerRegionResultDto[] | undefined;
+    /** 游客年龄 */
+    customerAgeResult: OperCustomerAgeResultDto[] | undefined;
+    /** 游客性别 */
+    customerGenderResult: OperCustomerGenderResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+}
+
 /** 订单来源统计 */
 export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto {
+    /** 订单来源ID */
+    id: number;
     source: Source;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62021,7 +63776,13 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62040,7 +63801,13 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62060,7 +63827,11 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
 /** 订单来源统计 */
 export interface ISalesByOrderSourceResultDto {
+    /** 订单来源ID */
+    id: number;
     source: Source;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62152,7 +63923,11 @@ export interface IStatsPagedResultDtoOfSalesByOrderSourceResultDto {
 
 /** 团体售票统计 */
 export class SalesByOrganizationResultDto implements ISalesByOrganizationResultDto {
+    /** 团体ID */
+    id: number;
     organization: Organization;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62177,7 +63952,13 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62196,7 +63977,13 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62216,7 +64003,11 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
 /** 团体售票统计 */
 export interface ISalesByOrganizationResultDto {
+    /** 团体ID */
+    id: number;
     organization: Organization;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62308,7 +64099,11 @@ export interface IStatsPagedResultDtoOfSalesByOrganizationResultDto {
 
 /** 支付方式统计 */
 export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
+    /** 支付方式ID */
+    id: number;
     payMethod: PayMethod;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62333,7 +64128,13 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62352,7 +64153,13 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62372,7 +64179,11 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
 /** 支付方式统计 */
 export interface ISalesByPayMethodResultDto {
+    /** 支付方式ID */
+    id: number;
     payMethod: PayMethod;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62464,7 +64275,11 @@ export interface IStatsPagedResultDtoOfSalesByPayMethodResultDto {
 
 /** 售票员售票统计 */
 export class SalesBySellerResultDto implements ISalesBySellerResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 现金售票数量 */
     cashSaleQuantity: number;
     /** 现金退票数量 */
@@ -62529,7 +64344,13 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.cashSaleQuantity = data["cashSaleQuantity"];
             this.cashRefundQuantity = data["cashRefundQuantity"];
             this.cashSubtotalQuantity = data["cashSubtotalQuantity"];
@@ -62568,7 +64389,13 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["cashSaleQuantity"] = this.cashSaleQuantity;
         data["cashRefundQuantity"] = this.cashRefundQuantity;
         data["cashSubtotalQuantity"] = this.cashSubtotalQuantity;
@@ -62608,7 +64435,11 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
 /** 售票员售票统计 */
 export interface ISalesBySellerResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 现金售票数量 */
     cashSaleQuantity: number;
     /** 现金退票数量 */
@@ -62740,7 +64571,11 @@ export interface IStatsPagedResultDtoOfSalesBySellerResultDto {
 
 /** 售票员日结统计 */
 export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62781,7 +64616,13 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62808,7 +64649,13 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62836,7 +64683,11 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
 /** 售票员日结统计 */
 export interface ISalesBySellerDailyResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
