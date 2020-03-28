@@ -7,7 +7,7 @@
         <button nz-button [nzType]="nzSelectedIndex == 3 ?'primary':'info'" (click)="getdata(30,3)">后一月</button>
         <button nz-button [nzType]="nzSelectedIndex == 4 ?'primary':'info'" (click)="getdata(365,4)">后一年</button>
         <button nz-button [nzType]="nzSelectedIndex == 5 ?'primary':'info'" (click)="getdata(0,5)">自定义</button>
-        <nz-range-picker style="margin-left: 8px" [nzFormat]="yyyy/MM/dd" [ngModel]="datepicker" (ngModelChange)="datechange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
+        <nz-range-picker style="margin-left: 8px" nzFormat="yyyy/MM/dd" [ngModel]="datepicker" (ngModelChange)="datechange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
       </div>
       <div style="font-size: 20px;color: #3C4353;margin: 10px 0;">营收状况</div>
       <nz-row [nzGutter]="16">

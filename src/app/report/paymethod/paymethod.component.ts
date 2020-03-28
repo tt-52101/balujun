@@ -127,7 +127,7 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 	open(id): void {
 		this.visible = true;
-		this._SalesCommonServiceProxy.getPagedActivities(id)
+		this._SalesCommonServiceProxy.getPagedActivities('','',10,0,[])
 		.subscribe(result => {
 			console.log(result);
 			this.visible = true;

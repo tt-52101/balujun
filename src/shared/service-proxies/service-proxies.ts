@@ -29573,7 +29573,6 @@ export interface IUserRole {
     id: number;
 }
 
-<<<<<<< HEAD
 export class UserClaim implements IUserClaim {
     tenantId: number | undefined;
     userId: number;
@@ -29584,18 +29583,6 @@ export class UserClaim implements IUserClaim {
     id: number;
 
     constructor(data?: IUserClaim) {
-=======
-export class UserToken implements IUserToken {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    expireDate: moment.Moment | undefined;
-    id: number;
-
-    constructor(data?: IUserToken) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -29608,30 +29595,17 @@ export class UserToken implements IUserToken {
         if (data) {
             this.tenantId = data["tenantId"];
             this.userId = data["userId"];
-<<<<<<< HEAD
             this.claimType = data["claimType"];
             this.claimValue = data["claimValue"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.creatorUserId = data["creatorUserId"];
-=======
-            this.loginProvider = data["loginProvider"];
-            this.name = data["name"];
-            this.value = data["value"];
-            this.expireDate = data["expireDate"] ? moment(data["expireDate"].toString()) : <any>undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.id = data["id"];
         }
     }
 
-<<<<<<< HEAD
     static fromJS(data: any): UserClaim {
         data = typeof data === 'object' ? data : {};
         let result = new UserClaim();
-=======
-    static fromJS(data: any): UserToken {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserToken();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(data);
         return result;
     }
@@ -29640,36 +29614,22 @@ export class UserToken implements IUserToken {
         data = typeof data === 'object' ? data : {};
         data["tenantId"] = this.tenantId;
         data["userId"] = this.userId;
-<<<<<<< HEAD
         data["claimType"] = this.claimType;
         data["claimValue"] = this.claimValue;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["creatorUserId"] = this.creatorUserId;
-=======
-        data["loginProvider"] = this.loginProvider;
-        data["name"] = this.name;
-        data["value"] = this.value;
-        data["expireDate"] = this.expireDate ? this.expireDate.toISOString() : <any>undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["id"] = this.id;
         return data; 
     }
 
-<<<<<<< HEAD
     clone(): UserClaim {
         const json = this.toJSON();
         let result = new UserClaim();
-=======
-    clone(): UserToken {
-        const json = this.toJSON();
-        let result = new UserToken();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(json);
         return result;
     }
 }
 
-<<<<<<< HEAD
 export interface IUserClaim {
     tenantId: number | undefined;
     userId: number;
@@ -29690,26 +29650,6 @@ export class UserPermissionSetting implements IUserPermissionSetting {
     id: number;
 
     constructor(data?: IUserPermissionSetting) {
-=======
-export interface IUserToken {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    expireDate: moment.Moment | undefined;
-    id: number;
-}
-
-export class UserLogin implements IUserLogin {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    providerKey: string | undefined;
-    id: number;
-
-    constructor(data?: IUserLogin) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -29720,70 +29660,43 @@ export class UserLogin implements IUserLogin {
 
     init(data?: any) {
         if (data) {
-<<<<<<< HEAD
             this.userId = data["userId"];
             this.tenantId = data["tenantId"];
             this.name = data["name"];
             this.isGranted = data["isGranted"];
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.creatorUserId = data["creatorUserId"];
-=======
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.loginProvider = data["loginProvider"];
-            this.providerKey = data["providerKey"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.id = data["id"];
         }
     }
 
-<<<<<<< HEAD
     static fromJS(data: any): UserPermissionSetting {
         data = typeof data === 'object' ? data : {};
         let result = new UserPermissionSetting();
-=======
-    static fromJS(data: any): UserLogin {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserLogin();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
         data["userId"] = this.userId;
         data["tenantId"] = this.tenantId;
         data["name"] = this.name;
         data["isGranted"] = this.isGranted;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["creatorUserId"] = this.creatorUserId;
-=======
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["loginProvider"] = this.loginProvider;
-        data["providerKey"] = this.providerKey;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["id"] = this.id;
         return data; 
     }
 
-<<<<<<< HEAD
     clone(): UserPermissionSetting {
         const json = this.toJSON();
         let result = new UserPermissionSetting();
-=======
-    clone(): UserLogin {
-        const json = this.toJSON();
-        let result = new UserLogin();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(json);
         return result;
     }
 }
 
-<<<<<<< HEAD
 export interface IUserPermissionSetting {
     userId: number;
     tenantId: number | undefined;
@@ -29801,29 +29714,11 @@ export class Setting implements ISetting {
     value: string | undefined;
     lastModificationTime: moment.Moment | undefined;
     lastModifierUserId: number | undefined;
-=======
-export interface IUserLogin {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    providerKey: string | undefined;
-    id: number;
-}
-
-export class UserRole implements IUserRole {
-    tenantId: number | undefined;
-    userId: number;
-    roleId: number;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 
-<<<<<<< HEAD
     constructor(data?: ISetting) {
-=======
-    constructor(data?: IUserRole) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -29836,29 +29731,19 @@ export class UserRole implements IUserRole {
         if (data) {
             this.tenantId = data["tenantId"];
             this.userId = data["userId"];
-<<<<<<< HEAD
             this.name = data["name"];
             this.value = data["value"];
             this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
             this.lastModifierUserId = data["lastModifierUserId"];
-=======
-            this.roleId = data["roleId"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.creatorUserId = data["creatorUserId"];
             this.id = data["id"];
         }
     }
 
-<<<<<<< HEAD
     static fromJS(data: any): Setting {
         data = typeof data === 'object' ? data : {};
         let result = new Setting();
-=======
-    static fromJS(data: any): UserRole {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserRole();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(data);
         return result;
     }
@@ -29867,35 +29752,24 @@ export class UserRole implements IUserRole {
         data = typeof data === 'object' ? data : {};
         data["tenantId"] = this.tenantId;
         data["userId"] = this.userId;
-<<<<<<< HEAD
         data["name"] = this.name;
         data["value"] = this.value;
         data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
         data["lastModifierUserId"] = this.lastModifierUserId;
-=======
-        data["roleId"] = this.roleId;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["creatorUserId"] = this.creatorUserId;
         data["id"] = this.id;
         return data; 
     }
 
-<<<<<<< HEAD
     clone(): Setting {
         const json = this.toJSON();
         let result = new Setting();
-=======
-    clone(): UserRole {
-        const json = this.toJSON();
-        let result = new UserRole();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(json);
         return result;
     }
 }
 
-<<<<<<< HEAD
 export interface ISetting {
     tenantId: number | undefined;
     userId: number | undefined;
@@ -29903,18 +29777,11 @@ export interface ISetting {
     value: string | undefined;
     lastModificationTime: moment.Moment | undefined;
     lastModifierUserId: number | undefined;
-=======
-export interface IUserRole {
-    tenantId: number | undefined;
-    userId: number;
-    roleId: number;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 }
 
-<<<<<<< HEAD
 export class User implements IUser {
     signInToken: string | undefined;
     needToChangeThePassword: boolean;
@@ -29956,22 +29823,11 @@ export class User implements IUser {
     deletionTime: moment.Moment | undefined;
     lastModificationTime: moment.Moment | undefined;
     lastModifierUserId: number | undefined;
-=======
-export class UserClaim implements IUserClaim {
-    tenantId: number | undefined;
-    userId: number;
-    claimType: string | undefined;
-    claimValue: string | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 
-<<<<<<< HEAD
     constructor(data?: IUser) {
-=======
-    constructor(data?: IUserClaim) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -29982,7 +29838,6 @@ export class UserClaim implements IUserClaim {
 
     init(data?: any) {
         if (data) {
-<<<<<<< HEAD
             this.signInToken = data["signInToken"];
             this.needToChangeThePassword = data["needToChangeThePassword"];
             this.signInTokenExpireTimeUtc = data["signInTokenExpireTimeUtc"] ? moment(data["signInTokenExpireTimeUtc"].toString()) : <any>undefined;
@@ -30047,34 +29902,21 @@ export class UserClaim implements IUserClaim {
             this.deletionTime = data["deletionTime"] ? moment(data["deletionTime"].toString()) : <any>undefined;
             this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
             this.lastModifierUserId = data["lastModifierUserId"];
-=======
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.claimType = data["claimType"];
-            this.claimValue = data["claimValue"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.creatorUserId = data["creatorUserId"];
             this.id = data["id"];
         }
     }
 
-<<<<<<< HEAD
     static fromJS(data: any): User {
         data = typeof data === 'object' ? data : {};
         let result = new User();
-=======
-    static fromJS(data: any): UserClaim {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserClaim();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
         data["signInToken"] = this.signInToken;
         data["needToChangeThePassword"] = this.needToChangeThePassword;
         data["signInTokenExpireTimeUtc"] = this.signInTokenExpireTimeUtc ? this.signInTokenExpireTimeUtc.toISOString() : <any>undefined;
@@ -30139,33 +29981,20 @@ export class UserClaim implements IUserClaim {
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
         data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
         data["lastModifierUserId"] = this.lastModifierUserId;
-=======
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["claimType"] = this.claimType;
-        data["claimValue"] = this.claimValue;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["creatorUserId"] = this.creatorUserId;
         data["id"] = this.id;
         return data; 
     }
 
-<<<<<<< HEAD
     clone(): User {
         const json = this.toJSON();
         let result = new User();
-=======
-    clone(): UserClaim {
-        const json = this.toJSON();
-        let result = new UserClaim();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(json);
         return result;
     }
 }
 
-<<<<<<< HEAD
 export interface IUser {
     signInToken: string | undefined;
     needToChangeThePassword: boolean;
@@ -30207,19 +30036,11 @@ export interface IUser {
     deletionTime: moment.Moment | undefined;
     lastModificationTime: moment.Moment | undefined;
     lastModifierUserId: number | undefined;
-=======
-export interface IUserClaim {
-    tenantId: number | undefined;
-    userId: number;
-    claimType: string | undefined;
-    claimValue: string | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 }
 
-<<<<<<< HEAD
 export class Branch implements IBranch {
     parentId: number | undefined;
     parent: Branch;
@@ -30229,22 +30050,11 @@ export class Branch implements IBranch {
     level: number | undefined;
     isEnabled: boolean;
     creatorUser: User;
-=======
-export class UserPermissionSetting implements IUserPermissionSetting {
-    userId: number;
-    tenantId: number | undefined;
-    name: string | undefined;
-    isGranted: boolean;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 
-<<<<<<< HEAD
     constructor(data?: IBranch) {
-=======
-    constructor(data?: IUserPermissionSetting) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -30255,7 +30065,6 @@ export class UserPermissionSetting implements IUserPermissionSetting {
 
     init(data?: any) {
         if (data) {
-<<<<<<< HEAD
             this.parentId = data["parentId"];
             this.parent = data["parent"] ? Branch.fromJS(data["parent"]) : <any>undefined;
             this.branchCode = data["branchCode"];
@@ -30264,34 +30073,21 @@ export class UserPermissionSetting implements IUserPermissionSetting {
             this.level = data["level"];
             this.isEnabled = data["isEnabled"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-=======
-            this.userId = data["userId"];
-            this.tenantId = data["tenantId"];
-            this.name = data["name"];
-            this.isGranted = data["isGranted"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.creatorUserId = data["creatorUserId"];
             this.id = data["id"];
         }
     }
 
-<<<<<<< HEAD
     static fromJS(data: any): Branch {
         data = typeof data === 'object' ? data : {};
         let result = new Branch();
-=======
-    static fromJS(data: any): UserPermissionSetting {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserPermissionSetting();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
         data["parentId"] = this.parentId;
         data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
         data["branchCode"] = this.branchCode;
@@ -30300,33 +30096,20 @@ export class UserPermissionSetting implements IUserPermissionSetting {
         data["level"] = this.level;
         data["isEnabled"] = this.isEnabled;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-=======
-        data["userId"] = this.userId;
-        data["tenantId"] = this.tenantId;
-        data["name"] = this.name;
-        data["isGranted"] = this.isGranted;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["creatorUserId"] = this.creatorUserId;
         data["id"] = this.id;
         return data; 
     }
 
-<<<<<<< HEAD
     clone(): Branch {
         const json = this.toJSON();
         let result = new Branch();
-=======
-    clone(): UserPermissionSetting {
-        const json = this.toJSON();
-        let result = new UserPermissionSetting();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         result.init(json);
         return result;
     }
 }
 
-<<<<<<< HEAD
 export interface IBranch {
     parentId: number | undefined;
     parent: Branch;
@@ -30336,650 +30119,11 @@ export interface IBranch {
     level: number | undefined;
     isEnabled: boolean;
     creatorUser: User;
-=======
-export interface IUserPermissionSetting {
-    userId: number;
-    tenantId: number | undefined;
-    name: string | undefined;
-    isGranted: boolean;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
 }
 
-<<<<<<< HEAD
-export class Source implements ISource {
-    branchId: number | undefined;
-    sourceName: string | undefined;
-    sourceCode: string | undefined;
-    discount: number;
-    rDiscount: number;
-    creatorUser: User;
-    branch: Branch;
-=======
-export class Setting implements ISetting {
-    tenantId: number | undefined;
-    userId: number | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-<<<<<<< HEAD
-    constructor(data?: ISource) {
-=======
-    constructor(data?: ISetting) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-<<<<<<< HEAD
-            this.branchId = data["branchId"];
-            this.sourceName = data["sourceName"];
-            this.sourceCode = data["sourceCode"];
-            this.discount = data["discount"];
-            this.rDiscount = data["rDiscount"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-=======
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.name = data["name"];
-            this.value = data["value"];
-            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = data["lastModifierUserId"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-<<<<<<< HEAD
-    static fromJS(data: any): Source {
-        data = typeof data === 'object' ? data : {};
-        let result = new Source();
-=======
-    static fromJS(data: any): Setting {
-        data = typeof data === 'object' ? data : {};
-        let result = new Setting();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
-        data["branchId"] = this.branchId;
-        data["sourceName"] = this.sourceName;
-        data["sourceCode"] = this.sourceCode;
-        data["discount"] = this.discount;
-        data["rDiscount"] = this.rDiscount;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-=======
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["name"] = this.name;
-        data["value"] = this.value;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-<<<<<<< HEAD
-    clone(): Source {
-        const json = this.toJSON();
-        let result = new Source();
-=======
-    clone(): Setting {
-        const json = this.toJSON();
-        let result = new Setting();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(json);
-        return result;
-    }
-}
-
-<<<<<<< HEAD
-export interface ISource {
-    branchId: number | undefined;
-    sourceName: string | undefined;
-    sourceCode: string | undefined;
-    discount: number;
-    rDiscount: number;
-    creatorUser: User;
-    branch: Branch;
-=======
-export interface ISetting {
-    tenantId: number | undefined;
-    userId: number | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-<<<<<<< HEAD
-export enum SexEnum {
-    Unknown = <any>"Unknown", 
-    Man = <any>"Man", 
-    Woman = <any>"Woman", 
-}
-
-export enum VerifiableTypeEnum {
-    IdentityCard = <any>"IdentityCard", 
-    ICCard = <any>"ICCard", 
-    QRCode = <any>"QRCode", 
-    ReturnCard = <any>"ReturnCard", 
-    TaiwanCard = <any>"TaiwanCard", 
-}
-
-export class Customer implements ICustomer {
-    branchId: number | undefined;
-    customerName: string | undefined;
-    mobile: string | undefined;
-    loginPwd: string | undefined;
-    sex: SexEnum;
-    country: string | undefined;
-    province: string | undefined;
-    city: string | undefined;
-    county: string | undefined;
-    certificatesNum: string | undefined;
-    verifiableType: VerifiableTypeEnum;
-    job: string | undefined;
-    openID: string | undefined;
-    photo: string | undefined;
-    dateOfBirth: moment.Moment | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ICustomer) {
-=======
-export class User implements IUser {
-    signInToken: string | undefined;
-    needToChangeThePassword: boolean;
-    signInTokenExpireTimeUtc: moment.Moment | undefined;
-    name: string | undefined;
-    profilePictureId: string | undefined;
-    surname: string | undefined;
-    normalizedUserName: string | undefined;
-    normalizedEmailAddress: string | undefined;
-    concurrencyStamp: string | undefined;
-    tokens: UserToken[] | undefined;
-    deleterUser: User;
-    creatorUser: User;
-    lastModifierUser: User;
-    authenticationSource: string | undefined;
-    userName: string | undefined;
-    tenantId: number | undefined;
-    emailAddress: string | undefined;
-    readonly fullName: string | undefined;
-    password: string | undefined;
-    emailConfirmationCode: string | undefined;
-    passwordResetCode: string | undefined;
-    lockoutEndDateUtc: moment.Moment | undefined;
-    accessFailedCount: number;
-    isLockoutEnabled: boolean;
-    phoneNumber: string | undefined;
-    isPhoneNumberConfirmed: boolean;
-    securityStamp: string | undefined;
-    isTwoFactorEnabled: boolean;
-    logins: UserLogin[] | undefined;
-    roles: UserRole[] | undefined;
-    claims: UserClaim[] | undefined;
-    permissions: UserPermissionSetting[] | undefined;
-    settings: Setting[] | undefined;
-    isEmailConfirmed: boolean;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IUser) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-<<<<<<< HEAD
-            this.branchId = data["branchId"];
-            this.customerName = data["customerName"];
-            this.mobile = data["mobile"];
-            this.loginPwd = data["loginPwd"];
-            this.sex = data["sex"];
-            this.country = data["country"];
-            this.province = data["province"];
-            this.city = data["city"];
-            this.county = data["county"];
-            this.certificatesNum = data["certificatesNum"];
-            this.verifiableType = data["verifiableType"];
-            this.job = data["job"];
-            this.openID = data["openID"];
-            this.photo = data["photo"];
-            this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-=======
-            this.signInToken = data["signInToken"];
-            this.needToChangeThePassword = data["needToChangeThePassword"];
-            this.signInTokenExpireTimeUtc = data["signInTokenExpireTimeUtc"] ? moment(data["signInTokenExpireTimeUtc"].toString()) : <any>undefined;
-            this.name = data["name"];
-            this.profilePictureId = data["profilePictureId"];
-            this.surname = data["surname"];
-            this.normalizedUserName = data["normalizedUserName"];
-            this.normalizedEmailAddress = data["normalizedEmailAddress"];
-            this.concurrencyStamp = data["concurrencyStamp"];
-            if (data["tokens"] && data["tokens"].constructor === Array) {
-                this.tokens = [] as any;
-                for (let item of data["tokens"])
-                    this.tokens.push(UserToken.fromJS(item));
-            }
-            this.deleterUser = data["deleterUser"] ? User.fromJS(data["deleterUser"]) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.lastModifierUser = data["lastModifierUser"] ? User.fromJS(data["lastModifierUser"]) : <any>undefined;
-            this.authenticationSource = data["authenticationSource"];
-            this.userName = data["userName"];
-            this.tenantId = data["tenantId"];
-            this.emailAddress = data["emailAddress"];
-            (<any>this).fullName = data["fullName"];
-            this.password = data["password"];
-            this.emailConfirmationCode = data["emailConfirmationCode"];
-            this.passwordResetCode = data["passwordResetCode"];
-            this.lockoutEndDateUtc = data["lockoutEndDateUtc"] ? moment(data["lockoutEndDateUtc"].toString()) : <any>undefined;
-            this.accessFailedCount = data["accessFailedCount"];
-            this.isLockoutEnabled = data["isLockoutEnabled"];
-            this.phoneNumber = data["phoneNumber"];
-            this.isPhoneNumberConfirmed = data["isPhoneNumberConfirmed"];
-            this.securityStamp = data["securityStamp"];
-            this.isTwoFactorEnabled = data["isTwoFactorEnabled"];
-            if (data["logins"] && data["logins"].constructor === Array) {
-                this.logins = [] as any;
-                for (let item of data["logins"])
-                    this.logins.push(UserLogin.fromJS(item));
-            }
-            if (data["roles"] && data["roles"].constructor === Array) {
-                this.roles = [] as any;
-                for (let item of data["roles"])
-                    this.roles.push(UserRole.fromJS(item));
-            }
-            if (data["claims"] && data["claims"].constructor === Array) {
-                this.claims = [] as any;
-                for (let item of data["claims"])
-                    this.claims.push(UserClaim.fromJS(item));
-            }
-            if (data["permissions"] && data["permissions"].constructor === Array) {
-                this.permissions = [] as any;
-                for (let item of data["permissions"])
-                    this.permissions.push(UserPermissionSetting.fromJS(item));
-            }
-            if (data["settings"] && data["settings"].constructor === Array) {
-                this.settings = [] as any;
-                for (let item of data["settings"])
-                    this.settings.push(Setting.fromJS(item));
-            }
-            this.isEmailConfirmed = data["isEmailConfirmed"];
-            this.isActive = data["isActive"];
-            this.isDeleted = data["isDeleted"];
-            this.deleterUserId = data["deleterUserId"];
-            this.deletionTime = data["deletionTime"] ? moment(data["deletionTime"].toString()) : <any>undefined;
-            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = data["lastModifierUserId"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-<<<<<<< HEAD
-    static fromJS(data: any): Customer {
-        data = typeof data === 'object' ? data : {};
-        let result = new Customer();
-=======
-    static fromJS(data: any): User {
-        data = typeof data === 'object' ? data : {};
-        let result = new User();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
-        data["branchId"] = this.branchId;
-        data["customerName"] = this.customerName;
-        data["mobile"] = this.mobile;
-        data["loginPwd"] = this.loginPwd;
-        data["sex"] = this.sex;
-        data["country"] = this.country;
-        data["province"] = this.province;
-        data["city"] = this.city;
-        data["county"] = this.county;
-        data["certificatesNum"] = this.certificatesNum;
-        data["verifiableType"] = this.verifiableType;
-        data["job"] = this.job;
-        data["openID"] = this.openID;
-        data["photo"] = this.photo;
-        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-=======
-        data["signInToken"] = this.signInToken;
-        data["needToChangeThePassword"] = this.needToChangeThePassword;
-        data["signInTokenExpireTimeUtc"] = this.signInTokenExpireTimeUtc ? this.signInTokenExpireTimeUtc.toISOString() : <any>undefined;
-        data["name"] = this.name;
-        data["profilePictureId"] = this.profilePictureId;
-        data["surname"] = this.surname;
-        data["normalizedUserName"] = this.normalizedUserName;
-        data["normalizedEmailAddress"] = this.normalizedEmailAddress;
-        data["concurrencyStamp"] = this.concurrencyStamp;
-        if (this.tokens && this.tokens.constructor === Array) {
-            data["tokens"] = [];
-            for (let item of this.tokens)
-                data["tokens"].push(item.toJSON());
-        }
-        data["deleterUser"] = this.deleterUser ? this.deleterUser.toJSON() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["lastModifierUser"] = this.lastModifierUser ? this.lastModifierUser.toJSON() : <any>undefined;
-        data["authenticationSource"] = this.authenticationSource;
-        data["userName"] = this.userName;
-        data["tenantId"] = this.tenantId;
-        data["emailAddress"] = this.emailAddress;
-        data["fullName"] = this.fullName;
-        data["password"] = this.password;
-        data["emailConfirmationCode"] = this.emailConfirmationCode;
-        data["passwordResetCode"] = this.passwordResetCode;
-        data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
-        data["accessFailedCount"] = this.accessFailedCount;
-        data["isLockoutEnabled"] = this.isLockoutEnabled;
-        data["phoneNumber"] = this.phoneNumber;
-        data["isPhoneNumberConfirmed"] = this.isPhoneNumberConfirmed;
-        data["securityStamp"] = this.securityStamp;
-        data["isTwoFactorEnabled"] = this.isTwoFactorEnabled;
-        if (this.logins && this.logins.constructor === Array) {
-            data["logins"] = [];
-            for (let item of this.logins)
-                data["logins"].push(item.toJSON());
-        }
-        if (this.roles && this.roles.constructor === Array) {
-            data["roles"] = [];
-            for (let item of this.roles)
-                data["roles"].push(item.toJSON());
-        }
-        if (this.claims && this.claims.constructor === Array) {
-            data["claims"] = [];
-            for (let item of this.claims)
-                data["claims"].push(item.toJSON());
-        }
-        if (this.permissions && this.permissions.constructor === Array) {
-            data["permissions"] = [];
-            for (let item of this.permissions)
-                data["permissions"].push(item.toJSON());
-        }
-        if (this.settings && this.settings.constructor === Array) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["isEmailConfirmed"] = this.isEmailConfirmed;
-        data["isActive"] = this.isActive;
-        data["isDeleted"] = this.isDeleted;
-        data["deleterUserId"] = this.deleterUserId;
-        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-<<<<<<< HEAD
-    clone(): Customer {
-        const json = this.toJSON();
-        let result = new Customer();
-=======
-    clone(): User {
-        const json = this.toJSON();
-        let result = new User();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(json);
-        return result;
-    }
-}
-
-<<<<<<< HEAD
-export interface ICustomer {
-    branchId: number | undefined;
-    customerName: string | undefined;
-    mobile: string | undefined;
-    loginPwd: string | undefined;
-    sex: SexEnum;
-    country: string | undefined;
-    province: string | undefined;
-    city: string | undefined;
-    county: string | undefined;
-    certificatesNum: string | undefined;
-    verifiableType: VerifiableTypeEnum;
-    job: string | undefined;
-    openID: string | undefined;
-    photo: string | undefined;
-    dateOfBirth: moment.Moment | undefined;
-    creatorUser: User;
-    branch: Branch;
-=======
-export interface IUser {
-    signInToken: string | undefined;
-    needToChangeThePassword: boolean;
-    signInTokenExpireTimeUtc: moment.Moment | undefined;
-    name: string | undefined;
-    profilePictureId: string | undefined;
-    surname: string | undefined;
-    normalizedUserName: string | undefined;
-    normalizedEmailAddress: string | undefined;
-    concurrencyStamp: string | undefined;
-    tokens: UserToken[] | undefined;
-    deleterUser: User;
-    creatorUser: User;
-    lastModifierUser: User;
-    authenticationSource: string | undefined;
-    userName: string | undefined;
-    tenantId: number | undefined;
-    emailAddress: string | undefined;
-    fullName: string | undefined;
-    password: string | undefined;
-    emailConfirmationCode: string | undefined;
-    passwordResetCode: string | undefined;
-    lockoutEndDateUtc: moment.Moment | undefined;
-    accessFailedCount: number;
-    isLockoutEnabled: boolean;
-    phoneNumber: string | undefined;
-    isPhoneNumberConfirmed: boolean;
-    securityStamp: string | undefined;
-    isTwoFactorEnabled: boolean;
-    logins: UserLogin[] | undefined;
-    roles: UserRole[] | undefined;
-    claims: UserClaim[] | undefined;
-    permissions: UserPermissionSetting[] | undefined;
-    settings: Setting[] | undefined;
-    isEmailConfirmed: boolean;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-<<<<<<< HEAD
-export class PayMethod implements IPayMethod {
-    payName: string | undefined;
-    payCode: string | undefined;
-    sort: number | undefined;
-=======
-export class Branch implements IBranch {
-    parentId: number | undefined;
-    parent: Branch;
-    branchCode: string | undefined;
-    branchName: string | undefined;
-    sort: number | undefined;
-    level: number | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-<<<<<<< HEAD
-    constructor(data?: IPayMethod) {
-=======
-    constructor(data?: IBranch) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-<<<<<<< HEAD
-            this.payName = data["payName"];
-            this.payCode = data["payCode"];
-            this.sort = data["sort"];
-=======
-            this.parentId = data["parentId"];
-            this.parent = data["parent"] ? Branch.fromJS(data["parent"]) : <any>undefined;
-            this.branchCode = data["branchCode"];
-            this.branchName = data["branchName"];
-            this.sort = data["sort"];
-            this.level = data["level"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-            this.isEnabled = data["isEnabled"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-<<<<<<< HEAD
-    static fromJS(data: any): PayMethod {
-        data = typeof data === 'object' ? data : {};
-        let result = new PayMethod();
-=======
-    static fromJS(data: any): Branch {
-        data = typeof data === 'object' ? data : {};
-        let result = new Branch();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-<<<<<<< HEAD
-        data["payName"] = this.payName;
-        data["payCode"] = this.payCode;
-        data["sort"] = this.sort;
-=======
-        data["parentId"] = this.parentId;
-        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
-        data["branchCode"] = this.branchCode;
-        data["branchName"] = this.branchName;
-        data["sort"] = this.sort;
-        data["level"] = this.level;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        data["isEnabled"] = this.isEnabled;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-<<<<<<< HEAD
-    clone(): PayMethod {
-        const json = this.toJSON();
-        let result = new PayMethod();
-=======
-    clone(): Branch {
-        const json = this.toJSON();
-        let result = new Branch();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(json);
-        return result;
-    }
-}
-
-<<<<<<< HEAD
-export interface IPayMethod {
-    payName: string | undefined;
-    payCode: string | undefined;
-    sort: number | undefined;
-=======
-export interface IBranch {
-    parentId: number | undefined;
-    parent: Branch;
-    branchCode: string | undefined;
-    branchName: string | undefined;
-    sort: number | undefined;
-    level: number | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-<<<<<<< HEAD
-=======
 export class Source implements ISource {
     branchId: number | undefined;
     sourceName: string | undefined;
@@ -31263,14 +30407,12 @@ export interface IPayMethod {
     id: number;
 }
 
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
 export enum PayStatusEnum {
     NotPay = <any>"NotPay", 
     PayStatusPayment = <any>"PayStatusPayment", 
     PayStatusRefund = <any>"PayStatusRefund", 
     PayStatusClose = <any>"PayStatusClose", 
 }
-<<<<<<< HEAD
 
 export enum ActivityTypeEnum {
     ActivityTypePayment = <any>"ActivityTypePayment", 
@@ -31278,45 +30420,8 @@ export enum ActivityTypeEnum {
 }
 
 export enum AccountStatusEnum {
-    NotAccount = <any>"IsAccount", 
-    IsAccount = <any>"NotAccount", 
-}
-
-export class Account implements IAccount {
-    branchId: number | undefined;
-    accountNo: string | undefined;
-    accountDate: moment.Moment;
-    quantity: number;
-    amount: number;
-    accountStatus: AccountStatusEnum;
-    collectiorId: number | undefined;
-    collectior: User;
-    collectionTime: moment.Moment | undefined;
-    payMethodId: number | undefined;
-    payMethod: PayMethod;
-    remark: string | undefined;
-    voucherNo: string | undefined;
-    rAmount: number;
-    totalAmount: number;
-    rQuantity: number;
-    totalQuantity: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IAccount) {
-=======
-
-export enum ActivityTypeEnum {
-    ActivityTypePayment = <any>"ActivityTypePayment", 
-    ActivityTypeRefund = <any>"ActivityTypeRefund", 
-}
-
-export enum AccountStatusEnum {
-    NotAccount = <any>"IsAccount", 
-    IsAccount = <any>"NotAccount", 
+    NotAccount = <any>"NotAccount", 
+    IsAccount = <any>"IsAccount", 
 }
 
 export class Account implements IAccount {
@@ -31461,159 +30566,6 @@ export class Organization implements IOrganization {
     id: number;
 
     constructor(data?: IOrganization) {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-<<<<<<< HEAD
-            this.accountNo = data["accountNo"];
-            this.accountDate = data["accountDate"] ? moment(data["accountDate"].toString()) : <any>undefined;
-            this.quantity = data["quantity"];
-            this.amount = data["amount"];
-            this.accountStatus = data["accountStatus"];
-            this.collectiorId = data["collectiorId"];
-            this.collectior = data["collectior"] ? User.fromJS(data["collectior"]) : <any>undefined;
-            this.collectionTime = data["collectionTime"] ? moment(data["collectionTime"].toString()) : <any>undefined;
-            this.payMethodId = data["payMethodId"];
-            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
-            this.remark = data["remark"];
-            this.voucherNo = data["voucherNo"];
-            this.rAmount = data["rAmount"];
-            this.totalAmount = data["totalAmount"];
-            this.rQuantity = data["rQuantity"];
-            this.totalQuantity = data["totalQuantity"];
-=======
-            this.groupName = data["groupName"];
-            this.contacts = data["contacts"];
-            this.mobile = data["mobile"];
-            this.remand = data["remand"];
-            this.discount = data["discount"];
-            this.isEnabled = data["isEnabled"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-<<<<<<< HEAD
-    static fromJS(data: any): Account {
-        data = typeof data === 'object' ? data : {};
-        let result = new Account();
-=======
-    static fromJS(data: any): Organization {
-        data = typeof data === 'object' ? data : {};
-        let result = new Organization();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-<<<<<<< HEAD
-        data["accountNo"] = this.accountNo;
-        data["accountDate"] = this.accountDate ? this.accountDate.toISOString() : <any>undefined;
-        data["quantity"] = this.quantity;
-        data["amount"] = this.amount;
-        data["accountStatus"] = this.accountStatus;
-        data["collectiorId"] = this.collectiorId;
-        data["collectior"] = this.collectior ? this.collectior.toJSON() : <any>undefined;
-        data["collectionTime"] = this.collectionTime ? this.collectionTime.toISOString() : <any>undefined;
-        data["payMethodId"] = this.payMethodId;
-        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
-        data["remark"] = this.remark;
-        data["voucherNo"] = this.voucherNo;
-        data["rAmount"] = this.rAmount;
-        data["totalAmount"] = this.totalAmount;
-        data["rQuantity"] = this.rQuantity;
-        data["totalQuantity"] = this.totalQuantity;
-=======
-        data["groupName"] = this.groupName;
-        data["contacts"] = this.contacts;
-        data["mobile"] = this.mobile;
-        data["remand"] = this.remand;
-        data["discount"] = this.discount;
-        data["isEnabled"] = this.isEnabled;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-<<<<<<< HEAD
-    clone(): Account {
-        const json = this.toJSON();
-        let result = new Account();
-=======
-    clone(): Organization {
-        const json = this.toJSON();
-        let result = new Organization();
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-        result.init(json);
-        return result;
-    }
-}
-
-<<<<<<< HEAD
-export interface IAccount {
-    branchId: number | undefined;
-    accountNo: string | undefined;
-    accountDate: moment.Moment;
-    quantity: number;
-    amount: number;
-    accountStatus: AccountStatusEnum;
-    collectiorId: number | undefined;
-    collectior: User;
-    collectionTime: moment.Moment | undefined;
-    payMethodId: number | undefined;
-    payMethod: PayMethod;
-    remark: string | undefined;
-    voucherNo: string | undefined;
-    rAmount: number;
-    totalAmount: number;
-    rQuantity: number;
-    totalQuantity: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Organization implements IOrganization {
-=======
-export interface IOrganization {
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
-    branchId: number | undefined;
-    groupName: string | undefined;
-    contacts: string | undefined;
-    mobile: string | undefined;
-    remand: string | undefined;
-    discount: string | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-<<<<<<< HEAD
-
-    constructor(data?: IOrganization) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -31739,63 +30691,6 @@ export class Ticket implements ITicket {
     creatorUserId: number | undefined;
     id: number;
 
-=======
-}
-
-export enum TicketModeEnum {
-    OnebyOne = <any>"OnebyOne", 
-    OneByMore = <any>"OneByMore", 
-}
-
-export enum TicketTypeEnum {
-    Card = <any>"Card", 
-    Paper = <any>"Paper", 
-}
-
-export enum CheckMethodEnum {
-    NumberCheck = <any>"NumberCheck", 
-    TimeCheck = <any>"TimeCheck", 
-    BalanceCheck = <any>"BalanceCheck", 
-}
-
-export enum TicketClassifyEnum {
-    Adult = <any>"Adult", 
-    Children = <any>"Children", 
-    Old = <any>"Old", 
-}
-
-export enum AuditStatusEnum {
-    WaiteAudit = <any>"WaiteAudit", 
-    ThroughAudit = <any>"ThroughAudit", 
-    RejecteAudit = <any>"RejecteAudit", 
-}
-
-export class Ticket implements ITicket {
-    branchId: number | undefined;
-    ticketName: string | undefined;
-    ticketCode: string | undefined;
-    ticketMode: TicketModeEnum;
-    ticketType: TicketTypeEnum;
-    checkMethod: CheckMethodEnum;
-    ticketClassify: TicketClassifyEnum;
-    checkNum: number | undefined;
-    effectiveLong: number | undefined;
-    unitPrice: number;
-    ticketLength: number | undefined;
-    upperLimit: number | undefined;
-    lowerLimit: number | undefined;
-    audioName: string | undefined;
-    auditStatus: AuditStatusEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    group: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     constructor(data?: ITicket) {
         if (data) {
             for (var property in data) {
@@ -33183,7 +32078,6 @@ export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-<<<<<<< HEAD
         }
     }
 
@@ -33194,18 +32088,6 @@ export class IsTenantAvailableOutput implements IIsTenantAvailableOutput {
         }
     }
 
-=======
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.state = data["state"];
-            this.tenantId = data["tenantId"];
-        }
-    }
-
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     static fromJS(data: any): IsTenantAvailableOutput {
         data = typeof data === 'object' ? data : {};
         let result = new IsTenantAvailableOutput();
@@ -33448,7 +32330,6 @@ export class ResolveTenantIdInput implements IResolveTenantIdInput {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
-<<<<<<< HEAD
         }
     }
 
@@ -33458,17 +32339,6 @@ export class ResolveTenantIdInput implements IResolveTenantIdInput {
         }
     }
 
-=======
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.c = data["c"];
-        }
-    }
-
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     static fromJS(data: any): ResolveTenantIdInput {
         data = typeof data === 'object' ? data : {};
         let result = new ResolveTenantIdInput();
@@ -55706,22 +54576,11 @@ export class PagedResultDtoOfTicketDetailListDto implements IPagedResultDtoOfTic
 
 export interface IPagedResultDtoOfTicketDetailListDto {
     totalCount: number;
-<<<<<<< HEAD
     items: TicketDetailListDto[] | undefined;
 }
 
 export class TicketDetail implements ITicketDetail {
     branchId: number | undefined;
-=======
-    items: AccountListDto[] | undefined;
-}
-
-/** 的列表DTO Yozeev.BusinessLogic.TicketDetail */
-export class TicketDetailEditDto implements ITicketDetailEditDto {
-    /** Id */
-    id: number | undefined;
-    /** TicketNo */
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     ticketNo: string | undefined;
     activityDetailId: number;
     activityDetail: ActivityDetail;
@@ -56151,26 +55010,12 @@ export class TicketDetailHistoryListDto implements ITicketDetailHistoryListDto {
     /** WeekDay */
     weekDay: number;
     /** CheckTime */
-<<<<<<< HEAD
     checkTime: moment.Moment;
     /** CheckerId */
     checkerId: number | undefined;
     checker: User;
     /** CheckCount */
     checkCount: number;
-=======
-    checkTime: moment.Moment | undefined;
-    /** IsPrint */
-    isPrint: boolean;
-    /** 0.散客票
-1.团体票
-2.卡类 */
-    group: number;
-    /** 票价 */
-    ticketPrice: number;
-    /** 票型名称 */
-    ticketPriceName: string | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -56211,16 +55056,9 @@ export class TicketDetailHistoryListDto implements ITicketDetailHistoryListDto {
             this.yearWeek = data["yearWeek"];
             this.weekDay = data["weekDay"];
             this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
-<<<<<<< HEAD
             this.checkerId = data["checkerId"];
             this.checker = data["checker"] ? User.fromJS(data["checker"]) : <any>undefined;
             this.checkCount = data["checkCount"];
-=======
-            this.isPrint = data["isPrint"];
-            this.group = data["group"];
-            this.ticketPrice = data["ticketPrice"];
-            this.ticketPriceName = data["ticketPriceName"];
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -56261,16 +55099,9 @@ export class TicketDetailHistoryListDto implements ITicketDetailHistoryListDto {
         data["yearWeek"] = this.yearWeek;
         data["weekDay"] = this.weekDay;
         data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
-<<<<<<< HEAD
         data["checkerId"] = this.checkerId;
         data["checker"] = this.checker ? this.checker.toJSON() : <any>undefined;
         data["checkCount"] = this.checkCount;
-=======
-        data["isPrint"] = this.isPrint;
-        data["group"] = this.group;
-        data["ticketPrice"] = this.ticketPrice;
-        data["ticketPriceName"] = this.ticketPriceName;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -56331,26 +55162,12 @@ export interface ITicketDetailHistoryListDto {
     /** WeekDay */
     weekDay: number;
     /** CheckTime */
-<<<<<<< HEAD
     checkTime: moment.Moment;
     /** CheckerId */
     checkerId: number | undefined;
     checker: User;
     /** CheckCount */
     checkCount: number;
-=======
-    checkTime: moment.Moment | undefined;
-    /** IsPrint */
-    isPrint: boolean;
-    /** 0.散客票
-1.团体票
-2.卡类 */
-    group: number;
-    /** 票价 */
-    ticketPrice: number;
-    /** 票型名称 */
-    ticketPriceName: string | undefined;
->>>>>>> f12c0dffef611f261133084b4b0468d385a424ae
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
