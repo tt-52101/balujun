@@ -6,7 +6,7 @@ import {
   RoleServiceProxy,
   CreateOrUpdateRoleInput,
   UserEditDto,
-  TicketPriceServiceProxy,QueryData, GetTicketDetailsInput
+  TicketPriceServiceProxy,QueryData,GetTicketPricesInput
 } from '@shared/service-proxies/service-proxies';
 import { PermissionTreeComponent } from '@app/admin/shared/permission-tree/permission-tree.component';
 
@@ -82,7 +82,7 @@ implements OnInit {
      var that = this;
      var ticketlist=[]
 
-     var formdata = new GetTicketDetailsInput
+     var formdata = new GetTicketPricesInput
      formdata.queryData = []
      formdata.filterText = ''
      formdata.sorting = ''

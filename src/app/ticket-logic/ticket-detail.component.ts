@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {TicketDetailServiceProxy, PagedResultDtoOfTicketDetailListDto, TicketDetailListDto, GetTicketDetailsInput } from '@shared/service-proxies/service-proxies';
+import {TicketDetailServiceProxy, PagedResultDtoOfTicketDetailListDto, TicketDetailListDto } from '@shared/service-proxies/service-proxies';
 
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
@@ -34,13 +34,8 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		var formdata = new GetTicketDetailsInput
-		formdata.queryData = []
-		formdata.filterText = ''
-		formdata.sorting = ''
-		formdata.maxResultCount = 990
-		formdata.skipCount = 0
-		this._ticketDetailService.getPaged(formdata)
+
+		this._ticketDetailService.getPaged([],'','',request.maxResultCount,request.skipCount)
 		.finally(() => {
 			finishedCallback();
 		})

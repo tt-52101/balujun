@@ -7,7 +7,7 @@ import { AppComponentBase } from '@shared/component-base/app-component-base';
 import {
   ActivityServiceProxy,
   GetActivitysInput,
-  TicketDetailServiceProxy, QueryData, GetTicketDetailsInput
+  TicketDetailServiceProxy, QueryData,
 } from '@shared/service-proxies/service-proxies';
 
 import { NzModalService } from 'ng-zorro-antd';
@@ -32,7 +32,7 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     private _activityService: ActivityServiceProxy,
     private _ticketDetailService: TicketDetailServiceProxy,
     private _modalService: NzModalService,
-  ) {
+    ) {
     super(injector);
     this.curmenupower = JSON.parse(localStorage.getItem('curmenupower'))
     this.isAllOperation = eval(localStorage.getItem('isAllOperation'))
@@ -77,30 +77,24 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
         }
       }
 
-      var formdata = new GetTicketDetailsInput
-      formdata.queryData = arr
-      formdata.filterText = ''
-      formdata.sorting = ''
-      formdata.maxResultCount = 990
-      formdata.skipCount = 0
 
-      this._ticketDetailService.getPaged(formdata)
-        .subscribe(result => {
-    
-          if (result.items.length > 0) {
-            this.single = true
-            for (var i = 0; i < result.items.length; i++) {
-              result.items[i].isPrint = false
-            }
-            this.orderticket = result.items
-            console.log(result);
-             this.orderinfo = result.items[0].activityDetail.activity
-             console.log(this.orderinfo);
-             
-          } else {
-            abp.message.warn(this.l('NoOrder'));
+      this._ticketDetailService.getPaged(arr,'','',999,0)
+      .subscribe(result => {
+        
+        if (result.items.length > 0) {
+          this.single = true
+          for (var i = 0; i < result.items.length; i++) {
+            result.items[i].isPrint = false
           }
-        });
+          this.orderticket = result.items
+          console.log(result);
+          this.orderinfo = result.items[0].activityDetail.activity
+          console.log(this.orderinfo);
+          
+        } else {
+          abp.message.warn(this.l('NoOrder'));
+        }
+      });
     } else if(this.queryData[1].value){
       var arr=[]
       for (var i = 1; i <this.queryData.length; i++) {
@@ -113,7 +107,7 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
       formdata.sorting = null;
       formdata.maxResultCount = 999;
       formdata.skipCount = 0;
-  
+      
       this._activityService.getPaged(formdata)
       .subscribe(result => {
         console.log(result);
@@ -162,25 +156,20 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     console.log(this.orderinfo);
 
     var arr = [
-      new QueryData({
-        field: "ActivityDetail.Activity.ActivityNo",
-        method: "=",
-        value: item.activityNo,
-        logic: "and"
-      })]
+    new QueryData({
+      field: "ActivityDetail.Activity.ActivityNo",
+      method: "=",
+      value: item.activityNo,
+      logic: "and"
+    })]
 
-    var formdata = new GetTicketDetailsInput
-    formdata.queryData = arr
-    formdata.filterText = ''
-    formdata.sorting = ''
-    formdata.maxResultCount = 990
-    formdata.skipCount = 0
-    this._ticketDetailService.getPaged(formdata)
-      .subscribe(result => {
-        console.log(result.items);
 
-        this.orderticket = result.items
-      });
+    this._ticketDetailService.getPaged(arr,'','',999,0)
+    .subscribe(result => {
+      console.log(result.items);
+
+      this.orderticket = result.items
+    });
   }
 
 
@@ -206,30 +195,30 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
 
 
     this._ticketDetailService.printTicketDetail(idarr)
-      .subscribe(result => {
-        this.select(this.orderinfo)
-        this.notify.success(this.l('PrintSuccess'));
+    .subscribe(result => {
+      this.select(this.orderinfo)
+      this.notify.success(this.l('PrintSuccess'));
 
 
 
 
-        //   // LODOP=getLodop();
-        //   // var top = 22; //最高坐标
-        //   // var left = 100; //最左坐标
-        //   // var width = 10; //上边距
-        //   // var height = 12; //右边距
-        //   // var QRcodeWidth = 120; //二维码大小
-        //   // var paperWidth = 700; //纸张宽度
-        //   // var paperHeight = 1200; //纸张长度
-        //   // var fontWidth = 400; //文字区域宽度
-        //   // var fontHeight = 20; //文字区域高度
-        //   // LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
-        //   // LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
-        //   // LODOP.PRINT_INITA("");
-        //   // LODOP.SET_PRINT_STYLE("FontSize", 10);
-        //   // //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
-        //   // LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
-        //   // for (var i = 0; i < ticketarr.length; i++) {
+      //   // LODOP=getLodop();
+      //   // var top = 22; //最高坐标
+      //   // var left = 100; //最左坐标
+      //   // var width = 10; //上边距
+      //   // var height = 12; //右边距
+      //   // var QRcodeWidth = 120; //二维码大小
+      //   // var paperWidth = 700; //纸张宽度
+      //   // var paperHeight = 1200; //纸张长度
+      //   // var fontWidth = 400; //文字区域宽度
+      //   // var fontHeight = 20; //文字区域高度
+      //   // LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
+      //   // LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
+      //   // LODOP.PRINT_INITA("");
+      //   // LODOP.SET_PRINT_STYLE("FontSize", 10);
+      //   // //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+      //   // LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
+      //   // for (var i = 0; i < ticketarr.length; i++) {
         //     //   var item = ticketarr[i];
 
         //     //   var saleDate=moment(item.schedule.saleDate).format('YYYY-MM-DD');

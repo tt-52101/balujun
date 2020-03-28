@@ -225,12 +225,12 @@
           </td>
           <td class="text-center" nz-td>
             <span *ngIf="item.creatorUser">
-              <!-- {{item.creatorUser.userName}} -->
+              {{item.creatorUser.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>
             <span>
-              <!-- {{item.collectior.userName}} -->
+              {{item.collectior.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>
@@ -255,12 +255,7 @@
           <th class="text-center" nzWidth="180px">
             <span>{{l('TicketNo')}}</span>
           </th>
-          <th class="text-center" nzWidth="130px">
-            <span>{{l('Name')}}</span>
-          </th>
-          <th class="text-center" nzWidth="150px">
-            <span>{{l('Mobile')}}</span>
-          </th>
+
           <th class="text-center" nzWidth="100px">
             <span>{{l('UnitPrice')}}</span>
           </th>
@@ -275,32 +270,23 @@
       <tbody>
         <tr *ngFor="let item of ajaxTable2.data; let i = index;">
           <!--             <td nz-td nzShowCheckbox [nzDisabled]="item.isPrint" (nzCheckedChange)="checkticket(i,item)" nzLeft="0px"></td> -->
-          <td class="text-center">
+          <td class="text-center" nzWidth="150px">
             <span>
-              {{item.ticket.ticketName}}
+              {{item.ticketPriceName}}
             </span>
           </td>
-          <td class="text-center">
+          <td class="text-center" nzWidth="180px">
             <span>
               {{item.ticketNo}}
             </span>
           </td>
-          <td class="text-center">
+
+          <td class="text-center" nzWidth="100px">
             <span>
-              {{item.customer.customerName}}
+              {{item.ticketPrice}}
             </span>
           </td>
-          <td class="text-center">
-            <span>
-              {{item.customer.mobile}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span>
-              {{item.activityDetail.unitPrice}}
-            </span>
-          </td>
-          <td class="text-center">
+          <td class="text-center" nzWidth="100px">
             <span>
               {{l(item.ticketStatus)}}
             </span>

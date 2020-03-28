@@ -92,7 +92,7 @@ implements OnInit {
 			}
 		}
 		formdata.queryData = arr;
-				formdata.filterText = ''
+		formdata.filterText = ''
 		formdata.sorting = 'creationTime desc'
 		formdata.maxResultCount = request.maxResultCount;
 		formdata.skipCount = request.skipCount;
@@ -176,18 +176,18 @@ implements OnInit {
 			logic: "and"
 		})]
 		console.log(arr)
-		// this._ticketDetailService.getPaged(arr, null, 999, 0)
-		// .subscribe(result => {
-			// 	console.log(result)
-			// 	this.visible = true;
-			// 	this.accountinfo = [account];
-			// 	this.ticketlist = result.items;
-			// });
-		}
-
-
-
-
-
-
+		this._ticketDetailService.getPaged(arr,'','',999,0)
+		.subscribe(result => {
+			console.log(result)
+			this.visible = true;
+			this.accountinfo = [account];
+			this.ticketlist = result.items;
+		});
 	}
+
+
+
+
+
+
+}
