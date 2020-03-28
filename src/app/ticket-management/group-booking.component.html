@@ -80,13 +80,13 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
-          <nz-form-label class="botton-form" [nzSpan]="6" nzFor="time"><span>有效日期</span></nz-form-label>
+          <nz-form-label class="botton-form" nzRequired [nzSpan]="6" nzFor="time"><span>有效日期</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
             <nz-range-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="effectivetime" [(ngModel)]="effectivetime" [nzDisabledDate]="disabledDate"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
-          <nz-form-label class="botton-form" [nzSpan]="6"><span>支付方式</span></nz-form-label>
+          <nz-form-label class="botton-form" nzRequired [nzSpan]="6"><span>支付方式</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
             <nz-select [(ngModel)]="orderinfo.payMethodId" name="payMethodId" nzAllowClear>
               <nz-option *ngFor="let item of paymethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName"></nz-option>
@@ -112,7 +112,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
-          <nz-form-label class="botton-form" [nzSpan]="6"><span>实收</span></nz-form-label>
+          <nz-form-label class="botton-form" nzRequired [nzSpan]="6"><span>实收</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
             <nz-input-group nzSuffix="元">
               <input type="text" nz-input [(ngModel)]="receive" name="receive">

@@ -119,7 +119,7 @@ export class ActivityServiceProxy {
     }
      * @return Success
      */
-    createGroupActivity(body: CreateGroupActivityModel | undefined): Observable<ActivityResultModel> {
+    createGroupActivity(body: CreateGroupActivityModel | undefined): Observable<GroupActivityResultModel> {
         let url_ = this.baseUrl + "/api/Activity/CreateGroupActivity";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -142,14 +142,14 @@ export class ActivityServiceProxy {
                 try {
                     return this.processCreateGroupActivity(<any>response_);
                 } catch (e) {
-                    return <Observable<ActivityResultModel>><any>_observableThrow(e);
+                    return <Observable<GroupActivityResultModel>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ActivityResultModel>><any>_observableThrow(response_);
+                return <Observable<GroupActivityResultModel>><any>_observableThrow(response_);
         }));
     }
 
-    protected processCreateGroupActivity(response: HttpResponseBase): Observable<ActivityResultModel> {
+    protected processCreateGroupActivity(response: HttpResponseBase): Observable<GroupActivityResultModel> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -160,7 +160,7 @@ export class ActivityServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? ActivityResultModel.fromJS(resultData200) : new ActivityResultModel();
+            result200 = resultData200 ? GroupActivityResultModel.fromJS(resultData200) : new GroupActivityResultModel();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -168,7 +168,7 @@ export class ActivityServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ActivityResultModel>(<any>null);
+        return _observableOf<GroupActivityResultModel>(<any>null);
     }
 
     /**
@@ -18366,41 +18366,26 @@ export class TicketAccountServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfAccountListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketAccount/GetPaged?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getPaged(body: GetAccountsInput | undefined): Observable<PagedResultDtoOfAccountListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketAccount/GetPaged";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -26535,6 +26520,718 @@ export class WeChatScenicSpotServiceProxy {
 }
 
 @Injectable()
+export class OperationServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 游客年龄
+     * @return Success
+     */
+    getCustomerAgeResult(): Observable<OperCustomerAgeResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerAgeResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerAgeResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerAgeResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerAgeResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerAgeResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerAgeResult(response: HttpResponseBase): Observable<OperCustomerAgeResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerAgeResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerAgeResultDto[]>(<any>null);
+    }
+
+    /**
+     * 游客性别
+     * @return Success
+     */
+    getCustomerGenderResult(): Observable<OperCustomerGenderResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerGenderResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerGenderResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerGenderResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerGenderResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerGenderResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerGenderResult(response: HttpResponseBase): Observable<OperCustomerGenderResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerGenderResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerGenderResultDto[]>(<any>null);
+    }
+
+    /**
+     * 游客地区
+     * @return Success
+     */
+    getCustomerRegionResult(): Observable<OperCustomerRegionResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetCustomerRegionResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerRegionResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerRegionResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperCustomerRegionResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperCustomerRegionResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerRegionResult(response: HttpResponseBase): Observable<OperCustomerRegionResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperCustomerRegionResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperCustomerRegionResultDto[]>(<any>null);
+    }
+
+    /**
+     * 首页（匿名制）
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getMainForAnonymousResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperMainForAnonymousResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetMainForAnonymousResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMainForAnonymousResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMainForAnonymousResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperMainForAnonymousResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperMainForAnonymousResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMainForAnonymousResult(response: HttpResponseBase): Observable<OperMainForAnonymousResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperMainForAnonymousResultDto.fromJS(resultData200) : new OperMainForAnonymousResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperMainForAnonymousResultDto>(<any>null);
+    }
+
+    /**
+     * 首页（实名制）
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getMainForRealNameResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperMainForRealNameResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetMainForRealNameResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMainForRealNameResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMainForRealNameResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperMainForRealNameResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperMainForRealNameResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetMainForRealNameResult(response: HttpResponseBase): Observable<OperMainForRealNameResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperMainForRealNameResultDto.fromJS(resultData200) : new OperMainForRealNameResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperMainForRealNameResultDto>(<any>null);
+    }
+
+    /**
+     * 退票情况
+     * @return Success
+     */
+    getRefundResult(): Observable<OperRefundResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetRefundResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRefundResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRefundResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperRefundResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperRefundResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRefundResult(response: HttpResponseBase): Observable<OperRefundResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperRefundResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperRefundResultDto[]>(<any>null);
+    }
+
+    /**
+     * 营收状况
+     * @param dateRange 日期范围
+     * @param startDate (optional) 开始日期
+     * @param endDate (optional) 结束日期
+     * @return Success
+     */
+    getRevenueResult(dateRange: DateRange, startDate: string | undefined, endDate: string | undefined): Observable<OperRevenueResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetRevenueResult?";
+        if (dateRange === undefined || dateRange === null)
+            throw new Error("The parameter 'dateRange' must be defined and cannot be null.");
+        else
+            url_ += "dateRange=" + encodeURIComponent("" + dateRange) + "&"; 
+        if (startDate === null)
+            throw new Error("The parameter 'startDate' cannot be null.");
+        else if (startDate !== undefined)
+            url_ += "startDate=" + encodeURIComponent("" + startDate) + "&"; 
+        if (endDate === null)
+            throw new Error("The parameter 'endDate' cannot be null.");
+        else if (endDate !== undefined)
+            url_ += "endDate=" + encodeURIComponent("" + endDate) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetRevenueResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetRevenueResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperRevenueResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperRevenueResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetRevenueResult(response: HttpResponseBase): Observable<OperRevenueResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? OperRevenueResultDto.fromJS(resultData200) : new OperRevenueResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperRevenueResultDto>(<any>null);
+    }
+
+    /**
+     * 销售情况（按来源）
+     * @return Success
+     */
+    getSalesBySourceResult(): Observable<OperSalesBySourceResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetSalesBySourceResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSalesBySourceResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSalesBySourceResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperSalesBySourceResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperSalesBySourceResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSalesBySourceResult(response: HttpResponseBase): Observable<OperSalesBySourceResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperSalesBySourceResultDto[]>(<any>null);
+    }
+
+    /**
+     * 销售情况（按票型）
+     * @return Success
+     */
+    getSalesByTicketResult(): Observable<OperSalesByTicketResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetSalesByTicketResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSalesByTicketResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSalesByTicketResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperSalesByTicketResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperSalesByTicketResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetSalesByTicketResult(response: HttpResponseBase): Observable<OperSalesByTicketResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperSalesByTicketResultDto[]>(<any>null);
+    }
+
+    /**
+     * 检票情况
+     * @return Success
+     */
+    getTicketCheckResult(): Observable<OperTicketCheckResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetTicketCheckResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTicketCheckResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTicketCheckResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperTicketCheckResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperTicketCheckResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTicketCheckResult(response: HttpResponseBase): Observable<OperTicketCheckResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperTicketCheckResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperTicketCheckResultDto[]>(<any>null);
+    }
+
+    /**
+     * 票型比例
+     * @return Success
+     */
+    getTicketRatioResult(): Observable<OperTicketRatioResultDto[]> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/GetTicketRatioResult";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTicketRatioResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTicketRatioResult(<any>response_);
+                } catch (e) {
+                    return <Observable<OperTicketRatioResultDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<OperTicketRatioResultDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTicketRatioResult(response: HttpResponseBase): Observable<OperTicketRatioResultDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<OperTicketRatioResultDto[]>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    test(): Observable<string> {
+        let url_ = this.baseUrl + "/api/Stats/Operation/Test";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTest(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTest(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+}
+
+@Injectable()
 export class SalesByOrderSourceServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -27052,15 +27749,35 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单信息
-     * @param sellerId (optional) 
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @param activityIds (optional) 
      * @return Success
      */
-    getPagedActivities(sellerId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+    getPagedActivities(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityIds: string[] | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
         let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities?";
-        if (sellerId === null)
-            throw new Error("The parameter 'sellerId' cannot be null.");
-        else if (sellerId !== undefined)
-            url_ += "sellerId=" + encodeURIComponent("" + sellerId) + "&"; 
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        if (activityIds === null)
+            throw new Error("The parameter 'activityIds' cannot be null.");
+        else if (activityIds !== undefined)
+            activityIds && activityIds.forEach(item => { url_ += "activityIds=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -27109,11 +27826,31 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单明细
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
      * @param activityId (optional) 
      * @return Success
      */
-    getPagedActivityDetails(activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+    getPagedActivityDetails(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
         let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         if (activityId === null)
             throw new Error("The parameter 'activityId' cannot be null.");
         else if (activityId !== undefined)
@@ -28647,6 +29384,2142 @@ export interface ICreateGroupActivityModel {
     availableEnd: string | undefined;
 }
 
+export class UserToken implements IUserToken {
+    tenantId: number | undefined;
+    userId: number;
+    loginProvider: string | undefined;
+    name: string | undefined;
+    value: string | undefined;
+    expireDate: moment.Moment | undefined;
+    id: number;
+
+    constructor(data?: IUserToken) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.userId = data["userId"];
+            this.loginProvider = data["loginProvider"];
+            this.name = data["name"];
+            this.value = data["value"];
+            this.expireDate = data["expireDate"] ? moment(data["expireDate"].toString()) : <any>undefined;
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): UserToken {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserToken();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userId"] = this.userId;
+        data["loginProvider"] = this.loginProvider;
+        data["name"] = this.name;
+        data["value"] = this.value;
+        data["expireDate"] = this.expireDate ? this.expireDate.toISOString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): UserToken {
+        const json = this.toJSON();
+        let result = new UserToken();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserToken {
+    tenantId: number | undefined;
+    userId: number;
+    loginProvider: string | undefined;
+    name: string | undefined;
+    value: string | undefined;
+    expireDate: moment.Moment | undefined;
+    id: number;
+}
+
+export class UserLogin implements IUserLogin {
+    tenantId: number | undefined;
+    userId: number;
+    loginProvider: string | undefined;
+    providerKey: string | undefined;
+    id: number;
+
+    constructor(data?: IUserLogin) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.userId = data["userId"];
+            this.loginProvider = data["loginProvider"];
+            this.providerKey = data["providerKey"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): UserLogin {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserLogin();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userId"] = this.userId;
+        data["loginProvider"] = this.loginProvider;
+        data["providerKey"] = this.providerKey;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): UserLogin {
+        const json = this.toJSON();
+        let result = new UserLogin();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserLogin {
+    tenantId: number | undefined;
+    userId: number;
+    loginProvider: string | undefined;
+    providerKey: string | undefined;
+    id: number;
+}
+
+export class UserRole implements IUserRole {
+    tenantId: number | undefined;
+    userId: number;
+    roleId: number;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IUserRole) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.userId = data["userId"];
+            this.roleId = data["roleId"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): UserRole {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserRole();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userId"] = this.userId;
+        data["roleId"] = this.roleId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): UserRole {
+        const json = this.toJSON();
+        let result = new UserRole();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserRole {
+    tenantId: number | undefined;
+    userId: number;
+    roleId: number;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class UserClaim implements IUserClaim {
+    tenantId: number | undefined;
+    userId: number;
+    claimType: string | undefined;
+    claimValue: string | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IUserClaim) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.userId = data["userId"];
+            this.claimType = data["claimType"];
+            this.claimValue = data["claimValue"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): UserClaim {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserClaim();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userId"] = this.userId;
+        data["claimType"] = this.claimType;
+        data["claimValue"] = this.claimValue;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): UserClaim {
+        const json = this.toJSON();
+        let result = new UserClaim();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserClaim {
+    tenantId: number | undefined;
+    userId: number;
+    claimType: string | undefined;
+    claimValue: string | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class UserPermissionSetting implements IUserPermissionSetting {
+    userId: number;
+    tenantId: number | undefined;
+    name: string | undefined;
+    isGranted: boolean;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IUserPermissionSetting) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.userId = data["userId"];
+            this.tenantId = data["tenantId"];
+            this.name = data["name"];
+            this.isGranted = data["isGranted"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): UserPermissionSetting {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserPermissionSetting();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["tenantId"] = this.tenantId;
+        data["name"] = this.name;
+        data["isGranted"] = this.isGranted;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): UserPermissionSetting {
+        const json = this.toJSON();
+        let result = new UserPermissionSetting();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUserPermissionSetting {
+    userId: number;
+    tenantId: number | undefined;
+    name: string | undefined;
+    isGranted: boolean;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Setting implements ISetting {
+    tenantId: number | undefined;
+    userId: number | undefined;
+    name: string | undefined;
+    value: string | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ISetting) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.tenantId = data["tenantId"];
+            this.userId = data["userId"];
+            this.name = data["name"];
+            this.value = data["value"];
+            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = data["lastModifierUserId"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Setting {
+        data = typeof data === 'object' ? data : {};
+        let result = new Setting();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tenantId"] = this.tenantId;
+        data["userId"] = this.userId;
+        data["name"] = this.name;
+        data["value"] = this.value;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Setting {
+        const json = this.toJSON();
+        let result = new Setting();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISetting {
+    tenantId: number | undefined;
+    userId: number | undefined;
+    name: string | undefined;
+    value: string | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class User implements IUser {
+    signInToken: string | undefined;
+    needToChangeThePassword: boolean;
+    signInTokenExpireTimeUtc: moment.Moment | undefined;
+    name: string | undefined;
+    profilePictureId: string | undefined;
+    surname: string | undefined;
+    normalizedUserName: string | undefined;
+    normalizedEmailAddress: string | undefined;
+    concurrencyStamp: string | undefined;
+    tokens: UserToken[] | undefined;
+    deleterUser: User;
+    creatorUser: User;
+    lastModifierUser: User;
+    authenticationSource: string | undefined;
+    userName: string | undefined;
+    tenantId: number | undefined;
+    emailAddress: string | undefined;
+    readonly fullName: string | undefined;
+    password: string | undefined;
+    emailConfirmationCode: string | undefined;
+    passwordResetCode: string | undefined;
+    lockoutEndDateUtc: moment.Moment | undefined;
+    accessFailedCount: number;
+    isLockoutEnabled: boolean;
+    phoneNumber: string | undefined;
+    isPhoneNumberConfirmed: boolean;
+    securityStamp: string | undefined;
+    isTwoFactorEnabled: boolean;
+    logins: UserLogin[] | undefined;
+    roles: UserRole[] | undefined;
+    claims: UserClaim[] | undefined;
+    permissions: UserPermissionSetting[] | undefined;
+    settings: Setting[] | undefined;
+    isEmailConfirmed: boolean;
+    isActive: boolean;
+    isDeleted: boolean;
+    deleterUserId: number | undefined;
+    deletionTime: moment.Moment | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IUser) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.signInToken = data["signInToken"];
+            this.needToChangeThePassword = data["needToChangeThePassword"];
+            this.signInTokenExpireTimeUtc = data["signInTokenExpireTimeUtc"] ? moment(data["signInTokenExpireTimeUtc"].toString()) : <any>undefined;
+            this.name = data["name"];
+            this.profilePictureId = data["profilePictureId"];
+            this.surname = data["surname"];
+            this.normalizedUserName = data["normalizedUserName"];
+            this.normalizedEmailAddress = data["normalizedEmailAddress"];
+            this.concurrencyStamp = data["concurrencyStamp"];
+            if (data["tokens"] && data["tokens"].constructor === Array) {
+                this.tokens = [] as any;
+                for (let item of data["tokens"])
+                    this.tokens.push(UserToken.fromJS(item));
+            }
+            this.deleterUser = data["deleterUser"] ? User.fromJS(data["deleterUser"]) : <any>undefined;
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.lastModifierUser = data["lastModifierUser"] ? User.fromJS(data["lastModifierUser"]) : <any>undefined;
+            this.authenticationSource = data["authenticationSource"];
+            this.userName = data["userName"];
+            this.tenantId = data["tenantId"];
+            this.emailAddress = data["emailAddress"];
+            (<any>this).fullName = data["fullName"];
+            this.password = data["password"];
+            this.emailConfirmationCode = data["emailConfirmationCode"];
+            this.passwordResetCode = data["passwordResetCode"];
+            this.lockoutEndDateUtc = data["lockoutEndDateUtc"] ? moment(data["lockoutEndDateUtc"].toString()) : <any>undefined;
+            this.accessFailedCount = data["accessFailedCount"];
+            this.isLockoutEnabled = data["isLockoutEnabled"];
+            this.phoneNumber = data["phoneNumber"];
+            this.isPhoneNumberConfirmed = data["isPhoneNumberConfirmed"];
+            this.securityStamp = data["securityStamp"];
+            this.isTwoFactorEnabled = data["isTwoFactorEnabled"];
+            if (data["logins"] && data["logins"].constructor === Array) {
+                this.logins = [] as any;
+                for (let item of data["logins"])
+                    this.logins.push(UserLogin.fromJS(item));
+            }
+            if (data["roles"] && data["roles"].constructor === Array) {
+                this.roles = [] as any;
+                for (let item of data["roles"])
+                    this.roles.push(UserRole.fromJS(item));
+            }
+            if (data["claims"] && data["claims"].constructor === Array) {
+                this.claims = [] as any;
+                for (let item of data["claims"])
+                    this.claims.push(UserClaim.fromJS(item));
+            }
+            if (data["permissions"] && data["permissions"].constructor === Array) {
+                this.permissions = [] as any;
+                for (let item of data["permissions"])
+                    this.permissions.push(UserPermissionSetting.fromJS(item));
+            }
+            if (data["settings"] && data["settings"].constructor === Array) {
+                this.settings = [] as any;
+                for (let item of data["settings"])
+                    this.settings.push(Setting.fromJS(item));
+            }
+            this.isEmailConfirmed = data["isEmailConfirmed"];
+            this.isActive = data["isActive"];
+            this.isDeleted = data["isDeleted"];
+            this.deleterUserId = data["deleterUserId"];
+            this.deletionTime = data["deletionTime"] ? moment(data["deletionTime"].toString()) : <any>undefined;
+            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = data["lastModifierUserId"];
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): User {
+        data = typeof data === 'object' ? data : {};
+        let result = new User();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["signInToken"] = this.signInToken;
+        data["needToChangeThePassword"] = this.needToChangeThePassword;
+        data["signInTokenExpireTimeUtc"] = this.signInTokenExpireTimeUtc ? this.signInTokenExpireTimeUtc.toISOString() : <any>undefined;
+        data["name"] = this.name;
+        data["profilePictureId"] = this.profilePictureId;
+        data["surname"] = this.surname;
+        data["normalizedUserName"] = this.normalizedUserName;
+        data["normalizedEmailAddress"] = this.normalizedEmailAddress;
+        data["concurrencyStamp"] = this.concurrencyStamp;
+        if (this.tokens && this.tokens.constructor === Array) {
+            data["tokens"] = [];
+            for (let item of this.tokens)
+                data["tokens"].push(item.toJSON());
+        }
+        data["deleterUser"] = this.deleterUser ? this.deleterUser.toJSON() : <any>undefined;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["lastModifierUser"] = this.lastModifierUser ? this.lastModifierUser.toJSON() : <any>undefined;
+        data["authenticationSource"] = this.authenticationSource;
+        data["userName"] = this.userName;
+        data["tenantId"] = this.tenantId;
+        data["emailAddress"] = this.emailAddress;
+        data["fullName"] = this.fullName;
+        data["password"] = this.password;
+        data["emailConfirmationCode"] = this.emailConfirmationCode;
+        data["passwordResetCode"] = this.passwordResetCode;
+        data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
+        data["accessFailedCount"] = this.accessFailedCount;
+        data["isLockoutEnabled"] = this.isLockoutEnabled;
+        data["phoneNumber"] = this.phoneNumber;
+        data["isPhoneNumberConfirmed"] = this.isPhoneNumberConfirmed;
+        data["securityStamp"] = this.securityStamp;
+        data["isTwoFactorEnabled"] = this.isTwoFactorEnabled;
+        if (this.logins && this.logins.constructor === Array) {
+            data["logins"] = [];
+            for (let item of this.logins)
+                data["logins"].push(item.toJSON());
+        }
+        if (this.roles && this.roles.constructor === Array) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item.toJSON());
+        }
+        if (this.claims && this.claims.constructor === Array) {
+            data["claims"] = [];
+            for (let item of this.claims)
+                data["claims"].push(item.toJSON());
+        }
+        if (this.permissions && this.permissions.constructor === Array) {
+            data["permissions"] = [];
+            for (let item of this.permissions)
+                data["permissions"].push(item.toJSON());
+        }
+        if (this.settings && this.settings.constructor === Array) {
+            data["settings"] = [];
+            for (let item of this.settings)
+                data["settings"].push(item.toJSON());
+        }
+        data["isEmailConfirmed"] = this.isEmailConfirmed;
+        data["isActive"] = this.isActive;
+        data["isDeleted"] = this.isDeleted;
+        data["deleterUserId"] = this.deleterUserId;
+        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): User {
+        const json = this.toJSON();
+        let result = new User();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IUser {
+    signInToken: string | undefined;
+    needToChangeThePassword: boolean;
+    signInTokenExpireTimeUtc: moment.Moment | undefined;
+    name: string | undefined;
+    profilePictureId: string | undefined;
+    surname: string | undefined;
+    normalizedUserName: string | undefined;
+    normalizedEmailAddress: string | undefined;
+    concurrencyStamp: string | undefined;
+    tokens: UserToken[] | undefined;
+    deleterUser: User;
+    creatorUser: User;
+    lastModifierUser: User;
+    authenticationSource: string | undefined;
+    userName: string | undefined;
+    tenantId: number | undefined;
+    emailAddress: string | undefined;
+    fullName: string | undefined;
+    password: string | undefined;
+    emailConfirmationCode: string | undefined;
+    passwordResetCode: string | undefined;
+    lockoutEndDateUtc: moment.Moment | undefined;
+    accessFailedCount: number;
+    isLockoutEnabled: boolean;
+    phoneNumber: string | undefined;
+    isPhoneNumberConfirmed: boolean;
+    securityStamp: string | undefined;
+    isTwoFactorEnabled: boolean;
+    logins: UserLogin[] | undefined;
+    roles: UserRole[] | undefined;
+    claims: UserClaim[] | undefined;
+    permissions: UserPermissionSetting[] | undefined;
+    settings: Setting[] | undefined;
+    isEmailConfirmed: boolean;
+    isActive: boolean;
+    isDeleted: boolean;
+    deleterUserId: number | undefined;
+    deletionTime: moment.Moment | undefined;
+    lastModificationTime: moment.Moment | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Branch implements IBranch {
+    parentId: number | undefined;
+    parent: Branch;
+    branchCode: string | undefined;
+    branchName: string | undefined;
+    sort: number | undefined;
+    level: number | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IBranch) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.parentId = data["parentId"];
+            this.parent = data["parent"] ? Branch.fromJS(data["parent"]) : <any>undefined;
+            this.branchCode = data["branchCode"];
+            this.branchName = data["branchName"];
+            this.sort = data["sort"];
+            this.level = data["level"];
+            this.isEnabled = data["isEnabled"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Branch {
+        data = typeof data === 'object' ? data : {};
+        let result = new Branch();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["parentId"] = this.parentId;
+        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
+        data["branchCode"] = this.branchCode;
+        data["branchName"] = this.branchName;
+        data["sort"] = this.sort;
+        data["level"] = this.level;
+        data["isEnabled"] = this.isEnabled;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Branch {
+        const json = this.toJSON();
+        let result = new Branch();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IBranch {
+    parentId: number | undefined;
+    parent: Branch;
+    branchCode: string | undefined;
+    branchName: string | undefined;
+    sort: number | undefined;
+    level: number | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Source implements ISource {
+    branchId: number | undefined;
+    sourceName: string | undefined;
+    sourceCode: string | undefined;
+    discount: number;
+    rDiscount: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ISource) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.sourceName = data["sourceName"];
+            this.sourceCode = data["sourceCode"];
+            this.discount = data["discount"];
+            this.rDiscount = data["rDiscount"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Source {
+        data = typeof data === 'object' ? data : {};
+        let result = new Source();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["sourceName"] = this.sourceName;
+        data["sourceCode"] = this.sourceCode;
+        data["discount"] = this.discount;
+        data["rDiscount"] = this.rDiscount;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Source {
+        const json = this.toJSON();
+        let result = new Source();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ISource {
+    branchId: number | undefined;
+    sourceName: string | undefined;
+    sourceCode: string | undefined;
+    discount: number;
+    rDiscount: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum SexEnum {
+    Unknown = <any>"Unknown", 
+    Man = <any>"Man", 
+    Woman = <any>"Woman", 
+}
+
+export enum VerifiableTypeEnum {
+    IdentityCard = <any>"IdentityCard", 
+    ICCard = <any>"ICCard", 
+    QRCode = <any>"QRCode", 
+    ReturnCard = <any>"ReturnCard", 
+    TaiwanCard = <any>"TaiwanCard", 
+}
+
+export class Customer implements ICustomer {
+    branchId: number | undefined;
+    customerName: string | undefined;
+    mobile: string | undefined;
+    loginPwd: string | undefined;
+    sex: SexEnum;
+    country: string | undefined;
+    province: string | undefined;
+    city: string | undefined;
+    county: string | undefined;
+    certificatesNum: string | undefined;
+    verifiableType: VerifiableTypeEnum;
+    job: string | undefined;
+    openID: string | undefined;
+    photo: string | undefined;
+    dateOfBirth: moment.Moment | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ICustomer) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.customerName = data["customerName"];
+            this.mobile = data["mobile"];
+            this.loginPwd = data["loginPwd"];
+            this.sex = data["sex"];
+            this.country = data["country"];
+            this.province = data["province"];
+            this.city = data["city"];
+            this.county = data["county"];
+            this.certificatesNum = data["certificatesNum"];
+            this.verifiableType = data["verifiableType"];
+            this.job = data["job"];
+            this.openID = data["openID"];
+            this.photo = data["photo"];
+            this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Customer {
+        data = typeof data === 'object' ? data : {};
+        let result = new Customer();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["customerName"] = this.customerName;
+        data["mobile"] = this.mobile;
+        data["loginPwd"] = this.loginPwd;
+        data["sex"] = this.sex;
+        data["country"] = this.country;
+        data["province"] = this.province;
+        data["city"] = this.city;
+        data["county"] = this.county;
+        data["certificatesNum"] = this.certificatesNum;
+        data["verifiableType"] = this.verifiableType;
+        data["job"] = this.job;
+        data["openID"] = this.openID;
+        data["photo"] = this.photo;
+        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Customer {
+        const json = this.toJSON();
+        let result = new Customer();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICustomer {
+    branchId: number | undefined;
+    customerName: string | undefined;
+    mobile: string | undefined;
+    loginPwd: string | undefined;
+    sex: SexEnum;
+    country: string | undefined;
+    province: string | undefined;
+    city: string | undefined;
+    county: string | undefined;
+    certificatesNum: string | undefined;
+    verifiableType: VerifiableTypeEnum;
+    job: string | undefined;
+    openID: string | undefined;
+    photo: string | undefined;
+    dateOfBirth: moment.Moment | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class PayMethod implements IPayMethod {
+    payName: string | undefined;
+    payCode: string | undefined;
+    sort: number | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IPayMethod) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.payName = data["payName"];
+            this.payCode = data["payCode"];
+            this.sort = data["sort"];
+            this.isEnabled = data["isEnabled"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): PayMethod {
+        data = typeof data === 'object' ? data : {};
+        let result = new PayMethod();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["payName"] = this.payName;
+        data["payCode"] = this.payCode;
+        data["sort"] = this.sort;
+        data["isEnabled"] = this.isEnabled;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): PayMethod {
+        const json = this.toJSON();
+        let result = new PayMethod();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPayMethod {
+    payName: string | undefined;
+    payCode: string | undefined;
+    sort: number | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum PayStatusEnum {
+    NotPay = <any>"NotPay", 
+    PayStatusPayment = <any>"PayStatusPayment", 
+    PayStatusRefund = <any>"PayStatusRefund", 
+    PayStatusClose = <any>"PayStatusClose", 
+}
+
+export enum ActivityTypeEnum {
+    ActivityTypePayment = <any>"ActivityTypePayment", 
+    ActivityTypeRefund = <any>"ActivityTypeRefund", 
+}
+
+export enum AccountStatusEnum {
+    NotAccount = <any>"IsAccount", 
+    IsAccount = <any>"NotAccount", 
+}
+
+export class Account implements IAccount {
+    branchId: number | undefined;
+    accountNo: string | undefined;
+    accountDate: moment.Moment;
+    quantity: number;
+    amount: number;
+    accountStatus: AccountStatusEnum;
+    collectiorId: number | undefined;
+    collectior: User;
+    collectionTime: moment.Moment | undefined;
+    payMethodId: number | undefined;
+    payMethod: PayMethod;
+    remark: string | undefined;
+    voucherNo: string | undefined;
+    rAmount: number;
+    totalAmount: number;
+    rQuantity: number;
+    totalQuantity: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IAccount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.accountNo = data["accountNo"];
+            this.accountDate = data["accountDate"] ? moment(data["accountDate"].toString()) : <any>undefined;
+            this.quantity = data["quantity"];
+            this.amount = data["amount"];
+            this.accountStatus = data["accountStatus"];
+            this.collectiorId = data["collectiorId"];
+            this.collectior = data["collectior"] ? User.fromJS(data["collectior"]) : <any>undefined;
+            this.collectionTime = data["collectionTime"] ? moment(data["collectionTime"].toString()) : <any>undefined;
+            this.payMethodId = data["payMethodId"];
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.remark = data["remark"];
+            this.voucherNo = data["voucherNo"];
+            this.rAmount = data["rAmount"];
+            this.totalAmount = data["totalAmount"];
+            this.rQuantity = data["rQuantity"];
+            this.totalQuantity = data["totalQuantity"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Account {
+        data = typeof data === 'object' ? data : {};
+        let result = new Account();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["accountNo"] = this.accountNo;
+        data["accountDate"] = this.accountDate ? this.accountDate.toISOString() : <any>undefined;
+        data["quantity"] = this.quantity;
+        data["amount"] = this.amount;
+        data["accountStatus"] = this.accountStatus;
+        data["collectiorId"] = this.collectiorId;
+        data["collectior"] = this.collectior ? this.collectior.toJSON() : <any>undefined;
+        data["collectionTime"] = this.collectionTime ? this.collectionTime.toISOString() : <any>undefined;
+        data["payMethodId"] = this.payMethodId;
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["remark"] = this.remark;
+        data["voucherNo"] = this.voucherNo;
+        data["rAmount"] = this.rAmount;
+        data["totalAmount"] = this.totalAmount;
+        data["rQuantity"] = this.rQuantity;
+        data["totalQuantity"] = this.totalQuantity;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Account {
+        const json = this.toJSON();
+        let result = new Account();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAccount {
+    branchId: number | undefined;
+    accountNo: string | undefined;
+    accountDate: moment.Moment;
+    quantity: number;
+    amount: number;
+    accountStatus: AccountStatusEnum;
+    collectiorId: number | undefined;
+    collectior: User;
+    collectionTime: moment.Moment | undefined;
+    payMethodId: number | undefined;
+    payMethod: PayMethod;
+    remark: string | undefined;
+    voucherNo: string | undefined;
+    rAmount: number;
+    totalAmount: number;
+    rQuantity: number;
+    totalQuantity: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Organization implements IOrganization {
+    branchId: number | undefined;
+    groupName: string | undefined;
+    contacts: string | undefined;
+    mobile: string | undefined;
+    remand: string | undefined;
+    discount: string | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IOrganization) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.groupName = data["groupName"];
+            this.contacts = data["contacts"];
+            this.mobile = data["mobile"];
+            this.remand = data["remand"];
+            this.discount = data["discount"];
+            this.isEnabled = data["isEnabled"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Organization {
+        data = typeof data === 'object' ? data : {};
+        let result = new Organization();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["groupName"] = this.groupName;
+        data["contacts"] = this.contacts;
+        data["mobile"] = this.mobile;
+        data["remand"] = this.remand;
+        data["discount"] = this.discount;
+        data["isEnabled"] = this.isEnabled;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Organization {
+        const json = this.toJSON();
+        let result = new Organization();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IOrganization {
+    branchId: number | undefined;
+    groupName: string | undefined;
+    contacts: string | undefined;
+    mobile: string | undefined;
+    remand: string | undefined;
+    discount: string | undefined;
+    isEnabled: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum TicketModeEnum {
+    OnebyOne = <any>"OnebyOne", 
+    OneByMore = <any>"OneByMore", 
+}
+
+export enum TicketTypeEnum {
+    Card = <any>"Card", 
+    Paper = <any>"Paper", 
+}
+
+export enum CheckMethodEnum {
+    NumberCheck = <any>"NumberCheck", 
+    TimeCheck = <any>"TimeCheck", 
+    BalanceCheck = <any>"BalanceCheck", 
+}
+
+export enum TicketClassifyEnum {
+    Adult = <any>"Adult", 
+    Children = <any>"Children", 
+    Old = <any>"Old", 
+}
+
+export enum AuditStatusEnum {
+    WaiteAudit = <any>"WaiteAudit", 
+    ThroughAudit = <any>"ThroughAudit", 
+    RejecteAudit = <any>"RejecteAudit", 
+}
+
+export class Ticket implements ITicket {
+    branchId: number | undefined;
+    ticketName: string | undefined;
+    ticketCode: string | undefined;
+    ticketMode: TicketModeEnum;
+    ticketType: TicketTypeEnum;
+    checkMethod: CheckMethodEnum;
+    ticketClassify: TicketClassifyEnum;
+    checkNum: number | undefined;
+    effectiveLong: number | undefined;
+    unitPrice: number;
+    ticketLength: number | undefined;
+    upperLimit: number | undefined;
+    lowerLimit: number | undefined;
+    audioName: string | undefined;
+    auditStatus: AuditStatusEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    group: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ITicket) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.ticketName = data["ticketName"];
+            this.ticketCode = data["ticketCode"];
+            this.ticketMode = data["ticketMode"];
+            this.ticketType = data["ticketType"];
+            this.checkMethod = data["checkMethod"];
+            this.ticketClassify = data["ticketClassify"];
+            this.checkNum = data["checkNum"];
+            this.effectiveLong = data["effectiveLong"];
+            this.unitPrice = data["unitPrice"];
+            this.ticketLength = data["ticketLength"];
+            this.upperLimit = data["upperLimit"];
+            this.lowerLimit = data["lowerLimit"];
+            this.audioName = data["audioName"];
+            this.auditStatus = data["auditStatus"];
+            this.isEnabled = data["isEnabled"];
+            this.sort = data["sort"];
+            this.group = data["group"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Ticket {
+        data = typeof data === 'object' ? data : {};
+        let result = new Ticket();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["ticketName"] = this.ticketName;
+        data["ticketCode"] = this.ticketCode;
+        data["ticketMode"] = this.ticketMode;
+        data["ticketType"] = this.ticketType;
+        data["checkMethod"] = this.checkMethod;
+        data["ticketClassify"] = this.ticketClassify;
+        data["checkNum"] = this.checkNum;
+        data["effectiveLong"] = this.effectiveLong;
+        data["unitPrice"] = this.unitPrice;
+        data["ticketLength"] = this.ticketLength;
+        data["upperLimit"] = this.upperLimit;
+        data["lowerLimit"] = this.lowerLimit;
+        data["audioName"] = this.audioName;
+        data["auditStatus"] = this.auditStatus;
+        data["isEnabled"] = this.isEnabled;
+        data["sort"] = this.sort;
+        data["group"] = this.group;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Ticket {
+        const json = this.toJSON();
+        let result = new Ticket();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicket {
+    branchId: number | undefined;
+    ticketName: string | undefined;
+    ticketCode: string | undefined;
+    ticketMode: TicketModeEnum;
+    ticketType: TicketTypeEnum;
+    checkMethod: CheckMethodEnum;
+    ticketClassify: TicketClassifyEnum;
+    checkNum: number | undefined;
+    effectiveLong: number | undefined;
+    unitPrice: number;
+    ticketLength: number | undefined;
+    upperLimit: number | undefined;
+    lowerLimit: number | undefined;
+    audioName: string | undefined;
+    auditStatus: AuditStatusEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    group: number;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum PositionEnum {
+    Windows = <any>"windows", 
+    Online = <any>"Online", 
+}
+
+export class WeChatScenicSpot implements IWeChatScenicSpot {
+    branchId: number | undefined;
+    scenicSpotName: string | undefined;
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    coverPicture: string | undefined;
+    scenicSpotAddr: string | undefined;
+    openTime: moment.Moment;
+    smokedWay: string | undefined;
+    scheduledTime: string | undefined;
+    focusPicture: string | undefined;
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IWeChatScenicSpot) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.scenicSpotName = data["scenicSpotName"];
+            this.parentId = data["parentId"];
+            this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
+            this.coverPicture = data["coverPicture"];
+            this.scenicSpotAddr = data["scenicSpotAddr"];
+            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.smokedWay = data["smokedWay"];
+            this.scheduledTime = data["scheduledTime"];
+            this.focusPicture = data["focusPicture"];
+            this.isEnable = data["isEnable"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): WeChatScenicSpot {
+        data = typeof data === 'object' ? data : {};
+        let result = new WeChatScenicSpot();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["scenicSpotName"] = this.scenicSpotName;
+        data["parentId"] = this.parentId;
+        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
+        data["coverPicture"] = this.coverPicture;
+        data["scenicSpotAddr"] = this.scenicSpotAddr;
+        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["smokedWay"] = this.smokedWay;
+        data["scheduledTime"] = this.scheduledTime;
+        data["focusPicture"] = this.focusPicture;
+        data["isEnable"] = this.isEnable;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): WeChatScenicSpot {
+        const json = this.toJSON();
+        let result = new WeChatScenicSpot();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IWeChatScenicSpot {
+    branchId: number | undefined;
+    scenicSpotName: string | undefined;
+    parentId: number | undefined;
+    parent: WeChatScenicSpot;
+    coverPicture: string | undefined;
+    scenicSpotAddr: string | undefined;
+    openTime: moment.Moment;
+    smokedWay: string | undefined;
+    scheduledTime: string | undefined;
+    focusPicture: string | undefined;
+    isEnable: boolean;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class TicketPrice implements ITicketPrice {
+    branchId: number | undefined;
+    ticketId: number;
+    ticket: Ticket;
+    price: number;
+    rDiscount: number;
+    upperTime: moment.Moment;
+    lowerTime: moment.Moment;
+    position: PositionEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    ticketName: string | undefined;
+    wechatScenicSpotId: number | undefined;
+    weChatScenicSpot: WeChatScenicSpot;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: ITicketPrice) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.rDiscount = 1;
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.ticketId = data["ticketId"];
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+            this.price = data["price"];
+            this.rDiscount = data["rDiscount"] !== undefined ? data["rDiscount"] : 1;
+            this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
+            this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
+            this.position = data["position"];
+            this.isEnabled = data["isEnabled"];
+            this.sort = data["sort"];
+            this.ticketName = data["ticketName"];
+            this.wechatScenicSpotId = data["wechatScenicSpotId"];
+            this.weChatScenicSpot = data["weChatScenicSpot"] ? WeChatScenicSpot.fromJS(data["weChatScenicSpot"]) : <any>undefined;
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): TicketPrice {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketPrice();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["ticketId"] = this.ticketId;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        data["price"] = this.price;
+        data["rDiscount"] = this.rDiscount;
+        data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
+        data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
+        data["position"] = this.position;
+        data["isEnabled"] = this.isEnabled;
+        data["sort"] = this.sort;
+        data["ticketName"] = this.ticketName;
+        data["wechatScenicSpotId"] = this.wechatScenicSpotId;
+        data["weChatScenicSpot"] = this.weChatScenicSpot ? this.weChatScenicSpot.toJSON() : <any>undefined;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): TicketPrice {
+        const json = this.toJSON();
+        let result = new TicketPrice();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicketPrice {
+    branchId: number | undefined;
+    ticketId: number;
+    ticket: Ticket;
+    price: number;
+    rDiscount: number;
+    upperTime: moment.Moment;
+    lowerTime: moment.Moment;
+    position: PositionEnum;
+    isEnabled: boolean;
+    sort: number | undefined;
+    ticketName: string | undefined;
+    wechatScenicSpotId: number | undefined;
+    weChatScenicSpot: WeChatScenicSpot;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class ActivityDetail implements IActivityDetail {
+    branchId: number | undefined;
+    activityId: number;
+    activity: Activity;
+    ticketPriceId: number;
+    ticketPrice: TicketPrice;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    salePrice: number;
+    totalAmount: number;
+    remark: string | undefined;
+    accountId: number | undefined;
+    accountDetailId: number | undefined;
+    orgDetailId: number | undefined;
+    customer: Customer;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IActivityDetail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.activityId = data["activityId"];
+            this.activity = data["activity"] ? Activity.fromJS(data["activity"]) : <any>undefined;
+            this.ticketPriceId = data["ticketPriceId"];
+            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
+            this.quantity = data["quantity"];
+            this.unitPrice = data["unitPrice"];
+            this.discount = data["discount"];
+            this.salePrice = data["salePrice"];
+            this.totalAmount = data["totalAmount"];
+            this.remark = data["remark"];
+            this.accountId = data["accountId"];
+            this.accountDetailId = data["accountDetailId"];
+            this.orgDetailId = data["orgDetailId"];
+            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ActivityDetail {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityDetail();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["activityId"] = this.activityId;
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
+        data["ticketPriceId"] = this.ticketPriceId;
+        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
+        data["quantity"] = this.quantity;
+        data["unitPrice"] = this.unitPrice;
+        data["discount"] = this.discount;
+        data["salePrice"] = this.salePrice;
+        data["totalAmount"] = this.totalAmount;
+        data["remark"] = this.remark;
+        data["accountId"] = this.accountId;
+        data["accountDetailId"] = this.accountDetailId;
+        data["orgDetailId"] = this.orgDetailId;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ActivityDetail {
+        const json = this.toJSON();
+        let result = new ActivityDetail();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityDetail {
+    branchId: number | undefined;
+    activityId: number;
+    activity: Activity;
+    ticketPriceId: number;
+    ticketPrice: TicketPrice;
+    quantity: number;
+    unitPrice: number;
+    discount: number;
+    salePrice: number;
+    totalAmount: number;
+    remark: string | undefined;
+    accountId: number | undefined;
+    accountDetailId: number | undefined;
+    orgDetailId: number | undefined;
+    customer: Customer;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export class Activity implements IActivity {
+    branchId: number | undefined;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    customer: Customer;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    organizationId: number | undefined;
+    organization: Organization;
+    activityDetails: ActivityDetail[] | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IActivity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.branchId = data["branchId"];
+            this.activityNo = data["activityNo"];
+            this.sourceId = data["sourceId"];
+            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            this.orgActivityId = data["orgActivityId"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
+            this.customerId = data["customerId"];
+            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
+            this.buyer = data["buyer"];
+            this.mobile = data["mobile"];
+            this.payMethodId = data["payMethodId"];
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.voucherNo = data["voucherNo"];
+            this.payStatus = data["payStatus"];
+            this.activityType = data["activityType"];
+            this.remark = data["remark"];
+            this.isPrint = data["isPrint"];
+            this.closed = data["closed"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            this.accountsId = data["accountsId"];
+            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
+            this.orderType = data["orderType"];
+            this.organizationId = data["organizationId"];
+            this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(ActivityDetail.fromJS(item));
+            }
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): Activity {
+        data = typeof data === 'object' ? data : {};
+        let result = new Activity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["branchId"] = this.branchId;
+        data["activityNo"] = this.activityNo;
+        data["sourceId"] = this.sourceId;
+        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        data["orgActivityId"] = this.orgActivityId;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
+        data["customerId"] = this.customerId;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["buyer"] = this.buyer;
+        data["mobile"] = this.mobile;
+        data["payMethodId"] = this.payMethodId;
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["voucherNo"] = this.voucherNo;
+        data["payStatus"] = this.payStatus;
+        data["activityType"] = this.activityType;
+        data["remark"] = this.remark;
+        data["isPrint"] = this.isPrint;
+        data["closed"] = this.closed;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        data["accountsId"] = this.accountsId;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        data["orderType"] = this.orderType;
+        data["organizationId"] = this.organizationId;
+        data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): Activity {
+        const json = this.toJSON();
+        let result = new Activity();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivity {
+    branchId: number | undefined;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    customer: Customer;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    organizationId: number | undefined;
+    organization: Organization;
+    activityDetails: ActivityDetail[] | undefined;
+    creatorUser: User;
+    branch: Branch;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
+export enum TicketStatusEnum {
+    Activate = <any>"Activate", 
+    Used = <any>"Used", 
+    TicketRefund = <any>"TicketRefund", 
+}
+
+export class TicketForm implements ITicketForm {
+    ticketDetailId: number;
+    playDate: string | undefined;
+    playTime: string | undefined;
+    customerName: string | undefined;
+    qrCode: string | undefined;
+    ticketNo: string | undefined;
+    checkingQuantity: number;
+    checkedQuantity: number;
+    ticketName: string | undefined;
+    ticketPrice: number;
+    startDateTime: string | undefined;
+    endDateTime: string | undefined;
+    ticketStatus: TicketStatusEnum;
+
+    constructor(data?: ITicketForm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketDetailId = data["ticketDetailId"];
+            this.playDate = data["playDate"];
+            this.playTime = data["playTime"];
+            this.customerName = data["customerName"];
+            this.qrCode = data["qrCode"];
+            this.ticketNo = data["ticketNo"];
+            this.checkingQuantity = data["checkingQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.ticketName = data["ticketName"];
+            this.ticketPrice = data["ticketPrice"];
+            this.startDateTime = data["startDateTime"];
+            this.endDateTime = data["endDateTime"];
+            this.ticketStatus = data["ticketStatus"];
+        }
+    }
+
+    static fromJS(data: any): TicketForm {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketForm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketDetailId"] = this.ticketDetailId;
+        data["playDate"] = this.playDate;
+        data["playTime"] = this.playTime;
+        data["customerName"] = this.customerName;
+        data["qrCode"] = this.qrCode;
+        data["ticketNo"] = this.ticketNo;
+        data["checkingQuantity"] = this.checkingQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["ticketName"] = this.ticketName;
+        data["ticketPrice"] = this.ticketPrice;
+        data["startDateTime"] = this.startDateTime;
+        data["endDateTime"] = this.endDateTime;
+        data["ticketStatus"] = this.ticketStatus;
+        return data; 
+    }
+
+    clone(): TicketForm {
+        const json = this.toJSON();
+        let result = new TicketForm();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicketForm {
+    ticketDetailId: number;
+    playDate: string | undefined;
+    playTime: string | undefined;
+    customerName: string | undefined;
+    qrCode: string | undefined;
+    ticketNo: string | undefined;
+    checkingQuantity: number;
+    checkedQuantity: number;
+    ticketName: string | undefined;
+    ticketPrice: number;
+    startDateTime: string | undefined;
+    endDateTime: string | undefined;
+    ticketStatus: TicketStatusEnum;
+}
+
+export class GroupActivityResultData implements IGroupActivityResultData {
+    activity: Activity;
+    details: TicketForm[] | undefined;
+
+    constructor(data?: IGroupActivityResultData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.activity = data["activity"] ? Activity.fromJS(data["activity"]) : <any>undefined;
+            if (data["details"] && data["details"].constructor === Array) {
+                this.details = [] as any;
+                for (let item of data["details"])
+                    this.details.push(TicketForm.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GroupActivityResultData {
+        data = typeof data === 'object' ? data : {};
+        let result = new GroupActivityResultData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
+        if (this.details && this.details.constructor === Array) {
+            data["details"] = [];
+            for (let item of this.details)
+                data["details"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): GroupActivityResultData {
+        const json = this.toJSON();
+        let result = new GroupActivityResultData();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGroupActivityResultData {
+    activity: Activity;
+    details: TicketForm[] | undefined;
+}
+
+export class GroupActivityResultModel implements IGroupActivityResultModel {
+    resultCode: string | undefined;
+    resultMessage: string | undefined;
+    detail: string | undefined;
+    data: GroupActivityResultData;
+
+    constructor(data?: IGroupActivityResultModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.resultCode = data["resultCode"];
+            this.resultMessage = data["resultMessage"];
+            this.detail = data["detail"];
+            this.data = data["data"] ? GroupActivityResultData.fromJS(data["data"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GroupActivityResultModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new GroupActivityResultModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["resultCode"] = this.resultCode;
+        data["resultMessage"] = this.resultMessage;
+        data["detail"] = this.detail;
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GroupActivityResultModel {
+        const json = this.toJSON();
+        let result = new GroupActivityResultModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IGroupActivityResultModel {
+    resultCode: string | undefined;
+    resultMessage: string | undefined;
+    detail: string | undefined;
+    data: GroupActivityResultData;
+}
+
 export class QueryData implements IQueryData {
     field: string | undefined;
     method: string | undefined;
@@ -29669,1935 +32542,6 @@ export class SwitchToLinkedAccountOutput implements ISwitchToLinkedAccountOutput
 export interface ISwitchToLinkedAccountOutput {
     switchAccountToken: string | undefined;
     tenancyName: string | undefined;
-}
-
-export enum AccountStatusEnum {
-    NotAccount = <any>"IsAccount", 
-    IsAccount = <any>"NotAccount", 
-}
-
-export class UserToken implements IUserToken {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    expireDate: moment.Moment | undefined;
-    id: number;
-
-    constructor(data?: IUserToken) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.loginProvider = data["loginProvider"];
-            this.name = data["name"];
-            this.value = data["value"];
-            this.expireDate = data["expireDate"] ? moment(data["expireDate"].toString()) : <any>undefined;
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): UserToken {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserToken();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["loginProvider"] = this.loginProvider;
-        data["name"] = this.name;
-        data["value"] = this.value;
-        data["expireDate"] = this.expireDate ? this.expireDate.toISOString() : <any>undefined;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): UserToken {
-        const json = this.toJSON();
-        let result = new UserToken();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUserToken {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    expireDate: moment.Moment | undefined;
-    id: number;
-}
-
-export class UserLogin implements IUserLogin {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    providerKey: string | undefined;
-    id: number;
-
-    constructor(data?: IUserLogin) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.loginProvider = data["loginProvider"];
-            this.providerKey = data["providerKey"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): UserLogin {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserLogin();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["loginProvider"] = this.loginProvider;
-        data["providerKey"] = this.providerKey;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): UserLogin {
-        const json = this.toJSON();
-        let result = new UserLogin();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUserLogin {
-    tenantId: number | undefined;
-    userId: number;
-    loginProvider: string | undefined;
-    providerKey: string | undefined;
-    id: number;
-}
-
-export class UserRole implements IUserRole {
-    tenantId: number | undefined;
-    userId: number;
-    roleId: number;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IUserRole) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.roleId = data["roleId"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): UserRole {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserRole();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["roleId"] = this.roleId;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): UserRole {
-        const json = this.toJSON();
-        let result = new UserRole();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUserRole {
-    tenantId: number | undefined;
-    userId: number;
-    roleId: number;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class UserClaim implements IUserClaim {
-    tenantId: number | undefined;
-    userId: number;
-    claimType: string | undefined;
-    claimValue: string | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IUserClaim) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.claimType = data["claimType"];
-            this.claimValue = data["claimValue"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): UserClaim {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserClaim();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["claimType"] = this.claimType;
-        data["claimValue"] = this.claimValue;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): UserClaim {
-        const json = this.toJSON();
-        let result = new UserClaim();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUserClaim {
-    tenantId: number | undefined;
-    userId: number;
-    claimType: string | undefined;
-    claimValue: string | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class UserPermissionSetting implements IUserPermissionSetting {
-    userId: number;
-    tenantId: number | undefined;
-    name: string | undefined;
-    isGranted: boolean;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IUserPermissionSetting) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.userId = data["userId"];
-            this.tenantId = data["tenantId"];
-            this.name = data["name"];
-            this.isGranted = data["isGranted"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): UserPermissionSetting {
-        data = typeof data === 'object' ? data : {};
-        let result = new UserPermissionSetting();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        data["tenantId"] = this.tenantId;
-        data["name"] = this.name;
-        data["isGranted"] = this.isGranted;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): UserPermissionSetting {
-        const json = this.toJSON();
-        let result = new UserPermissionSetting();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUserPermissionSetting {
-    userId: number;
-    tenantId: number | undefined;
-    name: string | undefined;
-    isGranted: boolean;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Setting implements ISetting {
-    tenantId: number | undefined;
-    userId: number | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ISetting) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.tenantId = data["tenantId"];
-            this.userId = data["userId"];
-            this.name = data["name"];
-            this.value = data["value"];
-            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = data["lastModifierUserId"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Setting {
-        data = typeof data === 'object' ? data : {};
-        let result = new Setting();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["tenantId"] = this.tenantId;
-        data["userId"] = this.userId;
-        data["name"] = this.name;
-        data["value"] = this.value;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Setting {
-        const json = this.toJSON();
-        let result = new Setting();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ISetting {
-    tenantId: number | undefined;
-    userId: number | undefined;
-    name: string | undefined;
-    value: string | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class User implements IUser {
-    signInToken: string | undefined;
-    needToChangeThePassword: boolean;
-    signInTokenExpireTimeUtc: moment.Moment | undefined;
-    name: string | undefined;
-    profilePictureId: string | undefined;
-    surname: string | undefined;
-    normalizedUserName: string | undefined;
-    normalizedEmailAddress: string | undefined;
-    concurrencyStamp: string | undefined;
-    tokens: UserToken[] | undefined;
-    deleterUser: User;
-    creatorUser: User;
-    lastModifierUser: User;
-    authenticationSource: string | undefined;
-    userName: string | undefined;
-    tenantId: number | undefined;
-    emailAddress: string | undefined;
-    readonly fullName: string | undefined;
-    password: string | undefined;
-    emailConfirmationCode: string | undefined;
-    passwordResetCode: string | undefined;
-    lockoutEndDateUtc: moment.Moment | undefined;
-    accessFailedCount: number;
-    isLockoutEnabled: boolean;
-    phoneNumber: string | undefined;
-    isPhoneNumberConfirmed: boolean;
-    securityStamp: string | undefined;
-    isTwoFactorEnabled: boolean;
-    logins: UserLogin[] | undefined;
-    roles: UserRole[] | undefined;
-    claims: UserClaim[] | undefined;
-    permissions: UserPermissionSetting[] | undefined;
-    settings: Setting[] | undefined;
-    isEmailConfirmed: boolean;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IUser) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.signInToken = data["signInToken"];
-            this.needToChangeThePassword = data["needToChangeThePassword"];
-            this.signInTokenExpireTimeUtc = data["signInTokenExpireTimeUtc"] ? moment(data["signInTokenExpireTimeUtc"].toString()) : <any>undefined;
-            this.name = data["name"];
-            this.profilePictureId = data["profilePictureId"];
-            this.surname = data["surname"];
-            this.normalizedUserName = data["normalizedUserName"];
-            this.normalizedEmailAddress = data["normalizedEmailAddress"];
-            this.concurrencyStamp = data["concurrencyStamp"];
-            if (data["tokens"] && data["tokens"].constructor === Array) {
-                this.tokens = [] as any;
-                for (let item of data["tokens"])
-                    this.tokens.push(UserToken.fromJS(item));
-            }
-            this.deleterUser = data["deleterUser"] ? User.fromJS(data["deleterUser"]) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.lastModifierUser = data["lastModifierUser"] ? User.fromJS(data["lastModifierUser"]) : <any>undefined;
-            this.authenticationSource = data["authenticationSource"];
-            this.userName = data["userName"];
-            this.tenantId = data["tenantId"];
-            this.emailAddress = data["emailAddress"];
-            (<any>this).fullName = data["fullName"];
-            this.password = data["password"];
-            this.emailConfirmationCode = data["emailConfirmationCode"];
-            this.passwordResetCode = data["passwordResetCode"];
-            this.lockoutEndDateUtc = data["lockoutEndDateUtc"] ? moment(data["lockoutEndDateUtc"].toString()) : <any>undefined;
-            this.accessFailedCount = data["accessFailedCount"];
-            this.isLockoutEnabled = data["isLockoutEnabled"];
-            this.phoneNumber = data["phoneNumber"];
-            this.isPhoneNumberConfirmed = data["isPhoneNumberConfirmed"];
-            this.securityStamp = data["securityStamp"];
-            this.isTwoFactorEnabled = data["isTwoFactorEnabled"];
-            if (data["logins"] && data["logins"].constructor === Array) {
-                this.logins = [] as any;
-                for (let item of data["logins"])
-                    this.logins.push(UserLogin.fromJS(item));
-            }
-            if (data["roles"] && data["roles"].constructor === Array) {
-                this.roles = [] as any;
-                for (let item of data["roles"])
-                    this.roles.push(UserRole.fromJS(item));
-            }
-            if (data["claims"] && data["claims"].constructor === Array) {
-                this.claims = [] as any;
-                for (let item of data["claims"])
-                    this.claims.push(UserClaim.fromJS(item));
-            }
-            if (data["permissions"] && data["permissions"].constructor === Array) {
-                this.permissions = [] as any;
-                for (let item of data["permissions"])
-                    this.permissions.push(UserPermissionSetting.fromJS(item));
-            }
-            if (data["settings"] && data["settings"].constructor === Array) {
-                this.settings = [] as any;
-                for (let item of data["settings"])
-                    this.settings.push(Setting.fromJS(item));
-            }
-            this.isEmailConfirmed = data["isEmailConfirmed"];
-            this.isActive = data["isActive"];
-            this.isDeleted = data["isDeleted"];
-            this.deleterUserId = data["deleterUserId"];
-            this.deletionTime = data["deletionTime"] ? moment(data["deletionTime"].toString()) : <any>undefined;
-            this.lastModificationTime = data["lastModificationTime"] ? moment(data["lastModificationTime"].toString()) : <any>undefined;
-            this.lastModifierUserId = data["lastModifierUserId"];
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): User {
-        data = typeof data === 'object' ? data : {};
-        let result = new User();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["signInToken"] = this.signInToken;
-        data["needToChangeThePassword"] = this.needToChangeThePassword;
-        data["signInTokenExpireTimeUtc"] = this.signInTokenExpireTimeUtc ? this.signInTokenExpireTimeUtc.toISOString() : <any>undefined;
-        data["name"] = this.name;
-        data["profilePictureId"] = this.profilePictureId;
-        data["surname"] = this.surname;
-        data["normalizedUserName"] = this.normalizedUserName;
-        data["normalizedEmailAddress"] = this.normalizedEmailAddress;
-        data["concurrencyStamp"] = this.concurrencyStamp;
-        if (this.tokens && this.tokens.constructor === Array) {
-            data["tokens"] = [];
-            for (let item of this.tokens)
-                data["tokens"].push(item.toJSON());
-        }
-        data["deleterUser"] = this.deleterUser ? this.deleterUser.toJSON() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["lastModifierUser"] = this.lastModifierUser ? this.lastModifierUser.toJSON() : <any>undefined;
-        data["authenticationSource"] = this.authenticationSource;
-        data["userName"] = this.userName;
-        data["tenantId"] = this.tenantId;
-        data["emailAddress"] = this.emailAddress;
-        data["fullName"] = this.fullName;
-        data["password"] = this.password;
-        data["emailConfirmationCode"] = this.emailConfirmationCode;
-        data["passwordResetCode"] = this.passwordResetCode;
-        data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
-        data["accessFailedCount"] = this.accessFailedCount;
-        data["isLockoutEnabled"] = this.isLockoutEnabled;
-        data["phoneNumber"] = this.phoneNumber;
-        data["isPhoneNumberConfirmed"] = this.isPhoneNumberConfirmed;
-        data["securityStamp"] = this.securityStamp;
-        data["isTwoFactorEnabled"] = this.isTwoFactorEnabled;
-        if (this.logins && this.logins.constructor === Array) {
-            data["logins"] = [];
-            for (let item of this.logins)
-                data["logins"].push(item.toJSON());
-        }
-        if (this.roles && this.roles.constructor === Array) {
-            data["roles"] = [];
-            for (let item of this.roles)
-                data["roles"].push(item.toJSON());
-        }
-        if (this.claims && this.claims.constructor === Array) {
-            data["claims"] = [];
-            for (let item of this.claims)
-                data["claims"].push(item.toJSON());
-        }
-        if (this.permissions && this.permissions.constructor === Array) {
-            data["permissions"] = [];
-            for (let item of this.permissions)
-                data["permissions"].push(item.toJSON());
-        }
-        if (this.settings && this.settings.constructor === Array) {
-            data["settings"] = [];
-            for (let item of this.settings)
-                data["settings"].push(item.toJSON());
-        }
-        data["isEmailConfirmed"] = this.isEmailConfirmed;
-        data["isActive"] = this.isActive;
-        data["isDeleted"] = this.isDeleted;
-        data["deleterUserId"] = this.deleterUserId;
-        data["deletionTime"] = this.deletionTime ? this.deletionTime.toISOString() : <any>undefined;
-        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toISOString() : <any>undefined;
-        data["lastModifierUserId"] = this.lastModifierUserId;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): User {
-        const json = this.toJSON();
-        let result = new User();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IUser {
-    signInToken: string | undefined;
-    needToChangeThePassword: boolean;
-    signInTokenExpireTimeUtc: moment.Moment | undefined;
-    name: string | undefined;
-    profilePictureId: string | undefined;
-    surname: string | undefined;
-    normalizedUserName: string | undefined;
-    normalizedEmailAddress: string | undefined;
-    concurrencyStamp: string | undefined;
-    tokens: UserToken[] | undefined;
-    deleterUser: User;
-    creatorUser: User;
-    lastModifierUser: User;
-    authenticationSource: string | undefined;
-    userName: string | undefined;
-    tenantId: number | undefined;
-    emailAddress: string | undefined;
-    fullName: string | undefined;
-    password: string | undefined;
-    emailConfirmationCode: string | undefined;
-    passwordResetCode: string | undefined;
-    lockoutEndDateUtc: moment.Moment | undefined;
-    accessFailedCount: number;
-    isLockoutEnabled: boolean;
-    phoneNumber: string | undefined;
-    isPhoneNumberConfirmed: boolean;
-    securityStamp: string | undefined;
-    isTwoFactorEnabled: boolean;
-    logins: UserLogin[] | undefined;
-    roles: UserRole[] | undefined;
-    claims: UserClaim[] | undefined;
-    permissions: UserPermissionSetting[] | undefined;
-    settings: Setting[] | undefined;
-    isEmailConfirmed: boolean;
-    isActive: boolean;
-    isDeleted: boolean;
-    deleterUserId: number | undefined;
-    deletionTime: moment.Moment | undefined;
-    lastModificationTime: moment.Moment | undefined;
-    lastModifierUserId: number | undefined;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class PayMethod implements IPayMethod {
-    payName: string | undefined;
-    payCode: string | undefined;
-    sort: number | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IPayMethod) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.payName = data["payName"];
-            this.payCode = data["payCode"];
-            this.sort = data["sort"];
-            this.isEnabled = data["isEnabled"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): PayMethod {
-        data = typeof data === 'object' ? data : {};
-        let result = new PayMethod();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["payName"] = this.payName;
-        data["payCode"] = this.payCode;
-        data["sort"] = this.sort;
-        data["isEnabled"] = this.isEnabled;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): PayMethod {
-        const json = this.toJSON();
-        let result = new PayMethod();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPayMethod {
-    payName: string | undefined;
-    payCode: string | undefined;
-    sort: number | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Branch implements IBranch {
-    parentId: number | undefined;
-    parent: Branch;
-    branchCode: string | undefined;
-    branchName: string | undefined;
-    sort: number | undefined;
-    level: number | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IBranch) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.parentId = data["parentId"];
-            this.parent = data["parent"] ? Branch.fromJS(data["parent"]) : <any>undefined;
-            this.branchCode = data["branchCode"];
-            this.branchName = data["branchName"];
-            this.sort = data["sort"];
-            this.level = data["level"];
-            this.isEnabled = data["isEnabled"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Branch {
-        data = typeof data === 'object' ? data : {};
-        let result = new Branch();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["parentId"] = this.parentId;
-        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
-        data["branchCode"] = this.branchCode;
-        data["branchName"] = this.branchName;
-        data["sort"] = this.sort;
-        data["level"] = this.level;
-        data["isEnabled"] = this.isEnabled;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Branch {
-        const json = this.toJSON();
-        let result = new Branch();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IBranch {
-    parentId: number | undefined;
-    parent: Branch;
-    branchCode: string | undefined;
-    branchName: string | undefined;
-    sort: number | undefined;
-    level: number | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Account implements IAccount {
-    branchId: number | undefined;
-    accountNo: string | undefined;
-    accountDate: moment.Moment;
-    quantity: number;
-    amount: number;
-    accountStatus: AccountStatusEnum;
-    collectiorId: number | undefined;
-    collectior: User;
-    collectionTime: moment.Moment | undefined;
-    payMethodId: number | undefined;
-    payMethod: PayMethod;
-    remark: string | undefined;
-    voucherNo: string | undefined;
-    rAmount: number;
-    totalAmount: number;
-    rQuantity: number;
-    totalQuantity: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IAccount) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.accountNo = data["accountNo"];
-            this.accountDate = data["accountDate"] ? moment(data["accountDate"].toString()) : <any>undefined;
-            this.quantity = data["quantity"];
-            this.amount = data["amount"];
-            this.accountStatus = data["accountStatus"];
-            this.collectiorId = data["collectiorId"];
-            this.collectior = data["collectior"] ? User.fromJS(data["collectior"]) : <any>undefined;
-            this.collectionTime = data["collectionTime"] ? moment(data["collectionTime"].toString()) : <any>undefined;
-            this.payMethodId = data["payMethodId"];
-            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
-            this.remark = data["remark"];
-            this.voucherNo = data["voucherNo"];
-            this.rAmount = data["rAmount"];
-            this.totalAmount = data["totalAmount"];
-            this.rQuantity = data["rQuantity"];
-            this.totalQuantity = data["totalQuantity"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Account {
-        data = typeof data === 'object' ? data : {};
-        let result = new Account();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["accountNo"] = this.accountNo;
-        data["accountDate"] = this.accountDate ? this.accountDate.toISOString() : <any>undefined;
-        data["quantity"] = this.quantity;
-        data["amount"] = this.amount;
-        data["accountStatus"] = this.accountStatus;
-        data["collectiorId"] = this.collectiorId;
-        data["collectior"] = this.collectior ? this.collectior.toJSON() : <any>undefined;
-        data["collectionTime"] = this.collectionTime ? this.collectionTime.toISOString() : <any>undefined;
-        data["payMethodId"] = this.payMethodId;
-        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
-        data["remark"] = this.remark;
-        data["voucherNo"] = this.voucherNo;
-        data["rAmount"] = this.rAmount;
-        data["totalAmount"] = this.totalAmount;
-        data["rQuantity"] = this.rQuantity;
-        data["totalQuantity"] = this.totalQuantity;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Account {
-        const json = this.toJSON();
-        let result = new Account();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAccount {
-    branchId: number | undefined;
-    accountNo: string | undefined;
-    accountDate: moment.Moment;
-    quantity: number;
-    amount: number;
-    accountStatus: AccountStatusEnum;
-    collectiorId: number | undefined;
-    collectior: User;
-    collectionTime: moment.Moment | undefined;
-    payMethodId: number | undefined;
-    payMethod: PayMethod;
-    remark: string | undefined;
-    voucherNo: string | undefined;
-    rAmount: number;
-    totalAmount: number;
-    rQuantity: number;
-    totalQuantity: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Source implements ISource {
-    branchId: number | undefined;
-    sourceName: string | undefined;
-    sourceCode: string | undefined;
-    discount: number;
-    rDiscount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ISource) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.sourceName = data["sourceName"];
-            this.sourceCode = data["sourceCode"];
-            this.discount = data["discount"];
-            this.rDiscount = data["rDiscount"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Source {
-        data = typeof data === 'object' ? data : {};
-        let result = new Source();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["sourceName"] = this.sourceName;
-        data["sourceCode"] = this.sourceCode;
-        data["discount"] = this.discount;
-        data["rDiscount"] = this.rDiscount;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Source {
-        const json = this.toJSON();
-        let result = new Source();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ISource {
-    branchId: number | undefined;
-    sourceName: string | undefined;
-    sourceCode: string | undefined;
-    discount: number;
-    rDiscount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum SexEnum {
-    Unknown = <any>"Unknown", 
-    Man = <any>"Man", 
-    Woman = <any>"Woman", 
-}
-
-export enum VerifiableTypeEnum {
-    IdentityCard = <any>"IdentityCard", 
-    ICCard = <any>"ICCard", 
-    QRCode = <any>"QRCode", 
-    ReturnCard = <any>"ReturnCard", 
-    TaiwanCard = <any>"TaiwanCard", 
-}
-
-export class Customer implements ICustomer {
-    branchId: number | undefined;
-    customerName: string | undefined;
-    mobile: string | undefined;
-    loginPwd: string | undefined;
-    sex: SexEnum;
-    country: string | undefined;
-    province: string | undefined;
-    city: string | undefined;
-    county: string | undefined;
-    certificatesNum: string | undefined;
-    verifiableType: VerifiableTypeEnum;
-    job: string | undefined;
-    openID: string | undefined;
-    photo: string | undefined;
-    dateOfBirth: moment.Moment | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ICustomer) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.customerName = data["customerName"];
-            this.mobile = data["mobile"];
-            this.loginPwd = data["loginPwd"];
-            this.sex = data["sex"];
-            this.country = data["country"];
-            this.province = data["province"];
-            this.city = data["city"];
-            this.county = data["county"];
-            this.certificatesNum = data["certificatesNum"];
-            this.verifiableType = data["verifiableType"];
-            this.job = data["job"];
-            this.openID = data["openID"];
-            this.photo = data["photo"];
-            this.dateOfBirth = data["dateOfBirth"] ? moment(data["dateOfBirth"].toString()) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Customer {
-        data = typeof data === 'object' ? data : {};
-        let result = new Customer();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["customerName"] = this.customerName;
-        data["mobile"] = this.mobile;
-        data["loginPwd"] = this.loginPwd;
-        data["sex"] = this.sex;
-        data["country"] = this.country;
-        data["province"] = this.province;
-        data["city"] = this.city;
-        data["county"] = this.county;
-        data["certificatesNum"] = this.certificatesNum;
-        data["verifiableType"] = this.verifiableType;
-        data["job"] = this.job;
-        data["openID"] = this.openID;
-        data["photo"] = this.photo;
-        data["dateOfBirth"] = this.dateOfBirth ? this.dateOfBirth.toISOString() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Customer {
-        const json = this.toJSON();
-        let result = new Customer();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICustomer {
-    branchId: number | undefined;
-    customerName: string | undefined;
-    mobile: string | undefined;
-    loginPwd: string | undefined;
-    sex: SexEnum;
-    country: string | undefined;
-    province: string | undefined;
-    city: string | undefined;
-    county: string | undefined;
-    certificatesNum: string | undefined;
-    verifiableType: VerifiableTypeEnum;
-    job: string | undefined;
-    openID: string | undefined;
-    photo: string | undefined;
-    dateOfBirth: moment.Moment | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum PayStatusEnum {
-    NotPay = <any>"NotPay", 
-    PayStatusPayment = <any>"PayStatusPayment", 
-    PayStatusRefund = <any>"PayStatusRefund", 
-    PayStatusClose = <any>"PayStatusClose", 
-}
-
-export enum ActivityTypeEnum {
-    ActivityTypePayment = <any>"ActivityTypePayment", 
-    ActivityTypeRefund = <any>"ActivityTypeRefund", 
-}
-
-export class Organization implements IOrganization {
-    branchId: number | undefined;
-    groupName: string | undefined;
-    contacts: string | undefined;
-    mobile: string | undefined;
-    remand: string | undefined;
-    discount: string | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IOrganization) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.groupName = data["groupName"];
-            this.contacts = data["contacts"];
-            this.mobile = data["mobile"];
-            this.remand = data["remand"];
-            this.discount = data["discount"];
-            this.isEnabled = data["isEnabled"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Organization {
-        data = typeof data === 'object' ? data : {};
-        let result = new Organization();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["groupName"] = this.groupName;
-        data["contacts"] = this.contacts;
-        data["mobile"] = this.mobile;
-        data["remand"] = this.remand;
-        data["discount"] = this.discount;
-        data["isEnabled"] = this.isEnabled;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Organization {
-        const json = this.toJSON();
-        let result = new Organization();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IOrganization {
-    branchId: number | undefined;
-    groupName: string | undefined;
-    contacts: string | undefined;
-    mobile: string | undefined;
-    remand: string | undefined;
-    discount: string | undefined;
-    isEnabled: boolean;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class Activity implements IActivity {
-    branchId: number | undefined;
-    activityNo: string | undefined;
-    sourceId: number;
-    source: Source;
-    orgActivityId: number | undefined;
-    activityDate: moment.Moment;
-    playDate: moment.Moment;
-    customerId: number | undefined;
-    customer: Customer;
-    buyer: string | undefined;
-    mobile: string | undefined;
-    payMethodId: number;
-    payMethod: PayMethod;
-    voucherNo: string | undefined;
-    payStatus: PayStatusEnum;
-    activityType: ActivityTypeEnum;
-    remark: string | undefined;
-    isPrint: boolean;
-    closed: boolean;
-    totalQuantity: number;
-    totalAmount: number;
-    accountsId: number | undefined;
-    account: Account;
-    orderType: OrderTypeEnum;
-    organizationId: number | undefined;
-    organization: Organization;
-    activityDetails: ActivityDetail[] | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IActivity) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.activityNo = data["activityNo"];
-            this.sourceId = data["sourceId"];
-            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
-            this.orgActivityId = data["orgActivityId"];
-            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
-            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
-            this.customerId = data["customerId"];
-            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
-            this.buyer = data["buyer"];
-            this.mobile = data["mobile"];
-            this.payMethodId = data["payMethodId"];
-            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
-            this.voucherNo = data["voucherNo"];
-            this.payStatus = data["payStatus"];
-            this.activityType = data["activityType"];
-            this.remark = data["remark"];
-            this.isPrint = data["isPrint"];
-            this.closed = data["closed"];
-            this.totalQuantity = data["totalQuantity"];
-            this.totalAmount = data["totalAmount"];
-            this.accountsId = data["accountsId"];
-            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
-            this.orderType = data["orderType"];
-            this.organizationId = data["organizationId"];
-            this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
-            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
-                this.activityDetails = [] as any;
-                for (let item of data["activityDetails"])
-                    this.activityDetails.push(ActivityDetail.fromJS(item));
-            }
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Activity {
-        data = typeof data === 'object' ? data : {};
-        let result = new Activity();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["activityNo"] = this.activityNo;
-        data["sourceId"] = this.sourceId;
-        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
-        data["orgActivityId"] = this.orgActivityId;
-        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
-        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
-        data["customerId"] = this.customerId;
-        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["buyer"] = this.buyer;
-        data["mobile"] = this.mobile;
-        data["payMethodId"] = this.payMethodId;
-        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
-        data["voucherNo"] = this.voucherNo;
-        data["payStatus"] = this.payStatus;
-        data["activityType"] = this.activityType;
-        data["remark"] = this.remark;
-        data["isPrint"] = this.isPrint;
-        data["closed"] = this.closed;
-        data["totalQuantity"] = this.totalQuantity;
-        data["totalAmount"] = this.totalAmount;
-        data["accountsId"] = this.accountsId;
-        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
-        data["orderType"] = this.orderType;
-        data["organizationId"] = this.organizationId;
-        data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
-        if (this.activityDetails && this.activityDetails.constructor === Array) {
-            data["activityDetails"] = [];
-            for (let item of this.activityDetails)
-                data["activityDetails"].push(item.toJSON());
-        }
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Activity {
-        const json = this.toJSON();
-        let result = new Activity();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IActivity {
-    branchId: number | undefined;
-    activityNo: string | undefined;
-    sourceId: number;
-    source: Source;
-    orgActivityId: number | undefined;
-    activityDate: moment.Moment;
-    playDate: moment.Moment;
-    customerId: number | undefined;
-    customer: Customer;
-    buyer: string | undefined;
-    mobile: string | undefined;
-    payMethodId: number;
-    payMethod: PayMethod;
-    voucherNo: string | undefined;
-    payStatus: PayStatusEnum;
-    activityType: ActivityTypeEnum;
-    remark: string | undefined;
-    isPrint: boolean;
-    closed: boolean;
-    totalQuantity: number;
-    totalAmount: number;
-    accountsId: number | undefined;
-    account: Account;
-    orderType: OrderTypeEnum;
-    organizationId: number | undefined;
-    organization: Organization;
-    activityDetails: ActivityDetail[] | undefined;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum TicketModeEnum {
-    OnebyOne = <any>"OnebyOne", 
-    OneByMore = <any>"OneByMore", 
-}
-
-export enum TicketTypeEnum {
-    Card = <any>"Card", 
-    Paper = <any>"Paper", 
-}
-
-export enum CheckMethodEnum {
-    NumberCheck = <any>"NumberCheck", 
-    TimeCheck = <any>"TimeCheck", 
-    BalanceCheck = <any>"BalanceCheck", 
-}
-
-export enum TicketClassifyEnum {
-    Adult = <any>"Adult", 
-    Children = <any>"Children", 
-    Old = <any>"Old", 
-}
-
-export enum AuditStatusEnum {
-    WaiteAudit = <any>"WaiteAudit", 
-    ThroughAudit = <any>"ThroughAudit", 
-    RejecteAudit = <any>"RejecteAudit", 
-}
-
-export class Ticket implements ITicket {
-    branchId: number | undefined;
-    ticketName: string | undefined;
-    ticketCode: string | undefined;
-    ticketMode: TicketModeEnum;
-    ticketType: TicketTypeEnum;
-    checkMethod: CheckMethodEnum;
-    ticketClassify: TicketClassifyEnum;
-    checkNum: number | undefined;
-    effectiveLong: number | undefined;
-    unitPrice: number;
-    ticketLength: number | undefined;
-    upperLimit: number | undefined;
-    lowerLimit: number | undefined;
-    audioName: string | undefined;
-    auditStatus: AuditStatusEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    group: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicket) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketName = data["ticketName"];
-            this.ticketCode = data["ticketCode"];
-            this.ticketMode = data["ticketMode"];
-            this.ticketType = data["ticketType"];
-            this.checkMethod = data["checkMethod"];
-            this.ticketClassify = data["ticketClassify"];
-            this.checkNum = data["checkNum"];
-            this.effectiveLong = data["effectiveLong"];
-            this.unitPrice = data["unitPrice"];
-            this.ticketLength = data["ticketLength"];
-            this.upperLimit = data["upperLimit"];
-            this.lowerLimit = data["lowerLimit"];
-            this.audioName = data["audioName"];
-            this.auditStatus = data["auditStatus"];
-            this.isEnabled = data["isEnabled"];
-            this.sort = data["sort"];
-            this.group = data["group"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): Ticket {
-        data = typeof data === 'object' ? data : {};
-        let result = new Ticket();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketName"] = this.ticketName;
-        data["ticketCode"] = this.ticketCode;
-        data["ticketMode"] = this.ticketMode;
-        data["ticketType"] = this.ticketType;
-        data["checkMethod"] = this.checkMethod;
-        data["ticketClassify"] = this.ticketClassify;
-        data["checkNum"] = this.checkNum;
-        data["effectiveLong"] = this.effectiveLong;
-        data["unitPrice"] = this.unitPrice;
-        data["ticketLength"] = this.ticketLength;
-        data["upperLimit"] = this.upperLimit;
-        data["lowerLimit"] = this.lowerLimit;
-        data["audioName"] = this.audioName;
-        data["auditStatus"] = this.auditStatus;
-        data["isEnabled"] = this.isEnabled;
-        data["sort"] = this.sort;
-        data["group"] = this.group;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): Ticket {
-        const json = this.toJSON();
-        let result = new Ticket();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicket {
-    branchId: number | undefined;
-    ticketName: string | undefined;
-    ticketCode: string | undefined;
-    ticketMode: TicketModeEnum;
-    ticketType: TicketTypeEnum;
-    checkMethod: CheckMethodEnum;
-    ticketClassify: TicketClassifyEnum;
-    checkNum: number | undefined;
-    effectiveLong: number | undefined;
-    unitPrice: number;
-    ticketLength: number | undefined;
-    upperLimit: number | undefined;
-    lowerLimit: number | undefined;
-    audioName: string | undefined;
-    auditStatus: AuditStatusEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    group: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export enum PositionEnum {
-    Windows = <any>"windows", 
-    Online = <any>"Online", 
-}
-
-export class WeChatScenicSpot implements IWeChatScenicSpot {
-    branchId: number | undefined;
-    scenicSpotName: string | undefined;
-    parentId: number | undefined;
-    parent: WeChatScenicSpot;
-    coverPicture: string | undefined;
-    scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
-    smokedWay: string | undefined;
-    scheduledTime: string | undefined;
-    focusPicture: string | undefined;
-    isEnable: boolean;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IWeChatScenicSpot) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.scenicSpotName = data["scenicSpotName"];
-            this.parentId = data["parentId"];
-            this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
-            this.coverPicture = data["coverPicture"];
-            this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
-            this.smokedWay = data["smokedWay"];
-            this.scheduledTime = data["scheduledTime"];
-            this.focusPicture = data["focusPicture"];
-            this.isEnable = data["isEnable"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): WeChatScenicSpot {
-        data = typeof data === 'object' ? data : {};
-        let result = new WeChatScenicSpot();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["scenicSpotName"] = this.scenicSpotName;
-        data["parentId"] = this.parentId;
-        data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
-        data["coverPicture"] = this.coverPicture;
-        data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
-        data["smokedWay"] = this.smokedWay;
-        data["scheduledTime"] = this.scheduledTime;
-        data["focusPicture"] = this.focusPicture;
-        data["isEnable"] = this.isEnable;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): WeChatScenicSpot {
-        const json = this.toJSON();
-        let result = new WeChatScenicSpot();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IWeChatScenicSpot {
-    branchId: number | undefined;
-    scenicSpotName: string | undefined;
-    parentId: number | undefined;
-    parent: WeChatScenicSpot;
-    coverPicture: string | undefined;
-    scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
-    smokedWay: string | undefined;
-    scheduledTime: string | undefined;
-    focusPicture: string | undefined;
-    isEnable: boolean;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class TicketPrice implements ITicketPrice {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    price: number;
-    rDiscount: number;
-    upperTime: moment.Moment;
-    lowerTime: moment.Moment;
-    position: PositionEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    ticketName: string | undefined;
-    wechatScenicSpotId: number | undefined;
-    weChatScenicSpot: WeChatScenicSpot;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicketPrice) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-        if (!data) {
-            this.rDiscount = 1;
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketId = data["ticketId"];
-            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
-            this.price = data["price"];
-            this.rDiscount = data["rDiscount"] !== undefined ? data["rDiscount"] : 1;
-            this.upperTime = data["upperTime"] ? moment(data["upperTime"].toString()) : <any>undefined;
-            this.lowerTime = data["lowerTime"] ? moment(data["lowerTime"].toString()) : <any>undefined;
-            this.position = data["position"];
-            this.isEnabled = data["isEnabled"];
-            this.sort = data["sort"];
-            this.ticketName = data["ticketName"];
-            this.wechatScenicSpotId = data["wechatScenicSpotId"];
-            this.weChatScenicSpot = data["weChatScenicSpot"] ? WeChatScenicSpot.fromJS(data["weChatScenicSpot"]) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TicketPrice {
-        data = typeof data === 'object' ? data : {};
-        let result = new TicketPrice();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketId"] = this.ticketId;
-        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
-        data["price"] = this.price;
-        data["rDiscount"] = this.rDiscount;
-        data["upperTime"] = this.upperTime ? this.upperTime.toISOString() : <any>undefined;
-        data["lowerTime"] = this.lowerTime ? this.lowerTime.toISOString() : <any>undefined;
-        data["position"] = this.position;
-        data["isEnabled"] = this.isEnabled;
-        data["sort"] = this.sort;
-        data["ticketName"] = this.ticketName;
-        data["wechatScenicSpotId"] = this.wechatScenicSpotId;
-        data["weChatScenicSpot"] = this.weChatScenicSpot ? this.weChatScenicSpot.toJSON() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TicketPrice {
-        const json = this.toJSON();
-        let result = new TicketPrice();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicketPrice {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    price: number;
-    rDiscount: number;
-    upperTime: moment.Moment;
-    lowerTime: moment.Moment;
-    position: PositionEnum;
-    isEnabled: boolean;
-    sort: number | undefined;
-    ticketName: string | undefined;
-    wechatScenicSpotId: number | undefined;
-    weChatScenicSpot: WeChatScenicSpot;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class ActivityDetail implements IActivityDetail {
-    branchId: number | undefined;
-    activityId: number;
-    activity: Activity;
-    ticketPriceId: number;
-    ticketPrice: TicketPrice;
-    quantity: number;
-    unitPrice: number;
-    discount: number;
-    salePrice: number;
-    totalAmount: number;
-    remark: string | undefined;
-    accountId: number | undefined;
-    accountDetailId: number | undefined;
-    orgDetailId: number | undefined;
-    customer: Customer;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IActivityDetail) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.activityId = data["activityId"];
-            this.activity = data["activity"] ? Activity.fromJS(data["activity"]) : <any>undefined;
-            this.ticketPriceId = data["ticketPriceId"];
-            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
-            this.quantity = data["quantity"];
-            this.unitPrice = data["unitPrice"];
-            this.discount = data["discount"];
-            this.salePrice = data["salePrice"];
-            this.totalAmount = data["totalAmount"];
-            this.remark = data["remark"];
-            this.accountId = data["accountId"];
-            this.accountDetailId = data["accountDetailId"];
-            this.orgDetailId = data["orgDetailId"];
-            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): ActivityDetail {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActivityDetail();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["activityId"] = this.activityId;
-        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
-        data["ticketPriceId"] = this.ticketPriceId;
-        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
-        data["quantity"] = this.quantity;
-        data["unitPrice"] = this.unitPrice;
-        data["discount"] = this.discount;
-        data["salePrice"] = this.salePrice;
-        data["totalAmount"] = this.totalAmount;
-        data["remark"] = this.remark;
-        data["accountId"] = this.accountId;
-        data["accountDetailId"] = this.accountDetailId;
-        data["orgDetailId"] = this.orgDetailId;
-        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): ActivityDetail {
-        const json = this.toJSON();
-        let result = new ActivityDetail();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IActivityDetail {
-    branchId: number | undefined;
-    activityId: number;
-    activity: Activity;
-    ticketPriceId: number;
-    ticketPrice: TicketPrice;
-    quantity: number;
-    unitPrice: number;
-    discount: number;
-    salePrice: number;
-    totalAmount: number;
-    remark: string | undefined;
-    accountId: number | undefined;
-    accountDetailId: number | undefined;
-    orgDetailId: number | undefined;
-    customer: Customer;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.AccountDetail */
@@ -36614,10 +37558,10 @@ export interface IPagedResultDtoOfCheckRecordListDto {
 
 export enum DeviceTypeEnum {
     TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"GateMachine", 
-    FaceMachine = <any>"FaceMachine", 
-    SelfhelpMachine = <any>"SelfhelpMachine", 
-    HandMachine = <any>"HandMachine", 
+    GateMachine = <any>"SelfhelpMachine", 
+    FaceMachine = <any>"GateMachine", 
+    SelfhelpMachine = <any>"HandMachine", 
+    HandMachine = <any>"FaceMachine", 
 }
 
 /** 的列表DTO Yozeev.SystemConfig.ClientVersion */
@@ -52920,6 +53864,81 @@ export interface IGetAccountForEditOutput {
     accountStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
 }
 
+/** 获取的传入参数Dto */
+export class GetAccountsInput implements IGetAccountsInput {
+    /** 收款日期 CollectionTime
+结账单号 AccountNo
+收款状态 AccountStatus */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetAccountsInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetAccountsInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAccountsInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetAccountsInput {
+        const json = this.toJSON();
+        let result = new GetAccountsInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetAccountsInput {
+    /** 收款日期 CollectionTime
+结账单号 AccountNo
+收款状态 AccountStatus */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class PagedResultDtoOfAccountListDto implements IPagedResultDtoOfAccountListDto {
     totalCount: number;
     items: AccountListDto[] | undefined;
@@ -52973,12 +53992,6 @@ export class PagedResultDtoOfAccountListDto implements IPagedResultDtoOfAccountL
 export interface IPagedResultDtoOfAccountListDto {
     totalCount: number;
     items: AccountListDto[] | undefined;
-}
-
-export enum TicketStatusEnum {
-    Activate = <any>"Activate", 
-    Used = <any>"Used", 
-    TicketRefund = <any>"TicketRefund", 
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.TicketDetail */
@@ -53224,6 +54237,10 @@ export class TicketDetailListDto implements ITicketDetailListDto {
 1.团体票
 2.卡类 */
     group: number;
+    /** 票价 */
+    ticketPrice: number;
+    /** 票型名称 */
+    ticketPriceName: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -53261,6 +54278,8 @@ export class TicketDetailListDto implements ITicketDetailListDto {
             this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
             this.isPrint = data["isPrint"];
             this.group = data["group"];
+            this.ticketPrice = data["ticketPrice"];
+            this.ticketPriceName = data["ticketPriceName"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -53298,6 +54317,8 @@ export class TicketDetailListDto implements ITicketDetailListDto {
         data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
         data["isPrint"] = this.isPrint;
         data["group"] = this.group;
+        data["ticketPrice"] = this.ticketPrice;
+        data["ticketPriceName"] = this.ticketPriceName;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -53354,6 +54375,10 @@ export interface ITicketDetailListDto {
 1.团体票
 2.卡类 */
     group: number;
+    /** 票价 */
+    ticketPrice: number;
+    /** 票型名称 */
+    ticketPriceName: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -53723,7 +54748,7 @@ export class TicketDetailHistoryEditDto implements ITicketDetailHistoryEditDto {
     /** TicketNo */
     ticketNo: string | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     /** VisitValue */
     visitValue: string | undefined;
     /** ValidationType */
@@ -53860,7 +54885,7 @@ export interface ITicketDetailHistoryEditDto {
     /** TicketNo */
     ticketNo: string | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     /** VisitValue */
     visitValue: string | undefined;
     /** ValidationType */
@@ -61781,9 +62806,952 @@ export interface IPagedResultDtoOfWeChatScenicSpotListDto {
     items: WeChatScenicSpotListDto[] | undefined;
 }
 
+/** 游客年龄 */
+export class OperCustomerAgeResultDto implements IOperCustomerAgeResultDto {
+    /** 年龄段 */
+    ageRange: string | undefined;
+    /** 百分比 */
+    percentage: number;
+
+    constructor(data?: IOperCustomerAgeResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ageRange = data["ageRange"];
+            this.percentage = data["percentage"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerAgeResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerAgeResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ageRange"] = this.ageRange;
+        data["percentage"] = this.percentage;
+        return data; 
+    }
+
+    clone(): OperCustomerAgeResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerAgeResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客年龄 */
+export interface IOperCustomerAgeResultDto {
+    /** 年龄段 */
+    ageRange: string | undefined;
+    /** 百分比 */
+    percentage: number;
+}
+
+/** 游客性别 */
+export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto {
+    /** 性别 */
+    gender: string | undefined;
+    /** 百分比 */
+    percentage: number;
+
+    constructor(data?: IOperCustomerGenderResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.gender = data["gender"];
+            this.percentage = data["percentage"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerGenderResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerGenderResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["gender"] = this.gender;
+        data["percentage"] = this.percentage;
+        return data; 
+    }
+
+    clone(): OperCustomerGenderResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerGenderResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客性别 */
+export interface IOperCustomerGenderResultDto {
+    /** 性别 */
+    gender: string | undefined;
+    /** 百分比 */
+    percentage: number;
+}
+
+/** 游客地区 */
+export class OperCustomerRegionResultDto implements IOperCustomerRegionResultDto {
+    /** 地区 */
+    region: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: IOperCustomerRegionResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.region = data["region"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): OperCustomerRegionResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperCustomerRegionResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["region"] = this.region;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): OperCustomerRegionResultDto {
+        const json = this.toJSON();
+        let result = new OperCustomerRegionResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 游客地区 */
+export interface IOperCustomerRegionResultDto {
+    /** 地区 */
+    region: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+export enum DateRange {
+    Today = <any>"Today", 
+    ThisWeek = <any>"ThisWeek", 
+    ThisMonth = <any>"ThisMonth", 
+    ThisYear = <any>"ThisYear", 
+    Custom = <any>"Custom", 
+}
+
+/** 简单数量类 */
+export class SimpleQuantity implements ISimpleQuantity {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: ISimpleQuantity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.time = data["time"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): SimpleQuantity {
+        data = typeof data === 'object' ? data : {};
+        let result = new SimpleQuantity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["time"] = this.time;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): SimpleQuantity {
+        const json = this.toJSON();
+        let result = new SimpleQuantity();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 简单数量类 */
+export interface ISimpleQuantity {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+/** 简单金额类 */
+export class SimpleAmount implements ISimpleAmount {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 金额 */
+    amount: number;
+
+    constructor(data?: ISimpleAmount) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.time = data["time"];
+            this.amount = data["amount"];
+        }
+    }
+
+    static fromJS(data: any): SimpleAmount {
+        data = typeof data === 'object' ? data : {};
+        let result = new SimpleAmount();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["time"] = this.time;
+        data["amount"] = this.amount;
+        return data; 
+    }
+
+    clone(): SimpleAmount {
+        const json = this.toJSON();
+        let result = new SimpleAmount();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 简单金额类 */
+export interface ISimpleAmount {
+    /** 时间（如每小时、每天等） */
+    time: string | undefined;
+    /** 金额 */
+    amount: number;
+}
+
+/** 营收状况 */
+export class OperRevenueResultDto implements IOperRevenueResultDto {
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
+    /** 按时间推移的数量 */
+    quantityByTime: SimpleQuantity[] | undefined;
+    /** 按时间推移的金额 */
+    amountByTime: SimpleAmount[] | undefined;
+
+    constructor(data?: IOperRevenueResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.todayQuantity = data["todayQuantity"];
+            this.todayAmount = data["todayAmount"];
+            if (data["quantityByTime"] && data["quantityByTime"].constructor === Array) {
+                this.quantityByTime = [] as any;
+                for (let item of data["quantityByTime"])
+                    this.quantityByTime.push(SimpleQuantity.fromJS(item));
+            }
+            if (data["amountByTime"] && data["amountByTime"].constructor === Array) {
+                this.amountByTime = [] as any;
+                for (let item of data["amountByTime"])
+                    this.amountByTime.push(SimpleAmount.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperRevenueResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperRevenueResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["todayQuantity"] = this.todayQuantity;
+        data["todayAmount"] = this.todayAmount;
+        if (this.quantityByTime && this.quantityByTime.constructor === Array) {
+            data["quantityByTime"] = [];
+            for (let item of this.quantityByTime)
+                data["quantityByTime"].push(item.toJSON());
+        }
+        if (this.amountByTime && this.amountByTime.constructor === Array) {
+            data["amountByTime"] = [];
+            for (let item of this.amountByTime)
+                data["amountByTime"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperRevenueResultDto {
+        const json = this.toJSON();
+        let result = new OperRevenueResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 营收状况 */
+export interface IOperRevenueResultDto {
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
+    /** 按时间推移的数量 */
+    quantityByTime: SimpleQuantity[] | undefined;
+    /** 按时间推移的金额 */
+    amountByTime: SimpleAmount[] | undefined;
+}
+
+/** 票型比例 */
+export class OperTicketRatioResultDto implements IOperTicketRatioResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 数量 */
+    quantity: number;
+
+    constructor(data?: IOperTicketRatioResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.quantity = data["quantity"];
+        }
+    }
+
+    static fromJS(data: any): OperTicketRatioResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperTicketRatioResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["quantity"] = this.quantity;
+        return data; 
+    }
+
+    clone(): OperTicketRatioResultDto {
+        const json = this.toJSON();
+        let result = new OperTicketRatioResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型比例 */
+export interface IOperTicketRatioResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 数量 */
+    quantity: number;
+}
+
+/** 退票情况 */
+export class OperRefundResultDto implements IOperRefundResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 退票率 */
+    refundRatio: number;
+
+    constructor(data?: IOperRefundResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.refundQuantity = data["refundQuantity"];
+            this.refundAmount = data["refundAmount"];
+            this.refundRatio = data["refundRatio"];
+        }
+    }
+
+    static fromJS(data: any): OperRefundResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperRefundResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["refundQuantity"] = this.refundQuantity;
+        data["refundAmount"] = this.refundAmount;
+        data["refundRatio"] = this.refundRatio;
+        return data; 
+    }
+
+    clone(): OperRefundResultDto {
+        const json = this.toJSON();
+        let result = new OperRefundResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 退票情况 */
+export interface IOperRefundResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 退票率 */
+    refundRatio: number;
+}
+
+/** 销售情况（按票型） */
+export class OperSalesByTicketResultDto implements IOperSalesByTicketResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 金额 */
+    amount: number;
+
+    constructor(data?: IOperSalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketName = data["ticketName"];
+            this.soldQuantity = data["soldQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.amount = data["amount"];
+        }
+    }
+
+    static fromJS(data: any): OperSalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperSalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketName"] = this.ticketName;
+        data["soldQuantity"] = this.soldQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["amount"] = this.amount;
+        return data; 
+    }
+
+    clone(): OperSalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new OperSalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 销售情况（按票型） */
+export interface IOperSalesByTicketResultDto {
+    /** 票型 */
+    ticketName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 金额 */
+    amount: number;
+}
+
+/** 销售情况（按来源） */
+export class OperSalesBySourceResultDto implements IOperSalesBySourceResultDto {
+    /** 来源名称 */
+    sourceName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 比例 */
+    ratio: number;
+
+    constructor(data?: IOperSalesBySourceResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.sourceName = data["sourceName"];
+            this.soldQuantity = data["soldQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.ratio = data["ratio"];
+        }
+    }
+
+    static fromJS(data: any): OperSalesBySourceResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperSalesBySourceResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sourceName"] = this.sourceName;
+        data["soldQuantity"] = this.soldQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["ratio"] = this.ratio;
+        return data; 
+    }
+
+    clone(): OperSalesBySourceResultDto {
+        const json = this.toJSON();
+        let result = new OperSalesBySourceResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 销售情况（按来源） */
+export interface IOperSalesBySourceResultDto {
+    /** 来源名称 */
+    sourceName: string | undefined;
+    /** 已售票数量 */
+    soldQuantity: number;
+    /** 已验票数量 */
+    checkedQuantity: number;
+    /** 比例 */
+    ratio: number;
+}
+
+/** 检票情况 */
+export class OperTicketCheckResultDto implements IOperTicketCheckResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 检票成功次数 */
+    okCount: number;
+    /** 检票失败次数 */
+    ngCount: number;
+    /** 比例 */
+    ratio: number;
+
+    constructor(data?: IOperTicketCheckResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceName = data["deviceName"];
+            this.okCount = data["okCount"];
+            this.ngCount = data["ngCount"];
+            this.ratio = data["ratio"];
+        }
+    }
+
+    static fromJS(data: any): OperTicketCheckResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperTicketCheckResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceName"] = this.deviceName;
+        data["okCount"] = this.okCount;
+        data["ngCount"] = this.ngCount;
+        data["ratio"] = this.ratio;
+        return data; 
+    }
+
+    clone(): OperTicketCheckResultDto {
+        const json = this.toJSON();
+        let result = new OperTicketCheckResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 检票情况 */
+export interface IOperTicketCheckResultDto {
+    /** 设备名称 */
+    deviceName: string | undefined;
+    /** 检票成功次数 */
+    okCount: number;
+    /** 检票失败次数 */
+    ngCount: number;
+    /** 比例 */
+    ratio: number;
+}
+
+/** 首页（匿名制） */
+export class OperMainForAnonymousResultDto implements IOperMainForAnonymousResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+
+    constructor(data?: IOperMainForAnonymousResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.revenueResult = data["revenueResult"] ? OperRevenueResultDto.fromJS(data["revenueResult"]) : <any>undefined;
+            if (data["ticketRatioResult"] && data["ticketRatioResult"].constructor === Array) {
+                this.ticketRatioResult = [] as any;
+                for (let item of data["ticketRatioResult"])
+                    this.ticketRatioResult.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            if (data["refundResult"] && data["refundResult"].constructor === Array) {
+                this.refundResult = [] as any;
+                for (let item of data["refundResult"])
+                    this.refundResult.push(OperRefundResultDto.fromJS(item));
+            }
+            if (data["salesByTicketResult"] && data["salesByTicketResult"].constructor === Array) {
+                this.salesByTicketResult = [] as any;
+                for (let item of data["salesByTicketResult"])
+                    this.salesByTicketResult.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            if (data["salesBySourceResult"] && data["salesBySourceResult"].constructor === Array) {
+                this.salesBySourceResult = [] as any;
+                for (let item of data["salesBySourceResult"])
+                    this.salesBySourceResult.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            if (data["ticketCheckResult"] && data["ticketCheckResult"].constructor === Array) {
+                this.ticketCheckResult = [] as any;
+                for (let item of data["ticketCheckResult"])
+                    this.ticketCheckResult.push(OperTicketCheckResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperMainForAnonymousResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperMainForAnonymousResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["revenueResult"] = this.revenueResult ? this.revenueResult.toJSON() : <any>undefined;
+        if (this.ticketRatioResult && this.ticketRatioResult.constructor === Array) {
+            data["ticketRatioResult"] = [];
+            for (let item of this.ticketRatioResult)
+                data["ticketRatioResult"].push(item.toJSON());
+        }
+        if (this.refundResult && this.refundResult.constructor === Array) {
+            data["refundResult"] = [];
+            for (let item of this.refundResult)
+                data["refundResult"].push(item.toJSON());
+        }
+        if (this.salesByTicketResult && this.salesByTicketResult.constructor === Array) {
+            data["salesByTicketResult"] = [];
+            for (let item of this.salesByTicketResult)
+                data["salesByTicketResult"].push(item.toJSON());
+        }
+        if (this.salesBySourceResult && this.salesBySourceResult.constructor === Array) {
+            data["salesBySourceResult"] = [];
+            for (let item of this.salesBySourceResult)
+                data["salesBySourceResult"].push(item.toJSON());
+        }
+        if (this.ticketCheckResult && this.ticketCheckResult.constructor === Array) {
+            data["ticketCheckResult"] = [];
+            for (let item of this.ticketCheckResult)
+                data["ticketCheckResult"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperMainForAnonymousResultDto {
+        const json = this.toJSON();
+        let result = new OperMainForAnonymousResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 首页（匿名制） */
+export interface IOperMainForAnonymousResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+}
+
+/** 首页（实名制） */
+export class OperMainForRealNameResultDto implements IOperMainForRealNameResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 游客地区 */
+    customerRegionResult: OperCustomerRegionResultDto[] | undefined;
+    /** 游客年龄 */
+    customerAgeResult: OperCustomerAgeResultDto[] | undefined;
+    /** 游客性别 */
+    customerGenderResult: OperCustomerGenderResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+
+    constructor(data?: IOperMainForRealNameResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.revenueResult = data["revenueResult"] ? OperRevenueResultDto.fromJS(data["revenueResult"]) : <any>undefined;
+            if (data["ticketRatioResult"] && data["ticketRatioResult"].constructor === Array) {
+                this.ticketRatioResult = [] as any;
+                for (let item of data["ticketRatioResult"])
+                    this.ticketRatioResult.push(OperTicketRatioResultDto.fromJS(item));
+            }
+            if (data["refundResult"] && data["refundResult"].constructor === Array) {
+                this.refundResult = [] as any;
+                for (let item of data["refundResult"])
+                    this.refundResult.push(OperRefundResultDto.fromJS(item));
+            }
+            if (data["customerRegionResult"] && data["customerRegionResult"].constructor === Array) {
+                this.customerRegionResult = [] as any;
+                for (let item of data["customerRegionResult"])
+                    this.customerRegionResult.push(OperCustomerRegionResultDto.fromJS(item));
+            }
+            if (data["customerAgeResult"] && data["customerAgeResult"].constructor === Array) {
+                this.customerAgeResult = [] as any;
+                for (let item of data["customerAgeResult"])
+                    this.customerAgeResult.push(OperCustomerAgeResultDto.fromJS(item));
+            }
+            if (data["customerGenderResult"] && data["customerGenderResult"].constructor === Array) {
+                this.customerGenderResult = [] as any;
+                for (let item of data["customerGenderResult"])
+                    this.customerGenderResult.push(OperCustomerGenderResultDto.fromJS(item));
+            }
+            if (data["salesByTicketResult"] && data["salesByTicketResult"].constructor === Array) {
+                this.salesByTicketResult = [] as any;
+                for (let item of data["salesByTicketResult"])
+                    this.salesByTicketResult.push(OperSalesByTicketResultDto.fromJS(item));
+            }
+            if (data["salesBySourceResult"] && data["salesBySourceResult"].constructor === Array) {
+                this.salesBySourceResult = [] as any;
+                for (let item of data["salesBySourceResult"])
+                    this.salesBySourceResult.push(OperSalesBySourceResultDto.fromJS(item));
+            }
+            if (data["ticketCheckResult"] && data["ticketCheckResult"].constructor === Array) {
+                this.ticketCheckResult = [] as any;
+                for (let item of data["ticketCheckResult"])
+                    this.ticketCheckResult.push(OperTicketCheckResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): OperMainForRealNameResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OperMainForRealNameResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["revenueResult"] = this.revenueResult ? this.revenueResult.toJSON() : <any>undefined;
+        if (this.ticketRatioResult && this.ticketRatioResult.constructor === Array) {
+            data["ticketRatioResult"] = [];
+            for (let item of this.ticketRatioResult)
+                data["ticketRatioResult"].push(item.toJSON());
+        }
+        if (this.refundResult && this.refundResult.constructor === Array) {
+            data["refundResult"] = [];
+            for (let item of this.refundResult)
+                data["refundResult"].push(item.toJSON());
+        }
+        if (this.customerRegionResult && this.customerRegionResult.constructor === Array) {
+            data["customerRegionResult"] = [];
+            for (let item of this.customerRegionResult)
+                data["customerRegionResult"].push(item.toJSON());
+        }
+        if (this.customerAgeResult && this.customerAgeResult.constructor === Array) {
+            data["customerAgeResult"] = [];
+            for (let item of this.customerAgeResult)
+                data["customerAgeResult"].push(item.toJSON());
+        }
+        if (this.customerGenderResult && this.customerGenderResult.constructor === Array) {
+            data["customerGenderResult"] = [];
+            for (let item of this.customerGenderResult)
+                data["customerGenderResult"].push(item.toJSON());
+        }
+        if (this.salesByTicketResult && this.salesByTicketResult.constructor === Array) {
+            data["salesByTicketResult"] = [];
+            for (let item of this.salesByTicketResult)
+                data["salesByTicketResult"].push(item.toJSON());
+        }
+        if (this.salesBySourceResult && this.salesBySourceResult.constructor === Array) {
+            data["salesBySourceResult"] = [];
+            for (let item of this.salesBySourceResult)
+                data["salesBySourceResult"].push(item.toJSON());
+        }
+        if (this.ticketCheckResult && this.ticketCheckResult.constructor === Array) {
+            data["ticketCheckResult"] = [];
+            for (let item of this.ticketCheckResult)
+                data["ticketCheckResult"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): OperMainForRealNameResultDto {
+        const json = this.toJSON();
+        let result = new OperMainForRealNameResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 首页（实名制） */
+export interface IOperMainForRealNameResultDto {
+    revenueResult: OperRevenueResultDto;
+    /** 票型比例 */
+    ticketRatioResult: OperTicketRatioResultDto[] | undefined;
+    /** 退票情况 */
+    refundResult: OperRefundResultDto[] | undefined;
+    /** 游客地区 */
+    customerRegionResult: OperCustomerRegionResultDto[] | undefined;
+    /** 游客年龄 */
+    customerAgeResult: OperCustomerAgeResultDto[] | undefined;
+    /** 游客性别 */
+    customerGenderResult: OperCustomerGenderResultDto[] | undefined;
+    /** 销售情况（按票型） */
+    salesByTicketResult: OperSalesByTicketResultDto[] | undefined;
+    /** 销售情况（按来源） */
+    salesBySourceResult: OperSalesBySourceResultDto[] | undefined;
+    /** 检票情况 */
+    ticketCheckResult: OperTicketCheckResultDto[] | undefined;
+}
+
 /** 订单来源统计 */
 export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto {
+    /** 订单来源ID */
+    id: number;
     source: Source;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -61808,7 +63776,13 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -61827,7 +63801,13 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -61847,7 +63827,11 @@ export class SalesByOrderSourceResultDto implements ISalesByOrderSourceResultDto
 
 /** 订单来源统计 */
 export interface ISalesByOrderSourceResultDto {
+    /** 订单来源ID */
+    id: number;
     source: Source;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -61939,7 +63923,11 @@ export interface IStatsPagedResultDtoOfSalesByOrderSourceResultDto {
 
 /** 团体售票统计 */
 export class SalesByOrganizationResultDto implements ISalesByOrganizationResultDto {
+    /** 团体ID */
+    id: number;
     organization: Organization;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -61964,7 +63952,13 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.organization = data["organization"] ? Organization.fromJS(data["organization"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -61983,7 +63977,13 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["organization"] = this.organization ? this.organization.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62003,7 +64003,11 @@ export class SalesByOrganizationResultDto implements ISalesByOrganizationResultD
 
 /** 团体售票统计 */
 export interface ISalesByOrganizationResultDto {
+    /** 团体ID */
+    id: number;
     organization: Organization;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62095,7 +64099,11 @@ export interface IStatsPagedResultDtoOfSalesByOrganizationResultDto {
 
 /** 支付方式统计 */
 export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
+    /** 支付方式ID */
+    id: number;
     payMethod: PayMethod;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62120,7 +64128,13 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62139,7 +64153,13 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62159,7 +64179,11 @@ export class SalesByPayMethodResultDto implements ISalesByPayMethodResultDto {
 
 /** 支付方式统计 */
 export interface ISalesByPayMethodResultDto {
+    /** 支付方式ID */
+    id: number;
     payMethod: PayMethod;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62251,7 +64275,11 @@ export interface IStatsPagedResultDtoOfSalesByPayMethodResultDto {
 
 /** 售票员售票统计 */
 export class SalesBySellerResultDto implements ISalesBySellerResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 现金售票数量 */
     cashSaleQuantity: number;
     /** 现金退票数量 */
@@ -62316,7 +64344,13 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.cashSaleQuantity = data["cashSaleQuantity"];
             this.cashRefundQuantity = data["cashRefundQuantity"];
             this.cashSubtotalQuantity = data["cashSubtotalQuantity"];
@@ -62355,7 +64389,13 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["cashSaleQuantity"] = this.cashSaleQuantity;
         data["cashRefundQuantity"] = this.cashRefundQuantity;
         data["cashSubtotalQuantity"] = this.cashSubtotalQuantity;
@@ -62395,7 +64435,11 @@ export class SalesBySellerResultDto implements ISalesBySellerResultDto {
 
 /** 售票员售票统计 */
 export interface ISalesBySellerResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 现金售票数量 */
     cashSaleQuantity: number;
     /** 现金退票数量 */
@@ -62527,7 +64571,11 @@ export interface IStatsPagedResultDtoOfSalesBySellerResultDto {
 
 /** 售票员日结统计 */
 export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */
@@ -62568,7 +64616,13 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
     init(data?: any) {
         if (data) {
+            this.id = data["id"];
             this.seller = data["seller"] ? User.fromJS(data["seller"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
             this.saleQuantity = data["saleQuantity"];
             this.refundQuantity = data["refundQuantity"];
             this.subtotalQuantity = data["subtotalQuantity"];
@@ -62595,7 +64649,13 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["seller"] = this.seller ? this.seller.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
         data["saleQuantity"] = this.saleQuantity;
         data["refundQuantity"] = this.refundQuantity;
         data["subtotalQuantity"] = this.subtotalQuantity;
@@ -62623,7 +64683,11 @@ export class SalesBySellerDailyResultDto implements ISalesBySellerDailyResultDto
 
 /** 售票员日结统计 */
 export interface ISalesBySellerDailyResultDto {
+    /** 售票员ID */
+    id: number;
     seller: User;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
     /** 售票数量 */
     saleQuantity: number;
     /** 退票数量 */

@@ -4,10 +4,10 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {  
-	// TicketAccountServiceProxy,
+	TicketAccountServiceProxy,
 	PagedResultDtoOfAccountListDto,
 	AccountListDto,
-	// GetAccountsInput,
+	GetAccountsInput,
 	PayMethodServiceProxy,
 	AccountServiceProxy,
 	AccountDetailServiceProxy,
@@ -31,7 +31,7 @@ implements OnInit {
 	constructor(
 		injector: Injector,
 		private _accountService: AccountServiceProxy,
-		// private _ticketaccountService: TicketAccountServiceProxy,
+		private _ticketaccountService: TicketAccountServiceProxy,
 		private _payMethodService: PayMethodServiceProxy,
 		private _accountDetailService: AccountDetailServiceProxy,
 		private _ticketDetailService: TicketDetailServiceProxy,
@@ -83,55 +83,28 @@ implements OnInit {
 
 	selectedDataItems = []
 
-	search() {
-		// var formdata = new GetAccountsInput
-		// var arr = []
-		// for (var i = this.queryData.length - 1; i >= 0; i--) {
-		// 	if (this.queryData[i].value) {
-		// 		arr.push(new QueryData(this.queryData[i]))
-		// 	}
-		// }
-		// formdata.queryData = arr;
-		// formdata.sorting = null;
-		// formdata.maxResultCount = 999;
-		// formdata.skipCount = 0;
-
-		// this._ticketaccountService.getPaged(formdata)
-		// .subscribe(result => {
-		// 	this.dataList = result.items;
-		// 	this.showPaging(result);
-		// });
-	}
-
 	protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
-		// const formdata = new GetAccountsInput();
-		// var arr = []
-		// for (var i = this.queryData.length - 1; i >= 0; i--) {
-		// 	if (this.queryData[i].value) {
-		// 		arr.push(new QueryData(this.queryData[i]))
-		// 	}
-		// }
-		// formdata.queryData = arr;
-		// formdata.sorting = this.sorting
-		// formdata.maxResultCount = request.maxResultCount;
-		// formdata.skipCount = request.skipCount;
+		const formdata = new GetAccountsInput();
+		var arr = []
+		for (var i = this.queryData.length - 1; i >= 0; i--) {
+			if (this.queryData[i].value) {
+				arr.push(new QueryData(this.queryData[i]))
+			}
+		}
+		formdata.queryData = arr;
+				formdata.filterText = ''
+		formdata.sorting = 'creationTime desc'
+		formdata.maxResultCount = request.maxResultCount;
+		formdata.skipCount = request.skipCount;
 
-		// this._ticketaccountService.getPaged(formdata)
-		// .finally(() => {
-		// 	finishedCallback();
-		// })
-		// .subscribe(result => {
-		// 	this.dataList = result.items;
-		// 	this.showPaging(result);
-		// 	this.getpayMethod()
-		// });
-	}
-
-	getpayMethod() {
-		// this._payMethodService.getPaged(null, 999, 0)
-		// .subscribe(result => {
-		// 	this.payMethodList = result.items;
-		// });
+		this._ticketaccountService.getPaged(formdata)
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			this.dataList = result.items;
+			this.showPaging(result);
+		});
 	}
 
 	datechange($event): void {
@@ -155,18 +128,44 @@ implements OnInit {
 			res => {
 				if (res) {
 					const ids = _.map(this.selectedDataItems, 'id');
-					// this._accountService.collectAccounts(ids).subscribe(result => {
-					// 	if (result.resultCode == '000') {
-					// 		this.notify.success(this.l('SuccessfullyCollect'));
-					// 		this.refreshGoFirstPage()
-					// 	} else {
-					// 		this.notify.error(result.resultMessage);
-					// 	}
-					// });
+					this._ticketaccountService.collectAccounts(ids).subscribe(result => {
+						if (result.resultCode == '000') {
+							this.notify.success('收款成功');
+							this.refreshGoFirstPage()
+						} else {
+							this.notify.error(result.resultMessage);
+						}
+					});
 				}
 			},
 			);
 	}
+
+
+	cancelCollect(){
+		const selectCount = this.selectedDataItems.length;
+		if (selectCount <= 0) {
+			abp.message.warn(this.l('PleaseSelectAtLeastOneItem'));
+			return;
+		}
+		abp.message.confirm(
+			this.l('ConfirmCancelSettleXItemsWarningMessage', selectCount),
+			res => {
+				if (res) {
+					const ids = _.map(this.selectedDataItems, 'id');
+					this._ticketaccountService.rCollectAccounts(ids).subscribe(result => {
+						if (result.resultCode == '000') {
+							this.notify.success('取消收款成功');
+							this.refreshGoFirstPage()
+						} else {
+							this.notify.error(result.resultMessage);
+						}
+					});
+				}
+			},
+			);
+	}
+
 
 
 	open(account, id): void {
@@ -179,16 +178,16 @@ implements OnInit {
 		console.log(arr)
 		// this._ticketDetailService.getPaged(arr, null, 999, 0)
 		// .subscribe(result => {
-		// 	console.log(result)
-		// 	this.visible = true;
-		// 	this.accountinfo = [account];
-		// 	this.ticketlist = result.items;
-		// });
+			// 	console.log(result)
+			// 	this.visible = true;
+			// 	this.accountinfo = [account];
+			// 	this.ticketlist = result.items;
+			// });
+		}
+
+
+
+
+
+
 	}
-
-
-
-
-
-
-}

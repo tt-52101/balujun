@@ -9,7 +9,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem">
-          <nz-form-label>{{l('Status')}}</nz-form-label>
+          <nz-form-label>收款状态</nz-form-label>
           <nz-form-control>
             <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 200px" name="status">
               <nz-option nzValue="IsAccount" [nzLabel]="l('IsAccount')"></nz-option>
@@ -17,31 +17,27 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item class="formitem">
-          <nz-form-label>{{l('PayMethod')}}</nz-form-label>
-          <nz-form-control>
-            <nz-select [(ngModel)]="queryData[2].value" nzAllowClear style="width: 200px" name="boat">
-              <nz-option *ngFor="let item of payMethodList;let i = index;" [nzValue]="item.payCode" [nzLabel]="item.payName"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
+
         <nz-form-item class="formitem">
           <nz-form-label>{{l('Date')}}</nz-form-label>
           <nz-form-control>
             <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
-          <button nz-button [nzType]="'primary'" (click)="search()" style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
+          <button nz-button [nzType]="'primary'" (click)="refreshGoFirstPage()" style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Collect') > -1">
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Collect') > -1">
           <button nz-button [nzType]="'primary'" (click)="collect()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c">{{l("Collect")}}</button>
+        </nz-form-item>
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
+          <button nz-button [nzType]="'danger'" (click)="cancelCollect()" style="padding: 0px 20px;height: 32px;" *ngIf="isAllOperation || curmenupower.indexOf('CancelCollect') > -1">取消收款</button>
         </nz-form-item>
       </form>
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  nzBordered [nzScroll]="{ x: '1350px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  nzBordered [nzScroll]="{ x: '1180px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -51,28 +47,28 @@
           <th nz-th class="text-center" nzWidth="100px" nzLeft="60px">
             <span>状态</span>
           </th>
-          <th nz-th class="text-center" nzWidth="150px">
+          <th nz-th class="text-center" nzWidth="190px">
             <span>结账单号</span>
           </th>
-          <th nz-th class="text-center" nzWidth="190px">
+          <th nz-th class="text-center" nzWidth="130px">
             <span>结账日期</span>
           </th>
           <th nz-th class="text-center" nzWidth="120px">
             <span>订单金额</span>
           </th>
-          <th nz-th class="text-center" nzWidth="120px">
+          <th nz-th class="text-center" nzWidth="100px">
             <span>支付方式</span>
           </th>
-          <th nz-th class="text-center" nzWidth="120px">
+          <th nz-th class="text-center" nzWidth="150px">
             <span>数量</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
             <span>业务员</span>
           </th>
-          <th nz-th class="text-center" nzWidth="150px">
+          <th nz-th class="text-center" nzWidth="100px">
             <span>收款人</span>
           </th>
-          <th nz-th class="text-center" nzWidth="190px">
+          <th nz-th class="text-center" nzWidth="150px">
             <span>收款日期</span>
           </th>
           <th nzWidth="150px" class="text-center">
@@ -84,7 +80,7 @@
       <tbody>
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
-          <td nzShowCheckbox [(nzChecked)]="item.checked" nzWidth="60px" nzLeft="0px" (nzCheckedChange)="refreshCheckStatus(dataList)" [nzDisabled]="item.accountStatus=='IsAccount'"></td>
+          <td nzShowCheckbox [(nzChecked)]="item.checked" nzWidth="60px" nzLeft="0px" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
           <td class="text-center" nz-td>
             <span *ngIf="item.accountStatus=='IsAccount'">{{l('IsAccount')}}</span>
             <span *ngIf="item.accountStatus=='NotAccount'">{{l('NotAccount')}}</span>
@@ -104,26 +100,13 @@
               ￥{{item.amount}}
             </span>
           </td>
-          <td class="text-center" nz-td>
-            <span>
-              ￥{{item.rAmount}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              ￥{{item.totalAmount}}
-            </span>
-          </td>
+
           <td class="text-center" nz-td>
             <span *ngIf="item.payMethod">
               {{l(item.payMethod.payName)}}
             </span>
           </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.remark}}
-            </span>
-          </td>
+
           <td class="text-center" nz-td>
             <span>
               {{item.quantity}}
