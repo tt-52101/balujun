@@ -51,7 +51,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.ActivityTempDetailServiceProxy,
   ApiServiceProxies.ActivityDetailServiceProxy,
   ApiServiceProxies.AccountDetailServiceProxy,
-  // ApiServiceProxies.TicketAccountServiceProxy,
+  ApiServiceProxies.TicketAccountServiceProxy,
 
   ApiServiceProxies.ScenicSpotServiceProxy,
   ApiServiceProxies.SourceServiceProxy,

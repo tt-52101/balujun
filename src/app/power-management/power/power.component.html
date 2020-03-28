@@ -8,12 +8,12 @@
             {{l("Create")}}
           </span>
         </button>
-        <!-- <button nz-button (click)="batchcreate()" style="background: #fc992c;border-color: #fc992c;color: #fff;"
+        <button nz-button (click)="batchcreate()" style="background: #fc992c;border-color: #fc992c;color: #fff;"
           *ngIf="isAllOperation || curmenupower.indexOf('BatchCreate') > -1">
           <span>
             批量添加
           </span>
-        </button> -->
+        </button>
         <button nz-button [nzType]="'danger'" (click)="batchDelete()"
           *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
           <span>

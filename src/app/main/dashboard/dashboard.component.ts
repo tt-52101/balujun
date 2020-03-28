@@ -4,7 +4,8 @@ import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
-// import {ScheduleServiceProxy, PagedResultDtoOfScheduleListDto, ScheduleListDto,GetSchedulesInput,  QueryData,OperServiceProxy,AnalyticType} from '@shared/service-proxies/service-proxies';
+// import {ScheduleServiceProxy, PagedResultDtoOfScheduleListDto, ScheduleListDto,getdatasInput,  QueryData,OperServiceProxy,AnalyticType} from '@shared/service-proxies/service-proxies';
+
 
 declare var echarts: any;
 
@@ -67,11 +68,18 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
       // that.setecharts2()
     }, 600)
 
-    this.getschedule(1,1)
+    this.getdata(1,1)
   };
 
 
-  getschedule(days,index){
+  getdata(days,index){
+
+    const id = this.msg.loading('数据加载中...', { nzDuration: 0 }).messageId;
+
+     setTimeout(() => {
+      this.msg.remove(id);
+    }, 2500);
+
     // console.log(days)
     this.nzSelectedIndex = index
     if(days == 0){
@@ -94,7 +102,7 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
       this.queryData[1].value=nextyear+'-'+nextmonth+'-'+nextday + ' 00:00:00'
     }
 
-    // var formdata = new GetSchedulesInput()
+    // var formdata = new getdatasInput()
     var arr=[]
     // for (var i = this.queryData.length - 1; i >= 0; i--) {
     //   if(this.queryData[i].value){
@@ -325,7 +333,7 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
 
     this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
     this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
-    this.getschedule(-1,5)
+    this.getdata(-1,5)
   };
 
 

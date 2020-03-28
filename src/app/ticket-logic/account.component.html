@@ -5,13 +5,13 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="activityNo">结账单号</nz-form-label>
           <nz-form-control>
-            <input type="number" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 150px">
+            <input type="number" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 200px">
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem">
           <nz-form-label>收款状态</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 150px" name="status">
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear style="width: 200px" name="status">
               <nz-option nzValue="IsAccount" [nzLabel]="l('IsAccount')"></nz-option>
               <nz-option nzValue="NotAccount" [nzLabel]="l('NotAccount')"></nz-option>
             </nz-select>
@@ -28,281 +28,284 @@
         <nz-form-item class="formitem">
           <nz-form-label>日期</nz-form-label>
           <nz-form-control>
-            <nz-range-picker style="width: 300px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [(ngModel)]="collectionTime"></nz-range-picker>
+            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
-          <button nz-button [nzType]="'primary'" (click)="search()" style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
+          <button nz-button [nzType]="'primary'" (click)="refreshGoFirstPage()" style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
           <button nz-button [nzType]="'danger'" (click)="cancelSettle()" style="padding: 0px 20px;height: 32px;" *ngIf="isAllOperation || curmenupower.indexOf('CancelSettle') > -1">{{l("CancelSettle")}}</button>
         </nz-form-item>
       </form>
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"  nzBordered [nzScroll]="{ x: '1180px' }" style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
-      <ng-template #noDataTemplate>
-        <no-data></no-data>
-      </ng-template>
-      <thead (nzSortChange)="gridSort($event)">
-        <tr>
-          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
-          <th nz-th class="text-center" nzWidth="100px" nzLeft="60px">
-            <span>状态</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="190px">
-            <span>结账单号</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>结账日期</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="120px">
-            <span>订单金额</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>支付方式</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="150px">
-            <span>数量</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>业务员</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>收款人</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="150px">
-            <span>收款日期</span>
-          </th>
-          <th nzWidth="150px" class="text-center">
-            <span>{{l('Actions')}}</span>
-          </th>
-        </tr>
-      </thead>
-      <!-- 表格内容 -->
-      <tbody>
-        <tr *ngFor="let item of ajaxTable.data">
-          <!-- 全选框 -->
-          <td nzShowCheckbox [(nzChecked)]="item.checked" nzWidth="60px" nzLeft="0px" (nzCheckedChange)="refreshCheckStatus(dataList)" [nzDisabled]="item.accountStatus=='IsAccount'"></td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.accountStatus=='IsAccount'">{{l('IsAccount')}}</span>
-            <span *ngIf="item.accountStatus=='NotAccount'">{{l('NotAccount')}}</span>
-          </td>
-          <td class="text-center" nz-td nzLeft="60px">
-            <span>
-              {{item.accountNo}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.accountDate |_date}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              ￥{{item.amount}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.remark}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.quantity}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.creatorUser">
-              {{item.creatorUser.userName}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.collectior">
-              {{item.collectior.userName}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.collectionTime |_date}}
-            </span>
-          </td>
-          <td class="text-center" nzRight="0px" nzWidth="150px">
-            <ng-container>
-              <a (click)="open(item,item.id)">
-                <span>{{l('Detail')}}</span> </a>
-              </ng-container>
-            </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-row>
-  </nz-card>
-  <nz-drawer [nzVisible]="visible" nzPlacement="bottom" [nzHeight]="600" [nzTitle]="l('Detail')" (nzOnClose)="close()">
-    <p style="font-weight: 600;font-size: 16px">账单信息</p>
-    <nz-table #ajaxTable1 nzShowPagination='false' [nzData]="accountinfo" nzBordered [nzScroll]="{ x: '1545px' }" style="word-break:break-all" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
-      <ng-template #noDataTemplate>
-        <no-data></no-data>
-      </ng-template>
-      <thead>
-        <tr>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>状态</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>结账单号</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="190px">
-            <span>结账日期</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="120px">
-            <span>订单金额</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>支付方式</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>数量</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="120px">
-            <span>业务员</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="100px">
-            <span>收款人</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="190px">
-            <span>收款日期</span>
-          </th>
-          <th nz-th class="text-center" nzWidth="130px">
-            <span>操作</span>
-          </th>
-        </tr>
-      </thead>
-      <!-- 表格内容 -->
-      <tbody>
-        <tr *ngFor="let item of ajaxTable1.data">
-          <td class="text-center" nz-td>
-            <span *ngIf="item.accountStatus=='IsAccount'">{{l('IsAccount')}}</span>
-            <span *ngIf="item.accountStatus=='NotAccount'">{{l('NotAccount')}}</span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.accountNo}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.accountDate |_date}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              ￥{{item.amount}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.payMethod">
-              {{item.payMethod.payName}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.remark}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.quantity}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.creatorUser">
-              {{item.creatorUser.userName}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span *ngIf="item.collectior">
-              {{item.collectior.userName}}
-            </span>
-          </td>
-          <td class="text-center" nz-td>
-            <span>
-              {{item.collectionTime |_date}}
-            </span>
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
+    [(nzPageSize)]="pageSize" nzBordered style="word-break:break-all" (nzPageIndexChange)="pageNumberChange()"
+    (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
+    [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1180px' }" >
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+    <thead (nzSortChange)="gridSort($event)">
+      <tr>
+        <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px"></th>
+        <th nz-th class="text-center" nzWidth="100px" nzLeft="60px">
+          <span>状态</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="190px">
+          <span>结账单号</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>结账日期</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="120px">
+          <span>订单金额</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>支付方式</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="150px">
+          <span>数量</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>业务员</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>收款人</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="150px">
+          <span>收款日期</span>
+        </th>
+        <th nzWidth="150px" class="text-center">
+          <span>{{l('Actions')}}</span>
+        </th>
+      </tr>
+    </thead>
+    <!-- 表格内容 -->
+    <tbody>
+      <tr *ngFor="let item of ajaxTable.data">
+        <!-- 全选框 -->
+        <td nzShowCheckbox [(nzChecked)]="item.checked" nzWidth="60px" nzLeft="0px" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.accountStatus=='IsAccount'">{{l('IsAccount')}}</span>
+          <span *ngIf="item.accountStatus=='NotAccount'">{{l('NotAccount')}}</span>
+        </td>
+        <td class="text-center" nz-td nzLeft="60px">
+          <span>
+            {{item.accountNo}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.accountDate |_date}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            ￥{{item.amount}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.remark}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.quantity}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.creatorUser">
+            {{item.creatorUser.userName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.collectior">
+            {{item.collectior.userName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.collectionTime |_date}}
+          </span>
+        </td>
+        <td class="text-center" nzRight="0px" nzWidth="150px">
+          <ng-container>
+            <a (click)="open(item,item.id)">
+              <span>{{l('Detail')}}</span> </a>
+            </ng-container>
           </td>
         </tr>
       </tbody>
     </nz-table>
-    <p style="font-weight: 600;font-size: 16px;margin-top: 20px;display: inline-block;">账单票据</p>
-    <button nz-button [nzType]="'primary'" (click)="reprint()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c;margin: 0 20px;">补打票</button>
-    
-    <nz-table #ajaxTable2 [nzData]="ticketlist" [nzScroll]="{ x: '920px',y:'460px' }" style="word-break:break-all;" nzShowPagination='false' nzBordered>
-      <ng-template #noDataTemplate>
-        <no-data></no-data>
-      </ng-template>
-      <thead>
-        <tr>
-          <th nz-td nzShowCheckbox [(nzChecked)]="allChecked1" [nzIndeterminate]="checkboxIndeterminate1" (nzCheckedChange)="checkAll1($event)" nzWidth="60px" nzLeft="0px">
-            <th class="text-center" nzWidth="150px">
-              <span>{{l('Ticket')}}</span>
-            </th>
-            <th class="text-center" nzWidth="180px">
-              <span>{{l('TicketNo')}}</span>
-            </th>
-            <th class="text-center" nzWidth="130px">
-              <span>{{l('Name')}}</span>
-            </th>
-            <th class="text-center" nzWidth="150px">
-              <span>{{l('Mobile')}}</span>
-            </th>
-            <th class="text-center" nzWidth="100px">
-              <span>{{l('UnitPrice')}}</span>
-            </th>
-            <th class="text-center" nzWidth="100px">
-              <span>{{l('TicketStatus')}}</span>
-            </th>
-            <th class="text-center" nzWidth="110px" nzRight="0px">
-              <span>{{l('isPrint')}}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let item of ajaxTable2.data; let i = index;">
-            <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus1(ticketlist)" nzLeft="0px"></td>
-            <td class="text-center">
-              <span>
-                {{item.ticket.ticketName}}
-              </span>
-            </td>
-            <td class="text-center">
-              <span>
-                {{item.ticketNo}}
-              </span>
-            </td>
-            <td class="text-center">
-              <span>
-                {{item.customer.customerName}}
-              </span>
-            </td>
-            <td class="text-center">
-              <span>
-                {{item.customer.mobile}}
-              </span>
-            </td>
-            <td class="text-center">
-              <span>
-                {{item.activityDetail.unitPrice}}
-              </span>
-            </td>
-            <td class="text-center">
-              <span>
-                {{l(item.ticketStatus)}}
-              </span>
-            </td>
-            <td nz-td class="text-center" [innerHTML]="item.isPrint | yn" nzRight="0px"> </td>
-          </tr>
-        </tbody>
-      </nz-table>
-    </nz-drawer>
+  </nz-row>
+</nz-card>
+<nz-drawer [nzVisible]="visible" nzPlacement="bottom" [nzHeight]="600" [nzTitle]="l('Detail')" (nzOnClose)="close()">
+  <p style="font-weight: 600;font-size: 16px">账单信息</p>
+  <nz-table #ajaxTable1 nzShowPagination='false' [nzData]="accountinfo" nzBordered [nzScroll]="{ x: '1545px' }" style="word-break:break-all" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+    <thead>
+      <tr>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>状态</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>结账单号</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="190px">
+          <span>结账日期</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="120px">
+          <span>订单金额</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>支付方式</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>数量</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="120px">
+          <span>业务员</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="100px">
+          <span>收款人</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="190px">
+          <span>收款日期</span>
+        </th>
+        <th nz-th class="text-center" nzWidth="130px">
+          <span>操作</span>
+        </th>
+      </tr>
+    </thead>
+    <!-- 表格内容 -->
+    <tbody>
+      <tr *ngFor="let item of ajaxTable1.data">
+        <td class="text-center" nz-td>
+          <span *ngIf="item.accountStatus=='IsAccount'">{{l('IsAccount')}}</span>
+          <span *ngIf="item.accountStatus=='NotAccount'">{{l('NotAccount')}}</span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.accountNo}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.accountDate |_date}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            ￥{{item.amount}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.payMethod">
+            {{item.payMethod.payName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.remark}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.quantity}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.creatorUser">
+            {{item.creatorUser.userName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span *ngIf="item.collectior">
+            {{item.collectior.userName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.collectionTime |_date}}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <p style="font-weight: 700;font-size: 16px;margin-top: 20px;display: inline-block;">账单票据</p>
+  <button nz-button [nzType]="'primary'" (click)="reprint()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c;margin: 0 20px;">补打票</button>
+
+  <nz-table #ajaxTable2 [nzData]="ticketlist" [nzScroll]="{ x: '920px',y:'460px' }" style="word-break:break-all;" nzShowPagination='false' nzBordered>
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+    <thead>
+      <tr>
+        <th nz-td nzShowCheckbox [(nzChecked)]="allChecked1" [nzIndeterminate]="checkboxIndeterminate1" (nzCheckedChange)="checkAll1($event)" nzWidth="60px" nzLeft="0px">
+          <th class="text-center" nzWidth="150px">
+            <span>{{l('Ticket')}}</span>
+          </th>
+          <th class="text-center" nzWidth="180px">
+            <span>{{l('TicketNo')}}</span>
+          </th>
+          <th class="text-center" nzWidth="130px">
+            <span>{{l('Name')}}</span>
+          </th>
+          <th class="text-center" nzWidth="150px">
+            <span>{{l('Mobile')}}</span>
+          </th>
+          <th class="text-center" nzWidth="100px">
+            <span>{{l('UnitPrice')}}</span>
+          </th>
+          <th class="text-center" nzWidth="100px">
+            <span>{{l('TicketStatus')}}</span>
+          </th>
+          <th class="text-center" nzWidth="110px" nzRight="0px">
+            <span>{{l('isPrint')}}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of ajaxTable2.data; let i = index;">
+          <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus1(ticketlist)" nzLeft="0px"></td>
+          <td class="text-center">
+            <span>
+              {{item.ticket.ticketName}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span>
+              {{item.ticketNo}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span>
+              {{item.customer.customerName}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span>
+              {{item.customer.mobile}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span>
+              {{item.activityDetail.unitPrice}}
+            </span>
+          </td>
+          <td class="text-center">
+            <span>
+              {{l(item.ticketStatus)}}
+            </span>
+          </td>
+          <td nz-td class="text-center" [innerHTML]="item.isPrint | yn" nzRight="0px"> </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-drawer>

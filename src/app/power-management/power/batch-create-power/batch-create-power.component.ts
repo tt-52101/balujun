@@ -82,13 +82,13 @@ implements OnInit {
     */
     init(): void {
       this._powerService.getForEdit(this.id).subscribe(result => {
-        // this._menuService.getMenuDropDown().subscribe(res => {
-        //   this.menuarr = res
-        // });
+        this._menuService.getMenuDropDown().subscribe(res => {
+          this.menuarr = res
+        });
 
-        // this._menuService.getPaged(null,999,0).subscribe(result => {
-        //   this.menulist = result.items;
-        // })
+        this._menuService.getPaged('','',999,0).subscribe(result => {
+          this.menulist = result.items;
+        })
 
         this.entity = result.power;
         this.menuId = result.power.menuId

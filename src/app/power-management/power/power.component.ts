@@ -5,7 +5,7 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import { PowerServiceProxy, PagedResultDtoOfPowerListDto, PowerListDto } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditPowerComponent } from './create-or-edit-power/create-or-edit-power.component';
-// import { BatchCreatePowerComponent } from './batch-create-power/batch-create-power.component';
+import { BatchCreatePowerComponent } from './batch-create-power/batch-create-power.component';
 //import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
 
@@ -71,14 +71,14 @@ implements OnInit {
 
 
 	//批量增加
-	// batchcreate(){
-	// 	this.modalHelper.static(BatchCreatePowerComponent)
-	// 	.subscribe(result => {
-	// 		if (result) {
-	// 			this.refresh();
-	// 		}
-	// 	});
-	// }
+	batchcreate(){
+		this.modalHelper.static(BatchCreatePowerComponent)
+		.subscribe(result => {
+			if (result) {
+				this.refresh();
+			}
+		});
+	}
 
 
 	/**
