@@ -7,7 +7,8 @@ import { AppComponentBase } from '@shared/component-base/app-component-base';
 import {
   ActivityServiceProxy,
   GetActivitysInput,
-  TicketDetailServiceProxy, QueryData, GetTicketDetailsInput
+  TicketDetailServiceProxy, QueryData, 
+  // GetTicketDetailsInput
 } from '@shared/service-proxies/service-proxies';
 
 import { NzModalService } from 'ng-zorro-antd';
@@ -77,14 +78,14 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
         }
       }
 
-      var formdata = new GetTicketDetailsInput
-      formdata.queryData = arr
-      formdata.filterText = ''
-      formdata.sorting = ''
-      formdata.maxResultCount = 990
-      formdata.skipCount = 0
+      // var formdata = new GetTicketDetailsInput
+      // formdata.queryData = arr
+      // formdata.filterText = ''
+      // formdata.sorting = ''
+      // formdata.maxResultCount = 990
+      // formdata.skipCount = 0
 
-      this._ticketDetailService.getPaged(formdata)
+      this._ticketDetailService.getPaged(arr,'','',990,0)
         .subscribe(result => {
     
           if (result.items.length > 0) {
@@ -169,13 +170,13 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
         logic: "and"
       })]
 
-    var formdata = new GetTicketDetailsInput
-    formdata.queryData = arr
-    formdata.filterText = ''
-    formdata.sorting = ''
-    formdata.maxResultCount = 990
-    formdata.skipCount = 0
-    this._ticketDetailService.getPaged(formdata)
+    // var formdata = new GetTicketDetailsInput
+    // formdata.queryData = arr
+    // formdata.filterText = ''
+    // formdata.sorting = ''
+    // formdata.maxResultCount = 990
+    // formdata.skipCount = 0
+    this._ticketDetailService.getPaged(arr,'','',990,0)
       .subscribe(result => {
         console.log(result.items);
 

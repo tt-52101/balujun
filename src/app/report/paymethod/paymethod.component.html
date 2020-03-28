@@ -192,7 +192,7 @@
         <th nz-th class="text-center" nzWidth="100px">
           <span>购票人</span>
         </th>
-        <th nz-th class="text-center" nzWidth="100px">
+        <th nz-th class="text-center" nzWidth="200px">
           <span>购票凭证</span>
         </th>
         <th nz-th class="text-center" nzWidth="100px">
@@ -233,18 +233,7 @@
         </td>
         <td class="text-center" nz-td>
           <span>
-
-          </span>
-        </td>
-        <td class="text-center" nz-td>
-          <span>
-
-          </span>
-        </td>
-        <td class="text-center" nz-td [innerHTML]="item.isPrint | yn"></td>
-        <td class="text-center" nz-td>
-          <span>
-
+            {{item.totalAmount}}
           </span>
         </td>
         <td class="text-center" nz-td>
@@ -252,31 +241,46 @@
             {{l(item.payStatus)}}
           </span>
         </td>
-        <td class="text-center" nz-td>
-          <span>
-
-          </span>
+        <td class="text-center" nz-td >
+        
+          {{item.voucherNo}}
         </td>
         <td class="text-center" nz-td>
           <span>
-            {{item.remark}}
-          </span>
-        </td>
-        <td class="text-center" nz-td>
-          <span>
-            {{item.remark}}
-          </span>
-        </td>
-        <td class="text-center" nz-td>
-          <span>
+        
             {{item.totalQuantity}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.buyer}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.activityNo}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.activityDate| _date}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.creatorUserName}}
+          </span>
+        </td>
+        <td class="text-center" nz-td>
+          <span>
+            {{item.orgActivityNo}}
           </span>
         </td>
 
 
         <td class="text-center" nzRight="0px">
           <ng-container>
-            <a (click)="openchild(item.tickets)">
+            <a (click)="openchild(item.id)">
               <span>{{l('Detail')}}</span> </a>
           </ng-container>
         </td>

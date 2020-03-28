@@ -6,7 +6,7 @@ import {
   TicketAccountServiceProxy,
   PagedResultDtoOfAccountListDto,
   AccountListDto,
-  GetTicketDetailsInput,
+  // GetTicketDetailsInput,
   GetAccountsInput,
   PayMethodServiceProxy,
   AccountServiceProxy,
@@ -152,19 +152,19 @@ implements OnInit {
 
 
   open(account, id): void {
-    var formdata=new GetTicketDetailsInput
+    // var formdata=new GetTicketDetailsInput
     var arr=[new QueryData({
       field: "ActivityDetail.Activity.accountsId",
       method: "=",
       value: id,
       logic: "and"
     })]
-    formdata.queryData=arr
-    formdata.filterText=''
-    formdata.sorting=''
-    formdata.maxResultCount=999
-    formdata.skipCount=0
-    this._ticketDetailService.getPaged(formdata)
+    // formdata.queryData=arr
+    // formdata.filterText=''
+    // formdata.sorting=''
+    // formdata.maxResultCount=999
+    // formdata.skipCount=0
+    this._ticketDetailService.getPaged(arr,'','',999,0)
     .subscribe(result => {
       console.log(result)
       this.visible = true;

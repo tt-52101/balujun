@@ -6,7 +6,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {ActivityServiceProxy, PagedResultDtoOfActivityListDto, ActivityListDto,
 	GetActivitysInput,
 	TicketDetailServiceProxy,
-	GetTicketDetailsInput,
+	// GetTicketDetailsInput,
 
 	AccountServiceProxy,
 	PayMethodServiceProxy,
@@ -154,19 +154,19 @@ implements OnInit {
 
 
 	open(activity,activityNo): void {
-		var formdata=new GetTicketDetailsInput
+		// var formdata=new GetTicketDetailsInput
 		var arr=[new QueryData({
 			field: "ActivityDetail.Activity.ActivityNo",
 			method: "=",
 			value: activityNo,
 			logic: "and"
 		})]
-		formdata.queryData=arr
-		formdata.filterText=''
-		formdata.sorting=''
-		formdata.maxResultCount=999
-		formdata.skipCount=0
-		this._ticketDetailService.getPaged(formdata)
+		// formdata.queryData=arr
+		// formdata.filterText=''
+		// formdata.sorting=''
+		// formdata.maxResultCount=999
+		// formdata.skipCount=0
+		this._ticketDetailService.getPaged(arr,'','',990,0)
 		.subscribe(result => {
 			console.log(result)
 			this.visible = true;

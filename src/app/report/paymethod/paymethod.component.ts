@@ -122,13 +122,10 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 
 	open(id): void {
-		console.log(id);
 		
 		this.visible = true;
 		this._SalesCommonServiceProxy.getPagedActivities('','',99,0,[id])
 		.subscribe(result => {
-		
-
 			this.visible = true;
 			this.orderlist = result.items;
 			console.log(this.orderlist);
@@ -140,9 +137,14 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 	}
 
 
-	openchild(tickets): void {
+	openchild(id): void {
 		this.childvisible = true;
-		this.ticketlist = tickets;
+		this._SalesCommonServiceProxy.getPagedActivityDetails('','',99,0,id)
+		.subscribe(result => {
+			this.childvisible = true;
+			console.log(result.items);
+			this.orderlist = result.items;
+		});
 	}
 
 	closechild(): void {

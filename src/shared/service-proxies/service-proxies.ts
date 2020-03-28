@@ -18932,26 +18932,51 @@ export class TicketDetailServiceProxy {
 
     /**
      * 获取的分页列表信息
-     * @param body (optional) 
+     * @param queryData (optional) 
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
      * @return Success
      */
-    getPaged(body: GetTicketDetailsInput | undefined): Observable<PagedResultDtoOfTicketDetailListDto> {
-        let url_ = this.baseUrl + "/api/services/app/TicketDetail/GetPaged";
+    getPaged(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfTicketDetailListDto> {
+        let url_ = this.baseUrl + "/api/services/app/TicketDetail/GetPaged?";
+        if (queryData === null)
+            throw new Error("The parameter 'queryData' cannot be null.");
+        else if (queryData !== undefined)
+            queryData && queryData.forEach((item, index) => { 
+                for (let attr in item)
+        			if (item.hasOwnProperty(attr)) {
+        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
+        			}
+            });
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(body);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetPaged(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -29179,211 +29204,6 @@ export interface ICreateActivityModel {
     openId: string | undefined;
 }
 
-export class ActivityResultModel implements IActivityResultModel {
-    resultCode: string | undefined;
-    resultMessage: string | undefined;
-    detail: string | undefined;
-    data: Data | undefined;
-
-    constructor(data?: IActivityResultModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.resultCode = data["resultCode"];
-            this.resultMessage = data["resultMessage"];
-            this.detail = data["detail"];
-            this.data = data["data"] ? Data.fromJS(data["data"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): ActivityResultModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActivityResultModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["resultCode"] = this.resultCode;
-        data["resultMessage"] = this.resultMessage;
-        data["detail"] = this.detail;
-        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
-        return data; 
-    }
-
-    clone(): ActivityResultModel {
-        const json = this.toJSON();
-        let result = new ActivityResultModel();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IActivityResultModel {
-    resultCode: string | undefined;
-    resultMessage: string | undefined;
-    detail: string | undefined;
-    data: Data | undefined;
-}
-
-export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetailModel {
-    quantity: number;
-    customerId: number;
-    ticketPriceId: number;
-
-    constructor(data?: ICreateGroupActivityDetailModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.quantity = data["quantity"];
-            this.customerId = data["customerId"];
-            this.ticketPriceId = data["ticketPriceId"];
-        }
-    }
-
-    static fromJS(data: any): CreateGroupActivityDetailModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateGroupActivityDetailModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["quantity"] = this.quantity;
-        data["customerId"] = this.customerId;
-        data["ticketPriceId"] = this.ticketPriceId;
-        return data; 
-    }
-
-    clone(): CreateGroupActivityDetailModel {
-        const json = this.toJSON();
-        let result = new CreateGroupActivityDetailModel();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateGroupActivityDetailModel {
-    quantity: number;
-    customerId: number;
-    ticketPriceId: number;
-}
-
-export class CreateGroupActivityModel implements ICreateGroupActivityModel {
-    sourceId: number | undefined;
-    payMethodId: number | undefined;
-    voucherNo: string | undefined;
-    discount: number;
-    orderType: OrderTypeEnum;
-    remark: string | undefined;
-    createUserId: number;
-    totalQuantity: number;
-    totalAmount: number;
-    activityDetails: CreateGroupActivityDetailModel[] | undefined;
-    groupId: number;
-    availableStart: string | undefined;
-    availableEnd: string | undefined;
-
-    constructor(data?: ICreateGroupActivityModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.sourceId = data["sourceId"];
-            this.payMethodId = data["payMethodId"];
-            this.voucherNo = data["voucherNo"];
-            this.discount = data["discount"];
-            this.orderType = data["orderType"];
-            this.remark = data["remark"];
-            this.createUserId = data["createUserId"];
-            this.totalQuantity = data["totalQuantity"];
-            this.totalAmount = data["totalAmount"];
-            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
-                this.activityDetails = [] as any;
-                for (let item of data["activityDetails"])
-                    this.activityDetails.push(CreateGroupActivityDetailModel.fromJS(item));
-            }
-            this.groupId = data["groupId"];
-            this.availableStart = data["availableStart"];
-            this.availableEnd = data["availableEnd"];
-        }
-    }
-
-    static fromJS(data: any): CreateGroupActivityModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateGroupActivityModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["sourceId"] = this.sourceId;
-        data["payMethodId"] = this.payMethodId;
-        data["voucherNo"] = this.voucherNo;
-        data["discount"] = this.discount;
-        data["orderType"] = this.orderType;
-        data["remark"] = this.remark;
-        data["createUserId"] = this.createUserId;
-        data["totalQuantity"] = this.totalQuantity;
-        data["totalAmount"] = this.totalAmount;
-        if (this.activityDetails && this.activityDetails.constructor === Array) {
-            data["activityDetails"] = [];
-            for (let item of this.activityDetails)
-                data["activityDetails"].push(item.toJSON());
-        }
-        data["groupId"] = this.groupId;
-        data["availableStart"] = this.availableStart;
-        data["availableEnd"] = this.availableEnd;
-        return data; 
-    }
-
-    clone(): CreateGroupActivityModel {
-        const json = this.toJSON();
-        let result = new CreateGroupActivityModel();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ICreateGroupActivityModel {
-    sourceId: number | undefined;
-    payMethodId: number | undefined;
-    voucherNo: string | undefined;
-    discount: number;
-    orderType: OrderTypeEnum;
-    remark: string | undefined;
-    createUserId: number;
-    totalQuantity: number;
-    totalAmount: number;
-    activityDetails: CreateGroupActivityDetailModel[] | undefined;
-    groupId: number;
-    availableStart: string | undefined;
-    availableEnd: string | undefined;
-}
-
 export class UserToken implements IUserToken {
     tenantId: number | undefined;
     userId: number;
@@ -31408,6 +31228,270 @@ export interface ITicketForm {
     startDateTime: string | undefined;
     endDateTime: string | undefined;
     ticketStatus: TicketStatusEnum;
+}
+
+export class ActivityResultData implements IActivityResultData {
+    activity: Activity;
+    details: TicketForm[] | undefined;
+    refundAmount: number;
+
+    constructor(data?: IActivityResultData) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.activity = data["activity"] ? Activity.fromJS(data["activity"]) : <any>undefined;
+            if (data["details"] && data["details"].constructor === Array) {
+                this.details = [] as any;
+                for (let item of data["details"])
+                    this.details.push(TicketForm.fromJS(item));
+            }
+            this.refundAmount = data["refundAmount"];
+        }
+    }
+
+    static fromJS(data: any): ActivityResultData {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityResultData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activity"] = this.activity ? this.activity.toJSON() : <any>undefined;
+        if (this.details && this.details.constructor === Array) {
+            data["details"] = [];
+            for (let item of this.details)
+                data["details"].push(item.toJSON());
+        }
+        data["refundAmount"] = this.refundAmount;
+        return data; 
+    }
+
+    clone(): ActivityResultData {
+        const json = this.toJSON();
+        let result = new ActivityResultData();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityResultData {
+    activity: Activity;
+    details: TicketForm[] | undefined;
+    refundAmount: number;
+}
+
+export class ActivityResultModel implements IActivityResultModel {
+    resultCode: string | undefined;
+    resultMessage: string | undefined;
+    detail: string | undefined;
+    data: ActivityResultData;
+
+    constructor(data?: IActivityResultModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.resultCode = data["resultCode"];
+            this.resultMessage = data["resultMessage"];
+            this.detail = data["detail"];
+            this.data = data["data"] ? ActivityResultData.fromJS(data["data"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ActivityResultModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityResultModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["resultCode"] = this.resultCode;
+        data["resultMessage"] = this.resultMessage;
+        data["detail"] = this.detail;
+        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): ActivityResultModel {
+        const json = this.toJSON();
+        let result = new ActivityResultModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityResultModel {
+    resultCode: string | undefined;
+    resultMessage: string | undefined;
+    detail: string | undefined;
+    data: ActivityResultData;
+}
+
+export class CreateGroupActivityDetailModel implements ICreateGroupActivityDetailModel {
+    quantity: number;
+    customerId: number;
+    ticketPriceId: number;
+
+    constructor(data?: ICreateGroupActivityDetailModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.quantity = data["quantity"];
+            this.customerId = data["customerId"];
+            this.ticketPriceId = data["ticketPriceId"];
+        }
+    }
+
+    static fromJS(data: any): CreateGroupActivityDetailModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateGroupActivityDetailModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quantity"] = this.quantity;
+        data["customerId"] = this.customerId;
+        data["ticketPriceId"] = this.ticketPriceId;
+        return data; 
+    }
+
+    clone(): CreateGroupActivityDetailModel {
+        const json = this.toJSON();
+        let result = new CreateGroupActivityDetailModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateGroupActivityDetailModel {
+    quantity: number;
+    customerId: number;
+    ticketPriceId: number;
+}
+
+export class CreateGroupActivityModel implements ICreateGroupActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    discount: number;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    activityDetails: CreateGroupActivityDetailModel[] | undefined;
+    groupId: number;
+    availableStart: string | undefined;
+    availableEnd: string | undefined;
+
+    constructor(data?: ICreateGroupActivityModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.sourceId = data["sourceId"];
+            this.payMethodId = data["payMethodId"];
+            this.voucherNo = data["voucherNo"];
+            this.discount = data["discount"];
+            this.orderType = data["orderType"];
+            this.remark = data["remark"];
+            this.createUserId = data["createUserId"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(CreateGroupActivityDetailModel.fromJS(item));
+            }
+            this.groupId = data["groupId"];
+            this.availableStart = data["availableStart"];
+            this.availableEnd = data["availableEnd"];
+        }
+    }
+
+    static fromJS(data: any): CreateGroupActivityModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateGroupActivityModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sourceId"] = this.sourceId;
+        data["payMethodId"] = this.payMethodId;
+        data["voucherNo"] = this.voucherNo;
+        data["discount"] = this.discount;
+        data["orderType"] = this.orderType;
+        data["remark"] = this.remark;
+        data["createUserId"] = this.createUserId;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["groupId"] = this.groupId;
+        data["availableStart"] = this.availableStart;
+        data["availableEnd"] = this.availableEnd;
+        return data; 
+    }
+
+    clone(): CreateGroupActivityModel {
+        const json = this.toJSON();
+        let result = new CreateGroupActivityModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateGroupActivityModel {
+    sourceId: number | undefined;
+    payMethodId: number | undefined;
+    voucherNo: string | undefined;
+    discount: number;
+    orderType: OrderTypeEnum;
+    remark: string | undefined;
+    createUserId: number;
+    totalQuantity: number;
+    totalAmount: number;
+    activityDetails: CreateGroupActivityDetailModel[] | undefined;
+    groupId: number;
+    availableStart: string | undefined;
+    availableEnd: string | undefined;
 }
 
 export class GroupActivityResultData implements IGroupActivityResultData {
@@ -54213,7 +54297,7 @@ export class TicketDetailListDto implements ITicketDetailListDto {
     /** OrgActivityId */
     orgActivityId: number | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     /** TicketId */
     ticketId: number;
@@ -54351,7 +54435,7 @@ export interface ITicketDetailListDto {
     /** OrgActivityId */
     orgActivityId: number | undefined;
     /** CustomerId */
-    customerId: number;
+    customerId: number | undefined;
     customer: Customer;
     /** TicketId */
     ticketId: number;
@@ -54453,75 +54537,6 @@ export interface IGetTicketDetailForEditOutput {
     ticketDetail: TicketDetailEditDto;
     checkMethodEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
     ticketStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-/** 获取的传入参数Dto */
-export class GetTicketDetailsInput implements IGetTicketDetailsInput {
-    queryData: QueryData[] | undefined;
-    filterText: string | undefined;
-    sorting: string | undefined;
-    maxResultCount: number;
-    skipCount: number;
-
-    constructor(data?: IGetTicketDetailsInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            if (data["queryData"] && data["queryData"].constructor === Array) {
-                this.queryData = [] as any;
-                for (let item of data["queryData"])
-                    this.queryData.push(QueryData.fromJS(item));
-            }
-            this.filterText = data["filterText"];
-            this.sorting = data["sorting"];
-            this.maxResultCount = data["maxResultCount"];
-            this.skipCount = data["skipCount"];
-        }
-    }
-
-    static fromJS(data: any): GetTicketDetailsInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetTicketDetailsInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (this.queryData && this.queryData.constructor === Array) {
-            data["queryData"] = [];
-            for (let item of this.queryData)
-                data["queryData"].push(item.toJSON());
-        }
-        data["filterText"] = this.filterText;
-        data["sorting"] = this.sorting;
-        data["maxResultCount"] = this.maxResultCount;
-        data["skipCount"] = this.skipCount;
-        return data; 
-    }
-
-    clone(): GetTicketDetailsInput {
-        const json = this.toJSON();
-        let result = new GetTicketDetailsInput();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 获取的传入参数Dto */
-export interface IGetTicketDetailsInput {
-    queryData: QueryData[] | undefined;
-    filterText: string | undefined;
-    sorting: string | undefined;
-    maxResultCount: number;
-    skipCount: number;
 }
 
 export class PagedResultDtoOfTicketDetailListDto implements IPagedResultDtoOfTicketDetailListDto {
@@ -65811,7 +65826,7 @@ export class AjaxResult implements IAjaxResult {
     absoluteUri: string | undefined;
     isException: boolean;
     primaryId: PrimaryId | undefined;
-    data: Data2 | undefined;
+    data: Data | undefined;
 
     constructor(data?: IAjaxResult) {
         if (data) {
@@ -65829,7 +65844,7 @@ export class AjaxResult implements IAjaxResult {
             this.absoluteUri = data["absoluteUri"];
             this.isException = data["isException"];
             this.primaryId = data["primaryId"] ? PrimaryId.fromJS(data["primaryId"]) : <any>undefined;
-            this.data = data["data"] ? Data2.fromJS(data["data"]) : <any>undefined;
+            this.data = data["data"] ? Data.fromJS(data["data"]) : <any>undefined;
         }
     }
 
@@ -65865,7 +65880,7 @@ export interface IAjaxResult {
     absoluteUri: string | undefined;
     isException: boolean;
     primaryId: PrimaryId | undefined;
-    data: Data2 | undefined;
+    data: Data | undefined;
 }
 
 export enum ReturnCode {
@@ -66111,43 +66126,6 @@ export interface IAccessTokenResult {
     errorCodeValue: number;
     errmsg: string | undefined;
     p2PData: P2PData | undefined;
-}
-
-export class Data implements IData {
-
-    constructor(data?: IData) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-    }
-
-    static fromJS(data: any): Data {
-        data = typeof data === 'object' ? data : {};
-        let result = new Data();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data; 
-    }
-
-    clone(): Data {
-        const json = this.toJSON();
-        let result = new Data();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IData {
 }
 
 export class Anonymous implements IAnonymous {
@@ -66779,9 +66757,9 @@ export class PrimaryId implements IPrimaryId {
 export interface IPrimaryId {
 }
 
-export class Data2 implements IData2 {
+export class Data implements IData {
 
-    constructor(data?: IData2) {
+    constructor(data?: IData) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -66793,9 +66771,9 @@ export class Data2 implements IData2 {
     init(data?: any) {
     }
 
-    static fromJS(data: any): Data2 {
+    static fromJS(data: any): Data {
         data = typeof data === 'object' ? data : {};
-        let result = new Data2();
+        let result = new Data();
         result.init(data);
         return result;
     }
@@ -66805,15 +66783,15 @@ export class Data2 implements IData2 {
         return data; 
     }
 
-    clone(): Data2 {
+    clone(): Data {
         const json = this.toJSON();
-        let result = new Data2();
+        let result = new Data();
         result.init(json);
         return result;
     }
 }
 
-export interface IData2 {
+export interface IData {
 }
 
 export class P2PData implements IP2PData {
