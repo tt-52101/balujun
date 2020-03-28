@@ -48,7 +48,7 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
 
     rolelist = []
     userlist = []
-    ticketlist=[]
+    ticketlist = []
     protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
 
         const formdata = new GetTicketRolesInput();
@@ -64,8 +64,7 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         formdata.skipCount = request.skipCount;
 
 
-
-        this._ticketRoleServiceProxy.getPaged(this.queryData[0].value,this.queryData[1].value,this.queryData[2].value,formdata)
+        this._ticketRoleServiceProxy.getPaged(this.queryData[0].value||'', this.queryData[1].value||'', this.queryData[2].value||'', formdata)
             .finally(() => {
                 finishedCallback();
             })
@@ -100,20 +99,20 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         this._roleService.getPaged(this.selectedPermission, '', '', 99, 0)
             .subscribe(result => {
                 console.log(result.items);
-                
+
                 this.rolelist = result.items
             });
     }
 
-    userlists(){
+    userlists() {
         this._userService
-        .getPaged(this.selectedPermission,[],undefined,undefined,undefined,'','',99,0)
-        .subscribe(result => {       
-            this.userlist = result.items
-        });
+            .getPaged(this.selectedPermission, [], undefined, undefined, undefined, '', '', 99, 0)
+            .subscribe(result => {
+                this.userlist = result.items
+            });
     }
 
-    ticketlistlists(){
+    ticketlistlists() {
 
         const formdata = new GetTicketPricesInput();
 
@@ -121,12 +120,12 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         formdata.sorting = ''
         formdata.maxResultCount = 99;
         formdata.skipCount = 0;
-    
+
         this._ticketPriceService.getPaged(formdata)
-          .subscribe(result => {
-            this.ticketlist=result.items
-          });
-         
+            .subscribe(result => {
+                this.ticketlist = result.items
+            });
+
     }
 
 

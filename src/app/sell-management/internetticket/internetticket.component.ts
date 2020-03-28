@@ -6,7 +6,7 @@ import { AppComponentBase } from '@shared/component-base/app-component-base';
 
 import {
   ActivityServiceProxy,
-  // GetActivitysInput,
+  GetActivitysInput,
   TicketDetailServiceProxy, QueryData, GetTicketDetailsInput
 } from '@shared/service-proxies/service-proxies';
 
@@ -48,42 +48,16 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     logic: "and"
   }, {
     field: "activityNo",
-    method: "%",
-    value: "",
-    logic: "and"
-  }, {
-    field: "mobile",
-    method: "%",
-    value: "",
-    logic: "and"
-  }, {
-    field: "buyer",
-    method: "%",
+    method: "=",
     value: "",
     logic: "and"
   }]
 
-  certificatesNum = ''
   orderlist = []
-
   orderinfo = {}
-
-  orderticket = [
-    {
-      ticketName: '成人票',
-      ticketNo: '张三',
-      customerName: 15992591634,
-      mobile: 123456,
-      unitPrice: 200,
-      ticketStatus: '已激活',
-      stime: '2019-10-14 09:40:00',
-      etime: '2019-10-15 09:40:00'
-    }
-  ]
+  orderticket = []
 
   single = false
-
-
   allChecked = false
   checkboxIndeterminate = false
   selectedDataItems = []
@@ -92,63 +66,76 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     this.init();
   }
 
-  init(): void {
-    this.orderlist = [
-      {
-        activityNo: 132456,
-        buyer: '张三',
-        mobile: 15992591634,
-        certificatesNum: 1.0,
-        totalQuantity: '现金支付',
-        totalAmount: '支付成功',
-        payName: '创建时间',
-        payMethod: true,
-        sourceName: '前台',
-        unitPrice: 200,
-        totalQuantity2: 9,
-        etime: '2019-10-15 09:40:00',
-
-      }
-    ]
-  }
+  init(): void { }
 
   query(): void {
     var arr = []
-    for (var i = 1; i < this.queryData.length; i++) {
-      if (this.queryData[i].value) {
-        arr.push(new QueryData(this.queryData[i]))
+    if (this.queryData[0].value) {
+      for (var i = 0; i < this.queryData.length-1; i++) {
+        if (this.queryData[i].value) {
+          arr.push(new QueryData(this.queryData[i]))
+        }
       }
+
+      var formdata = new GetTicketDetailsInput
+      formdata.queryData = arr
+      formdata.filterText = ''
+      formdata.sorting = ''
+      formdata.maxResultCount = 990
+      formdata.skipCount = 0
+
+      this._ticketDetailService.getPaged(formdata)
+        .subscribe(result => {
+          if (result.items.length > 0) {
+            this.single = true
+            for (var i = 0; i < result.items.length; i++) {
+              result.items[i].isPrint = false
+            }
+            this.orderticket = result.items
+            console.log(result);
+             this.orderinfo = result.items[0].activityDetail.activity
+             console.log(this.orderinfo);
+             
+          } else {
+            abp.message.warn(this.l('NoOrder'));
+          }
+        });
+    } else if(this.queryData[1].value){
+      var arr=[]
+      for (var i = 1; i <this.queryData.length; i++) {
+        if(this.queryData[i].value){
+          arr.push(new QueryData(this.queryData[i]))
+        }
+      }
+      var formdata=new GetActivitysInput
+      formdata.queryData = arr;
+      formdata.sorting = null;
+      formdata.maxResultCount = 999;
+      formdata.skipCount = 0;
+  
+      this._activityService.getPaged(formdata)
+      .subscribe(result => {
+        if(result.items.length==0){
+          abp.message.warn(this.l('NoOrder'));
+        }else{
+          this.single=false
+          this.orderlist = result.items;
+        }
+      });
     }
-
-    // var formdata=new GetActivitysInput
-    // formdata.queryData = arr;
-    // formdata.certificatesNum=this.certificatesNum
-    // formdata.sorting = null;
-    // formdata.maxResultCount = 999;
-    // formdata.skipCount = 0;
-
-    // this._activityService.getPaged(formdata)
-    // .subscribe(result => {
-    //   if(result.items.length==0){
-    //     abp.message.warn(this.l('NoOrder'));
-    //   }else{
-    //     this.single=false
-    //     this.orderlist = result.items;
-    //   }
-    // });
   }
 
   checkAll($event) {
     // console.log($event)
-    // if($event){
-    //   for (var i =0;i< this.orderticket.length; i++) {
-    //     this.orderticket[i].checked=true
-    //   }
-    // }else{
-    //   for (var i =0;i< this.orderticket.length; i++) {
-    //     this.orderticket[i].checked=false
-    //   }
-    // }
+    if ($event) {
+      for (var i = 0; i < this.orderticket.length; i++) {
+        this.orderticket[i].checked = true
+      }
+    } else {
+      for (var i = 0; i < this.orderticket.length; i++) {
+        this.orderticket[i].checked = false
+      }
+    }
   }
 
   refreshCheckStatus(entityList: any[]): void {
@@ -166,29 +153,30 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
   }
 
   select(item) {
-    console.log(item);
-
+    console.log(item.activityNo);
     this.single = true
     this.orderinfo = item
+    console.log(this.orderinfo);
 
-    var arr = [new QueryData({
-      field: "ActivityDetail.Activity.ActivityNo",
-      method: "=",
-      value: item.activityNo,
-      logic: "and"
-    })]
+    var arr = [
+      new QueryData({
+        field: "ActivityDetail.Activity.ActivityNo",
+        method: "=",
+        value: item.activityNo,
+        logic: "and"
+      })]
 
     var formdata = new GetTicketDetailsInput
-    formdata.queryData = []
+    formdata.queryData = arr
     formdata.filterText = ''
     formdata.sorting = ''
     formdata.maxResultCount = 990
     formdata.skipCount = 0
     this._ticketDetailService.getPaged(formdata)
       .subscribe(result => {
-        console.log(result);
+        console.log(result.items);
 
-        // this.orderticket=result.items
+        this.orderticket = result.items
       });
   }
 
@@ -202,10 +190,10 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     var idarr = []
     var ticketarr = []
     for (var i = 0; i < this.orderticket.length; i++) {
-      // if(this.orderticket[i].checked){
-      //   idarr.push(this.orderticket[i].id)
-      //   ticketarr.push(this.orderticket[i])
-      // }
+      if (this.orderticket[i].checked) {
+        idarr.push(this.orderticket[i].id)
+        ticketarr.push(this.orderticket[i])
+      }
     }
 
     if (idarr.length == 0) {
@@ -214,56 +202,56 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
     }
 
 
-    // this._ticketDetailService.printTicketDetail(idarr)
-    // .subscribe(result => {
-    //   this.select(this.orderinfo)
-    //   this.notify.success(this.l('PrintSuccess'));
+    this._ticketDetailService.printTicketDetail(idarr)
+      .subscribe(result => {
+        this.select(this.orderinfo)
+        this.notify.success(this.l('PrintSuccess'));
 
 
 
 
-    //   // LODOP=getLodop();
-    //   // var top = 22; //最高坐标
-    //   // var left = 100; //最左坐标
-    //   // var width = 10; //上边距
-    //   // var height = 12; //右边距
-    //   // var QRcodeWidth = 120; //二维码大小
-    //   // var paperWidth = 700; //纸张宽度
-    //   // var paperHeight = 1200; //纸张长度
-    //   // var fontWidth = 400; //文字区域宽度
-    //   // var fontHeight = 20; //文字区域高度
-    //   // LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
-    //   // LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
-    //   // LODOP.PRINT_INITA("");
-    //   // LODOP.SET_PRINT_STYLE("FontSize", 10);
-    //   // //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
-    //   // LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
-    //   // for (var i = 0; i < ticketarr.length; i++) {
-    //     //   var item = ticketarr[i];
+        //   // LODOP=getLodop();
+        //   // var top = 22; //最高坐标
+        //   // var left = 100; //最左坐标
+        //   // var width = 10; //上边距
+        //   // var height = 12; //右边距
+        //   // var QRcodeWidth = 120; //二维码大小
+        //   // var paperWidth = 700; //纸张宽度
+        //   // var paperHeight = 1200; //纸张长度
+        //   // var fontWidth = 400; //文字区域宽度
+        //   // var fontHeight = 20; //文字区域高度
+        //   // LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
+        //   // LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
+        //   // LODOP.PRINT_INITA("");
+        //   // LODOP.SET_PRINT_STYLE("FontSize", 10);
+        //   // //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+        //   // LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
+        //   // for (var i = 0; i < ticketarr.length; i++) {
+        //     //   var item = ticketarr[i];
 
-    //     //   var saleDate=moment(item.schedule.saleDate).format('YYYY-MM-DD');
-    //     //   var startTime=moment(item.schedule.startTime).format('HH:mm:ss');
+        //     //   var saleDate=moment(item.schedule.saleDate).format('YYYY-MM-DD');
+        //     //   var startTime=moment(item.schedule.startTime).format('HH:mm:ss');
 
-    //     //   LODOP.NewPage(); //创建新的打印页
-    //     //   LODOP.ADD_PRINT_BARCODE(top + 15, left + height, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
+        //     //   LODOP.NewPage(); //创建新的打印页
+        //     //   LODOP.ADD_PRINT_BARCODE(top + 15, left + height, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
 
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
-    //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票    号：" + item.ticketNo);
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-    //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "船    名：" + item.schedule.boat.boatName);
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-    //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "航班日期：" + saleDate);
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-    //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "开船时间：" + startTime);
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-    //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 1 * fontHeight, fontWidth, fontHeight, "乘客姓名：" + item.customer.customerName);
-    //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-    //     // }
-    //     // //LODOP.PRINT();
-    //     // LODOP.PREVIEW()
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
+        //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票    号：" + item.ticketNo);
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+        //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "船    名：" + item.schedule.boat.boatName);
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+        //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "航班日期：" + saleDate);
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+        //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "开船时间：" + startTime);
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+        //     //   LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 1 * fontHeight, fontWidth, fontHeight, "乘客姓名：" + item.customer.customerName);
+        //     //   LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+        //     // }
+        //     // //LODOP.PRINT();
+        //     // LODOP.PREVIEW()
 
-    //     // window.print();
-    //   });
+        //     // window.print();
+      });
 
   }
 }

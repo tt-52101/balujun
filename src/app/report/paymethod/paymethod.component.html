@@ -54,10 +54,10 @@
         <tr *ngFor="let item of ajaxTable.data">
           <td nz-td class="text-center">
 
-            <span *ngIf="item.payName">
-              {{item.payName}}
+            <span *ngIf="item.payMethod">
+              {{item.payMethod.payName}}
             </span>
-            <span *ngIf="!item.payName">
+            <span *ngIf="!item.payMethod">
               合计
             </span>
 
@@ -101,6 +101,7 @@
           </td>
 
         </tr>
+        
       </tbody>
     </nz-table>
   </nz-row>
