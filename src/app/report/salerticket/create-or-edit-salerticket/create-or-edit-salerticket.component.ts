@@ -4,7 +4,8 @@ import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {
 	UserServiceProxy ,QueryData,
-	TicketServiceProxy,
+  TicketServiceProxy,
+  SalesByPayMethodResultDto
 	// SellerTicketResultDto,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
@@ -16,7 +17,7 @@ import { CreateOrEditSalerticketTaoComponent } from './create-or-edit-salerticke
   templateUrl: './create-or-edit-salerticket.component.html',
   styles: []
 })
-export class CreateOrEditSalerticketComponent extends PagedListingComponentBase<''> implements OnInit {
+export class CreateOrEditSalerticketComponent extends PagedListingComponentBase<SalesByPayMethodResultDto> implements OnInit {
 
   protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
     throw new Error("Method not implemented.");
