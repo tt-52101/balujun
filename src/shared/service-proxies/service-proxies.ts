@@ -30420,8 +30420,13 @@ export enum ActivityTypeEnum {
 }
 
 export enum AccountStatusEnum {
+<<<<<<< HEAD
     NotAccount = <any>"NotAccount", 
     IsAccount = <any>"IsAccount", 
+=======
+    NotAccount = <any>"IsAccount", 
+    IsAccount = <any>"NotAccount", 
+>>>>>>> 03c3f6d75a0139a268f1c41e7814e139c248c147
 }
 
 export class Account implements IAccount {

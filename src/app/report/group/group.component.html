@@ -40,11 +40,11 @@
     <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"
       (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
       [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered style="word-break:break-all">
-      <!-- 暂无数据组件 -->
+
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
-      <!-- 表头 -->
+
       <thead>
         <tr>
           <th nz-th class="text-center" nzWidth="100px" nzLeft="0px">
@@ -74,7 +74,7 @@
         </tr>
       </thead>
 
-      <!-- 表格内容 -->
+
       <tbody>
         <tr *ngFor="let item of ajaxTable.data"> 
 

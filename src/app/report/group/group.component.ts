@@ -6,6 +6,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
 	UserServiceProxy ,QueryData,
 	TicketServiceProxy,
+	SalesByPayMethodResultDto
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditGroupComponent } from './create-or-edit-group/create-or-edit-group.component';
@@ -20,7 +21,7 @@ import * as moment from 'moment';
 })
 
 
-export class  GroupComponent extends PagedListingComponentBase<''>
+export class  GroupComponent extends PagedListingComponentBase<SalesByPayMethodResultDto>
 implements OnInit {
 
 	constructor(

@@ -72,8 +72,6 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 		var arr = []
 
-
-
 		for (var i = 0; i < this.queryData.length; i++) {
 			if (this.queryData[i].value) {
 				arr.push(new QueryData(this.queryData[i]))
@@ -84,9 +82,7 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 				finishedCallback();
 			})
 			.subscribe(result => {
-		
 				this.dataList = result.items;
-				console.log(this.dataList);
 				if (result.totalCount > 0) {
 					this.total = [result.total]
 				}
@@ -126,12 +122,18 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 
 	open(id): void {
+		console.log(id);
+		
 		this.visible = true;
-		this._SalesCommonServiceProxy.getPagedActivities('','',10,0,[])
+
+		this._SalesCommonServiceProxy.getPagedActivities('','',99,0,[id])
+
 		.subscribe(result => {
-			console.log(result);
+		
+
 			this.visible = true;
-			// this.orderlist = result;
+			this.orderlist = result.items;
+			console.log(this.orderlist);
 		});
 	}
 

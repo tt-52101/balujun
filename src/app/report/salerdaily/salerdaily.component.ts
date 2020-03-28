@@ -6,6 +6,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
 	UserServiceProxy ,QueryData,
 	TicketServiceProxy,
+	SalesByPayMethodResultDto
 	// SellerTicketResultDto,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
@@ -22,7 +23,7 @@ import { CreateOrEditSalerdailyComponent } from './create-or-edit-salerdaily/cre
 })
 
 
-export class  SalerDailyComponent extends PagedListingComponentBase<''>
+export class  SalerDailyComponent extends PagedListingComponentBase<SalesByPayMethodResultDto>
 implements OnInit {
 
 	constructor(
