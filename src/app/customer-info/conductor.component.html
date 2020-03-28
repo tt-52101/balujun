@@ -5,7 +5,7 @@
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
 
         <nz-form-item>
-          <nz-form-label nzFor="position">角色名称</nz-form-label>
+          <nz-form-label nzFor="rolename">角色名称</nz-form-label>
           <nz-form-control>
             <nz-select required [(ngModel)]="queryData[0].value" name="role.name" nzAllowClear style="width: 120px">
               <nz-option *ngFor="let item of rolelist" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
@@ -18,7 +18,7 @@
         <nz-form-item>
           <nz-form-label nzFor="username">人员姓名</nz-form-label>
           <nz-form-control>
-            <nz-select required [(ngModel)]="queryData[1].value" name="role.name" nzAllowClear style="width: 120px">
+            <nz-select required [(ngModel)]="queryData[1].value" name="username" nzAllowClear style="width: 120px">
               <nz-option *ngFor="let item of userlist" [nzValue]="item.userName" [nzLabel]="item.userName"></nz-option>
             </nz-select>
           </nz-form-control>
@@ -36,7 +36,7 @@
         
 
         <nz-form-item>
-          <button nz-button nzType="primary" type="submit" (click)="refresh()">
+          <button nz-button nzType="primary" type="submit" (click)="refreshGoFirstPage()">
             <span>
               {{l("Query")}}
             </span>

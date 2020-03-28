@@ -78,8 +78,6 @@ implements OnInit {
     })
     .subscribe(result => {
       this.dataList = result.items;
-
-      console.log(result.items);
       
       this.showPaging(result);
     });
@@ -90,6 +88,8 @@ implements OnInit {
   // getstation(){
   //   this._ticketStationService.getPaged('','',999,0)
   //   .subscribe(result => {
+  //     console.log(result);
+      
   //     this.stationList = result.items;
   //   });
   // }

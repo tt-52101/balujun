@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {PayMethodServiceProxy, PagedResultDtoOfPayMethodListDto,QueryData,TicketServiceProxy,
-	SalesByPayMethodServiceProxy,SalesByPayMethodResultDto
+	SalesByPayMethodServiceProxy,SalesByPayMethodResultDto,SalesCommonServiceProxy
 } from '@shared/service-proxies/service-proxies';
 
 import * as moment from 'moment';
@@ -26,6 +26,7 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 		private _payMethodService: PayMethodServiceProxy,
 		private _salesByPayMethodServiceProxy: SalesByPayMethodServiceProxy,
 		private _ticketService: TicketServiceProxy,
+		private _SalesCommonServiceProxy: SalesCommonServiceProxy,
 	) {
 		super(injector);
 	}
@@ -83,16 +84,16 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 				finishedCallback();
 			})
 			.subscribe(result => {
-				console.log(result);
-				
+		
 				this.dataList = result.items;
+				console.log(this.dataList);
 				if (result.totalCount > 0) {
 					this.total = [result.total]
 				}
 				this.showPaging(result);
 			});
 
-	// 	this.getpaymethod()
+		this.getpaymethod()
 	}
 
 
@@ -125,12 +126,13 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 
 	open(id): void {
-		// this.visible = true;
-		// this._payMethodService.payMethodStatDetail(id)
-		// .subscribe(result => {
-		// 	this.visible = true;
-		// 	this.orderlist = result;
-		// });
+		this.visible = true;
+		this._SalesCommonServiceProxy.getPagedActivities(id)
+		.subscribe(result => {
+			console.log(result);
+			this.visible = true;
+			// this.orderlist = result;
+		});
 	}
 
 	close(): void {
@@ -149,11 +151,11 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 
 
-	// getpaymethod() {
-	// 	this._payMethodService.getPagedGet('', '', 999, 0)
-	// 		.subscribe(result => {
-	// 			this.payMethodList = result.items
-	// 		});
-	// }
+	getpaymethod() {
+		this._payMethodService.getPaged('', '', 999, 0)
+			.subscribe(result => {
+				this.payMethodList = result.items
+			});
+	}
 
 }

@@ -66,18 +66,7 @@ export class RefundTicketComponent extends AppComponentBase implements OnInit {
 
   orderinfo={}
 
-  orderticket=[
-    {
-      ticketName:'成人票',
-      ticketNo:'张三',
-      customerName:15992591634,
-      mobile:123456,
-      unitPrice:200,
-      ticketStatus:'已激活',
-      stime:'2019-10-14 09:40:00',
-      etime:'2019-10-15 09:40:00'
-    }
-  ]
+  orderticket=[]
 
 
   rDiscount='0.9'
@@ -96,25 +85,11 @@ export class RefundTicketComponent extends AppComponentBase implements OnInit {
   }
 
   init(): void {
-    this.orderlist=[
-      {
-        activityNo:132456,
-        buyer:'张三',
-        mobile:15992591634,
-        certificatesNum:1.0,
-        totalQuantity:'现金支付',
-        totalAmount:'支付成功',
-        payName:'创建时间',
-        payMethod:true,
-        sourceName:'前台',
-        unitPrice:200,
-        totalQuantity2:9,
-        etime:'2019-10-15 09:40:00'
-      }
-    ]
+ 
   }
 
   query(): void {
+  
     var arr=[]
     if(this.queryData[0].value || this.queryData[1].value){
       for (var i = 0;i < 2; i++) {
@@ -132,14 +107,14 @@ export class RefundTicketComponent extends AppComponentBase implements OnInit {
       
       this._ticketDetailService.getPaged(formdata)
       .subscribe(result => {
+ 
         if(result.items.length>0){
           this.single=true
-          // for (var i =0;i< result.items.length; i++) {
-            //   result.items[i].isPrint=false
-            // }
-
+          for (var i =0;i< result.items.length; i++) {
+              result.items[i].isPrint=false
+            }
+            this.orderticket=result.items
             
-            // this.orderticket=result.items
             // this.orderinfo = result.items[0].activity;
           }else{
             abp.message.warn(this.l('NoOrder'));

@@ -34,7 +34,7 @@ const routes: Routes = [{
 	{ path: 'ticket-detail', component: TicketDetailComponent, data: { title: '票据详情' } },
 	{ path: 'ticket-detail-history', component: TicketDetailHistoryComponent, data: { title: '验票记录管理' } },
 	{ path: 'ticket-introduce', component: TicketIntroduceComponent, data: { title: '票型介绍' } },
-	{ path: 'ticket-price', component: TicketPriceComponent, data: { title: '票种价格' } },
+	{ path: 'ticket-price', component: TicketPriceComponent, data: { title: '票价管理' } },
 	{ path: 'ticket-station', component: TicketStationComponent, data: { title: '售票站点' } },
 
 
