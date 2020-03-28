@@ -1,12 +1,17 @@
 <div style="display: flex;justify-content: space-between;">
-  <div style="width: 40%">
+  <div style="width: 49.5%">
     <nz-card style="width:100%" class="my-card">
-      <!-- <nz-radio-group [(ngModel)]="range1" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts1()'>
-        <label nz-radio-button nzValue="Daily">今日</label>
-        <label nz-radio-button nzValue="Weekly">一周</label>
-        <label nz-radio-button nzValue="Monthly">一月</label>
-        <label nz-radio-button nzValue="Yearly">一年</label>
-      </nz-radio-group> -->
+      <div class="ctrlbox">
+        <button nz-button [nzType]="nzSelectedIndex == 1 ?'primary':'info'" (click)="getschedule(1,1)" >今天</button>
+        <button nz-button [nzType]="nzSelectedIndex == 2 ?'primary':'info'" (click)="getschedule(7,2)" >后一周</button>
+        <button nz-button [nzType]="nzSelectedIndex == 3 ?'primary':'info'" (click)="getschedule(30,3)" >后一月</button>
+        <button nz-button [nzType]="nzSelectedIndex == 4 ?'primary':'info'" (click)="getschedule(365,4)" >后一年</button>
+        <button nz-button [nzType]="nzSelectedIndex == 5 ?'primary':'info'" (click)="getschedule(0,5)" >自定义时间</button>
+        <nz-range-picker style="margin-left: 8px" [nzFormat]="yyyy/MM/dd" [ngModel]="datepicker" (ngModelChange)="datechange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
+      </div>
+
+      <div style="font-size: 20px;color: #3C4353;margin-top: 10px;">营收状况</div>
+
       <nz-row [nzGutter]="16">
         <nz-col [nzSpan]="12">
           <nz-statistic [nzValue]="peoplecount | number" [nzTitle]="'今日游客数量'"></nz-statistic>
@@ -18,29 +23,12 @@
       <div id="container1" style="height: 300px"></div>
     </nz-card>
     <nz-card style="width:100%;margin-top: 10px" class="my-card">
-      <p style="font-size: 20px;color: #3C4353">票型比例分析</p>
-      <!-- <nz-radio-group [(ngModel)]="range2" [nzButtonStyle]="'solid'" style="display: flex;margin: 20px 0;" (ngModelChange)='setecharts2()'>
-        <label nz-radio-button nzValue="Daily">今日</label>
-        <label nz-radio-button nzValue="Weekly">一周</label>
-        <label nz-radio-button nzValue="Monthly">一月</label>
-        <label nz-radio-button nzValue="Yearly">一年</label>
-      </nz-radio-group> -->
+      <div style="font-size: 20px;color: #3C4353">票型比例分析</div>
       <div id="container2" style="height: 300px"></div>
     </nz-card>
   </div>
-  <div style="width: 57.5%">
+  <div style="width: 49.5%">
     <nz-card style="width: 100%;min-height: 600px;">
-      <p style="font-size: 20px;color: #3C4353">可售航班信息</p>
-      <nz-tabset [nzTabBarExtraContent]="tabBarextra" [nzAnimated]="false" [nzSelectedIndex]='nzSelectedIndex'>
-        <nz-tab (nzSelect)="getschedule(1)" nzTitle="今天"></nz-tab>
-        <nz-tab (nzSelect)="getschedule(7)" nzTitle="后一周"></nz-tab>
-        <nz-tab (nzSelect)="getschedule(30)" nzTitle="后一月"></nz-tab>
-        <nz-tab (nzSelect)="getschedule(365)" nzTitle="后一年"></nz-tab>
-        <nz-tab (nzSelect)="getschedule(0)" nzTitle="自定义时间"></nz-tab>
-      </nz-tabset>
-      <ng-template #tabBarextra>
-        <nz-range-picker [nzFormat]="yyyy/MM/dd" [ngModel]="datepicker" (ngModelChange)="datechange($event)" [nzDisabledDate]="disabledDate"></nz-range-picker>
-      </ng-template>
       <nz-table #ajaxTable [nzData]="schedulelist" [nzFrontPagination]="false">
         <thead>
           <tr>
@@ -49,8 +37,7 @@
             <th class="text-center">状态</th>
             <th class="text-center">航线</th>
             <th class="text-center">游船</th>
-            <th class="text-center">出发时间</th>
-            <th class="text-center">到达时间</th>
+
           </tr>
         </thead>
         <tbody>
@@ -60,8 +47,6 @@
             <td class="text-center">{{l(item.scheduleStatus)}}</td>
             <td class="text-center">{{ item.route.routeName }}</td>
             <td class="text-center">{{ item.boat.boatName }}</td>
-            <td class="text-center">{{ item.startTimeStr }}</td>
-            <td class="text-center">{{ item.endTimeStr }}</td>
           </tr>
         </tbody>
       </nz-table>
@@ -69,8 +54,3 @@
   </div>
 </div>
 <div style="background: #EBF1F5;width: 100%;height: 50px"></div>
-
-
-<!-- <div ng-mousemove="countfunc" style="width: 200px;height: 200px;background: #eee;">在我这移动鼠标!</div>
-
-<h1>{{count}}</h1> -->

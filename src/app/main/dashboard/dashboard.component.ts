@@ -30,7 +30,7 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
 
   schedulelist = [];
 
-  nzSelectedIndex=0
+  nzSelectedIndex=1
 
   queryData=[{
     field: "saleDate",
@@ -44,14 +44,7 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
     logic: "and"
   }]
 
-  // count=0
-
-  // countfunc(){
-  //   this.count += this.count
-  // }
-
   disabledDate = (current: Date): boolean => {
-    // Can not select days before today and today
     return differenceInCalendarDays(current, new Date()) < 0;
   };
   
@@ -60,28 +53,27 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
     injector: Injector,
     private http: _HttpClient,
     public msg: NzMessageService,
-    // private _scheduleService: ScheduleServiceProxy,
-    // private _operService: OperServiceProxy,
+
     ) {
     super(injector);
   }
 
 
-
   ngOnInit(): void {
-    // console.log('haslogin')
+
     var that = this
     setTimeout(function() {
-      that.setecharts1()
+      // that.setecharts1()
       // that.setecharts2()
     }, 600)
 
-    this.getschedule(1)
+    this.getschedule(1,1)
   };
 
 
-  getschedule(days){
+  getschedule(days,index){
     // console.log(days)
+    this.nzSelectedIndex = index
     if(days == 0){
       this.schedulelist=[]
       return
@@ -314,28 +306,27 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
   // // };
 
 
-  // datechange($event): void {
-  //   if($event[0].getTime() == $event[1].getTime()){
-  //     $event[1]=new Date($event[1].getTime()+24*60*60*1000)
-  //   }
+  datechange($event): void {
+    if($event[0].getTime() == $event[1].getTime()){
+      $event[1]=new Date($event[1].getTime()+24*60*60*1000)
+    }
 
-  //   var year=$event[0].getFullYear();
-  //   var month = $event[0].getMonth() + 1;
-  //   var day = $event[0].getDate();
+    var year=$event[0].getFullYear();
+    var month = $event[0].getMonth() + 1;
+    var day = $event[0].getDate();
 
-  //   var fulldate1=year+'-'+month+'-'+day;
+    var fulldate1=year+'-'+month+'-'+day;
 
-  //   var year=$event[1].getFullYear();
-  //   var month = $event[1].getMonth() + 1;
-  //   var day = $event[1].getDate();
+    var year=$event[1].getFullYear();
+    var month = $event[1].getMonth() + 1;
+    var day = $event[1].getDate();
 
-  //   var fulldate2=year+'-'+month+'-'+day;
+    var fulldate2=year+'-'+month+'-'+day;
 
-  //   this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
-  //   this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
-  //   this.nzSelectedIndex=4
-  //   this.getschedule(-1)
-  // };
+    this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+    this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+    this.getschedule(-1,5)
+  };
 
 
 }
