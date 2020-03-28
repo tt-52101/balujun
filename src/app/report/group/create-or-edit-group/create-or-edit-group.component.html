@@ -5,9 +5,7 @@
     </div>
     <!-- 实体的表格内容 -->
     <nz-row class="my-md">
-      <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"
-        (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
-        [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered
+      <nz-table #ajaxTable [nzData]="list" 
         [nzScroll]="{ x: '1700px' }" style="word-break:break-all">
         <!-- 暂无数据组件 -->
         <ng-template #noDataTemplate>
