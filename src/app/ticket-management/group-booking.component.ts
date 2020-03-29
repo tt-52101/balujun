@@ -221,6 +221,7 @@ export class GroupBooking extends AppComponentBase implements OnInit {
 
     deleteRow(i): void {
         this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
+        this.countprice()
     }
 
     createOrEdit(i): void {
@@ -317,6 +318,7 @@ export class GroupBooking extends AppComponentBase implements OnInit {
             if(result.resultCode == "000"){
                 this.notify.success(result.resultMessage);
                 this.orderticket=[]
+                this.receive=0
                 this.countprice()
 
 

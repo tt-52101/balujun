@@ -69,9 +69,9 @@
           <th nz-th nzWidth="135px" class="text-center">
             <span>是否启用</span>
           </th>
-          <th nz-th nzWidth="135px" class="text-center">
+<!--           <th nz-th nzWidth="135px" class="text-center">
             <span>创建人</span>
-          </th>
+          </th> -->
           <th class="text-center" nzRight="0px" nzWidth="135px">
             <span>操作</span>
           </th>
@@ -84,42 +84,42 @@
           <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
           <td nz-td nzWidth="135px" class="text-center">
 
-            <span nz-tooltip [nzTitle]="item.ticket">
+            <span>
               {{item.ticketName}}
             </span>
 
           </td>
           <td nz-td nzWidth="135px" class="text-center">
 
-            <span nz-tooltip [nzTitle]="item.scenicSpot">
+            <span>
               {{item.ticketCode}}
             </span>
 
           </td>
           <td nz-td nzWidth="135px" class="text-center">
 
-            <span nz-tooltip [nzTitle]="item.tradeName">
+            <span>
               {{item.audioName}}
             </span>
 
           </td>
           <!-- <td nz-td nzWidth="135px" class="text-center">
             
-              <span nz-tooltip [nzTitle]="item.tradeInfo">
+              <span>
                 {{item.creationTime|_date}}
               </span>
 
             </td> -->
           <!-- <td nz-td nzWidth="135px" class="text-center">
             
-              <span nz-tooltip [nzTitle]="item.address">
+              <span>
                 {{item.address}}
               </span>
 
             </td> -->
             <td nz-td nzWidth="135px" class="text-center">
 
-              <span nz-tooltip [nzTitle]="item.abstract">
+              <span>
                 {{item.sort}}
               </span>
 
@@ -137,19 +137,17 @@
             </td>
             <td nz-td nzWidth="135px" class="text-center">
 
-              <span nz-tooltip [nzTitle]="item.abstract">
+              <span>
                 {{l(item.checkMethod)}}
               </span>
 
             </td>
             <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
-            <td nz-td nzWidth="135px" class="text-center">
-
-              <span nz-tooltip [nzTitle]="item.abstract">
+<!--             <td nz-td nzWidth="135px" class="text-center">
+              <span>
                 {{item.creatorUser}}
               </span>
-
-            </td>
+            </td> -->
             <td na-td nzRight="0px" nzWidth="135px" class="text-center">
               <!-- 编辑 -->
               <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">

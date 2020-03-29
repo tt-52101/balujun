@@ -21,7 +21,8 @@ import {
     SourceServiceProxy,
     QueryData,
     OrderTypeEnum,
-    CreateActivityDetailModel
+    CreateActivityDetailModel,
+    TicketDetailServiceProxy
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
@@ -39,6 +40,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
         private _payMethodService: PayMethodServiceProxy,
         private _sourceService: SourceServiceProxy,
         private _activityService: ActivityServiceProxy,
+        private _ticketDetailService: TicketDetailServiceProxy, 
         ) {
         super(injector);
         this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
@@ -161,6 +163,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
 
     deleteRow(i): void {
         this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
+        this.countprice()
     }
 
     createOrEdit(i): void {
@@ -210,6 +213,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
         this.totalprice=totalprice * this.discount / 100
 
         this.totalnum=totalnum
+        this.parsenum()
     }
     parsenum(){
         var change=parseFloat((this.receive - this.totalprice)+'').toFixed(2)
@@ -259,6 +263,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                 this.notify.success(result.resultMessage);
 
                 this.orderticket=[]
+                this.receive=0
                 this.countprice()
 
                 LODOP=getLodop();
@@ -276,10 +281,11 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                 LODOP.PRINT_INITA("");
                 LODOP.SET_PRINT_STYLE("FontSize", 10);
                 //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+                var idarr=[]
                 LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
                 for (var i = 0; i < result.data.details.length; i++) {
                     var item = result.data.details[i];
-
+                    idarr.push(item.ticketDetailId)
                     LODOP.NewPage();
                     LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", 123);
 
@@ -297,7 +303,8 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "可验次数：" + item.checkingQuantity);
                     LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
                 }
-
+                this._ticketDetailService.printTicketDetail(idarr)
+                .subscribe(result => {});
                 // LODOP.PREVIEW()
                 LODOP.PRINT();
             }else{
