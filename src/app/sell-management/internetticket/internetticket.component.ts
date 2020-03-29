@@ -246,5 +246,3 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
 
   }
 }
-
-

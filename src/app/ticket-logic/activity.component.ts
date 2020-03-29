@@ -161,7 +161,6 @@ implements OnInit {
 
 
 	open(activity,activityNo): void {
-
 		var arr=[new QueryData({
 			field: "ActivityDetail.Activity.ActivityNo",
 			method: "=",

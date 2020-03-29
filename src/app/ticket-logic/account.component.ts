@@ -164,7 +164,6 @@ implements OnInit {
       value: id,
       logic: "and"
     })]
-
     this._ticketDetailService.getPaged(arr,'','',999,0)
     .subscribe(result => {
       console.log(result)
