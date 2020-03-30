@@ -239,7 +239,7 @@ implements OnInit {
 			var item = ticketarr[i];
 
 			LODOP.NewPage();
-			LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", 123);
+			LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
 
 			LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
 			LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketPriceName);

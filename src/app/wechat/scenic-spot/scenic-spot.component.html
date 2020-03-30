@@ -1,5 +1,5 @@
 <nz-card [nzBordered]="false">
-  <div class="mb-md">
+<!--   <div class="mb-md">
     <nz-row nzGutter="16">
       <nz-col nzMd="6" nzSm="6" class="btn-gutter">
         <button nz-button [nzType]="'primary'" (click)="createOrEdit()" *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
@@ -14,7 +14,7 @@
         </button>
       </nz-col>
     </nz-row>
-  </div>
+  </div> -->
   <nz-row class="my-md">
     <nz-table #ajaxTable [nzData]="dataList" nzBordered [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"  (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzPageSizeOptions]="pageSizes" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
       <ng-template #noDataTemplate>
@@ -90,21 +90,21 @@
             </ellipsis>
           </td>
 
-          <td nz-td class="text-center" [innerHTML]="item.isEnabled | yn"> </td>
+          <td nz-td class="text-center" [innerHTML]="item.isEnable | yn"> </td>
           <td nz-td class="text-center">
             <ng-container *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1" >
               <a (click)="createOrEdit(item.id)">
                 <span>{{l('Edit')}}</span>
               </a>
-              <nz-divider nzType="vertical"></nz-divider>
+              <!-- <nz-divider nzType="vertical"></nz-divider> -->
             </ng-container>
-            <ng-container *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1" >
+<!--             <ng-container *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1" >
               <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
                 <a nz-popconfirm>
                   <span>{{l('Delete')}}</span>
                 </a>
               </nz-popconfirm>
-            </ng-container>
+            </ng-container> -->
           </td>
         </tr>
       </tbody>

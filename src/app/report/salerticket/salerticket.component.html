@@ -32,7 +32,7 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzWidthConfig]="['150px', '100px', '100px', '100px','100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px']" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems" [nzFrontPagination]="false" [nzNoResult]="noDataTemplate" nzBordered [nzScroll]="{ x: '1250px' }" style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" [nzWidthConfig]="['150px', '100px', '100px', '100px','100px', '100px', '100px', '100px', '100px', '100px', '100px', '100px']" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1250px' }" style="word-break:break-all">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
@@ -200,9 +200,10 @@
     </nz-row>
   </nz-card>
 
+
   <nz-drawer [nzVisible]="ordervisible" nzPlacement="bottom" [nzHeight]="documentHeight" nzTitle="订单列表" (nzOnClose)="closeorder()">
-    <nz-table #ajaxTable2 [nzData]="orderlist" [nzScroll]="{ y:'700px' }" style="word-break:break-all;" [nzShowPagination]='false' nzBordered>
-      <ng-template #noDataTemplate>
+    <nz-table #ajaxTable2 [nzData]="orderlist" [nzScroll]="{ y:'700px' }" style="word-break:break-all;" nzBordered [nzNoResult]="noOrderTemplate" [(nzPageIndex)]="oindex" [nzTotal]="ototal" nzShowSizeChanger [(nzPageSize)]="opagesize" (nzPageSizeChange)="oSizeChange($event)" (nzPageIndexChange)="oIndexChange($event)" [nzPageSizeOptions]="[10,20,50,100]" [nzFrontPagination]="false">
+      <ng-template #noOrderTemplate>
         <no-data></no-data>
       </ng-template>
       <thead>
@@ -231,9 +232,6 @@
         <th nz-th class="text-center" nzWidth="100px">
           <span>数量</span>
         </th>
-<!--         <th nz-th class="text-center" nzWidth="100px">
-          <span>购票人</span>
-        </th> -->
         <th nz-th class="text-center" nzWidth="190px">
           <span>购票凭证</span>
         </th>
@@ -243,9 +241,6 @@
         <th nz-th class="text-center" nzWidth="100px">
           <span>制单人</span>
         </th>
-<!--         <th nz-th class="text-center" nzWidth="100px">
-          <span>原单号</span>
-        </th> -->
         <th nz-th class="text-center" nzWidth="100px" nzRight="0px">
           <span>操作</span>
         </th>
@@ -283,19 +278,13 @@
           </span>
         </td>
         <td class="text-center" nz-td>
-
-          {{item.voucherNo}}
+          {{item.payName}}
         </td>
         <td class="text-center" nz-td>
           <span>
             {{item.totalQuantity}}
           </span>
         </td>
-<!--         <td class="text-center" nz-td>
-          <span>
-            {{item.buyer}}
-          </span>
-        </td> -->
         <td class="text-center" nz-td>
           <span>
             {{item.activityNo}}
@@ -311,15 +300,9 @@
             {{item.creatorUserName}}
           </span>
         </td>
-<!--         <td class="text-center" nz-td>
-          <span>
-            {{item.orgActivityNo}}
-          </span>
-        </td> -->
-
         <td class="text-center" nzRight="0px">
           <ng-container>
-            <a (click)="tao(item.id)">
+            <a (click)="openticket(item.id)">
               <span>{{l('Detail')}}</span> </a>
             </ng-container>
           </td>
@@ -327,7 +310,91 @@
       </tbody>
     </nz-table>
 
-    <nz-pagination style="float:right;margin-top: 20px" [(nzPageIndex)]="oindex" [nzTotal]="ototal" nzShowSizeChanger [(nzPageSize)]="opagesize" (nzPageSizeChange)="oSizeChange($event)" (nzPageIndexChange)="oIndexChange($event)" [nzPageSizeOptions]="[10,20,50,100]"></nz-pagination>
+
+    <nz-drawer [nzVisible]="ticketvisible" nzPlacement="bottom" [nzHeight]="documentHeight" nzTitle="订单明细" (nzOnClose)="closeticket()">
+      <nz-table #ajaxTable3 [nzData]="ticketdetail" [nzScroll]="{ y:'700px' }" style="word-break:break-all;" nzBordered [nzNoResult]="noTicketTemplate" [(nzPageIndex)]="tindex" [nzTotal]="ttotal" nzShowSizeChanger [(nzPageSize)]="tpagesize" (nzPageSizeChange)="tSizeChange($event)" (nzPageIndexChange)="tIndexChange($event)" [nzPageSizeOptions]="[10,20,50,100]" [nzFrontPagination]="false">
+        <ng-template #noTicketTemplate>
+          <no-data></no-data>
+        </ng-template>
+        <thead>
+          <tr>
+            <th class="text-center" nzWidth="150px">
+              <span>票码</span>
+            </th>
+            <th class="text-center" nzWidth="80px">
+              <span>票型名称</span>
+            </th>
+            <th class="text-center" nzWidth="80px">
+              <span>可验票数</span>
+            </th>
+            <th class="text-center" nzWidth="80px">
+              <span>已验票数</span>
+            </th>
+            <th class="text-center" nzWidth="100px">
+              <span>票状态</span>
+            </th>
+            <th class="text-center" nzWidth="150px">
+              <span>开始有效期</span>
+            </th>
+            <th class="text-center" nzWidth="150px">
+              <span>结束有效期</span>
+            </th>
+            <th class="text-center" nzWidth="180px">
+              <span>最后一次的使用时间</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ajaxTable3.data; let i = index;">
+            <td class="text-center">
+              <span>
+                {{item.ticketNo}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.ticketName}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.checkingQuantity}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.checkedQuantity}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{l(item.ticketStatus)}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.startDateTime |_date}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.endDateTime |_date}}
+              </span>
+            </td>
+            <td class="text-center">
+              <span>
+                {{item.checkDate |_date}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+
+
+
+    </nz-drawer>
+
 
 
   </nz-drawer>

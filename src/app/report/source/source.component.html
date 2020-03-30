@@ -4,10 +4,10 @@
     <nz-row nzGutter="16">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true" style="display: flex;align-items: center;">
         <nz-form-item class="formitem">
-          <nz-form-label nzFor="activityNo">团体名称</nz-form-label>
+          <nz-form-label nzFor="activityNo">订单来源</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="organizationId" nzAllowClear style="width: 200px" name="organization">
-              <nz-option *ngFor="let item of groupList;let i = index;" [nzValue]="item.id" [nzLabel]="item.groupName">
+            <nz-select [(ngModel)]="sourceId" nzAllowClear style="width: 200px" name="organization">
+              <nz-option *ngFor="let item of sourceList;let i = index;" [nzValue]="item.id" [nzLabel]="item.sourceName">
               </nz-option>
             </nz-select>
           </nz-form-control>
@@ -40,7 +40,7 @@
       <thead>
         <tr>
           <th nz-th class="text-center" nzWidth="100px" nzLeft="0px">
-            <span>团体名称</span>
+            <span>订单来源</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">
             <span>购票数量</span>
@@ -57,7 +57,7 @@
         <tr *ngFor="let item of ajaxTable.data">
           <td nz-td class="text-center" nzLeft="0px">
             <span>
-              {{item.organization.groupName}}
+              {{item.source.sourceName}}
             </span>
           </td>
           <td nz-td class="text-center">

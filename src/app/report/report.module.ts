@@ -11,7 +11,7 @@ import { PayMethodComponent } from './paymethod/paymethod.component';
 import { GroupComponent } from './group/group.component';
 
 
-// import { SourceComponent } from './source/source.component';
+import { SourceComponent } from './source/source.component';
 // import { TravelComponent, } from './travel/travel.component';
 // import { OtaComponent } from './ota/ota.component';
 
@@ -25,7 +25,7 @@ import { GroupComponent } from './group/group.component';
   PayMethodComponent,
   GroupComponent,
 
-  // SourceComponent,
+  SourceComponent,
   // TravelComponent,
   // OtaComponent,
 
