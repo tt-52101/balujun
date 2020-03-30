@@ -6,7 +6,8 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
 	UserServiceProxy ,QueryData,
 	TicketServiceProxy,
-	SalesByPayMethodResultDto
+	SalesBySellerDailyServiceProxy,
+	SalesBySellerDailyResultDto
 	// SellerTicketResultDto,
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
@@ -23,12 +24,13 @@ import { CreateOrEditSalerdailyComponent } from './create-or-edit-salerdaily/cre
 })
 
 
-export class  SalerDailyComponent extends PagedListingComponentBase<SalesByPayMethodResultDto>
+export class  SalerDailyComponent extends PagedListingComponentBase<SalesBySellerDailyResultDto>
 implements OnInit {
 
 	constructor(
 		injector: Injector,
 		private _userService: UserServiceProxy,
+		private _salesBySellerDailyServiceProxy: SalesBySellerDailyServiceProxy,
 		private _ticketService: TicketServiceProxy,
 		) {
 		super(injector);
@@ -133,25 +135,24 @@ implements OnInit {
 			}
 		}
 		
-	// 	this._sellerdailyService.getPaged(arr,null,request.maxResultCount,request.skipCount,this.boatId,this.ticketId)
-	// 	.finally(() => {
-	// 		finishedCallback();
-	// 	})
-	// 	.subscribe(result => {
-	// 		// if(result.totalCount>0){
-	// 			this.dataList = result.items;
-	// 		if(result.totalCount>0){
-	// 			this.total= [result.total]
-	// 		}
-	// 			this.showPaging(result);
-	// 			// }
-	// 		});
+		this._salesBySellerDailyServiceProxy.getPaged(arr,'','',request.maxResultCount,request.skipCount,this.ticketId)
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			console.log(result.items);
+			
+			if(result.totalCount>0){
+				this.dataList = result.items;
+				this.total= [result.total]
+				this.showPaging(result);
+				}
+			});
 
-	// 	this.getuser()
-	// 	this.getschedule()
-	// 	this.getboat()
-	// 	this.getticket()
-	// }
+		// this.getuser()
+		// this.getschedule()
+		// this.getticket()
+	}
 
 	// getticket(){
 	// 	const formdata = new GetTicketsInput()
@@ -163,19 +164,6 @@ implements OnInit {
 	// 	this._ticketService.getPaged(formdata)
 	// 	.subscribe(result => {
 	// 		this.ticketlarr = result.items;
-	// 	});
-	// }
-
-	// getboat(){
-	// 	const formdata = new GetBoatsInput()
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._boatService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.boatList = result.items;
 	// 	});
 	// }
 
@@ -193,13 +181,14 @@ implements OnInit {
 	// }
 
 
-	}
+	// }
 
 	close(): void {
 		this.visible = false;
 	}
-	open(id : number): void {
-		this.modalHelper.static(CreateOrEditSalerdailyComponent, { id: id })
+	open(activityIds): void {
+		
+		this.modalHelper.static(CreateOrEditSalerdailyComponent, { id: activityIds })
 		.subscribe(result => {
 		  if (result) {
 			this.refresh();
@@ -208,14 +197,14 @@ implements OnInit {
 	  }
 
 
-	openchild(tickets): void {
-		this.childvisible = true;
-		this.ticketlist = tickets;
-	}
+	// openchild(tickets): void {
+	// 	this.childvisible = true;
+	// 	this.ticketlist = tickets;
+	// }
 
-	closechild(): void {
-		this.childvisible = false;
-	}
+	// closechild(): void {
+	// 	this.childvisible = false;
+	// }
 
 
 

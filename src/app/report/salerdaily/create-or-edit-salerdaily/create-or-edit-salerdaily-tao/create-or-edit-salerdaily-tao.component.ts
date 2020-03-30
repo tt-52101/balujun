@@ -1,13 +1,13 @@
 import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
-
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {
   UserServiceProxy, QueryData,
   TicketServiceProxy,
-  SalesByPayMethodResultDto
-  // SellerTicketResultDto,
-  // GetTicketsInput
+  SalesCommonActivityInput,
+  SalesCommonServiceProxy,
+  SalesBySellerDailyResultDto,
+  SalesCommonActivityDetailInput,
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
@@ -16,19 +16,37 @@ import {
   styles: []
 })
 
-export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBase<SalesByPayMethodResultDto> implements OnInit {
-  protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
-    throw new Error("Method not implemented.");
-  }
-
+export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBase<SalesBySellerDailyResultDto> implements OnInit {
+  id: any
+  ticketlist:any[]
   constructor(
     injector: Injector,
+    private _SalesCommonServiceProxy: SalesCommonServiceProxy,
   ) {
     super(injector);
   }
+  protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
 
-  ngOnInit() {
+
+    console.log(this.id);
+    
+    const formdata = new SalesCommonActivityDetailInput();
+    formdata.activityId = this.id
+    formdata.sorting = ''
+    formdata.maxResultCount = 99;
+    formdata.skipCount = 0;
+    formdata.filterText = ''
+    this._SalesCommonServiceProxy.getPagedActivityDetails(formdata)
+      .subscribe(result => {
+        // this.childvisible = true;
+        console.log(result);
+        this.ticketlist = result.items;
+      });
   }
+
+
+
+
   list = [
     {
       aa: '未结账',
@@ -62,9 +80,6 @@ export class CreateOrEditSalerdailyTaoComponent extends PagedListingComponentBas
     }
   ]
 
-  ticket(){
-    console.log('打补票');
-    
-  }
+
 
 }

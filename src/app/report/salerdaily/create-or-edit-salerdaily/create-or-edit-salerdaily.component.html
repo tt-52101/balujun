@@ -5,10 +5,12 @@
   </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="list" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize"
+    <nz-table #ajaxTable [nzData]="orderlist" 
+      [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="false"
       (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
-      [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered
-      [nzScroll]="{ x: '1700px' }" style="word-break:break-all">
+      [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems"
+      [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1700px' }"
+      >
       <!-- 暂无数据组件 -->
       <ng-template #noDataTemplate>
         <no-data></no-data>
@@ -63,77 +65,74 @@
       <!-- 表格内容 -->
       <tbody>
         <tr *ngFor="let item of ajaxTable.data">
-          <!-- 全选框 -->
+          <td class="text-center" nz-td nzLeft="0px">
+            <span *ngIf="item.closed">{{l('IsAccount')}}</span>
+            <span *ngIf="!item.closed" style="color: red;">{{l('NotAccount')}}</span>
+          </td>
+          <td class="text-center" nz-td>
+            <span>
+              {{item.activityNo}}
+            </span>
+          </td>
+          <td class="text-center" nz-td>
+            <span>
+              {{l(item.sourceName)}}
+            </span>
+          </td>
+          <td class="text-center" nz-td>
+            <span>
+              {{l(item.orderType)}}
+            </span>
+          </td>
+          <td class="text-center" nz-td>
+            <span>
+              {{item.totalAmount}}
+            </span>
+          </td>
+          <td class="text-center" nz-td>
+            <span>
+              {{l(item.payStatus)}}
+            </span>
+          </td>
+          <td class="text-center" nz-td>
 
-          <td nz-td class="text-center" nzLeft="0px">
+            {{item.voucherNo}}
+          </td>
+          <td class="text-center" nz-td>
             <span>
-              {{item.aa}}
+              {{item.totalQuantity}}
             </span>
           </td>
-          <td nz-td class="text-center" >
+          <td class="text-center" nz-td>
             <span>
-              {{item.bb}}
+              {{item.buyer}}
             </span>
           </td>
-          <td nz-td class="text-center">
+          <td class="text-center" nz-td>
             <span>
-              {{item.cc}}
+              {{item.activityNo}}
             </span>
           </td>
-          <td nz-td class="text-center" >
+          <td class="text-center" nz-td>
             <span>
-              {{item.dd}}
+              {{item.activityDate| _date}}
             </span>
           </td>
-          <td nz-td class="text-center" >
+          <td class="text-center" nz-td>
             <span>
-              {{item.ee}}
+              {{item.creatorUserName}}
             </span>
           </td>
-          <td nz-td class="text-center" >
+          <td class="text-center" nz-td>
             <span>
-              {{item.ff}}
+              {{item.orgActivityNo}}
             </span>
           </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.gg}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.hh}}
-            </span>
-          </td>
-          <td nz-td class="text-center" >
-            <span>
-              {{item.ii}}
-            </span>
-          </td>
-          <td nz-td class="text-center" >
-            <span>
-              {{item.jj}}
-            </span>
-          </td>
-          <td nz-td class="text-center" >
-            <span>
-              {{item.ll}}
-            </span>
-          </td>
-          <td nz-td class="text-center" >
-            <span>
-              {{item.mm}}
-            </span>
-          </td>
-          <td nz-td class="text-center">
-            <span>
-              {{item.nn}}
-            </span>
-          </td>
-          <td nz-td class="text-center" nzRight="0px">
+
+          <td class="text-center" nzRight="0px">
             <ng-container>
-              <a (click)="tao(1)">
-                <span>详情</span> </a>
+              <a (click)="tao(item.id)">
+                <span>{{l('Detail')}}</span> </a>
             </ng-container>
           </td>
         </tr>

@@ -3,8 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {PayMethodServiceProxy, PagedResultDtoOfPayMethodListDto,QueryData,TicketServiceProxy,
-	SalesByPayMethodServiceProxy,SalesByPayMethodResultDto,SalesCommonServiceProxy
+import {PayMethodServiceProxy,QueryData,SalesByPayMethodServiceProxy,SalesByPayMethodResultDto,SalesCommonServiceProxy,SalesCommonActivityDetailInput,SalesCommonActivityInput
 } from '@shared/service-proxies/service-proxies';
 
 import * as moment from 'moment';
@@ -25,7 +24,6 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 		injector: Injector,
 		private _payMethodService: PayMethodServiceProxy,
 		private _salesByPayMethodServiceProxy: SalesByPayMethodServiceProxy,
-		private _ticketService: TicketServiceProxy,
 		private _SalesCommonServiceProxy: SalesCommonServiceProxy,
 	) {
 		super(injector);
@@ -82,6 +80,8 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 				finishedCallback();
 			})
 			.subscribe(result => {
+				console.log(result);
+				
 				this.dataList = result.items;
 				if (result.totalCount > 0) {
 					this.total = [result.total]
@@ -121,16 +121,20 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 	};
 
 
-	open(id): void {
+	open(activityIds): void {
 		
 		this.visible = true;
-
-		this._SalesCommonServiceProxy.getPagedActivities('','',99,0,[id])
+		const formdata = new SalesCommonActivityInput();
+		formdata.activityIds = activityIds
+		formdata.sorting = ''
+        formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+		formdata.filterText = ''
+		this._SalesCommonServiceProxy.getPagedActivities(formdata)
 
 		.subscribe(result => {
 			this.visible = true;
 			this.orderlist = result.items;
-			console.log(this.orderlist);
 		});
 	}
 
@@ -140,12 +144,18 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 
 
 	openchild(id): void {
+		console.log(id);
 		this.childvisible = true;
-		this._SalesCommonServiceProxy.getPagedActivityDetails('','',99,0,id)
+		const formdata = new SalesCommonActivityDetailInput();
+		formdata.activityId = id
+		formdata.sorting = ''
+        formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+		formdata.filterText = ''
+		this._SalesCommonServiceProxy.getPagedActivityDetails(formdata)
 		.subscribe(result => {
-			this.childvisible = true;
-			console.log(result.items);
-			this.orderlist = result.items;
+			console.log(result);
+			this.ticketlist = result.items;
 		});
 	}
 
@@ -159,6 +169,8 @@ export class PayMethodComponent extends PagedListingComponentBase<SalesByPayMeth
 		this._payMethodService.getPaged('', '', 999, 0)
 			.subscribe(result => {
 				this.payMethodList = result.items
+				console.log(result.items);
+				
 			});
 	}
 

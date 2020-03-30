@@ -93,7 +93,7 @@
           </td>
           <td class="text-center">
             <ng-container>
-              <a (click)="open(item.id)">
+              <a (click)="open(item.activityIds)">
                 <span>{{l('Detail')}}</span> </a>
             </ng-container>
           </td>
@@ -139,9 +139,9 @@
             </span>
           </td>
           <td class="text-center">
-            <ng-container>
+            <ng-container *ngIf="item.saler">
 
-              <a (click)="open(item.id)">
+              <a (click)="openchild(item.id)">
                 <span>详情</span> </a>
             </ng-container>
           </td>
@@ -299,80 +299,56 @@
       <thead>
         <tr>
           <th class="text-center" nzWidth="150px">
-            <span>{{l('Ticket')}}</span>
+            <span>票码</span>
           </th>
           <th class="text-center" nzWidth="180px">
-            <span>{{l('TicketNo')}}</span>
+            <span>票型名称</span>
           </th>
           <th class="text-center" nzWidth="130px">
-            <span>{{l('Name')}}</span>
+            <span>可验票数</span>
           </th>
           <th class="text-center" nzWidth="150px">
-            <span>{{l('VerifiableType')}}</span>
+            <span>已验票数</span>
           </th>
           <th class="text-center" nzWidth="100px">
-            <span>{{l('CertificatesNum')}}</span>
-          </th>
-          <th class="text-center" nzWidth="100px">
-            <span>{{l('TicketStatus')}}</span>
+            <span>票状态</span>
           </th>
           <th class="text-center" nzWidth="110px">
-            <span>{{l('Schedule')}}</span>
+            <span>开始有效期</span>
           </th>
           <th class="text-center" nzWidth="110px">
-            <span>{{l('Boat')}}</span>
+            <span>结束有效期</span>
           </th>
-          <th class="text-center" nzWidth="110px">
-            <span>{{l('StartDateTime')}}</span>
-          </th>
-          <th class="text-center" nzWidth="110px">
-            <span>{{l('EndDateTime')}}</span>
-          </th>
-          <th class="text-center" nzWidth="110px">
-            <span>{{l('CheckTime')}}</span>
+          <th class="text-center" nzWidth="140px">
+            <span>最后一次的使用时间</span>
           </th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of ajaxTable2.data; let i = index;">
           <td class="text-center">
-            <span *ngIf="item.ticket">
-              {{item.ticket.ticketName}}
-            </span>
-          </td>
-          <td class="text-center">
             <span>
               {{item.ticketNo}}
             </span>
           </td>
           <td class="text-center">
-            <span *ngIf="item.customer">
-              {{item.customer.customerName}}
+            <span>
+              {{item.ticketName}}
             </span>
           </td>
           <td class="text-center">
-            <span *ngIf="item.customer">
-              {{l(item.customer.verifiableType)}}
+            <span>
+              {{item.checkingQuantity}}
             </span>
           </td>
           <td class="text-center">
-            <span *ngIf="item.customer">
-              {{item.customer.certificatesNum}}
+            <span>
+              {{item.checkedQuantity}}
             </span>
           </td>
           <td class="text-center">
             <span>
               {{l(item.ticketStatus)}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span *ngIf="item.schedule">
-              {{item.schedule.scheduleCode}}
-            </span>
-          </td>
-          <td class="text-center">
-            <span *ngIf="item.schedule">
-              {{item.schedule.boat.boatName}}
             </span>
           </td>
           <td class="text-center">
@@ -387,7 +363,7 @@
           </td>
           <td class="text-center">
             <span>
-              {{item.checkTime}}
+              {{item.checkTimeI||_date}}
             </span>
           </td>
         </tr>

@@ -37,7 +37,7 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList1"
+    <nz-table #ajaxTable [nzData]="dataList"
       [nzWidthConfig]="['100px', '100px', '100px', '100px', '100px', '120px', '100px', '120px', '100px', '100px', '120px', '100px', '120px', '100px', '120px','100px']"
       [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="false"
       (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true"
@@ -103,27 +103,27 @@
           <!-- <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td> -->
 
           <td nz-td class="text-center" nzLeft="0px">
-            <span *ngIf="item.userName">
-              {{item.userName}}
+            <span *ngIf="item.seller">
+              {{item.seller.userName}}
             </span>
-            <span *ngIf="!item.userName">
+            <span *ngIf="!item.seller">
               合计
             </span>
           </td>
 
           <td nz-td class="text-center">
             <span>
-              {{item.saleCount}}
+              {{item.saleQuantity}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.refundCount}}
+              {{item.refundQuantity}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.totalCount}}
+              {{item.subtotalQuantity}}
             </span>
           </td>
 
@@ -139,17 +139,17 @@
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.weiChatSaleAmount}}
+              {{item.weChatSaleAmount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.zhiFuBaoSaleAmount}}
+              {{item.alipaySaleAmount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.totalSaleAmount}}
+              {{item.saleSubtotalAmount}}
             </span>
           </td>
 
@@ -165,17 +165,17 @@
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.weiChatRefundAmount}}
+              {{item.weChatRefundAmount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.zhiFuBaoRefundAmount}}
+              {{item.alipayRefundAmount}}
             </span>
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.totalRefundAmount}}
+              {{item.refundSubtotalAmount}}
             </span>
           </td>
 
@@ -189,7 +189,7 @@
 
           <td class="text-center" nzRight="0px">
             <ng-container>
-              <a (click)="open(1)">
+              <a (click)="open(item.activityIds)">
                 <span>详情</span> </a>
             </ng-container>
           </td>
@@ -283,7 +283,7 @@
 
           <td class="text-center" nzRight="0px">
             <ng-container *ngIf="item.saler">
-              <a (click)="open()">
+              <a (click)="open(item.id)">
                 <span></span> </a>
             </ng-container>
           </td>
