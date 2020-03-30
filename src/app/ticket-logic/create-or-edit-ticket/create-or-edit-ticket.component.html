@@ -30,17 +30,30 @@
       </nz-form-control>
     </nz-form-item>
 
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lowerLimit">购票数量下限</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="lowerLimit" #lowerLimit="ngModel" required [(ngModel)]="entity.lowerLimit">
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="upperLimit">购票数量上限</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="upperLimit" #upperLimit="ngModel" required [(ngModel)]="entity.upperLimit">
+      </nz-form-control>
+    </nz-form-item>
 
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="audioName">音频</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
         <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file"
-          (nzChange)="handleChange($event)">
-          <button nz-button type="button"><span>上传</span></button>
-        </nz-upload>
-        <!-- <span style="margin-left: 10px">{{audioName}}</span> -->
-      </nz-form-control>
-    </nz-form-item>
+        (nzChange)="handleChange($event)">
+        <button nz-button type="button"><span>上传</span></button>
+      </nz-upload>
+      <!-- <span style="margin-left: 10px">{{audioName}}</span> -->
+    </nz-form-control>
+  </nz-form-item>
 
 
 
@@ -98,9 +111,9 @@
       {{l("Cancel")}}
     </button>
     <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
-      [nzLoading]="saving">
-      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
-      {{l("Save")}}
-    </button>
-  </div>
+    [nzLoading]="saving">
+    <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+    {{l("Save")}}
+  </button>
+</div>
 </form>

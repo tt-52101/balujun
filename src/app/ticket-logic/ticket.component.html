@@ -48,12 +48,12 @@
           <th nz-th nzWidth="135px" class="text-center">
             <span>音频</span>
           </th>
-          <!-- <th nz-th nzWidth="180px" class="text-center">
-            <span>开始有效期</span>
-          </th> -->
-          <!-- <th nz-th nzWidth="135px" class="text-center">
-            <span>结束有效期</span>
-          </th> -->
+          <th nz-th nzWidth="180px" class="text-center">
+            <span>购票数量下限</span>
+          </th>
+          <th nz-th nzWidth="135px" class="text-center">
+            <span>购票数量上限</span>
+          </th>
           <th nz-th nzWidth="135px" class="text-center">
             <span>排序</span>
           </th>
@@ -103,46 +103,43 @@
             </span>
 
           </td>
-          <!-- <td nz-td nzWidth="135px" class="text-center">
-            
-              <span>
-                {{item.creationTime|_date}}
-              </span>
 
-            </td> -->
-          <!-- <td nz-td nzWidth="135px" class="text-center">
-            
-              <span>
-                {{item.address}}
-              </span>
+          <td nz-td nzWidth="135px" class="text-center">
 
-            </td> -->
-            <td nz-td nzWidth="135px" class="text-center">
+            <span>
+              {{item.lowerLimit}}
+            </span>
 
-              <span>
-                {{item.sort}}
-              </span>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
+            <span>
+              {{item.upperLimit}}
+            </span>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
+            <span>
+              {{item.sort}}
+            </span>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center" >
+            <span *ngIf="item.group == 0">散客票</span>
+            <span *ngIf="item.group == 1">团体票</span>
+            <span *ngIf="item.group == 2">卡类</span>
+          </td>
 
-            </td>
-            <td nz-td nzWidth="135px" class="text-center" >
-              <span *ngIf="item.group == 0">散客票</span>
-              <span *ngIf="item.group == 1">团体票</span>
-              <span *ngIf="item.group == 2">卡类</span>
-            </td>
+          <td nz-td nzWidth="135px" class="text-center" >
+            <span>
+              {{l(item.ticketMode)}}
+            </span>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center">
 
-            <td nz-td nzWidth="135px" class="text-center" >
-              <span>
-                {{l(item.ticketMode)}}
-              </span>
-            </td>
-            <td nz-td nzWidth="135px" class="text-center">
+            <span>
+              {{l(item.checkMethod)}}
+            </span>
 
-              <span>
-                {{l(item.checkMethod)}}
-              </span>
-
-            </td>
-            <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
+          </td>
+          <td nz-td nzWidth="135px" class="text-center" [innerHTML]='item.isEnabled | yn' ></td>
 <!--             <td nz-td nzWidth="135px" class="text-center">
               <span>
                 {{item.creatorUser}}

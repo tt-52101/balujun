@@ -24,21 +24,15 @@ export class CreateOrEditConductorComponent extends ModalComponentBase implement
     super(injector);
   }
 
-
   allChecked = true;
   indeterminate = false;
   checked = true;
 
   checkOptionsOne = [];
 
-
-
-
   ngOnInit() {
     this.init()
   }
-
-
 
   init(): void {
     this._ticketRoleServiceProxy.getForUpdate(this.id)
@@ -63,9 +57,6 @@ export class CreateOrEditConductorComponent extends ModalComponentBase implement
 
       });
   }
-
-
-
 
   updateAllChecked(): void {
 

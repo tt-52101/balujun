@@ -54,6 +54,8 @@ export class CreateOrEditTicketPriceComponent
 
   change1($event):void{
     this.entity.upperTimeStr=this.formatDate($event)
+    console.log(this.formatDate($event))
+    console.log(this.entity.upperTimeStr)
   }
 
   change2($event):void{
