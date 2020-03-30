@@ -30,6 +30,8 @@ implements OnInit {
   }
   picture=''
 
+  file=''
+
   constructor(
     injector: Injector,
     private _weChatScenicSpotService: WeChatScenicSpotServiceProxy,

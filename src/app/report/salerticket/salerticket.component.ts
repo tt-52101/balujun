@@ -35,9 +35,7 @@ implements OnInit {
 		this.documentHeight=document.body.offsetHeight
 	}
 
-	ordervisible=false
 
-	ticketinfo=[]
 
 	queryData = [{
 		field: "CreatorUserId",
@@ -70,13 +68,13 @@ implements OnInit {
 
 	documentHeight=0
 
+	ordervisible=false
 
 	orderlist=[]
 	orderids=[]
 	oindex=1
 	ototal=100
 	opagesize=10
-
 
 	ticketdetail=[]
 
@@ -99,6 +97,8 @@ implements OnInit {
 			this.dataList = result.items;
 			if(result.totalCount>0){
 				this.total= [result.total]
+			}else{
+				this.total=[]
 			}
 			this.showPaging(result);
 		});
@@ -169,18 +169,23 @@ implements OnInit {
 
 
 	openorder(ids): void {
-		this.getorder()
 		this.orderids=ids
 		this.ordervisible = true;
+		this.getorder()
 	}
 
 	getorder(){
-		// console.log(this.opagesize)
-		// console.log((this.oindex - 1) * this.opagesize)
+		// console.log(this.orderids)
 		var formdata=new SalesCommonActivityInput
+		formdata.activityIds=this.orderids
+		formdata.filterText=''
+		formdata.sorting=''
+		formdata.maxResultCount=this.opagesize
+		formdata.skipCount=(this.oindex - 1) * this.opagesize
+
 		this._salesCommonService.getPagedActivities(formdata)
 		.subscribe(result => {
-			this.ticketinfo = result.items;
+			this.orderlist = result.items;
 		});
 	}
 
