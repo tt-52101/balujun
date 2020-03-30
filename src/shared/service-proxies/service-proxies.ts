@@ -19478,7 +19478,6 @@ export class TicketDetailHistoryServiceProxy {
     }
 
     /**
-<<<<<<< HEAD
      * 手持机查找验票记录
      * @param body (optional) 
      * @return Success
@@ -19495,57 +19494,11 @@ export class TicketDetailHistoryServiceProxy {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json-patch+json", 
-=======
-     * @param queryData (optional) DeviceCode,DeviceName,Port
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @return Success
-     */
-    getAllTicketDetailHistory(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<AllTicketDetailHistorDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetAllTicketDetailHistory?";
-        if (queryData === null)
-            throw new Error("The parameter 'queryData' cannot be null.");
-        else if (queryData !== undefined)
-            queryData && queryData.forEach((item, index) => { 
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
->>>>>>> 2c225a28cf4d2f7460e720962b384705d724049f
                 "Accept": "text/plain"
             })
         };
 
-<<<<<<< HEAD
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-=======
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
->>>>>>> 2c225a28cf4d2f7460e720962b384705d724049f
             return this.processGetAllTicketDetailHistory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -55404,7 +55357,6 @@ export interface ICreateOrUpdateTicketDetailHistoryInput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
 }
 
-<<<<<<< HEAD
 /** 获取的传入参数Dto */
 export class GetTicketDetailHistorysInput implements IGetTicketDetailHistorysInput {
     /** DeviceCode,DeviceName,Port */
@@ -55476,8 +55428,6 @@ export interface IGetTicketDetailHistorysInput {
     skipCount: number;
 }
 
-=======
->>>>>>> 2c225a28cf4d2f7460e720962b384705d724049f
 export class TicketDetailHistory implements ITicketDetailHistory {
     branchId: number | undefined;
     ticketId: number;
