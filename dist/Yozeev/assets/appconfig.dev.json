@@ -1,0 +1,41 @@
+{
+  "remoteServiceBaseUrl": "http://blj.dev.sweii.cn",
+  "uploadApiUrl": "/api/File/Upload",
+  "portalBaseUrl": "http://localhost:38772",
+
+  "localeMappings": [
+    {
+      "from": "pt-BR",
+      "to": "pt"
+    },
+    {
+      "from": "zh-Hans",
+      "to": "zh"
+    }],
+  "ngZorroLocaleMappings": [
+    {
+      "from": "zh-Hans",
+      "to": "zh_CN"
+    },
+    {
+      "from": "en",
+      "to": "en_US"
+    }],
+  "ngAlainLocaleMappings": [
+    {
+      "from": "zh-Hans",
+      "to": "zh-CN"
+    },
+    {
+      "from": "en",
+      "to": "en-US"
+    }],
+  "momentLocaleMappings": [
+    {
+      "from": "zh-Hans",
+      "to": "zh-cn"
+    },{
+      "from": "en",
+      "to": "en"
+    }]
+}
