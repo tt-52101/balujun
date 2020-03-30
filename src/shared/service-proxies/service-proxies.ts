@@ -7399,6 +7399,62 @@ export class DeviceServiceProxy {
     }
 
     /**
+     * 获取所有设备的DeviceCode和DeviceName
+     * @return Success
+     */
+    getAllDeviced(): Observable<DevicePartListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Device/GetAllDeviced";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllDeviced(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllDeviced(<any>response_);
+                } catch (e) {
+                    return <Observable<DevicePartListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<DevicePartListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllDeviced(response: HttpResponseBase): Observable<DevicePartListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(DevicePartListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<DevicePartListDto[]>(<any>null);
+    }
+
+    /**
      * 通过指定id获取DeviceListDto信息
      * @param id (optional) 
      * @return Success
@@ -20406,6 +20462,67 @@ export class TicketPriceServiceProxy {
     }
 
     /**
+     * 根据显示位置查询票价
+     * @param input (optional) 
+     * @return Success
+     */
+    getAllTicketPriceByPosition(input: PositionEnum | undefined): Observable<TicketPriceListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetAllTicketPriceByPosition?";
+        if (input === null)
+            throw new Error("The parameter 'input' cannot be null.");
+        else if (input !== undefined)
+            url_ += "input=" + encodeURIComponent("" + input) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllTicketPriceByPosition(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllTicketPriceByPosition(<any>response_);
+                } catch (e) {
+                    return <Observable<TicketPriceListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TicketPriceListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllTicketPriceByPosition(response: HttpResponseBase): Observable<TicketPriceListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(TicketPriceListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TicketPriceListDto[]>(<any>null);
+    }
+
+    /**
      * 通过指定id获取TicketPriceListDto信息
      * @param id (optional) 
      * @return Success
@@ -27259,57 +27376,6 @@ export class OperationServiceProxy {
         }
         return _observableOf<OperTicketRatioResultDto[]>(<any>null);
     }
-
-    /**
-     * @return Success
-     */
-    test(): Observable<string> {
-        let url_ = this.baseUrl + "/api/Stats/Operation/Test";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processTest(<any>response_);
-                } catch (e) {
-                    return <Observable<string>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processTest(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string>(<any>null);
-    }
 }
 
 @Injectable()
@@ -30759,7 +30825,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
     parent: WeChatScenicSpot;
     coverPicture: string | undefined;
     scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
+    openTime: string | undefined;
     smokedWay: string | undefined;
     scheduledTime: string | undefined;
     focusPicture: string | undefined;
@@ -30787,7 +30853,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
             this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -30815,7 +30881,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
         data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -30843,7 +30909,7 @@ export interface IWeChatScenicSpot {
     parent: WeChatScenicSpot;
     coverPicture: string | undefined;
     scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
+    openTime: string | undefined;
     smokedWay: string | undefined;
     scheduledTime: string | undefined;
     focusPicture: string | undefined;
@@ -39647,6 +39713,53 @@ export class CreateOrUpdateDeviceInput implements ICreateOrUpdateDeviceInput {
 
 export interface ICreateOrUpdateDeviceInput {
     device: DeviceEditDto;
+}
+
+export class DevicePartListDto implements IDevicePartListDto {
+    deviceName: string | undefined;
+    deviceCode: string | undefined;
+
+    constructor(data?: IDevicePartListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceName = data["deviceName"];
+            this.deviceCode = data["deviceCode"];
+        }
+    }
+
+    static fromJS(data: any): DevicePartListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DevicePartListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceName"] = this.deviceName;
+        data["deviceCode"] = this.deviceCode;
+        return data; 
+    }
+
+    clone(): DevicePartListDto {
+        const json = this.toJSON();
+        let result = new DevicePartListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDevicePartListDto {
+    deviceName: string | undefined;
+    deviceCode: string | undefined;
 }
 
 /** 的编辑DTO Yozeev.BusinessLogic.Device */
@@ -62523,7 +62636,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62548,7 +62661,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
             this.scenicSpotName = data["scenicSpotName"];
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -62569,7 +62682,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
         data["scenicSpotName"] = this.scenicSpotName;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -62596,7 +62709,7 @@ export interface IWeChatScenicSpotEditDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62723,7 +62836,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62758,7 +62871,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
             this.scenicSpotName = data["scenicSpotName"];
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -62791,7 +62904,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
         data["scenicSpotName"] = this.scenicSpotName;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -62830,7 +62943,7 @@ export interface IWeChatScenicSpotListDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -63121,7 +63234,7 @@ export enum DateRange {
 /** 简单数量类 */
 export class SimpleQuantity implements ISimpleQuantity {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 数量 */
     quantity: number;
 
@@ -63136,7 +63249,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 
     init(data?: any) {
         if (data) {
-            this.time = data["time"];
+            this.time = data["time"] ? moment(data["time"].toString()) : <any>undefined;
             this.quantity = data["quantity"];
         }
     }
@@ -63150,7 +63263,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["time"] = this.time;
+        data["time"] = this.time ? this.time.toISOString() : <any>undefined;
         data["quantity"] = this.quantity;
         return data; 
     }
@@ -63166,7 +63279,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 /** 简单数量类 */
 export interface ISimpleQuantity {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 数量 */
     quantity: number;
 }
@@ -63174,7 +63287,7 @@ export interface ISimpleQuantity {
 /** 简单金额类 */
 export class SimpleAmount implements ISimpleAmount {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 金额 */
     amount: number;
 
@@ -63189,7 +63302,7 @@ export class SimpleAmount implements ISimpleAmount {
 
     init(data?: any) {
         if (data) {
-            this.time = data["time"];
+            this.time = data["time"] ? moment(data["time"].toString()) : <any>undefined;
             this.amount = data["amount"];
         }
     }
@@ -63203,7 +63316,7 @@ export class SimpleAmount implements ISimpleAmount {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["time"] = this.time;
+        data["time"] = this.time ? this.time.toISOString() : <any>undefined;
         data["amount"] = this.amount;
         return data; 
     }
@@ -63219,21 +63332,27 @@ export class SimpleAmount implements ISimpleAmount {
 /** 简单金额类 */
 export interface ISimpleAmount {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 金额 */
     amount: number;
 }
 
 /** 营收状况 */
 export class OperRevenueResultDto implements IOperRevenueResultDto {
-    /** 今日数量 */
-    todayQuantity: number;
-    /** 今日金额 */
-    todayAmount: number;
     /** 按时间推移的数量 */
     quantityByTime: SimpleQuantity[] | undefined;
     /** 按时间推移的金额 */
     amountByTime: SimpleAmount[] | undefined;
+    /** 时间列表 */
+    timeList: moment.Moment[] | undefined;
+    /** 数量列表 */
+    quantityList: number[] | undefined;
+    /** 金额列表 */
+    amountList: number[] | undefined;
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
 
     constructor(data?: IOperRevenueResultDto) {
         if (data) {
@@ -63246,8 +63365,6 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
     init(data?: any) {
         if (data) {
-            this.todayQuantity = data["todayQuantity"];
-            this.todayAmount = data["todayAmount"];
             if (data["quantityByTime"] && data["quantityByTime"].constructor === Array) {
                 this.quantityByTime = [] as any;
                 for (let item of data["quantityByTime"])
@@ -63258,6 +63375,23 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
                 for (let item of data["amountByTime"])
                     this.amountByTime.push(SimpleAmount.fromJS(item));
             }
+            if (data["timeList"] && data["timeList"].constructor === Array) {
+                this.timeList = [] as any;
+                for (let item of data["timeList"])
+                    this.timeList.push(moment(item));
+            }
+            if (data["quantityList"] && data["quantityList"].constructor === Array) {
+                this.quantityList = [] as any;
+                for (let item of data["quantityList"])
+                    this.quantityList.push(item);
+            }
+            if (data["amountList"] && data["amountList"].constructor === Array) {
+                this.amountList = [] as any;
+                for (let item of data["amountList"])
+                    this.amountList.push(item);
+            }
+            this.todayQuantity = data["todayQuantity"];
+            this.todayAmount = data["todayAmount"];
         }
     }
 
@@ -63270,8 +63404,6 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["todayQuantity"] = this.todayQuantity;
-        data["todayAmount"] = this.todayAmount;
         if (this.quantityByTime && this.quantityByTime.constructor === Array) {
             data["quantityByTime"] = [];
             for (let item of this.quantityByTime)
@@ -63282,6 +63414,23 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
             for (let item of this.amountByTime)
                 data["amountByTime"].push(item.toJSON());
         }
+        if (this.timeList && this.timeList.constructor === Array) {
+            data["timeList"] = [];
+            for (let item of this.timeList)
+                data["timeList"].push(item.toISOString());
+        }
+        if (this.quantityList && this.quantityList.constructor === Array) {
+            data["quantityList"] = [];
+            for (let item of this.quantityList)
+                data["quantityList"].push(item);
+        }
+        if (this.amountList && this.amountList.constructor === Array) {
+            data["amountList"] = [];
+            for (let item of this.amountList)
+                data["amountList"].push(item);
+        }
+        data["todayQuantity"] = this.todayQuantity;
+        data["todayAmount"] = this.todayAmount;
         return data; 
     }
 
@@ -63295,14 +63444,20 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
 /** 营收状况 */
 export interface IOperRevenueResultDto {
-    /** 今日数量 */
-    todayQuantity: number;
-    /** 今日金额 */
-    todayAmount: number;
     /** 按时间推移的数量 */
     quantityByTime: SimpleQuantity[] | undefined;
     /** 按时间推移的金额 */
     amountByTime: SimpleAmount[] | undefined;
+    /** 时间列表 */
+    timeList: moment.Moment[] | undefined;
+    /** 数量列表 */
+    quantityList: number[] | undefined;
+    /** 金额列表 */
+    amountList: number[] | undefined;
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
 }
 
 /** 票型比例 */

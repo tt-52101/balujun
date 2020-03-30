@@ -9,7 +9,11 @@ import { SalerTicketComponent } from './salerticket/salerticket.component';
 import { SalerDailyComponent } from './salerdaily/salerdaily.component';
 import { PayMethodComponent } from './paymethod/paymethod.component';
 import { GroupComponent } from './group/group.component';
-
+import { CreateOrEditSalerdailyComponent } from './salerdaily/create-or-edit-salerdaily/create-or-edit-salerdaily.component';
+import { CreateOrEditSalerdailyTaoComponent } from './salerdaily/create-or-edit-salerdaily/create-or-edit-salerdaily-tao/create-or-edit-salerdaily-tao.component';
+import { CreateOrEditSalerticketComponent } from './salerticket/create-or-edit-salerticket/create-or-edit-salerticket.component';
+import { CreateOrEditSalerticketTaoComponent } from './salerticket/create-or-edit-salerticket/create-or-edit-salerticket-tao/create-or-edit-salerticket-tao.component';
+import { CreateOrEditGroupComponent } from './group/create-or-edit-group/create-or-edit-group.component';
 
 // import { SourceComponent } from './source/source.component';
 // import { TravelComponent, } from './travel/travel.component';
@@ -24,7 +28,11 @@ import { GroupComponent } from './group/group.component';
   SalerDailyComponent,
   PayMethodComponent,
   GroupComponent,
-
+  CreateOrEditSalerdailyComponent,
+  CreateOrEditSalerdailyTaoComponent,
+  CreateOrEditSalerticketComponent,
+  CreateOrEditSalerticketTaoComponent,
+  CreateOrEditGroupComponent,
   // SourceComponent,
   // TravelComponent,
   // OtaComponent,
@@ -39,7 +47,11 @@ import { GroupComponent } from './group/group.component';
   
   ],
   entryComponents: [
-
+    CreateOrEditSalerdailyComponent,
+    CreateOrEditSalerdailyTaoComponent,
+    CreateOrEditSalerticketComponent,
+    CreateOrEditSalerticketTaoComponent,
+    CreateOrEditGroupComponent
 
   ]
 })
