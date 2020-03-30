@@ -7399,6 +7399,62 @@ export class DeviceServiceProxy {
     }
 
     /**
+     * 获取所有设备的DeviceCode和DeviceName
+     * @return Success
+     */
+    getAllDeviced(): Observable<DevicePartListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Device/GetAllDeviced";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllDeviced(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllDeviced(<any>response_);
+                } catch (e) {
+                    return <Observable<DevicePartListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<DevicePartListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllDeviced(response: HttpResponseBase): Observable<DevicePartListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(DevicePartListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<DevicePartListDto[]>(<any>null);
+    }
+
+    /**
      * 通过指定id获取DeviceListDto信息
      * @param id (optional) 
      * @return Success
@@ -13392,6 +13448,62 @@ export class PowerServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfPowerListDto>(<any>null);
+    }
+
+    /**
+     * 根据用户ID获取PowerListDto信息
+     * @return Success
+     */
+    getPowerListByUserId(): Observable<PowerListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Power/GetPowerListByUserId";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPowerListByUserId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPowerListByUserId(<any>response_);
+                } catch (e) {
+                    return <Observable<PowerListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PowerListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPowerListByUserId(response: HttpResponseBase): Observable<PowerListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(PowerListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PowerListDto[]>(<any>null);
     }
 }
 
@@ -20350,6 +20462,67 @@ export class TicketPriceServiceProxy {
     }
 
     /**
+     * 根据显示位置查询票价
+     * @param input (optional) 
+     * @return Success
+     */
+    getAllTicketPriceByPosition(input: PositionEnum | undefined): Observable<TicketPriceListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/TicketPrice/GetAllTicketPriceByPosition?";
+        if (input === null)
+            throw new Error("The parameter 'input' cannot be null.");
+        else if (input !== undefined)
+            url_ += "input=" + encodeURIComponent("" + input) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllTicketPriceByPosition(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllTicketPriceByPosition(<any>response_);
+                } catch (e) {
+                    return <Observable<TicketPriceListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TicketPriceListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllTicketPriceByPosition(response: HttpResponseBase): Observable<TicketPriceListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(TicketPriceListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TicketPriceListDto[]>(<any>null);
+    }
+
+    /**
      * 通过指定id获取TicketPriceListDto信息
      * @param id (optional) 
      * @return Success
@@ -27203,57 +27376,6 @@ export class OperationServiceProxy {
         }
         return _observableOf<OperTicketRatioResultDto[]>(<any>null);
     }
-
-    /**
-     * @return Success
-     */
-    test(): Observable<string> {
-        let url_ = this.baseUrl + "/api/Stats/Operation/Test";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processTest(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processTest(<any>response_);
-                } catch (e) {
-                    return <Observable<string>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<string>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processTest(response: HttpResponseBase): Observable<string> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<string>(<any>null);
-    }
 }
 
 @Injectable()
@@ -27774,41 +27896,21 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @param activityIds (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPagedActivities(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityIds: string[] | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        if (activityIds === null)
-            throw new Error("The parameter 'activityIds' cannot be null.");
-        else if (activityIds !== undefined)
-            activityIds && activityIds.forEach(item => { url_ += "activityIds=" + encodeURIComponent("" + item) + "&"; });
+    getPagedActivities(body: SalesCommonActivityInput | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
@@ -27851,41 +27953,21 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单明细
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @param activityId (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPagedActivityDetails(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        if (activityId === null)
-            throw new Error("The parameter 'activityId' cannot be null.");
-        else if (activityId !== undefined)
-            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
+    getPagedActivityDetails(body: SalesCommonActivityDetailInput | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
@@ -28220,6 +28302,63 @@ export class TokenAuthServiceProxy {
     }
 
     /**
+     * 手持机登录
+     * @param body (optional) 
+     * @return Success
+     */
+    handSetLogin(body: AuthenticateModel | undefined): Observable<AuthenticateResultModel> {
+        let url_ = this.baseUrl + "/api/TokenAuth/HandSetLogin";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processHandSetLogin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processHandSetLogin(<any>response_);
+                } catch (e) {
+                    return <Observable<AuthenticateResultModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AuthenticateResultModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processHandSetLogin(response: HttpResponseBase): Observable<AuthenticateResultModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AuthenticateResultModel.fromJS(resultData200) : new AuthenticateResultModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AuthenticateResultModel>(<any>null);
+    }
+
+    /**
      * @param impersonationToken (optional) 
      * @return Success
      */
@@ -28530,6 +28669,63 @@ export class WechatServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfActivity>(<any>null);
+    }
+
+    /**
+     * 根据日期查询票价
+     * @param date (optional) 
+     * @return Success
+     */
+    ticketPrices(date: string | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
+        let url_ = this.baseUrl + "/api/Wechat/TicketPrices?";
+        if (date === null)
+            throw new Error("The parameter 'date' cannot be null.");
+        else if (date !== undefined)
+            url_ += "date=" + encodeURIComponent("" + date) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTicketPrices(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTicketPrices(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTicketPrices(response: HttpResponseBase): Observable<PagedResultDtoOfTicketPriceListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTicketPriceListDto.fromJS(resultData200) : new PagedResultDtoOfTicketPriceListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTicketPriceListDto>(<any>null);
     }
 }
 
@@ -30629,7 +30825,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
     parent: WeChatScenicSpot;
     coverPicture: string | undefined;
     scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
+    openTime: string | undefined;
     smokedWay: string | undefined;
     scheduledTime: string | undefined;
     focusPicture: string | undefined;
@@ -30657,7 +30853,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
             this.parent = data["parent"] ? WeChatScenicSpot.fromJS(data["parent"]) : <any>undefined;
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -30685,7 +30881,7 @@ export class WeChatScenicSpot implements IWeChatScenicSpot {
         data["parent"] = this.parent ? this.parent.toJSON() : <any>undefined;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -30713,7 +30909,7 @@ export interface IWeChatScenicSpot {
     parent: WeChatScenicSpot;
     coverPicture: string | undefined;
     scenicSpotAddr: string | undefined;
-    openTime: moment.Moment;
+    openTime: string | undefined;
     smokedWay: string | undefined;
     scheduledTime: string | undefined;
     focusPicture: string | undefined;
@@ -39517,6 +39713,53 @@ export class CreateOrUpdateDeviceInput implements ICreateOrUpdateDeviceInput {
 
 export interface ICreateOrUpdateDeviceInput {
     device: DeviceEditDto;
+}
+
+export class DevicePartListDto implements IDevicePartListDto {
+    deviceName: string | undefined;
+    deviceCode: string | undefined;
+
+    constructor(data?: IDevicePartListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deviceName = data["deviceName"];
+            this.deviceCode = data["deviceCode"];
+        }
+    }
+
+    static fromJS(data: any): DevicePartListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DevicePartListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deviceName"] = this.deviceName;
+        data["deviceCode"] = this.deviceCode;
+        return data; 
+    }
+
+    clone(): DevicePartListDto {
+        const json = this.toJSON();
+        let result = new DevicePartListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IDevicePartListDto {
+    deviceName: string | undefined;
+    deviceCode: string | undefined;
 }
 
 /** 的编辑DTO Yozeev.BusinessLogic.Device */
@@ -62393,7 +62636,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62418,7 +62661,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
             this.scenicSpotName = data["scenicSpotName"];
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -62439,7 +62682,7 @@ export class WeChatScenicSpotEditDto implements IWeChatScenicSpotEditDto {
         data["scenicSpotName"] = this.scenicSpotName;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -62466,7 +62709,7 @@ export interface IWeChatScenicSpotEditDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62593,7 +62836,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62628,7 +62871,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
             this.scenicSpotName = data["scenicSpotName"];
             this.coverPicture = data["coverPicture"];
             this.scenicSpotAddr = data["scenicSpotAddr"];
-            this.openTime = data["openTime"] ? moment(data["openTime"].toString()) : <any>undefined;
+            this.openTime = data["openTime"];
             this.smokedWay = data["smokedWay"];
             this.scheduledTime = data["scheduledTime"];
             this.focusPicture = data["focusPicture"];
@@ -62661,7 +62904,7 @@ export class WeChatScenicSpotListDto implements IWeChatScenicSpotListDto {
         data["scenicSpotName"] = this.scenicSpotName;
         data["coverPicture"] = this.coverPicture;
         data["scenicSpotAddr"] = this.scenicSpotAddr;
-        data["openTime"] = this.openTime ? this.openTime.toISOString() : <any>undefined;
+        data["openTime"] = this.openTime;
         data["smokedWay"] = this.smokedWay;
         data["scheduledTime"] = this.scheduledTime;
         data["focusPicture"] = this.focusPicture;
@@ -62700,7 +62943,7 @@ export interface IWeChatScenicSpotListDto {
     /** 景点地址 */
     scenicSpotAddr: string | undefined;
     /** 开放时间 */
-    openTime: moment.Moment;
+    openTime: string | undefined;
     /** 入团方式 */
     smokedWay: string | undefined;
     /** 预定时间 */
@@ -62991,7 +63234,7 @@ export enum DateRange {
 /** 简单数量类 */
 export class SimpleQuantity implements ISimpleQuantity {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 数量 */
     quantity: number;
 
@@ -63006,7 +63249,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 
     init(data?: any) {
         if (data) {
-            this.time = data["time"];
+            this.time = data["time"] ? moment(data["time"].toString()) : <any>undefined;
             this.quantity = data["quantity"];
         }
     }
@@ -63020,7 +63263,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["time"] = this.time;
+        data["time"] = this.time ? this.time.toISOString() : <any>undefined;
         data["quantity"] = this.quantity;
         return data; 
     }
@@ -63036,7 +63279,7 @@ export class SimpleQuantity implements ISimpleQuantity {
 /** 简单数量类 */
 export interface ISimpleQuantity {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 数量 */
     quantity: number;
 }
@@ -63044,7 +63287,7 @@ export interface ISimpleQuantity {
 /** 简单金额类 */
 export class SimpleAmount implements ISimpleAmount {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 金额 */
     amount: number;
 
@@ -63059,7 +63302,7 @@ export class SimpleAmount implements ISimpleAmount {
 
     init(data?: any) {
         if (data) {
-            this.time = data["time"];
+            this.time = data["time"] ? moment(data["time"].toString()) : <any>undefined;
             this.amount = data["amount"];
         }
     }
@@ -63073,7 +63316,7 @@ export class SimpleAmount implements ISimpleAmount {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["time"] = this.time;
+        data["time"] = this.time ? this.time.toISOString() : <any>undefined;
         data["amount"] = this.amount;
         return data; 
     }
@@ -63089,21 +63332,27 @@ export class SimpleAmount implements ISimpleAmount {
 /** 简单金额类 */
 export interface ISimpleAmount {
     /** 时间（如每小时、每天等） */
-    time: string | undefined;
+    time: moment.Moment;
     /** 金额 */
     amount: number;
 }
 
 /** 营收状况 */
 export class OperRevenueResultDto implements IOperRevenueResultDto {
-    /** 今日数量 */
-    todayQuantity: number;
-    /** 今日金额 */
-    todayAmount: number;
     /** 按时间推移的数量 */
     quantityByTime: SimpleQuantity[] | undefined;
     /** 按时间推移的金额 */
     amountByTime: SimpleAmount[] | undefined;
+    /** 时间列表 */
+    timeList: moment.Moment[] | undefined;
+    /** 数量列表 */
+    quantityList: number[] | undefined;
+    /** 金额列表 */
+    amountList: number[] | undefined;
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
 
     constructor(data?: IOperRevenueResultDto) {
         if (data) {
@@ -63116,8 +63365,6 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
     init(data?: any) {
         if (data) {
-            this.todayQuantity = data["todayQuantity"];
-            this.todayAmount = data["todayAmount"];
             if (data["quantityByTime"] && data["quantityByTime"].constructor === Array) {
                 this.quantityByTime = [] as any;
                 for (let item of data["quantityByTime"])
@@ -63128,6 +63375,23 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
                 for (let item of data["amountByTime"])
                     this.amountByTime.push(SimpleAmount.fromJS(item));
             }
+            if (data["timeList"] && data["timeList"].constructor === Array) {
+                this.timeList = [] as any;
+                for (let item of data["timeList"])
+                    this.timeList.push(moment(item));
+            }
+            if (data["quantityList"] && data["quantityList"].constructor === Array) {
+                this.quantityList = [] as any;
+                for (let item of data["quantityList"])
+                    this.quantityList.push(item);
+            }
+            if (data["amountList"] && data["amountList"].constructor === Array) {
+                this.amountList = [] as any;
+                for (let item of data["amountList"])
+                    this.amountList.push(item);
+            }
+            this.todayQuantity = data["todayQuantity"];
+            this.todayAmount = data["todayAmount"];
         }
     }
 
@@ -63140,8 +63404,6 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["todayQuantity"] = this.todayQuantity;
-        data["todayAmount"] = this.todayAmount;
         if (this.quantityByTime && this.quantityByTime.constructor === Array) {
             data["quantityByTime"] = [];
             for (let item of this.quantityByTime)
@@ -63152,6 +63414,23 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
             for (let item of this.amountByTime)
                 data["amountByTime"].push(item.toJSON());
         }
+        if (this.timeList && this.timeList.constructor === Array) {
+            data["timeList"] = [];
+            for (let item of this.timeList)
+                data["timeList"].push(item.toISOString());
+        }
+        if (this.quantityList && this.quantityList.constructor === Array) {
+            data["quantityList"] = [];
+            for (let item of this.quantityList)
+                data["quantityList"].push(item);
+        }
+        if (this.amountList && this.amountList.constructor === Array) {
+            data["amountList"] = [];
+            for (let item of this.amountList)
+                data["amountList"].push(item);
+        }
+        data["todayQuantity"] = this.todayQuantity;
+        data["todayAmount"] = this.todayAmount;
         return data; 
     }
 
@@ -63165,14 +63444,20 @@ export class OperRevenueResultDto implements IOperRevenueResultDto {
 
 /** 营收状况 */
 export interface IOperRevenueResultDto {
-    /** 今日数量 */
-    todayQuantity: number;
-    /** 今日金额 */
-    todayAmount: number;
     /** 按时间推移的数量 */
     quantityByTime: SimpleQuantity[] | undefined;
     /** 按时间推移的金额 */
     amountByTime: SimpleAmount[] | undefined;
+    /** 时间列表 */
+    timeList: moment.Moment[] | undefined;
+    /** 数量列表 */
+    quantityList: number[] | undefined;
+    /** 金额列表 */
+    amountList: number[] | undefined;
+    /** 今日数量 */
+    todayQuantity: number;
+    /** 今日金额 */
+    todayAmount: number;
 }
 
 /** 票型比例 */
@@ -64808,6 +65093,77 @@ export interface IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
     items: SalesBySellerDailyResultDto[] | undefined;
 }
 
+/** 统计报表通用-订单 */
+export class SalesCommonActivityInput implements ISalesCommonActivityInput {
+    /** 订单ID集合 */
+    activityIds: string[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesCommonActivityInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesCommonActivityInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesCommonActivityInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesCommonActivityInput {
+        const json = this.toJSON();
+        let result = new SalesCommonActivityInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 统计报表通用-订单 */
+export interface ISalesCommonActivityInput {
+    /** 订单ID集合 */
+    activityIds: string[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 /** 订单信息 */
 export class SalesActivityResultDto implements ISalesActivityResultDto {
     /** Id */
@@ -65002,6 +65358,69 @@ export interface IStatsPagedResultDtoOfSalesActivityResultDto {
     filters: { [key: string] : Anonymous10[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
+}
+
+/** 统计报表通用-订单明细 */
+export class SalesCommonActivityDetailInput implements ISalesCommonActivityDetailInput {
+    /** 订单ID */
+    activityId: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesCommonActivityDetailInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.activityId = data["activityId"];
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesCommonActivityDetailInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesCommonActivityDetailInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activityId"] = this.activityId;
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesCommonActivityDetailInput {
+        const json = this.toJSON();
+        let result = new SalesCommonActivityDetailInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 统计报表通用-订单明细 */
+export interface ISalesCommonActivityDetailInput {
+    /** 订单ID */
+    activityId: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 /** 订单明细 */
@@ -65364,6 +65783,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
     returnUrl: string | undefined;
     /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
+    userName: string | undefined;
 
     constructor(data?: IAuthenticateResultModel) {
         if (data) {
@@ -65384,6 +65804,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
             this.passwordResetCode = data["passwordResetCode"];
             this.returnUrl = data["returnUrl"];
             this.waitingForActivation = data["waitingForActivation"];
+            this.userName = data["userName"];
         }
     }
 
@@ -65404,6 +65825,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
         data["passwordResetCode"] = this.passwordResetCode;
         data["returnUrl"] = this.returnUrl;
         data["waitingForActivation"] = this.waitingForActivation;
+        data["userName"] = this.userName;
         return data; 
     }
 
@@ -65425,6 +65847,7 @@ export interface IAuthenticateResultModel {
     returnUrl: string | undefined;
     /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
+    userName: string | undefined;
 }
 
 export class ExternalAuthenticateModel implements IExternalAuthenticateModel {
