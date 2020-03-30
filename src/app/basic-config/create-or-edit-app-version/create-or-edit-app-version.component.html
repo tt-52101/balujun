@@ -12,73 +12,75 @@
     <nz-form-item nz-row>
       <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="appName">程序名称</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-        <nz-upload [nzAction]="uploadurl"
-        [nzShowUploadList]="false"
-        [nzHeaders]="hearder"
-        nzName="file"
-        (nzChange)="handleChange($event)">
-        <input nz-input name="appName" #appName="ngModel" [(ngModel)]="entity.appName" style="width: 300px" placeholder="版本名称" required>
-      </nz-upload>
-    </nz-form-control>
-  </nz-form-item>
+        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file"
+          (nzChange)="handleChange($event)">
+          <input nz-input name="appName" #appName="ngModel" [(ngModel)]="entity.appName" style="width: 300px"
+            placeholder="点击上传apk" required>
+        </nz-upload>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item nz-row>
-    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="deviceType" nzRequired>设备类型</nz-form-label>
-    <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-      <nz-select [(ngModel)]="entity.deviceType" name="deviceType">
-        <nz-option nzLabel='售票机' nzValue="TicketMachine"></nz-option>
-        <nz-option nzLabel='自助机' nzValue="SelfhelpMachine"></nz-option>
-        <nz-option nzLabel='闸机' nzValue="GateMachine"></nz-option>
-        <nz-option nzLabel='手持机' nzValue="HandMachine"></nz-option>
-        <nz-option nzLabel='人脸机' nzValue="FaceMachine"></nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="deviceType" nzRequired>设备类型</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <nz-select [(ngModel)]="entity.deviceType" name="deviceType">
+          <nz-option nzLabel='售票机' nzValue="TicketMachine"></nz-option>
+          <nz-option nzLabel='自助机' nzValue="SelfhelpMachine"></nz-option>
+          <nz-option nzLabel='闸机' nzValue="GateMachine"></nz-option>
+          <nz-option nzLabel='手持机' nzValue="HandMachine"></nz-option>
+          <nz-option nzLabel='人脸机' nzValue="FaceMachine"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item nz-row>
-    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionName">版本名称</nz-form-label>
-    <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-      <input nz-input name="versionName" #versionName="ngModel" [(ngModel)]="entity.versionName" placeholder="版本名称" required>
-      <nz-form-explain *ngIf="versionName.control.dirty&&versionName.control.errors">
-        <ng-container *ngIf="versionName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-      </nz-form-explain>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionName">版本名称</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="versionName" #versionName="ngModel" [(ngModel)]="entity.versionName" placeholder="版本名称"
+          required>
+        <nz-form-explain *ngIf="versionName.control.dirty&&versionName.control.errors">
+          <ng-container *ngIf="versionName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item nz-row>
-    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionCode">版本编号</nz-form-label>
-    <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-      <input nz-input name="versionCode" #versionCode="ngModel" [(ngModel)]="entity.versionCode" placeholder="版本编号" required>
-      <!-- 校验 -->
-      <nz-form-explain *ngIf="versionCode.control.dirty&&versionCode.control.errors">
-        <ng-container *ngIf="versionCode.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-      </nz-form-explain>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionCode">版本编号</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="versionCode" #versionCode="ngModel" [(ngModel)]="entity.versionCode" placeholder="版本编号"
+          required>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="versionCode.control.dirty&&versionCode.control.errors">
+          <ng-container *ngIf="versionCode.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item nz-row>
-    <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionDesc">版本描述</nz-form-label>
-    <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-      <textarea nz-input name="versionDesc" style="height: 100px;" placeholder="版本描述" #versionDesc="ngModel" [(ngModel)]="entity.versionDesc" name="versionDesc" required></textarea>
-      <!-- 校验 -->
-      <nz-form-explain *ngIf="versionDesc.control.dirty&&versionDesc.control.errors">
-        <ng-container *ngIf="versionDesc.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
-      </nz-form-explain>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="versionDesc">版本描述</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <textarea nz-input name="versionDesc" style="height: 100px;" placeholder="版本描述" #versionDesc="ngModel"
+          [(ngModel)]="entity.versionDesc" name="versionDesc" required></textarea>
+        <!-- 校验 -->
+        <nz-form-explain *ngIf="versionDesc.control.dirty&&versionDesc.control.errors">
+          <ng-container *ngIf="versionDesc.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
 
 
 
 
-</fieldset>
+  </fieldset>
 
-<!-- 模态框底部 -->
-<div class="modal-footer">
-  <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
-    {{l("Cancel")}}
-  </button>
-  <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving" [nzLoading]="saving">
-    {{l("Save")}}
-  </button>
-</div>
+  <!-- 模态框底部 -->
+  <div class="modal-footer">
+    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+      {{l("Cancel")}}
+    </button>
+    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
+      [nzLoading]="saving">
+      {{l("Save")}}
+    </button>
+  </div>
 </form>

@@ -65441,7 +65441,7 @@ export class SalesActivityDetailResultDto implements ISalesActivityDetailResultD
     /** 结束有效期 */
     endDateTime: moment.Moment;
     /** 最后一次使用时间（检票日期） */
-    checkDate: moment.Moment;
+    checkDate: moment.Moment | undefined;
 
     constructor(data?: ISalesActivityDetailResultDto) {
         if (data) {
@@ -65513,7 +65513,7 @@ export interface ISalesActivityDetailResultDto {
     /** 结束有效期 */
     endDateTime: moment.Moment;
     /** 最后一次使用时间（检票日期） */
-    checkDate: moment.Moment;
+    checkDate: moment.Moment | undefined;
 }
 
 export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStatsPagedResultDtoOfSalesActivityDetailResultDto {

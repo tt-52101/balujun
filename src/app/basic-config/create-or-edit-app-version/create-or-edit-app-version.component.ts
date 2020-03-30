@@ -1,7 +1,7 @@
 
 import { Component, OnInit, Injector, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { ModalComponentBase } from '@shared/component-base/modal-component-base';
-import { CreateOrUpdateClientVersionInput,ClientVersionEditDto, ClientVersionServiceProxy } from '@shared/service-proxies/service-proxies';
+import { CreateOrUpdateClientVersionInput, ClientVersionEditDto, ClientVersionServiceProxy } from '@shared/service-proxies/service-proxies';
 import { Validators, AbstractControl, FormControl } from '@angular/forms';
 
 import { UtilsService } from '@abp/utils/utils.service';
@@ -11,28 +11,28 @@ import { AppConsts } from 'abpPro/AppConsts';
 @Component({
     selector: 'create-or-edit-app-version',
     templateUrl: './create-or-edit-app-version.component.html',
-    styleUrls:[
-    'create-or-edit-app-version.component.less'
+    styleUrls: [
+        'create-or-edit-app-version.component.less'
     ],
 })
 
 export class CreateOrEditAppVersionComponent
-extends ModalComponentBase
-implements OnInit {
+    extends ModalComponentBase
+    implements OnInit {
     /**
     * 编辑时DTO的id
     */
-    id: any ;
+    id: any;
 
-    entity: ClientVersionEditDto=new ClientVersionEditDto();
+    entity: ClientVersionEditDto = new ClientVersionEditDto();
 
-    uploadurl=''
-    baseurl=''
-    hearder={
-        Authorization:''
+    uploadurl = ''
+    baseurl = ''
+    hearder = {
+        Authorization: ''
     }
 
-    appName=''
+    appName = ''
 
     /**
     * 初始化的构造函数
@@ -41,11 +41,11 @@ implements OnInit {
         injector: Injector,
         private _clientVersionService: ClientVersionServiceProxy,
         private _utilsService: UtilsService,
-        ) {
+    ) {
         super(injector);
     }
 
-    ngOnInit() :void{
+    ngOnInit(): void {
         this.init();
     }
 
@@ -55,29 +55,31 @@ implements OnInit {
     */
     init(): void {
         this._clientVersionService.getForEdit(this.id).subscribe(result => {
+      
             this.entity = result.clientVersion;
         });
 
-        this.uploadurl=AppConsts.remoteServiceBaseUrl+'/api/File/UploadClientAsync'
-        this.hearder.Authorization='Bearer '+ this._utilsService.getCookieValue("Abp.AuthToken");
+        this.uploadurl = AppConsts.remoteServiceBaseUrl + '/api/File/UploadClientAsync'
+        console.log(this.uploadurl);
+        this.hearder.Authorization = 'Bearer ' + this._utilsService.getCookieValue("Abp.AuthToken");
+        
+        
     }
 
     handleChange(info): void {
         console.log(info)
         switch (info.file.status) {
-
             case 'done':
-            console.log(info.file.response.result)
-            this.appName=info.file.response.result.appName
-            this.entity.appName=info.file.response.result.appName
-            this.entity.versionName=info.file.response.result.versionName
-            this.entity.versionCode=info.file.response.result.versionCode
-            this.entity.deviceType=info.file.response.result.deviceType
-
-            break;
+                console.log(info.file.response.result)
+                this.appName = info.file.response.result.appName
+                this.entity.appName = info.file.response.result.appName
+                this.entity.versionName = info.file.response.result.versionName
+                this.entity.versionCode = info.file.response.result.versionCode
+                this.entity.deviceType = info.file.response.result.deviceType
+                break;
             case 'error':
-            abp.message.error(this.l('UploadFail'));
-            break;
+                abp.message.error(this.l('UploadFail'));
+                break;
         }
     }
 
@@ -92,10 +94,10 @@ implements OnInit {
         this.saving = true;
 
         this._clientVersionService.createOrUpdate(input)
-        .finally(() => (this.saving = false))
-        .subscribe(() => {
-            this.notify.success(this.l('SavedSuccessfully'));
-            this.success(true);
-        });
+            .finally(() => (this.saving = false))
+            .subscribe(() => {
+                this.notify.success(this.l('SavedSuccessfully'));
+                this.success(true);
+            });
     }
 }

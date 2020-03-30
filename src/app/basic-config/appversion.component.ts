@@ -47,8 +47,6 @@ implements OnInit {
 			finishedCallback();
 		})
 		.subscribe(result => {
-			console.log(result);
-			
 			this.dataList = result.items;
 			this.showPaging(result);
 		});
