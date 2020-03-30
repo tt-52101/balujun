@@ -1,0 +1,87 @@
+<form nz-form #validateForm="ngForm" (ngSubmit)="submitForm()" nzLayout="horizontal" autocomplete="off">
+  <div class="modal-header">
+    <div class="modal-title">
+      <span *ngIf="entity.id">{{l('Edit')}}</span>
+      <span *ngIf="!entity.id">{{l('Create')}}</span>
+    </div>
+  </div>
+  <fieldset>
+
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="scenicSpotName">景区名称</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="scenicSpotName" #scenicSpotName="ngModel" [(ngModel)]="entity.scenicSpotName"
+        placeholder="景区名称" required>
+        <nz-form-explain *ngIf="scenicSpotName.control.dirty&&scenicSpotName.control.errors">
+          <ng-container *ngIf="scenicSpotName.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="scenicSpotAddr">景区地址</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="scenicSpotAddr" #scenicSpotAddr="ngModel" [(ngModel)]="entity.scenicSpotAddr"
+        placeholder="地址" required>
+        <nz-form-explain *ngIf="scenicSpotAddr.control.dirty&&scenicSpotAddr.control.errors">
+          <ng-container *ngIf="scenicSpotAddr.control.hasError('required')">{{l('CanNotNull')}}</ng-container>
+        </nz-form-explain>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="openTime" nzRequired>开放时间</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="openTime" #openTime="ngModel" [(ngModel)]="entity.openTime" placeholder="开放时间" required>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="smokedWay" nzRequired>入园方式</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="smokedWay" #smokedWay="ngModel" [(ngModel)]="entity.smokedWay" placeholder="入园方式" required>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scheduledTime" nzRequired>预订时间</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+        <input nz-input name="scheduledTime" #scheduledTime="ngModel" [(ngModel)]="entity.scheduledTime" placeholder="预订时间" required>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">是否启用</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <label nz-checkbox name="isEnabled" #isEnabled="ngModel"
+        [(ngModel)]="entity.isEnabled">{{l('IsEnabled')}}</label>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nz-row>
+      <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="Picture">焦点图</nz-form-label>
+      <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+        <nz-upload [nzAction]="uploadurl"
+        [nzShowUploadList]="false"
+        [nzHeaders]="hearder"
+        [nzData]="file"
+        nzName="file"
+        (nzChange)="handleChange($event)">
+        <button nz-button type="button"><span>{{l('Upload')}}</span></button>
+      </nz-upload>
+      <span style="margin-left: 10px">{{picture}}</span>
+    </nz-form-control>
+  </nz-form-item>
+
+</fieldset>
+
+<div class="modal-footer">
+  <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+    {{l("Cancel")}}
+  </button>
+  <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
+  [nzLoading]="saving">
+  {{l("Save")}}
+</button>
+</div>
+</form>

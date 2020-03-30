@@ -4,14 +4,14 @@
       <nz-form-item class="formitem">
         <nz-form-label nzFor="info1">订单号</nz-form-label>
         <nz-form-control>
-          <input type="text" nz-input name="OrderNumber" [(ngModel)]="queryData[1].value" style="width: 180px">
+          <input type="text" nz-input name="OrderNumber" [(ngModel)]="queryData[1].value" style="width: 220px">
         </nz-form-control>
       </nz-form-item>
       <nz-form-item class="formitem">
         <nz-form-label nzFor="info2">二维码</nz-form-label>
         <nz-form-control>
           <input type="text" nz-input name="Ticketcode" placeholder="二维码" [(ngModel)]="queryData[0].value"
-            style="width: 180px">
+            style="width: 280px">
         </nz-form-control>
       </nz-form-item>
       <!-- <nz-form-item class="formitem">
@@ -52,12 +52,12 @@
             <th class="text-center" nzWidth="200px">
               <span>订单号</span>
             </th>
-            <th class="text-center" nzWidth="130px">
+<!--             <th class="text-center" nzWidth="130px">
               <span>名字</span>
             </th>
             <th class="text-center" nzWidth="150px">
               <span>手机号</span>
-            </th>
+            </th> -->
             <th class="text-center" nzWidth="160px">
               <span>总数量</span>
             </th>
@@ -82,7 +82,7 @@
                 {{item.activityNo}}
               </span>
             </td>
-            <td class="text-center">
+<!--             <td class="text-center">
               <span>
                 {{item.buyer}}
               </span>
@@ -91,7 +91,7 @@
               <span>
                 {{item.mobile}}
               </span>
-            </td>
+            </td> -->
             <td class="text-center">
               <span>
                 {{item.totalQuantity}}
@@ -99,7 +99,7 @@
             </td>
             <td class="text-center">
               <span>
-                {{item.voucherNo}}
+                {{item.payMethod.payName}}
               </span>
             </td>
             <td class="text-center">
@@ -129,38 +129,38 @@
 
 
     <nz-col style="width: 70%;margin-top: 20px" *ngIf="single">
-      <nz-table #ajaxTable [nzData]="orderticket" [nzScroll]="{ x: '960px',y:'460px' }" style="word-break:break-all"
+      <nz-table #ajaxTable [nzData]="orderticket" [nzScroll]="{ x: '915px',y:'460px' }" style="word-break:break-all"
         nzBordered>
         <ng-template #noDataTemplate>
           <no-data></no-data>
         </ng-template>
         <thead>
           <tr>
-            <th [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate"
+            <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate"
               (nzCheckedChange)="checkAll($event)" nzWidth="60px">
               <!-- <th nz-th nzWidth="60px" nzLeft="0px"></th> -->
             <th class="text-center" nzWidth="130px">
               <span>票型名称</span>
             </th>
-            <th class="text-center" nzWidth="80px">
+<!--             <th class="text-center" nzWidth="80px">
               <span>名字</span>
             </th>
             <th class="text-center" nzWidth="140px">
               <span>手机号</span>
-            </th>
-            <th class="text-center" nzWidth="195px">
+            </th> -->
+            <th class="text-center" nzWidth="235px">
               <span>票码</span>
             </th>
-            <th class="text-center" nzWidth="100px">
+            <th class="text-center" nzWidth="90px">
               <span>售价</span>
             </th>
             <th class="text-center" nzWidth="100px">
               <span>门票状态</span>
             </th>
-            <th class="text-center" nzWidth="165px">
+            <th class="text-center" nzWidth="150px">
               <span>开始有效期</span>
             </th>
-            <th class="text-center" nzWidth="165px">
+            <th class="text-center" nzWidth="150px">
               <span>结束有效期</span>
             </th>
           </tr>
@@ -175,7 +175,7 @@
                 {{item.ticketPriceName}}
               </span>
             </td>
-            <td class="text-center">
+<!--             <td class="text-center">
               <span>
                 {{item.customer.customerName}}
               </span>
@@ -184,7 +184,7 @@
               <span>
                 {{item.customer.mobile}}
               </span>
-            </td>
+            </td> -->
             <td class="text-center">
               <span>
                 {{item.qrCode}}
@@ -232,19 +232,19 @@
           <nz-form-item class="formitem1">
             <nz-form-label class="my-form-label" [nzSm]="8"><span>订单来源</span></nz-form-label>
             <nz-form-control [nzSm]="16">
-              <span>{{orderinfo.source&&orderinfo.source.sourceName}}</span>
+              <span *ngIf="orderinfo.source&&orderinfo.source.sourceName">{{orderinfo.source.sourceName}}</span>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item class="formitem1">
+<!--           <nz-form-item class="formitem1">
             <nz-form-label class="my-form-label" [nzSm]="8"><span>取票人</span></nz-form-label>
             <nz-form-control [nzSm]="16">
               <span>{{orderinfo.buyer}}</span>
             </nz-form-control>
-          </nz-form-item>
+          </nz-form-item> -->
           <nz-form-item class="formitem1">
             <nz-form-label class="my-form-label" [nzSm]="8"><span>支付方式</span></nz-form-label>
             <nz-form-control [nzSm]="16">
-              <span>{{orderinfo.voucherNo}}</span>
+              <span *ngIf="orderinfo.payMethod">{{orderinfo.payMethod.payName}}</span>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item class="formitem1">

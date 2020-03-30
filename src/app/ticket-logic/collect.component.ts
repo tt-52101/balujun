@@ -83,7 +83,11 @@ implements OnInit {
 
 	selectedDataItems = []
 
+	documentHeight=0
+
 	protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
+		this.documentHeight=document.body.offsetHeight
+
 		const formdata = new GetAccountsInput();
 		var arr = []
 		for (var i = this.queryData.length - 1; i >= 0; i--) {
@@ -170,7 +174,7 @@ implements OnInit {
 
 	open(account, id): void {
 		var arr = [new QueryData({
-			field: "ActivityDetail.Activity.accountsId",
+			field: "ActivityDetail.Activity.AccountsId",
 			method: "=",
 			value: id,
 			logic: "and"
@@ -184,10 +188,6 @@ implements OnInit {
 			this.ticketlist = result.items;
 		});
 	}
-
-
-
-
 
 
 }

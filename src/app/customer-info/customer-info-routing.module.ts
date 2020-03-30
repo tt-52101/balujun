@@ -13,7 +13,7 @@ const routes: Routes = [{
 	children: [
 		{ path: 'tourist-info', component: TouristInformation, data: { title: '游客信息管理' } },
 		{ path: 'group-info', component: GroupInformation, data: { title: '团队管理' } },
-		{ path: 'conductor', component: Conductor, data: { title: '角色可售票类型管理' } },
+		{ path: 'conductor', component: Conductor, data: { title: '角色可售票' } },
 	]
 }, ];
 

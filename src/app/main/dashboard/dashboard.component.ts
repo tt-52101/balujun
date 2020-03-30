@@ -74,11 +74,11 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
 
   getdata(days,index){
 
-    const id = this.msg.loading('数据加载中...', { nzDuration: 0 }).messageId;
+    // const id = this.msg.loading('数据加载中...', { nzDuration: 0 }).messageId;
 
-     setTimeout(() => {
-      this.msg.remove(id);
-    }, 2500);
+    //  setTimeout(() => {
+    //   this.msg.remove(id);
+    // }, 2500);
 
     // console.log(days)
     this.nzSelectedIndex = index
