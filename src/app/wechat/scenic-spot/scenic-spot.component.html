@@ -41,9 +41,9 @@
           <th nz-th class="text-center">
             <span>预订时间</span>
           </th>
-          <th nz-th class="text-center">
+<!--           <th nz-th class="text-center">
             <span>是否启用</span>
-          </th>
+          </th> -->
           <th nz-th class="text-center">
             <span>操作</span>
           </th>
@@ -90,7 +90,7 @@
             </ellipsis>
           </td>
 
-          <td nz-td class="text-center" [innerHTML]="item.isEnable | yn"> </td>
+          <!-- <td nz-td class="text-center" [innerHTML]="item.isEnable | yn"> </td> -->
           <td nz-td class="text-center">
             <ng-container *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1" >
               <a (click)="createOrEdit(item.id)">

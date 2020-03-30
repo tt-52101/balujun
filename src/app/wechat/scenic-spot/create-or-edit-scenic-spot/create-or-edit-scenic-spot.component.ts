@@ -51,7 +51,7 @@ implements OnInit {
     });
     console.log(AppConsts.remoteServiceBaseUrl)
     this.uploadurl=AppConsts.remoteServiceBaseUrl+'/api​/services​/app​/WeChatScenicSpot​/UpLoadPictures'
-    this.hearder.Authorization='Bearer '+ this._utilsService.getCookieValue("Abp.AuthToken");
+    // this.hearder.Authorization='Bearer '+ this._utilsService.getCookieValue("Abp.AuthToken");
     console.log(this.uploadurl)
     console.log(this.hearder.Authorization)
   }
