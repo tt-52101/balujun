@@ -100,6 +100,8 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
 
         this._organizationService.getPaged(formdata)
         .subscribe(result => {
+            console.log(result.items);
+            
             this.grouparr = result.items;
         });
     }
@@ -172,6 +174,8 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
 
         this._ticketPriceService.getPagedGroup(formdata)
         .subscribe(result => {
+            console.log(result.items);
+            
             this.ticketlist = result.items;
             var orderticket=[]
             this.ticketlist.forEach(function(titem){

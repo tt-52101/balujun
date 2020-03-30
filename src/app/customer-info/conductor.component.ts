@@ -70,6 +70,8 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
             })
             .subscribe(result => {
                 this.dataList = result.items;
+                console.log(result.items);
+                
                 this.showPaging(result);
             });
         this.rolelists()

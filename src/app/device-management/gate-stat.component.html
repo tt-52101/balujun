@@ -1,0 +1,123 @@
+<nz-card [nzBordered]="false">
+  <div class="mb-md">
+    <nz-row nzGutter="16">
+      <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+
+        <nz-form-item>
+          <nz-form-label nzFor="device">设备</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear name="device" style="width: 180px">
+              <nz-option *ngFor="let item of Devices;let i = index;" [nzValue]="item.id" [nzLabel]="item.deviceName">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- <nz-form-item>
+          <nz-form-label nzFor="ticket">票型</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="ticketId" nzAllowClear name="ticket" style="width: 180px">
+              <nz-option *ngFor="let item of Tickets;" [nzValue]="item.id" [nzLabel]="item.ticketName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+
+        <!--         <nz-form-item>
+          <nz-form-label nzFor="operator">检票员</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear name="operator" style="width: 180px">
+              <nz-option *ngFor="let item of userList;let i = index;" [nzValue]="item.id" [nzLabel]="item.userName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+
+        <!--         <nz-form-item>
+          <nz-form-label nzFor="operator">检票状态</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="queryData[4].value" nzAllowClear name="operator" style="width: 180px">
+              <nz-option nzValue="CheckSuccess" nzLabel="检票成功"></nz-option>
+              <nz-option nzValue="CheckFalse " nzLabel="检票失败"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item> -->
+
+        <!-- <nz-form-item class="formitem">
+          <nz-form-label>检票时间</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)"
+              name="collectionTime" [nzDisabledDate]="disabledDate" [(ngModel)]="collectionTime"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item> -->
+
+        <nz-form-item style=" margin-top: 4px;">
+          <button nz-button [nzType]="'primary'" type="submit" (click)="refreshGoFirstPage()">
+            <span>
+              {{l("Query")}}
+            </span>
+          </button>
+        </nz-form-item>
+      </form>
+    </nz-row>
+  </div>
+  <!-- 实体的表格内容 -->
+  <nz-row class="my-md">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
+      [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
+      (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" nzBordered
+      [nzNoResult]="noDataTemplate" [nzFrontPagination]="false">
+      <!-- 暂无数据组件 -->
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <!-- 表头 -->
+      <thead (nzSortChange)="gridSort($event)">
+        <tr>
+          <!-- <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)"></th> -->
+
+          <th nz-th class="text-center">
+            <span>设备名称</span>
+          </th>
+          <th nz-th class="text-center">
+            <span>设备编号</span>
+          </th>
+          <th nz-th class="text-center">
+            <span>设备分类</span>
+          </th>
+          <th nz-th class="text-center">
+            <span>过闸数量</span>
+          </th>
+        </tr>
+      </thead>
+      <!-- 表格内容 -->
+
+
+      <tbody>
+        <tr *ngFor="let item of ajaxTable.data">
+          <!-- 全选框 -->
+          <!-- <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"></td> -->
+          <td nz-td class="text-center">
+            <span>
+              {{item.deviceName}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.deviceId}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span>
+              {{item.deviceType}}
+            </span>
+          </td>
+
+          <td nz-td class="text-center">
+            <span>
+              {{item.total}}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-row>
+</nz-card>
