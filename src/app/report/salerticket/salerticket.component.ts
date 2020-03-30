@@ -3,45 +3,43 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {
+import {SalesBySellerServiceProxy,SalesBySellerResultDto,
+	SalesCommonServiceProxy,
 	UserServiceProxy ,QueryData,
-	TicketServiceProxy,
-	SalesByPayMethodResultDto
-	// SellerTicketResultDto,
-	// GetTicketsInput
+	SalesCommonActivityInput,
+	TicketPriceServiceProxy,GetTicketPricesInput
 } from '@shared/service-proxies/service-proxies';
 
-import { CreateOrEditSalerticketComponent } from './create-or-edit-salerticket/create-or-edit-salerticket.component';
-
-
-import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
 
+import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 
 @Component({
-  templateUrl: './salerticket.component.html',
-  styleUrls: ['./salerticket.component.less'],
-  animations: [appModuleAnimation()],
+	templateUrl: './salerticket.component.html',
+	styleUrls: ['./salerticket.component.less'],
+	animations: [appModuleAnimation()],
 })
 
 
-export class  SalerTicketComponent extends PagedListingComponentBase<SalesByPayMethodResultDto>
+export class  SalerTicketComponent extends PagedListingComponentBase<SalesBySellerResultDto>
 implements OnInit {
 
-  constructor(
-    injector: Injector,
+	constructor(
+		injector: Injector,
+		private _salesBySellerService: SalesBySellerServiceProxy,
+		private _salesCommonService: SalesCommonServiceProxy,
 		private _userService: UserServiceProxy,
-		private _ticketService: TicketServiceProxy,
-    ) {
-    super(injector);
-  }
+		private _ticketPriceService: TicketPriceServiceProxy,
+		) {
+		super(injector);
+		this.documentHeight=document.body.offsetHeight
+	}
 
-  queryData = [{
-		field: "ScheduleId",
-		method: "=",
-		value: "",
-		logic: "and"
-	},{
+	ordervisible=false
+
+	ticketinfo=[]
+
+	queryData = [{
 		field: "CreatorUserId",
 		method: "=",
 		value: "",
@@ -56,71 +54,35 @@ implements OnInit {
 		method: "<=",
 		value: "",
 		logic: "and"
-	}];
+	},];
 
-	CreationTime=''
 
-	boatId=''
+	userList=[]
+
 	ticketId=''
 
-	boatList=[]
-	ticketlarr=[]
-
-	orderlist=[]
 	ticketlist=[]
-	visible = false;
-	childvisible=false
 
-	disabledDate = (current: Date): boolean => {
-		// Can not select days before today and today
-		return differenceInCalendarDays(current, new Date()) > 0;
-	};
+	collectionTime=''
 
 	total:any;
-	userList=[]
-	schedulelist=[]
 
-	dataList1=[
-		{
-			userName:'张三',
-			saleCount:'aa',
-			refundCount:'aa',
-			totalCount:'aa',
-			cashSaleAmount:'aa',
-			cardSaleAmount:'aa',
-			weiChatSaleAmount:'aa',
-			zhiFuBaoSaleAmount:'aa',
-			totalSaleAmount:'aa',
-			cashRefundAmount:'aa',
-			cardRefundAmount:'aa',
-			weiChatRefundAmount:'aa',
-			zhiFuBaoRefundAmount:'aa',
-			totalRefundAmount:'aa',
-			totalAmount:'aa',
 
-		}
-	]
+	documentHeight=0
 
-	total1=[
-		{
-			
-			saleCount:'aa',
-			refundCount:'aa',
-			totalCount:'aa',
-			cashSaleAmount:'aa',
-			cardSaleAmount:'aa',
-			weiChatSaleAmount:'aa',
-			zhiFuBaoSaleAmount:'aa',
-			totalSaleAmount:'aa',
-			cashRefundAmount:'aa',
-			cardRefundAmount:'aa',
-			weiChatRefundAmount:'aa',
-			zhiFuBaoRefundAmount:'aa',
-			totalRefundAmount:'aa',
-			totalAmount:'aa',
 
-		}
-	]
+	orderlist=[]
+	orderids=[]
+	oindex=1
+	ototal=100
+	opagesize=10
+
+
+	ticketdetail=[]
+
+	disabledDate = (current: Date): boolean => {
+		return differenceInCalendarDays(current, new Date()) > 0;
+	};
 
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
 		var arr=[]
@@ -129,105 +91,61 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		
-	// 	this._sellerdailyService.getPaged(arr,null,request.maxResultCount,request.skipCount,this.boatId,this.ticketId)
-	// 	.finally(() => {
-	// 		finishedCallback();
-	// 	})
-	// 	.subscribe(result => {
-	// 		// if(result.totalCount>0){
-	// 			this.dataList = result.items;
-	// 		if(result.totalCount>0){
-	// 			this.total= [result.total]
-	// 		}
-	// 			this.showPaging(result);
-	// 			// }
-	// 		});
-
-	// 	this.getuser()
-	// 	this.getschedule()
-	// 	this.getboat()
-	// 	this.getticket()
-	// }
-
-	// getticket(){
-	// 	const formdata = new GetTicketsInput()
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._ticketService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.ticketlarr = result.items;
-	// 	});
-	// }
-
-	// getboat(){
-	// 	const formdata = new GetBoatsInput()
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._boatService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.boatList = result.items;
-	// 	});
-	// }
-
-	// getschedule(){
-	// 	var formdata = new GetSchedulesInput
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._scheduleService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.schedulelist = result.items;
-	// 	});
-	// }
-
-
-	}
-
-	close(): void {
-		this.visible = false;
-	}
-	open(id : number): void {
-		this.modalHelper.static(CreateOrEditSalerticketComponent, { id: id })
+		this._salesBySellerService.getPaged(arr,'','',request.maxResultCount,request.skipCount,this.ticketId)
+		.finally(() => {
+			finishedCallback();
+		})
 		.subscribe(result => {
-		  if (result) {
-			this.refresh();
-		  }
+			this.dataList = result.items;
+			if(result.totalCount>0){
+				this.total= [result.total]
+			}
+			this.showPaging(result);
 		});
-	  }
 
+		this.getuser()
 
-	openchild(tickets): void {
-		this.childvisible = true;
-		this.ticketlist = tickets;
+		this.getticket()
 	}
 
-	closechild(): void {
-		this.childvisible = false;
+	getticket(){
+		const formdata = new GetTicketPricesInput()
+		formdata.queryData = [];
+		formdata.sorting = '';
+		formdata.maxResultCount = 999;
+		formdata.skipCount = 0;
+
+		this._ticketPriceService.getPaged(formdata)
+		.subscribe(result => {
+			this.ticketlist = result.items;
+		});
 	}
-
-
-
-
 
 	datechange($event): void {
-		var myDate = new Date($event);
-		var year=myDate.getFullYear();
-		var month=myDate.getMonth()+1;
-		var date=myDate.getDate();
-		var fulldate=year+'-'+month+'-'+date
-		this.queryData[2].value=moment(fulldate).format('YYYY-MM-DD HH:mm:ss');
-		this.queryData[3].value=moment(fulldate).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
-	}
+		if($event.length>0){
+			if($event[0].getTime() == $event[1].getTime()){
+				$event[1]=new Date($event[1].getTime()+24*60*60*1000)
+			}
 
+			var year=$event[0].getFullYear();
+			var month = $event[0].getMonth() + 1;
+			var day = $event[0].getDate();
+
+			var fulldate1=year+'-'+month+'-'+day;
+
+			var year=$event[1].getFullYear();
+			var month = $event[1].getMonth() + 1;
+			var day = $event[1].getDate();
+
+			var fulldate2=year+'-'+month+'-'+day;
+
+			this.queryData[1].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[2].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+		}else{
+			this.queryData[1].value=''
+			this.queryData[2].value=''
+		}
+	}
 
 	getuser(){
 		this._userService
@@ -238,13 +156,49 @@ implements OnInit {
 			undefined,
 			undefined,
 			'',
-			null,
+			'',
 			999,
 			0
 			)
 		.subscribe((result) => {
 			this.userList = result.items;
 		});
+	}
+
+
+
+
+	openorder(ids): void {
+		this.getorder()
+		this.orderids=ids
+		this.ordervisible = true;
+	}
+
+	getorder(){
+		// console.log(this.opagesize)
+		// console.log((this.oindex - 1) * this.opagesize)
+		var formdata=new SalesCommonActivityInput
+		this._salesCommonService.getPagedActivities(formdata)
+		.subscribe(result => {
+			this.ticketinfo = result.items;
+		});
+	}
+
+	oSizeChange($event):void{
+		console.log($event)
+		this.oindex=1
+		this.getorder()
+	}
+
+	oIndexChange($event):void{
+		console.log($event)
+		this.getorder()
+	}
+
+
+	closeorder(): void {
+		this.oindex=1
+		this.ordervisible = false;
 	}
 
 

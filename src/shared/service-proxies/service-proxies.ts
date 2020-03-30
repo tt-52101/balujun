@@ -13393,6 +13393,62 @@ export class PowerServiceProxy {
         }
         return _observableOf<PagedResultDtoOfPowerListDto>(<any>null);
     }
+
+    /**
+     * 根据用户ID获取PowerListDto信息
+     * @return Success
+     */
+    getPowerListByUserId(): Observable<PowerListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Power/GetPowerListByUserId";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPowerListByUserId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPowerListByUserId(<any>response_);
+                } catch (e) {
+                    return <Observable<PowerListDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PowerListDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPowerListByUserId(response: HttpResponseBase): Observable<PowerListDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(PowerListDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PowerListDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -27774,41 +27830,21 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单信息
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @param activityIds (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPagedActivities(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityIds: string[] | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        if (activityIds === null)
-            throw new Error("The parameter 'activityIds' cannot be null.");
-        else if (activityIds !== undefined)
-            activityIds && activityIds.forEach(item => { url_ += "activityIds=" + encodeURIComponent("" + item) + "&"; });
+    getPagedActivities(body: SalesCommonActivityInput | undefined): Observable<StatsPagedResultDtoOfSalesActivityResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivities";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
@@ -27851,41 +27887,21 @@ export class SalesCommonServiceProxy {
 
     /**
      * 获取订单明细
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
-     * @param activityId (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    getPagedActivityDetails(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined, activityId: string | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
-        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails?";
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
-        if (activityId === null)
-            throw new Error("The parameter 'activityId' cannot be null.");
-        else if (activityId !== undefined)
-            url_ += "activityId=" + encodeURIComponent("" + activityId) + "&"; 
+    getPagedActivityDetails(body: SalesCommonActivityDetailInput | undefined): Observable<StatsPagedResultDtoOfSalesActivityDetailResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesCommon/GetPagedActivityDetails";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
@@ -28220,6 +28236,63 @@ export class TokenAuthServiceProxy {
     }
 
     /**
+     * 手持机登录
+     * @param body (optional) 
+     * @return Success
+     */
+    handSetLogin(body: AuthenticateModel | undefined): Observable<AuthenticateResultModel> {
+        let url_ = this.baseUrl + "/api/TokenAuth/HandSetLogin";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processHandSetLogin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processHandSetLogin(<any>response_);
+                } catch (e) {
+                    return <Observable<AuthenticateResultModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AuthenticateResultModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processHandSetLogin(response: HttpResponseBase): Observable<AuthenticateResultModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AuthenticateResultModel.fromJS(resultData200) : new AuthenticateResultModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AuthenticateResultModel>(<any>null);
+    }
+
+    /**
      * @param impersonationToken (optional) 
      * @return Success
      */
@@ -28530,6 +28603,63 @@ export class WechatServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfActivity>(<any>null);
+    }
+
+    /**
+     * 根据日期查询票价
+     * @param date (optional) 
+     * @return Success
+     */
+    ticketPrices(date: string | undefined): Observable<PagedResultDtoOfTicketPriceListDto> {
+        let url_ = this.baseUrl + "/api/Wechat/TicketPrices?";
+        if (date === null)
+            throw new Error("The parameter 'date' cannot be null.");
+        else if (date !== undefined)
+            url_ += "date=" + encodeURIComponent("" + date) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTicketPrices(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTicketPrices(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfTicketPriceListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTicketPrices(response: HttpResponseBase): Observable<PagedResultDtoOfTicketPriceListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfTicketPriceListDto.fromJS(resultData200) : new PagedResultDtoOfTicketPriceListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfTicketPriceListDto>(<any>null);
     }
 }
 
@@ -64808,6 +64938,77 @@ export interface IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
     items: SalesBySellerDailyResultDto[] | undefined;
 }
 
+/** 统计报表通用-订单 */
+export class SalesCommonActivityInput implements ISalesCommonActivityInput {
+    /** 订单ID集合 */
+    activityIds: string[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesCommonActivityInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesCommonActivityInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesCommonActivityInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesCommonActivityInput {
+        const json = this.toJSON();
+        let result = new SalesCommonActivityInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 统计报表通用-订单 */
+export interface ISalesCommonActivityInput {
+    /** 订单ID集合 */
+    activityIds: string[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 /** 订单信息 */
 export class SalesActivityResultDto implements ISalesActivityResultDto {
     /** Id */
@@ -65002,6 +65203,69 @@ export interface IStatsPagedResultDtoOfSalesActivityResultDto {
     filters: { [key: string] : Anonymous10[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
+}
+
+/** 统计报表通用-订单明细 */
+export class SalesCommonActivityDetailInput implements ISalesCommonActivityDetailInput {
+    /** 订单ID */
+    activityId: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesCommonActivityDetailInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.activityId = data["activityId"];
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesCommonActivityDetailInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesCommonActivityDetailInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["activityId"] = this.activityId;
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesCommonActivityDetailInput {
+        const json = this.toJSON();
+        let result = new SalesCommonActivityDetailInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 统计报表通用-订单明细 */
+export interface ISalesCommonActivityDetailInput {
+    /** 订单ID */
+    activityId: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
 }
 
 /** 订单明细 */
@@ -65364,6 +65628,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
     returnUrl: string | undefined;
     /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
+    userName: string | undefined;
 
     constructor(data?: IAuthenticateResultModel) {
         if (data) {
@@ -65384,6 +65649,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
             this.passwordResetCode = data["passwordResetCode"];
             this.returnUrl = data["returnUrl"];
             this.waitingForActivation = data["waitingForActivation"];
+            this.userName = data["userName"];
         }
     }
 
@@ -65404,6 +65670,7 @@ export class AuthenticateResultModel implements IAuthenticateResultModel {
         data["passwordResetCode"] = this.passwordResetCode;
         data["returnUrl"] = this.returnUrl;
         data["waitingForActivation"] = this.waitingForActivation;
+        data["userName"] = this.userName;
         return data; 
     }
 
@@ -65425,6 +65692,7 @@ export interface IAuthenticateResultModel {
     returnUrl: string | undefined;
     /** 需要进行账号绑定激活 */
     waitingForActivation: boolean;
+    userName: string | undefined;
 }
 
 export class ExternalAuthenticateModel implements IExternalAuthenticateModel {

@@ -83,35 +83,42 @@ const routes: Routes = [{
     path: 'ticket-management',
     loadChildren: 'app/ticket-management/ticket-management.module#TicketManagement',
     data: { preload: true }
+  },
+
+  {
+    path: 'wechat',
+    loadChildren: 'app/wechat/wechat.module#WeChatModule',
+    data: { preload: true }
   }
 
 
 
-    // {
+
+  // {
     //   path: 'notifications',
     //   component: NotificationsComponent,
     //   data: { titleI18n: 'Notifications', reuse: true }
     // },
     // {
-    //   path: 'wechat',
-    //   loadChildren: 'app/wechat-management/wechat-management.module#WechatManagementModule',
-    //   data: { preload: true }
-    // },
-    // {
-    //   path: 'demo',
-    //   loadChildren: 'app/demo-management/demo-management.module#DemoManagementModule',
-    //   data: { preload: true }
-    // }
+      //   path: 'wechat',
+      //   loadChildren: 'app/wechat-management/wechat-management.module#WechatManagementModule',
+      //   data: { preload: true }
+      // },
+      // {
+        //   path: 'demo',
+        //   loadChildren: 'app/demo-management/demo-management.module#DemoManagementModule',
+        //   data: { preload: true }
+        // }
 
-    // {
-    //   path: '**',
-    //   redirectTo: 'main',
-    // },
-    ]
-  }];
+        // {
+          //   path: '**',
+          //   redirectTo: 'main',
+          // },
+          ]
+        }];
 
-  @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
-  })
-  export class AppRoutingModule {}
+        @NgModule({
+          imports: [RouterModule.forChild(routes)],
+          exports: [RouterModule]
+        })
+        export class AppRoutingModule {}

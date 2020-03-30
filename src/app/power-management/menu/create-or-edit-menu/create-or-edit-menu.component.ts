@@ -21,7 +21,7 @@ implements OnInit {
  
    entity: MenuEditDto = new MenuEditDto();
 
-   parentId = 0;
+   parentId = '';
    menuarr = [];
 
    iocName = "";
@@ -93,14 +93,15 @@ implements OnInit {
          this.menuarr = res
        });
        this.entity = result.menu;
-       this.parentId = result.menu.parentId
+       this.parentId = result.menu.parentId+''
+       console.log(this.parentId)
      });
    }
 
-   onChange($event: number): void {
+   onChange($event: string): void {
      console.log($event);
      this.parentId = $event
-     this.entity.parentId = $event
+     this.entity.parentId = parseInt($event)
    }
 
 

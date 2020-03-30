@@ -9,7 +9,7 @@ import {
 	SalesByPayMethodResultDto
 	// GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
-import { CreateOrEditGroupComponent } from './create-or-edit-group/create-or-edit-group.component';
+
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
@@ -244,12 +244,12 @@ implements OnInit {
 	}
 
 	open(id : number): void {
-		this.modalHelper.static(CreateOrEditGroupComponent, { id: id })
-		.subscribe(result => {
-		  if (result) {
-			this.refresh();
-		  }
-		});
+		// this.modalHelper.static(CreateOrEditGroupComponent, { id: id })
+		// .subscribe(result => {
+		//   if (result) {
+		// 	this.refresh();
+		//   }
+		// });
 	  }
 
 

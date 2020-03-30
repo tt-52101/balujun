@@ -122,15 +122,15 @@ implements OnInit {
 	open(id): void {
 		console.log(id);
 		
-		this.visible = true;
+		// this.visible = true;
 
-		this._SalesCommonServiceProxy.getPagedActivities('','',99,0,[id])
+		// this._SalesCommonServiceProxy.getPagedActivities('','',99,0,[id])
 
-		.subscribe(result => {
-			this.visible = true;
-			this.orderlist = result.items;
-			console.log(this.orderlist);
-		});
+		// .subscribe(result => {
+		// 	this.visible = true;
+		// 	this.orderlist = result.items;
+		// 	console.log(this.orderlist);
+		// });
 	}
 
 	close(): void {
@@ -139,13 +139,13 @@ implements OnInit {
 
 
 	openchild(id): void {
-		this.childvisible = true;
-		this._SalesCommonServiceProxy.getPagedActivityDetails('','',99,0,id)
-		.subscribe(result => {
-			this.childvisible = true;
-			console.log(result.items);
-			this.orderlist = result.items;
-		});
+		// this.childvisible = true;
+		// this._SalesCommonServiceProxy.getPagedActivityDetails('','',99,0,id)
+		// .subscribe(result => {
+		// 	this.childvisible = true;
+		// 	console.log(result.items);
+		// 	this.orderlist = result.items;
+		// });
 	}
 
 	closechild(): void {

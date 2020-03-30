@@ -29,8 +29,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.TimingServiceProxy,
   ApiServiceProxies.CommonLookupServiceProxy,
   ApiServiceProxies.TicketRoleServiceProxy,
-  ApiServiceProxies.SalesByPayMethodServiceProxy,
-  ApiServiceProxies.SalesCommonServiceProxy,
+
 
   // ============= Hangfire ==================
   // ApiServiceProxies.HangfireServiceServiceProxy,
@@ -66,6 +65,14 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
 
 
   //统计报表
+  ApiServiceProxies.SalesBySellerServiceProxy,
+  ApiServiceProxies.SalesBySellerDailyServiceProxy,
+  ApiServiceProxies.SalesByOrganizationServiceProxy,
+
+
+  ApiServiceProxies.SalesCommonServiceProxy,
+
+  ApiServiceProxies.SalesByPayMethodServiceProxy,
   // ApiServiceProxies.OrderSourceServiceProxy,
   // ApiServiceProxies.OtaServiceProxy,
   // ApiServiceProxies.SellerTicketServiceProxy,
@@ -106,10 +113,10 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.WechatMenuAppSeviceServiceProxy,
   ApiServiceProxies.WechatMediaServiceProxy,
 
-
+  ApiServiceProxies.WeChatScenicSpotServiceProxy,
 
   // 
- 
+
 
 
   { provide: HTTP_INTERCEPTORS, useClass: YoYoHttpInterceptor, multi: true },
