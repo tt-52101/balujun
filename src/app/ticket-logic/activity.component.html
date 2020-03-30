@@ -50,10 +50,10 @@
             <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="boattime" [(ngModel)]="boattime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;">
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
           <button nz-button [nzType]="'primary'" (click)="refreshGoFirstPage()" style="padding: 0px 20px;height: 32px;">{{l("Query")}}</button>
         </nz-form-item>
-        <nz-form-item class="formitem" style="margin:0 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Settle') > -1">
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Settle') > -1">
           <button nz-button [nzType]="'primary'" (click)="settle()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c">{{l("Settle")}}</button>
         </nz-form-item>
       </form>

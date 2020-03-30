@@ -6,6 +6,12 @@ import { SharedModule } from '@shared/shared.module';
 import { IndividualTicket } from './individual-ticket.component';
 import { GroupBooking } from './group-booking.component';
 
+import { ResaleSingle } from './resalesingle/resalesingle.component';
+import { ResaleGroup } from './resalegroup/resalegroup.component';
+
+import { CheckTicket } from './checkticket/checkticket.component';
+
+
 import { CreateOrEditCustomerComponent } from './create-or-edit-customer/create-or-edit-customer.component';
 import { CreateOrEditMemberComponent } from './create-or-edit-member/create-or-edit-member.component';
 
@@ -14,6 +20,9 @@ import { CreateOrEditMemberComponent } from './create-or-edit-member/create-or-e
   declarations: [
     IndividualTicket,
     GroupBooking,
+    ResaleSingle,
+    ResaleGroup,
+    CheckTicket,
     CreateOrEditCustomerComponent,
     CreateOrEditMemberComponent
   ],

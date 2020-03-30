@@ -4,12 +4,18 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {
-	UserServiceProxy ,QueryData,
-	TicketServiceProxy,
-	SalesByPayMethodResultDto
-	// GetTicketsInput
+	QueryData,
+	SalesByOrganizationServiceProxy,
+	OrganizationServiceProxy,
+	SalesByOrganizationResultDto,
+	GetOrganizationsInput,
+	PayMethodServiceProxy,
+	SalesCommonServiceProxy,
+	SalesCommonActivityInput,
+	SalesCommonActivityDetailInput
+
 } from '@shared/service-proxies/service-proxies';
-// import { CreateOrEditGroupComponent } from './create-or-edit-group/create-or-edit-group.component';
+
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
@@ -21,54 +27,22 @@ import * as moment from 'moment';
 })
 
 
-export class  GroupComponent extends PagedListingComponentBase<SalesByPayMethodResultDto>
+export class  GroupComponent extends PagedListingComponentBase<SalesByOrganizationResultDto>
 implements OnInit {
 
 	constructor(
 		injector: Injector,
-		private _userService: UserServiceProxy,
-		private _ticketService: TicketServiceProxy,
+		private _organizationService: OrganizationServiceProxy,
+		private _payMethodService: PayMethodServiceProxy,
+		private _salesByOrganizationService: SalesByOrganizationServiceProxy,
+		private _salesCommonService: SalesCommonServiceProxy,
 		) {
 		super(injector);
-
-		// var test=localStorage.getItem('power')
-		// this.test=test
-		// console.log(test)
+		this.documentHeight=document.body.offsetHeight
 	}
 
 
-	total1=[
-		{
-			
-			saleCount:'aa',
-			refundCount:'aa',
-			totalCount:'aa',
-			cashSaleAmount:'aa',
-			cardSaleAmount:'aa',
-			weiChatSaleAmount:'aa',
-			zhiFuBaoSaleAmount:'aa',
-			totalSaleAmount:'aa',
-			cashRefundAmount:'aa',
-			cardRefundAmount:'aa',
-			weiChatRefundAmount:'aa',
-			zhiFuBaoRefundAmount:'aa',
-			totalRefundAmount:'aa',
-			totalAmount:'aa',
-
-		}
-	]
-
 	queryData = [{
-		field: "ScheduleId",
-		method: "=",
-		value: "",
-		logic: "and"
-	},{
-		field: "CreatorUserId",
-		method: "=",
-		value: "",
-		logic: "and"
-	}, {
 		field: "CreationTime",
 		method: ">=",
 		value: "",
@@ -80,45 +54,38 @@ implements OnInit {
 		logic: "and"
 	}];
 
+	groupList=[]
+	organizationId=''
+	payMethodId=''
+
 	CreationTime=''
+	payMethodList=[]
 
-	boatId=''
-	ticketId=''
 
-	boatList=[]
-	ticketlarr=[]
+	total:any;
+
+	documentHeight=0
+
+	ordervisible=false
 
 	orderlist=[]
-	ticketlist=[]
-	visible = false;
-	childvisible=false
+	orderids=[]
+	oindex=1
+	ototal=100
+	opagesize=10
 
-	list=[
-		{
-    aa:'未结账',
-    bb:'10086',
-    cc:'官网',
-    dd:'个人',
-    ee:'50',
-    ff:'已支付',
-    gg:'现金支付',
-    hh:'1',
-    ii:'张三',
-    jj:'1008610010',
-    ll:'2019-10-15 11:11:11',
-    mm:'管理员',
-    nn:'10000',
-		}
-  ]
+	ticketvisible=false
+	orderid=0
+	ticketdetail=[]
+	tindex=1
+	ttotal=100
+	tpagesize=10
 
 	disabledDate = (current: Date): boolean => {
-		// Can not select days before today and today
 		return differenceInCalendarDays(current, new Date()) > 0;
 	};
 
-	total:any;
-	userList=[]
-	schedulelist=[]
+
 
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
 		var arr=[]
@@ -127,130 +94,153 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		// this._sellerdailyService.getPaged(arr,null,request.maxResultCount,request.skipCount,this.boatId,this.ticketId)
-		// .finally(() => {
-		// 	finishedCallback();
-		// })
-		// .subscribe(result => {
-		// 	// if(result.totalCount>0){
-		// 		this.dataList = result.items;
-		// 	if(result.totalCount>0){
-		// 		this.total= [result.total]
-		// 	}
-		// 		this.showPaging(result);
-		// 		// }
-		// 	});
-
-	// 	this.getuser()
-	// 	this.getschedule()
-	// 	this.getboat()
-	// 	this.getticket()
-	// }
-
-	// getticket(){
-	// 	const formdata = new GetTicketsInput()
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._ticketService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.ticketlarr = result.items;
-	// 	});
-	// }
-
-	// getboat(){
-	// 	const formdata = new GetBoatsInput()
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._boatService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.boatList = result.items;
-	// 	});
-	// }
-
-	// getschedule(){
-	// 	var formdata = new GetSchedulesInput
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null;
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._scheduleService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.schedulelist = result.items;
-	// 	});
-	// }
+		this._salesByOrganizationService.getPaged(arr,'','',request.maxResultCount,request.skipCount,this.organizationId,this.payMethodId)
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			this.dataList = result.items;
+			if(result.totalCount>0){
+				this.total= [result.total]
+			}else{
+				this.total=[]
+			}
+			console.log(this.dataList )
+			this.showPaging(result);
+		});
 
 
 
-	// open(id): void {
-	// 	this._sellerdailyService.detail(id)
-	// 	.subscribe(result => {
-	// 		this.visible = true;
-	// 		this.orderlist = result;
-	// 	});
-	}
-
-	close(): void {
-		this.visible = false;
+		this.getgroup()
+		this.getpaymethod()
 	}
 
 
-	openchild(tickets): void {
-		this.childvisible = true;
-		this.ticketlist = tickets;
-	}
+	getgroup(){
+		const formdata = new GetOrganizationsInput();
+		formdata.queryData = [];
+		formdata.filterText = '';
+		formdata.sorting = ''
+		formdata.maxResultCount = 999
+		formdata.skipCount =0
 
-	closechild(): void {
-		this.childvisible = false;
-	}
-
-
-
-
-
-	datechange($event): void {
-		var myDate = new Date($event);
-		var year=myDate.getFullYear();
-		var month=myDate.getMonth()+1;
-		var date=myDate.getDate();
-		var fulldate=year+'-'+month+'-'+date
-		this.queryData[2].value=moment(fulldate).format('YYYY-MM-DD HH:mm:ss');
-		this.queryData[3].value=moment(fulldate).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
-	}
-
-
-	getuser(){
-		this._userService
-		.getPaged(
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			'',
-			null,
-			999,
-			0
-			)
-		.subscribe((result) => {
-			this.userList = result.items;
+		this._organizationService.getPaged(formdata)
+		.subscribe(result => {
+			this.groupList = result.items;
+			this.showPaging(result);
 		});
 	}
 
-	open(id : number): void {
-		// this.modalHelper.static(CreateOrEditGroupComponent, { id: id })
-		// .subscribe(result => {
-		//   if (result) {
-		// 	this.refresh();
-		//   }
-		// });
-	  }
+	getpaymethod() {
+		this._payMethodService.getPaged('', '', 999, 0)
+		.subscribe(result => {
+			this.payMethodList = result.items
+		});
+	}
+
+	datechange($event): void {
+		if($event.length>0){
+			if($event[0].getTime() == $event[1].getTime()){
+				$event[1]=new Date($event[1].getTime()+24*60*60*1000)
+			}
+
+			var year=$event[0].getFullYear();
+			var month = $event[0].getMonth() + 1;
+			var day = $event[0].getDate();
+
+			var fulldate1=year+'-'+month+'-'+day;
+
+			var year=$event[1].getFullYear();
+			var month = $event[1].getMonth() + 1;
+			var day = $event[1].getDate();
+
+			var fulldate2=year+'-'+month+'-'+day;
+
+			this.queryData[1].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[2].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+		}else{
+			this.queryData[1].value=''
+			this.queryData[2].value=''
+		}
+	}
+
+
+
+	openorder(ids): void {
+		this.orderids=ids
+		this.ordervisible = true;
+		this.getorder()
+	}
+
+	getorder(){
+		var formdata=new SalesCommonActivityInput
+		formdata.activityIds=this.orderids
+		formdata.filterText=''
+		formdata.sorting=''
+		formdata.maxResultCount=this.opagesize
+		formdata.skipCount=(this.oindex - 1) * this.opagesize
+
+		this._salesCommonService.getPagedActivities(formdata)
+		.subscribe(result => {
+			this.ototal=result.totalCount
+			this.orderlist = result.items;
+		});
+	}
+
+	oSizeChange($event):void{
+		this.oindex=1
+		this.opagesize=$event
+		this.getorder()
+	}
+
+	oIndexChange($event):void{
+		this.oindex=$event
+		this.getorder()
+	}
+
+	closeorder(): void {
+		this.oindex=1
+		this.ordervisible = false;
+	}
+
+
+	openticket(id): void {
+		this.orderid=id
+		this.ticketvisible = true;
+		this.getticket()
+	}
+
+	getticket(){
+		var formdata=new SalesCommonActivityDetailInput
+		formdata.activityId=this.orderid+''
+		formdata.filterText=''
+		formdata.sorting=''
+		formdata.maxResultCount=this.tpagesize
+		formdata.skipCount=(this.tindex - 1) * this.tpagesize
+
+		this._salesCommonService.getPagedActivityDetails(formdata)
+		.subscribe(result => {
+			this.ttotal=result.totalCount
+			this.ticketdetail = result.items;
+		});
+	}
+
+
+	tSizeChange($event):void{
+		this.tindex=1
+		this.tpagesize=$event
+		this.getorder()
+	}
+
+	tIndexChange($event):void{
+		this.tindex=$event
+		this.getorder()
+	}
+
+	closeticket(): void {
+		this.tindex=1
+		this.ticketvisible = false;
+	}
 
 
 }

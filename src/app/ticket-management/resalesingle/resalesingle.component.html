@@ -36,7 +36,7 @@
             <td class="text-center">
               <div *ngIf="editindex !== i; else editTpl2" class="editable-cell-value-wrap" (click)="startEdit(i)">{{item.num}}</div>
               <ng-template #editTpl2>
-                <nz-input-number [(ngModel)]="item.num" [nzMin]="0" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
+                <nz-input-number [(ngModel)]="item.num" [nzMin]="1" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
               </ng-template>
             </td>
             <td class="text-center">
@@ -122,7 +122,7 @@
         </nz-form-item>
         <nz-form-item class="botton-item" style="margin-top: 20px">
           <nz-form-control style="width: 100%;">
-            <div class="submitbtn" (click)="settlement()">结算出票</div>
+            <div class="submitbtn" (click)="settlement()">补录</div>
           </nz-form-control>
         </nz-form-item>
       </form>

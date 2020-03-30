@@ -4,51 +4,46 @@ import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
 import {
-	SalesBySellerServiceProxy,
-	SalesBySellerResultDto,
-	UserServiceProxy,
 	QueryData,
-	TicketPriceServiceProxy,
-	GetTicketPricesInput,
+	SalesByOrderSourceServiceProxy,
+	SalesByOrderSourceResultDto,
 
+	SourceServiceProxy,
+
+	PayMethodServiceProxy,
 	SalesCommonServiceProxy,
 	SalesCommonActivityInput,
 	SalesCommonActivityDetailInput
+
 } from '@shared/service-proxies/service-proxies';
 
-import * as moment from 'moment';
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
+import * as moment from 'moment';
 
 @Component({
-	templateUrl: './salerticket.component.html',
-	styleUrls: ['./salerticket.component.less'],
+	templateUrl: './source.component.html',
+	styleUrls: ['./source.component.less'],
 	animations: [appModuleAnimation()],
 })
 
 
-export class  SalerTicketComponent extends PagedListingComponentBase<SalesBySellerResultDto>
+export class SourceComponent extends PagedListingComponentBase<SalesByOrderSourceResultDto>
 implements OnInit {
 
 	constructor(
 		injector: Injector,
-		private _salesBySellerService: SalesBySellerServiceProxy,
+		private _organizationService: SourceServiceProxy,
+		private _payMethodService: PayMethodServiceProxy,
+		private _salesByOrderSourceService: SalesByOrderSourceServiceProxy,
 		private _salesCommonService: SalesCommonServiceProxy,
-		private _userService: UserServiceProxy,
-		private _ticketPriceService: TicketPriceServiceProxy,
 		) {
 		super(injector);
 		this.documentHeight=document.body.offsetHeight
 	}
 
 
-
 	queryData = [{
-		field: "CreatorUserId",
-		method: "=",
-		value: "",
-		logic: "and"
-	}, {
 		field: "CreationTime",
 		method: ">=",
 		value: "",
@@ -58,19 +53,17 @@ implements OnInit {
 		method: "<=",
 		value: "",
 		logic: "and"
-	},];
+	}];
 
+	sourceList=[]
+	sourceId=''
+	payMethodId=''
 
-	userList=[]
+	CreationTime=''
+	payMethodList=[]
 
-	ticketId=''
-
-	ticketlist=[]
-
-	collectionTime=''
 
 	total:any;
-
 
 	documentHeight=0
 
@@ -93,6 +86,8 @@ implements OnInit {
 		return differenceInCalendarDays(current, new Date()) > 0;
 	};
 
+
+
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
 		var arr=[]
 		for (var i = this.queryData.length - 1; i >= 0; i--) {
@@ -100,7 +95,7 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		this._salesBySellerService.getPaged(arr,'','',request.maxResultCount,request.skipCount,this.ticketId)
+		this._salesByOrderSourceService.getPaged(arr,'','',request.maxResultCount,request.skipCount,this.sourceId,this.payMethodId)
 		.finally(() => {
 			finishedCallback();
 		})
@@ -111,24 +106,30 @@ implements OnInit {
 			}else{
 				this.total=[]
 			}
+			console.log(this.dataList )
 			this.showPaging(result);
 		});
 
-		this.getuser()
 
-		this.gettickets()
+
+		this.getsource()
+		this.getpaymethod()
 	}
 
-	gettickets(){
-		const formdata = new GetTicketPricesInput()
-		formdata.queryData = [];
-		formdata.sorting = '';
-		formdata.maxResultCount = 999;
-		formdata.skipCount = 0;
 
-		this._ticketPriceService.getPaged(formdata)
+	getsource(){
+
+		this._organizationService.getPaged('','',999,0)
 		.subscribe(result => {
-			this.ticketlist = result.items;
+			this.sourceList = result.items;
+			this.showPaging(result);
+		});
+	}
+
+	getpaymethod() {
+		this._payMethodService.getPaged('', '', 999, 0)
+		.subscribe(result => {
+			this.payMethodList = result.items
 		});
 	}
 
@@ -157,25 +158,6 @@ implements OnInit {
 			this.queryData[2].value=''
 		}
 	}
-
-	getuser(){
-		this._userService
-		.getPaged(
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			'',
-			'',
-			999,
-			0
-			)
-		.subscribe((result) => {
-			this.userList = result.items;
-		});
-	}
-
 
 
 
@@ -254,5 +236,6 @@ implements OnInit {
 		this.tindex=1
 		this.ticketvisible = false;
 	}
+
 
 }

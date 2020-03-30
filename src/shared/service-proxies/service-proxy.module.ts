@@ -39,6 +39,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
 
 
   //票务逻辑
+  ApiServiceProxies.CheckTicketServiceProxy,
   ApiServiceProxies.TicketServiceProxy,
   ApiServiceProxies.TicketUserEnableServiceProxy,
   ApiServiceProxies.TicketStationServiceProxy,
@@ -72,7 +73,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.SalesBySellerDailyServiceProxy,
   ApiServiceProxies.SalesByOrganizationServiceProxy,
 
-
+  ApiServiceProxies.SalesByOrderSourceServiceProxy,
   ApiServiceProxies.SalesCommonServiceProxy,
 
   ApiServiceProxies.SalesByPayMethodServiceProxy,

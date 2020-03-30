@@ -45,13 +45,15 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
         super(injector);
         this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
         this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
+        this.effectivetime =[new Date(),new Date()]
+        this.datechange([new Date(),new Date()])
     }
 
     isAllOperation=false
     curmenupower=[]
     sourceId=0
 
-    effectivetime=''
+    effectivetime=[]
     paymethodList=[]
 
     orderticket = [];
@@ -66,6 +68,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     totalprice=0
     change=0
     totalnum=0
+
 
     receive=0
     remark=''
@@ -124,6 +127,18 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
         this._ticketPriceService.getPagedCustomer(formdata)
         .subscribe(result => {
             this.ticketlist = result.items;
+            console.log(this.ticketlist)
+            var orderticket=[]
+            this.ticketlist.forEach(function(titem){
+                orderticket.push({
+                    ticketid:titem.id,
+                    ticketname:titem.ticketName,
+                    ticketprice:titem.price,
+                    ticketcount:0,
+                    num:0,
+                })
+            })
+            this.orderticket=orderticket
         });
     }
 
@@ -134,8 +149,8 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                 ticketid:this.ticketlist[0].id,
                 ticketname:this.ticketlist[0].ticketName,
                 ticketprice:this.ticketlist[0].price,
-                ticketcount:this.ticketlist[0].price,
-                num:1,
+                ticketcount:0,
+                num:0,
             }])
             this.countprice()
         }else{
@@ -246,11 +261,13 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
 
         var activityDetails=[]
         this.orderticket.forEach(function(item){
-            activityDetails.push(new CreateActivityDetailModel({
-                ticketPriceId:item.ticketid,
-                quantity:item.num,
-                customerId:0,
-            }))
+            if(item.num>0){
+                activityDetails.push(new CreateActivityDetailModel({
+                    ticketPriceId:item.ticketid,
+                    quantity:item.num,
+                    customerId:0,
+                }))
+            }
         })
         orderdata.discount=this.discount / 100
 
@@ -263,6 +280,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                 this.notify.success(result.resultMessage);
 
                 this.orderticket=[]
+                this.getticket()
                 this.receive=0
                 this.countprice()
 
@@ -287,7 +305,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                     var item = result.data.details[i];
                     idarr.push(item.ticketDetailId)
                     LODOP.NewPage();
-                    LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", 123);
+                    LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
 
                     LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
                     LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketName);

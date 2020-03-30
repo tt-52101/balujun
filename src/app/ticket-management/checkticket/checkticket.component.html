@@ -1,0 +1,133 @@
+<nz-card [nzBordered]="false">
+  <div class="mb-md">
+    <nz-row nzGutter="16">
+      <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="activityNo">票号</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 270px">
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="formitem">
+          <nz-form-label nzFor="activityNo">二维码</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input name="activityNo" [(ngModel)]="queryData[1].value" style="width: 270px">
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;">
+          <button nz-button [nzType]="'primary'" (click)="getticket()" style="padding: 0px 20px;height: 32px;background: rgb(93,119,255);border-color: rgb(93,119,255)">{{l("Query")}}</button>
+        </nz-form-item>
+
+        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Settle') > -1">
+          <nz-input-group nzAddOnAfter="次" [nzPrefix]="suffixButton" nzSearch >
+            <nz-input-number style="width:160px;text-indent:65px" [nzSize]="large" [(ngModel)]="time" name="time" [nzMin]="1" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
+          </nz-input-group>
+
+          <ng-template #suffixButton style="left: 0">
+            <button nzSearch nz-button [nzType]="'primary'" (click)="check()" style="height: 32px;background: rgb(6,150,249);border-color: rgb(6,150,249)">刷票</button>
+         </ng-template>
+       </nz-form-item>
+
+
+     </form>
+   </nz-row>
+ </div>
+ <nz-row class="my-md">
+
+  <nz-table #ajaxTable [nzData]="ticketlist" style="word-break:break-all;" [nzFrontPagination]="false" nzBordered>
+    <ng-template #noDataTemplate>
+      <no-data></no-data>
+    </ng-template>
+    <thead>
+      <tr>
+        <th class="text-center" nzWidth="150px">
+          <span>{{l('Ticket')}}</span>
+        </th>
+        <th class="text-center" nzWidth="180px">
+          <span>{{l('TicketNo')}}</span>
+        </th>
+        <th class="text-center" nzWidth="100px">
+          <span>{{l('UnitPrice')}}</span>
+        </th>
+
+        <th class="text-center" nzWidth="100px">
+          <span>可验票数</span>
+        </th>
+        <th class="text-center" nzWidth="100px">
+          <span>已验票数</span>
+        </th>
+
+        <th class="text-center" nzWidth="100px">
+          <span>开始有效期</span>
+        </th>
+        <th class="text-center" nzWidth="100px">
+          <span>结束有效期</span>
+        </th>
+
+        <th class="text-center" nzWidth="100px">
+          <span>{{l('TicketStatus')}}</span>
+        </th>
+        <th class="text-center" nzWidth="110px" nzRight="0px">
+          <span>{{l('isPrint')}}</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of ajaxTable.data; let i = index;">
+        <td class="text-center" nzWidth="150px">
+          <span>
+            {{item.ticketPriceName}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="180px">
+          <span>
+            {{item.ticketNo}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.ticketPrice}}
+          </span>
+        </td>
+
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.checkingQuantity}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.checkedQuantity}}
+          </span>
+        </td>
+
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.startDateTime |_date}}
+          </span>
+        </td>
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{item.endDateTime |_date}}
+          </span>
+        </td>
+
+        <td class="text-center" nzWidth="100px">
+          <span>
+            {{l(item.ticketStatus)}}
+          </span>
+        </td>
+        <td nz-td class="text-center" nzWidth="110px" [innerHTML]="item.isPrint | yn" nzRight="0px"> </td>
+      </tr>
+    </tbody>
+  </nz-table>
+
+
+
+
+
+</nz-row>
+</nz-card>
