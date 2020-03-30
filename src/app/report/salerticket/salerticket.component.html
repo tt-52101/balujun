@@ -231,9 +231,9 @@
         <th nz-th class="text-center" nzWidth="100px">
           <span>数量</span>
         </th>
-        <th nz-th class="text-center" nzWidth="100px">
+<!--         <th nz-th class="text-center" nzWidth="100px">
           <span>购票人</span>
-        </th>
+        </th> -->
         <th nz-th class="text-center" nzWidth="190px">
           <span>购票凭证</span>
         </th>
@@ -243,9 +243,9 @@
         <th nz-th class="text-center" nzWidth="100px">
           <span>制单人</span>
         </th>
-        <th nz-th class="text-center" nzWidth="100px">
+<!--         <th nz-th class="text-center" nzWidth="100px">
           <span>原单号</span>
-        </th>
+        </th> -->
         <th nz-th class="text-center" nzWidth="100px" nzRight="0px">
           <span>操作</span>
         </th>
@@ -291,11 +291,11 @@
             {{item.totalQuantity}}
           </span>
         </td>
-        <td class="text-center" nz-td>
+<!--         <td class="text-center" nz-td>
           <span>
             {{item.buyer}}
           </span>
-        </td>
+        </td> -->
         <td class="text-center" nz-td>
           <span>
             {{item.activityNo}}
@@ -311,11 +311,11 @@
             {{item.creatorUserName}}
           </span>
         </td>
-        <td class="text-center" nz-td>
+<!--         <td class="text-center" nz-td>
           <span>
             {{item.orgActivityNo}}
           </span>
-        </td>
+        </td> -->
 
         <td class="text-center" nzRight="0px">
           <ng-container>
@@ -327,7 +327,7 @@
       </tbody>
     </nz-table>
 
-    <nz-pagination style="float:right;" [(nzPageIndex)]="oindex" [nzTotal]="ototal" nzShowSizeChanger [(nzPageSize)]="opagesize" (nzPageSizeChange)="oSizeChange($event)" (nzPageIndexChange)="oIndexChange($event)" [nzPageSizeOptions]="[10,20,50,100]"></nz-pagination>
+    <nz-pagination style="float:right;margin-top: 20px" [(nzPageIndex)]="oindex" [nzTotal]="ototal" nzShowSizeChanger [(nzPageSize)]="opagesize" (nzPageSizeChange)="oSizeChange($event)" (nzPageIndexChange)="oIndexChange($event)" [nzPageSizeOptions]="[10,20,50,100]"></nz-pagination>
 
 
   </nz-drawer>

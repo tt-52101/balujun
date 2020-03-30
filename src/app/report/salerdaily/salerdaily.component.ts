@@ -15,7 +15,7 @@ import {
 
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import * as moment from 'moment';
-import { CreateOrEditSalerdailyComponent } from './create-or-edit-salerdaily/create-or-edit-salerdaily.component';
+// import { CreateOrEditSalerdailyComponent } from './create-or-edit-salerdaily/create-or-edit-salerdaily.component';
 
 @Component({
 	templateUrl: './salerdaily.component.html',
@@ -188,12 +188,12 @@ implements OnInit {
 	}
 	open(activityIds): void {
 		
-		this.modalHelper.static(CreateOrEditSalerdailyComponent, { id: activityIds })
-		.subscribe(result => {
-		  if (result) {
-			this.refresh();
-		  }
-		});
+		// this.modalHelper.static(CreateOrEditSalerdailyComponent, { id: activityIds })
+		// .subscribe(result => {
+		//   if (result) {
+		// 	this.refresh();
+		//   }
+		// });
 	  }
 
 

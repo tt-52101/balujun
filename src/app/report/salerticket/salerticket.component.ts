@@ -185,6 +185,7 @@ implements OnInit {
 
 		this._salesCommonService.getPagedActivities(formdata)
 		.subscribe(result => {
+			this.ototal=result.totalCount
 			this.orderlist = result.items;
 		});
 	}
@@ -192,6 +193,7 @@ implements OnInit {
 	oSizeChange($event):void{
 		console.log($event)
 		this.oindex=1
+		this.opagesize=$event
 		this.getorder()
 	}
 
