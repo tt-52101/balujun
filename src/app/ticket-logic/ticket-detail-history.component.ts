@@ -66,7 +66,7 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 
 	collectionTime = ''
 
-	ticketId=''
+	ticketId = ''
 	devicList = []
 	ticketlist = []
 	/**
@@ -85,15 +85,15 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 		const formdata = new GetDevicesInput();
 		formdata.filterText = ''
 		formdata.sorting = request.sorting,
-		formdata.maxResultCount = request.maxResultCount;
-		formdata.skipCount =request.skipCount;
+			formdata.maxResultCount = request.maxResultCount;
+		formdata.skipCount = request.skipCount;
+		console.log(formdata);
+		
 		this._ticketDetailHistoryService.getPaged(formdata)
 			.finally(() => {
 				finishedCallback();
 			})
 			.subscribe(result => {
-				console.log(result.items);
-				
 				this.dataList = result.items;
 				this.showPaging(result);
 			});
@@ -109,20 +109,20 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 		formdata.skipCount = 0;
 
 		this._deviceService.getPaged(formdata)
-		.subscribe(result => {
-			this.devicList = result.items;
-		});
+			.subscribe(result => {
+				this.devicList = result.items;
+			});
 	}
 
 
 	getticket() {
-	
 
-		this._ticketService.getPaged('','',99,0)
-		.subscribe(result => {
-			this.ticketlist = result.items;
-			this.showPaging(result);
-		});
+
+		this._ticketService.getPaged('', '', 99, 0)
+			.subscribe(result => {
+				this.ticketlist = result.items;
+				this.showPaging(result);
+			});
 	}
 
 	disabledDate = (current: Date): boolean => {

@@ -54,16 +54,18 @@
   </div>
   <nz-row class="my-md">
     <nz-table #ajaxTable [nzData]="dataList" 
-    [(nzPageIndex)]="pageNumber"
-    [(nzPageSize)]="pageSize"
-    [nzLoading]="isTableLoading"
-    (nzPageIndexChange)="pageNumberChange()"
-    (nzPageSizeChange)="refresh()"
-    [nzShowSizeChanger]="true"
-    [nzNoResult]="noDataTemplate"
-    [nzPageSizeOptions]="pageSizes"
-    [nzTotal]="totalItems"
-      nzBordered style="word-break:break-all">
+    [nzTotal]="totalItems" 
+    [(nzPageIndex)]="pageNumber" 
+    [(nzPageSize)]="pageSize" 
+    [nzLoading]="isTableLoading" 
+    (nzPageIndexChange)="pageNumberChange()" 
+    (nzPageSizeChange)="refresh()" 
+    [nzShowSizeChanger]="true" 
+    [nzShowQuickJumper]="true" 
+    nzBordered 
+    [nzNoResult]="noDataTemplate" 
+    [nzFrontPagination]="false"
+    >
       <!-- 暂无数据组件 -->
 
     
@@ -92,7 +94,7 @@
           <th nz-th class="text-center" nzWidth="110px">
             <span>验票结果代码</span>
           </th>
-          <th nz-th class="text-center" nzWidth="100px">
+          <th nz-th class="text-center" nzWidth="120px">
             <span>验票结果</span>
           </th>
           <th nz-th class="text-center" nzWidth="100px">

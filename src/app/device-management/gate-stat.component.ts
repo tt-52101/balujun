@@ -97,11 +97,11 @@ export class GateStatComponent extends PagedListingComponentBase<GateHistoryResu
 
 
 				var hash = {};
-				this.dataList = result.items.reduce(function (item, next) {
+				this.dataList = result.items.reduce((item, next) => {
 					hash[next.deviceName] ? '' : hash[next.deviceName] = true && item.push(next);
 					return item
 				}, [])
-				
+
 
 				this.showPaging(result);
 				this.getdevice()
