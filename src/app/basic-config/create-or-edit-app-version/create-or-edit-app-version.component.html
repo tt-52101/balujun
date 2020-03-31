@@ -12,11 +12,11 @@
     <nz-form-item nz-row>
       <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="appName">程序名称</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file"
+        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file" nzAccept=".apk,.exe"
           (nzChange)="handleChange($event)">
-          <input nz-input name="appName" #appName="ngModel" [(ngModel)]="entity.appName" style="width: 300px"
-            placeholder="点击上传apk" required>
+          <input nz-input name="appName" #appName="ngModel" [(ngModel)]="entity.appName" placeholder="点击上传apk或exe文件" style="width: 497px" required>
         </nz-upload>
+        <span>文件名格式为：开发版V2手持机_130_v1.3_d4.apk</span>
       </nz-form-control>
     </nz-form-item>
 

@@ -79,11 +79,9 @@ export class CheckTicket extends AppComponentBase implements OnInit {
 		});
 	}
 
-
 	numchange($event){
-console.log($event)
+		console.log($event)
 	}
-
 
 	check(){
 		if(this.ticketlist.length == 0){
@@ -96,16 +94,17 @@ console.log($event)
 		}
 
 		var ticket=this.ticketlist[0]
-		this._checkTicketService.ticketDetailIdOpen(ticket.qrcode,ticket.ticketNo,ticket.activityDetailId)
+		this._checkTicketService.ticketDetailIdOpen(ticket.qrcode,ticket.ticketNo,ticket.activityDetailId,parseInt(this.time))
 		.subscribe(result => {
 			console.log(result)
+			if(result.msg== '验票成功'){
+				abp.message.success('验票成功');
+			}else{
+				abp.message.warn(result.msg);
+			}
 			this.getticket()
 		});
 	}
-
-
-
-
 
 }
 

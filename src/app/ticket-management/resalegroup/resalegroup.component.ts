@@ -163,7 +163,13 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
             method: "=",
             value: 'true',
             logic: "and"
+        }),new QueryData({
+            field: "position",
+            method: "=",
+            value: 'windows',
+            logic: "and"
         })]
+
 
         var formdata=new GetTicketPricesInput
         formdata.queryData=arr
@@ -263,8 +269,8 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
         var totalnum=0
         this.orderticket.forEach(function(item){
             if(item.ticketid){
-                item.ticketcount=item.ticketprice * item.num
-                totalprice +=item.ticketcount
+                item.ticketcount=(item.ticketprice * item.num).toFixed(2)
+                totalprice +=Number(item.ticketcount)
                 totalnum +=item.num
             }
         })

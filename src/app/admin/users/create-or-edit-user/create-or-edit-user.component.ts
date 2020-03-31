@@ -171,7 +171,7 @@ implements OnInit, AfterViewInit {
        // 角色
        this.roles = result.roles;
 
-      //  this.branchId=result.user.branchId
+       //  this.branchId=result.user.branchId
 
        for (var i = 0;i<this.roles.length; i++) {
          if(this.roles[i].isAssigned){
@@ -231,10 +231,10 @@ implements OnInit, AfterViewInit {
      //   );
      // 组织机构
      // input.organizationUnits = this.organizationUnitTree.getSelectedOrganizations();
-     input.organizationUnits = [];
-
-    //  input.branchId = this.branchId;
-
+     // input.organizationUnits = [];
+     input.organizationUnits=this.branchId
+     //  input.branchId = this.branchId;
+     console.log(input.assignedRoleNames)
      this._userService
      .createOrUpdate(input)
      .finally(() => {

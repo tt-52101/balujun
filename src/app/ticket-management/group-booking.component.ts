@@ -164,7 +164,13 @@ export class GroupBooking extends AppComponentBase implements OnInit {
             method: "=",
             value: 'true',
             logic: "and"
+        }),new QueryData({
+            field: "position",
+            method: "=",
+            value: 'windows',
+            logic: "and"
         })]
+
 
         var formdata=new GetTicketPricesInput
         formdata.queryData=arr
@@ -262,8 +268,8 @@ export class GroupBooking extends AppComponentBase implements OnInit {
         var totalnum=0
         this.orderticket.forEach(function(item){
             if(item.ticketid){
-                item.ticketcount=item.ticketprice * item.num
-                totalprice +=item.ticketcount
+                item.ticketcount=(item.ticketprice * item.num).toFixed(2)
+                totalprice +=Number(item.ticketcount)
                 totalnum +=item.num
             }
         })
@@ -330,51 +336,53 @@ export class GroupBooking extends AppComponentBase implements OnInit {
                 this.receive=0
                 this.countprice()
 
-
                 LODOP=getLodop();
-                var top = 100; //最高坐标
-                var left = 90; //最左坐标
-                var width = 10; //上边距
-                var height = 12; //右边距
-                var QRcodeWidth = 95; //二维码大小
-                var paperWidth = 700; //纸张宽度
-                var paperHeight = 1200; //纸张长度
-                var fontWidth = 400; //文字区域宽度
-                var fontHeight = 17; //文字区域高度
-                LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
-                LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
-                LODOP.PRINT_INITA("");
-                LODOP.SET_PRINT_STYLE("FontSize", 10);
-                //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
-                LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
-                console.log(result.data)
-                var idarr=[]
-                for (var i = 0; i < result.data.details.length; i++) {
-                    var item = result.data.details[i];
-                    idarr.push(item.ticketDetailId)
-                    LODOP.NewPage();
-                    LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
+                if(LODOP){
+                    var top = 100; //最高坐标
+                    var left = 90; //最左坐标
+                    var width = 10; //上边距
+                    var height = 12; //右边距
+                    var QRcodeWidth = 95; //二维码大小
+                    var paperWidth = 700; //纸张宽度
+                    var paperHeight = 1200; //纸张长度
+                    var fontWidth = 400; //文字区域宽度
+                    var fontHeight = 17; //文字区域高度
+                    LODOP.SET_PRINT_STYLEA(0, "DataCharset", "UTF-8");
+                    LODOP.SET_PRINT_MODE("POS_BASEON_PAPER", true);
+                    LODOP.PRINT_INITA("");
+                    LODOP.SET_PRINT_STYLE("FontSize", 10);
+                    //设置打印方向及纸张类型，自定义纸张宽度，设定纸张高，
+                    LODOP.SET_PRINT_PAGESIZE(1, paperWidth, paperHeight, "");
+                    console.log(result.data)
+                    var idarr=[]
+                    for (var i = 0; i < result.data.details.length; i++) {
+                        var item = result.data.details[i];
+                        idarr.push(item.ticketDetailId)
+                        LODOP.NewPage();
+                        LODOP.ADD_PRINT_BARCODE(top, left + height + 1.5 * fontHeight, QRcodeWidth, QRcodeWidth, "QRCode", item.qrCode);
 
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketName);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 6 * fontHeight, fontWidth, fontHeight, "票　　价：" + item.ticketPrice);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270)
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票　　号：" + item.ticketNo);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "开始日期：" + item.playDate);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "结束日期：" + item.playTime);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
-                    LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "可验次数：" + item.checkingQuantity);
-                    LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270); //逆时针旋转270度
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 7 * fontHeight, fontWidth, fontHeight, "票　　类：" + item.ticketName);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 6 * fontHeight, fontWidth, fontHeight, "票　　价：" + item.ticketPrice);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270)
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 5 * fontHeight, fontWidth, fontHeight, "票　　号：" + item.ticketNo);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 4 * fontHeight, fontWidth, fontHeight, "开始日期：" + item.playDate);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 3 * fontHeight, fontWidth, fontHeight, "结束日期：" + item.playTime);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                        LODOP.ADD_PRINT_TEXT(top + width + QRcodeWidth, left + height + 2 * fontHeight, fontWidth, fontHeight, "可验次数：" + item.checkingQuantity);
+                        LODOP.SET_PRINT_STYLEA(0, "Angle", 270);
+                    }
+
+                    this._ticketDetailService.printTicketDetail(idarr)
+                    .subscribe(result => {});
+                    // LODOP.PREVIEW()
+                    LODOP.PRINT();
+                }else{
+                    abp.message.error('打印失败！请检查打印控件是否安装以及版本是否最新。控件下载地址：http://www.lodop.net/download.html。请根据设备系统下载对应版本。');
                 }
-
-                this._ticketDetailService.printTicketDetail(idarr)
-                .subscribe(result => {});
-                // LODOP.PREVIEW()
-                LODOP.PRINT();
-
             }else{
                 abp.message.warn(result.resultMessage);
             }

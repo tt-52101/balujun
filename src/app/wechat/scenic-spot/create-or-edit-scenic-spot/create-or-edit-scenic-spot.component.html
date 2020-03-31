@@ -57,18 +57,25 @@
         [(ngModel)]="entity.isEnable">{{l('IsEnabled')}}</label>
       </nz-form-control>
     </nz-form-item> -->
-        <!-- [nzHeaders]="hearder" -->
+    <!-- [nzHeaders]="hearder" -->
     <nz-form-item nz-row>
       <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="Picture">焦点图</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
         <nz-upload [nzAction]="uploadurl"
         [nzShowUploadList]="false"
-
         [nzData]="file"
         nzName="file"
+        [nzWithCredentials]="false"
+        nzAccept="image/*"
+        nzFileType="image/png,image/jpeg,image/gif"
         (nzChange)="handleChange($event)">
         <button nz-button type="button"><span>{{l('Upload')}}</span></button>
       </nz-upload>
+
+<!--       <nz-upload [nzAction]="uploadurl" [nzCustomRequest]="customReq">
+        <button type="button" nz-button><span>上传</span></button>
+      </nz-upload> -->
+
       <span style="margin-left: 10px">{{picture}}</span>
     </nz-form-control>
   </nz-form-item>

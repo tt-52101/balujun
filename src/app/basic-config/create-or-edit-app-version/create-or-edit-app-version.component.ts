@@ -59,7 +59,7 @@ export class CreateOrEditAppVersionComponent
             this.entity = result.clientVersion;
         });
 
-        this.uploadurl = AppConsts.remoteServiceBaseUrl + '/api/File/UploadClientAsync'
+        this.uploadurl = AppConsts.remoteServiceBaseUrl + '/api/File/UploadClient'
         console.log(this.uploadurl);
         this.hearder.Authorization = 'Bearer ' + this._utilsService.getCookieValue("Abp.AuthToken");
         
@@ -78,7 +78,7 @@ export class CreateOrEditAppVersionComponent
                 this.entity.deviceType = info.file.response.result.deviceType
                 break;
             case 'error':
-                abp.message.error(this.l('UploadFail'));
+                abp.message.error('上传失败');
                 break;
         }
     }

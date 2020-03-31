@@ -785,9 +785,10 @@ export class CheckTicketServiceProxy {
      * @param gateNumber (optional) 设备号
      * @param jqmpass (optional) 卡号
      * @param rdindex (optional) 串口号
+     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -801,6 +802,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -852,9 +857,10 @@ export class CheckTicketServiceProxy {
      * @param gateNumber (optional) 设备号
      * @param jqmpass (optional) 卡号
      * @param rdindex (optional) 串口号
+     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -868,6 +874,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -919,9 +929,10 @@ export class CheckTicketServiceProxy {
      * @param qrcode (optional) 
      * @param ticketNo (optional) 
      * @param ticketdetailId (optional) 
+     * @param num (optional) 
      * @return Success
      */
-    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined): Observable<CheckResult> {
+    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TicketDetailIdOpen?";
         if (qrcode === null)
             throw new Error("The parameter 'qrcode' cannot be null.");
@@ -935,6 +946,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'ticketdetailId' cannot be null.");
         else if (ticketdetailId !== undefined)
             url_ += "ticketdetailId=" + encodeURIComponent("" + ticketdetailId) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1208,6 +1223,63 @@ export class FileServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 上传版本文件
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadClient(body: Blob | undefined): Observable<ClientVersionListDto> {
+        let url_ = this.baseUrl + "/api/File/UploadClient";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadClient(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadClient(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadClient(response: HttpResponseBase): Observable<ClientVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ClientVersionListDto.fromJS(resultData200) : new ClientVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientVersionListDto>(<any>null);
     }
 
     /**
@@ -5912,7 +5984,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 添加或者修改的公共方法
+     * 添加或者修改ClientVersion的公共方法
      * @param body (optional) 
      * @return Success
      */
@@ -5965,7 +6037,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 删除信息
+     * 删除ClientVersion信息的方法
      * @param id (optional) 
      * @return Success
      */
@@ -6075,7 +6147,64 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 获取编辑
+     * 通过指定id获取ClientVersionListDto信息
+     * @param dtype (optional) 
+     * @return Success
+     */
+    getByType(dtype: number | undefined): Observable<ClientVersionListDto> {
+        let url_ = this.baseUrl + "/api/services/app/ClientVersion/GetByType?";
+        if (dtype === null)
+            throw new Error("The parameter 'dtype' cannot be null.");
+        else if (dtype !== undefined)
+            url_ += "dtype=" + encodeURIComponent("" + dtype) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByType(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetByType(response: HttpResponseBase): Observable<ClientVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ClientVersionListDto.fromJS(resultData200) : new ClientVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientVersionListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑 ClientVersion
      * @param id (optional) 
      * @return Success
      */
@@ -6132,7 +6261,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 获取的分页列表信息
+     * 获取ClientVersion的分页列表信息
      * @param filterText (optional) 
      * @param sorting (optional) 
      * @param maxResultCount (optional) 
@@ -19478,51 +19607,27 @@ export class TicketDetailHistoryServiceProxy {
     }
 
     /**
-     * @param queryData (optional) DeviceCode,DeviceName,Port
-     * @param filterText (optional) 
-     * @param sorting (optional) 
-     * @param maxResultCount (optional) 
-     * @param skipCount (optional) 
+     * 手持机查找验票记录
+     * @param body (optional) 
      * @return Success
      */
-    getAllTicketDetailHistory(queryData: QueryData[] | undefined, filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<AllTicketDetailHistorDto[]> {
-        let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetAllTicketDetailHistory?";
-        if (queryData === null)
-            throw new Error("The parameter 'queryData' cannot be null.");
-        else if (queryData !== undefined)
-            queryData && queryData.forEach((item, index) => { 
-                for (let attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "queryData[" + index + "]." + attr + "=" + encodeURIComponent("" + (<any>item)[attr]) + "&";
-        			}
-            });
-        if (filterText === null)
-            throw new Error("The parameter 'filterText' cannot be null.");
-        else if (filterText !== undefined)
-            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
-        if (sorting === null)
-            throw new Error("The parameter 'sorting' cannot be null.");
-        else if (sorting !== undefined)
-            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
-        if (maxResultCount === null)
-            throw new Error("The parameter 'maxResultCount' cannot be null.");
-        else if (maxResultCount !== undefined)
-            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
-        if (skipCount === null)
-            throw new Error("The parameter 'skipCount' cannot be null.");
-        else if (skipCount !== undefined)
-            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+    getAllTicketDetailHistory(body: GetTicketDetailHistorysInput | undefined): Observable<AllTicketDetailHistorDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetAllTicketDetailHistory";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
                 "Accept": "text/plain"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
             return this.processGetAllTicketDetailHistory(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
@@ -32256,6 +32361,99 @@ export interface IPagedResultDtoOfGateHistoryResultDto {
     items: GateHistoryResultDto[] | undefined;
 }
 
+export enum DeviceTypeEnum {
+    TicketMachine = <any>"TicketMachine", 
+    GateMachine = <any>"SelfhelpMachine", 
+    FaceMachine = <any>"GateMachine", 
+    SelfhelpMachine = <any>"HandMachine", 
+    HandMachine = <any>"FaceMachine", 
+}
+
+/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
+export class ClientVersionListDto implements IClientVersionListDto {
+    /** AppName */
+    appName: string | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** VersionCode */
+    versionCode: string | undefined;
+    /** VersionDesc */
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IClientVersionListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.appName = data["appName"];
+            this.versionName = data["versionName"];
+            this.versionCode = data["versionCode"];
+            this.versionDesc = data["versionDesc"];
+            this.deviceType = data["deviceType"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ClientVersionListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientVersionListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appName"] = this.appName;
+        data["versionName"] = this.versionName;
+        data["versionCode"] = this.versionCode;
+        data["versionDesc"] = this.versionDesc;
+        data["deviceType"] = this.deviceType;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ClientVersionListDto {
+        const json = this.toJSON();
+        let result = new ClientVersionListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
+export interface IClientVersionListDto {
+    /** AppName */
+    appName: string | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** VersionCode */
+    versionCode: string | undefined;
+    /** VersionDesc */
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
 export class AudioResultDto implements IAudioResultDto {
     success: boolean;
     errorMsg: string | undefined;
@@ -37993,14 +38191,6 @@ export interface IPagedResultDtoOfCheckRecordListDto {
     items: CheckRecordListDto[] | undefined;
 }
 
-export enum DeviceTypeEnum {
-    TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"SelfhelpMachine", 
-    FaceMachine = <any>"GateMachine", 
-    SelfhelpMachine = <any>"HandMachine", 
-    HandMachine = <any>"FaceMachine", 
-}
-
 /** 的列表DTO Yozeev.SystemConfig.ClientVersion */
 export class ClientVersionEditDto implements IClientVersionEditDto {
     /** Id */
@@ -38120,91 +38310,6 @@ export class CreateOrUpdateClientVersionInput implements ICreateOrUpdateClientVe
 
 export interface ICreateOrUpdateClientVersionInput {
     clientVersion: ClientVersionEditDto;
-}
-
-/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
-export class ClientVersionListDto implements IClientVersionListDto {
-    /** AppName */
-    appName: string | undefined;
-    /** VersionName */
-    versionName: string | undefined;
-    /** VersionCode */
-    versionCode: string | undefined;
-    /** VersionDesc */
-    versionDesc: string | undefined;
-    deviceType: DeviceTypeEnum;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IClientVersionListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.appName = data["appName"];
-            this.versionName = data["versionName"];
-            this.versionCode = data["versionCode"];
-            this.versionDesc = data["versionDesc"];
-            this.deviceType = data["deviceType"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): ClientVersionListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ClientVersionListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["appName"] = this.appName;
-        data["versionName"] = this.versionName;
-        data["versionCode"] = this.versionCode;
-        data["versionDesc"] = this.versionDesc;
-        data["deviceType"] = this.deviceType;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): ClientVersionListDto {
-        const json = this.toJSON();
-        let result = new ClientVersionListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
-export interface IClientVersionListDto {
-    /** AppName */
-    appName: string | undefined;
-    /** VersionName */
-    versionName: string | undefined;
-    /** VersionCode */
-    versionCode: string | undefined;
-    /** VersionDesc */
-    versionDesc: string | undefined;
-    deviceType: DeviceTypeEnum;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
 }
 
 /** 读取可编辑的Dto */
@@ -55381,6 +55486,77 @@ export interface ICreateOrUpdateTicketDetailHistoryInput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
 }
 
+/** 获取的传入参数Dto */
+export class GetTicketDetailHistorysInput implements IGetTicketDetailHistorysInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: IGetTicketDetailHistorysInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (data["queryData"] && data["queryData"].constructor === Array) {
+                this.queryData = [] as any;
+                for (let item of data["queryData"])
+                    this.queryData.push(QueryData.fromJS(item));
+            }
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): GetTicketDetailHistorysInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetTicketDetailHistorysInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (this.queryData && this.queryData.constructor === Array) {
+            data["queryData"] = [];
+            for (let item of this.queryData)
+                data["queryData"].push(item.toJSON());
+        }
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): GetTicketDetailHistorysInput {
+        const json = this.toJSON();
+        let result = new GetTicketDetailHistorysInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 获取的传入参数Dto */
+export interface IGetTicketDetailHistorysInput {
+    /** DeviceCode,DeviceName,Port */
+    queryData: QueryData[] | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
 export class TicketDetailHistory implements ITicketDetailHistory {
     branchId: number | undefined;
     ticketId: number;
@@ -55867,77 +56043,6 @@ export class GetTicketDetailHistoryForEditOutput implements IGetTicketDetailHist
 export interface IGetTicketDetailHistoryForEditOutput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
     checkStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-/** 获取的传入参数Dto */
-export class GetTicketDetailHistorysInput implements IGetTicketDetailHistorysInput {
-    /** DeviceCode,DeviceName,Port */
-    queryData: QueryData[] | undefined;
-    filterText: string | undefined;
-    sorting: string | undefined;
-    maxResultCount: number;
-    skipCount: number;
-
-    constructor(data?: IGetTicketDetailHistorysInput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            if (data["queryData"] && data["queryData"].constructor === Array) {
-                this.queryData = [] as any;
-                for (let item of data["queryData"])
-                    this.queryData.push(QueryData.fromJS(item));
-            }
-            this.filterText = data["filterText"];
-            this.sorting = data["sorting"];
-            this.maxResultCount = data["maxResultCount"];
-            this.skipCount = data["skipCount"];
-        }
-    }
-
-    static fromJS(data: any): GetTicketDetailHistorysInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetTicketDetailHistorysInput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (this.queryData && this.queryData.constructor === Array) {
-            data["queryData"] = [];
-            for (let item of this.queryData)
-                data["queryData"].push(item.toJSON());
-        }
-        data["filterText"] = this.filterText;
-        data["sorting"] = this.sorting;
-        data["maxResultCount"] = this.maxResultCount;
-        data["skipCount"] = this.skipCount;
-        return data; 
-    }
-
-    clone(): GetTicketDetailHistorysInput {
-        const json = this.toJSON();
-        let result = new GetTicketDetailHistorysInput();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 获取的传入参数Dto */
-export interface IGetTicketDetailHistorysInput {
-    /** DeviceCode,DeviceName,Port */
-    queryData: QueryData[] | undefined;
-    filterText: string | undefined;
-    sorting: string | undefined;
-    maxResultCount: number;
-    skipCount: number;
 }
 
 export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
