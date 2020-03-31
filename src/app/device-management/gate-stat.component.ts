@@ -3,8 +3,9 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {HistoryServiceProxy, PagedResultDtoOfGateHistoryResultDto,GateHistoryResultDto ,QueryData,
-	DeviceServiceProxy,GetDevicesInput,
+import {
+	HistoryServiceProxy, PagedResultDtoOfGateHistoryResultDto, GateHistoryResultDto, QueryData,
+	DeviceServiceProxy, GetDevicesInput,
 	TicketServiceProxy,
 	// GetTicketsInput,
 	// ScheduleServiceProxy,GetSchedulesInput,
@@ -25,9 +26,9 @@ import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
 })
 
 
-export class  GateStatComponent extends PagedListingComponentBase<GateHistoryResultDto>
-implements OnInit {
-	
+export class GateStatComponent extends PagedListingComponentBase<GateHistoryResultDto>
+	implements OnInit {
+
 	constructor(
 		injector: Injector,
 		private _historyService: HistoryServiceProxy,
@@ -35,58 +36,52 @@ implements OnInit {
 		private _ticketService: TicketServiceProxy,
 		// private _scheduleService: ScheduleServiceProxy,
 		private _userService: UserServiceProxy,
-		) {
+	) {
 		super(injector);
 	}
 
 
-	queryData=[{
+	queryData = [{
 		field: "DeviceId",
 		method: "=",
 		value: "",
 		logic: "and"
 	},
-	{
-		field: "TicketId",
-		method: "=",
-		value: "",
-		logic: "and"
-	},
-	// {
-	// 	field: "CreatorUserId ",
-	// 	method: "=",
-	// 	value: "",
-	// 	logic: "and"
-	// },{
-	// 	field: "CreationTime",
-	// 	method: ">=",
-	// 	value: "",
-	// 	logic: "and"
-	// },{
-	// 	field: "CreationTime",
-	// 	method: "<=",
-	// 	value: "",
-	// 	logic: "and"
-	// }
-]
-	collectionTime=''
+		// {
+		// 	field: "CreatorUserId ",
+		// 	method: "=",
+		// 	value: "",
+		// 	logic: "and"
+		// },{
+		// 	field: "CreationTime",
+		// 	method: ">=",
+		// 	value: "",
+		// 	logic: "and"
+		// },{
+		// 	field: "CreationTime",
+		// 	method: "<=",
+		// 	value: "",
+		// 	logic: "and"
+		// }
+	]
+	collectionTime = ''
 
-	Devices=[]
-	userList=[]
-	Checkers=[]
-	Tickets=[]
-	ticketId=''
-	scheduleId=''
+	Devices = []
+	userList = []
+	Checkers = []
+	Tickets = []
+	ticketId = ''
+	scheduleId = ''
 
-	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		var arr=[]
+	protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
+		var arr = []
 		for (var i = this.queryData.length - 1; i >= 0; i--) {
-			if(this.queryData[i].value){
+			if (this.queryData[i].value) {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
 
-		
+
 		this._historyService.getPagedStat(
 			arr,
 			'',
@@ -94,35 +89,39 @@ implements OnInit {
 			request.maxResultCount,
 			request.skipCount,
 			this.ticketId,
-			// this.scheduleId
-			)
-		.finally(() => {
-			finishedCallback();
-		})
-		.subscribe(result => {
+		)
+			.finally(() => {
+				finishedCallback();
+			})
+			.subscribe(result => {
 
-			this.dataList = result.items;
-			console.log(result);
-			
-			this.showPaging(result);
-			this.getdevice()
-			this.getticket()
-			// this.getuser()
-		});
+
+				var hash = {};
+				this.dataList = result.items.reduce(function (item, next) {
+					hash[next.deviceName] ? '' : hash[next.deviceName] = true && item.push(next);
+					return item
+				}, [])
+				
+
+				this.showPaging(result);
+				this.getdevice()
+				this.getticket()
+				// this.getuser()
+			});
 	}
 
-		
-	getdevice(){
+
+	getdevice() {
 		const formdata = new GetDevicesInput();
 		formdata.queryData = [];
 		formdata.sorting = null
 		formdata.maxResultCount = 999;
 		formdata.skipCount = 0;
 		this._deviceService.getPaged(formdata)
-		.subscribe(result => {
-			this.Devices = result.items;
-			this.showPaging(result);
-		});
+			.subscribe(result => {
+				this.Devices = result.items;
+				this.showPaging(result);
+			});
 	}
 
 	// getuser(){
@@ -144,12 +143,12 @@ implements OnInit {
 	// }
 
 
-	getticket(){
-		this._ticketService.getPaged('','',99,0)
-		.subscribe(result => {
-			this.Tickets = result.items;
-			this.showPaging(result);
-		});
+	getticket() {
+		this._ticketService.getPaged('', '', 99, 0)
+			.subscribe(result => {
+				this.Tickets = result.items;
+				this.showPaging(result);
+			});
 	}
 
 
@@ -159,24 +158,24 @@ implements OnInit {
 
 	datechange($event): void {
 		console.log($event)
-		if($event.length == 2){
-			if($event[0].getTime() == $event[1].getTime()){
-				$event[1]=new Date($event[1].getTime()+24*60*60*1000)
+		if ($event.length == 2) {
+			if ($event[0].getTime() == $event[1].getTime()) {
+				$event[1] = new Date($event[1].getTime() + 24 * 60 * 60 * 1000)
 			}
-			var year=$event[0].getFullYear();
+			var year = $event[0].getFullYear();
 			var month = $event[0].getMonth() + 1;
 			var day = $event[0].getDate();
 
-			var fulldate1=year+'-'+month+'-'+day;
+			var fulldate1 = year + '-' + month + '-' + day;
 
-			var year=$event[1].getFullYear();
+			var year = $event[1].getFullYear();
 			var month = $event[1].getMonth() + 1;
 			var day = $event[1].getDate();
 
-			var fulldate2=year+'-'+month+'-'+day;
+			var fulldate2 = year + '-' + month + '-' + day;
 
-			this.queryData[2].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
-			this.queryData[3].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[2].value = moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[3].value = moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
 		}
 	}
 }

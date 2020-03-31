@@ -649,7 +649,7 @@ export class CheckTicketServiceProxy {
      * @param count (optional) 数量
      * @return Success
      */
-    handSetScancodeopen(deviceCode: string | undefined, checkType: VerifiableTypeEnum, checkValue: string | undefined, count: number | undefined): Observable<CheckResult> {
+    handSetScancodeopen(deviceCode: string | undefined, checkType: VerifiableTypeEnum, checkValue: string | undefined, count: number | undefined): Observable<HandSetCheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/HandSetScancodeopen?";
         if (deviceCode === null)
             throw new Error("The parameter 'deviceCode' cannot be null.");
@@ -684,14 +684,14 @@ export class CheckTicketServiceProxy {
                 try {
                     return this.processHandSetScancodeopen(<any>response_);
                 } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
+                    return <Observable<HandSetCheckResult>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
+                return <Observable<HandSetCheckResult>><any>_observableThrow(response_);
         }));
     }
 
-    protected processHandSetScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
+    protected processHandSetScancodeopen(response: HttpResponseBase): Observable<HandSetCheckResult> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -702,7 +702,7 @@ export class CheckTicketServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            result200 = resultData200 ? HandSetCheckResult.fromJS(resultData200) : new HandSetCheckResult();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -710,7 +710,7 @@ export class CheckTicketServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CheckResult>(<any>null);
+        return _observableOf<HandSetCheckResult>(<any>null);
     }
 
     /**
@@ -1208,6 +1208,63 @@ export class FileServiceProxy {
             }));
         }
         return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 上传版本文件
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadClient(body: Blob | undefined): Observable<ClientVersionListDto> {
+        let url_ = this.baseUrl + "/api/File/UploadClient";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadClient(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadClient(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadClient(response: HttpResponseBase): Observable<ClientVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ClientVersionListDto.fromJS(resultData200) : new ClientVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientVersionListDto>(<any>null);
     }
 
     /**
@@ -5912,7 +5969,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 添加或者修改的公共方法
+     * 添加或者修改ClientVersion的公共方法
      * @param body (optional) 
      * @return Success
      */
@@ -5965,7 +6022,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 删除信息
+     * 删除ClientVersion信息的方法
      * @param id (optional) 
      * @return Success
      */
@@ -6075,7 +6132,64 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 获取编辑
+     * 通过指定id获取ClientVersionListDto信息
+     * @param dtype (optional) 
+     * @return Success
+     */
+    getByType(dtype: number | undefined): Observable<ClientVersionListDto> {
+        let url_ = this.baseUrl + "/api/services/app/ClientVersion/GetByType?";
+        if (dtype === null)
+            throw new Error("The parameter 'dtype' cannot be null.");
+        else if (dtype !== undefined)
+            url_ += "dtype=" + encodeURIComponent("" + dtype) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetByType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetByType(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientVersionListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientVersionListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetByType(response: HttpResponseBase): Observable<ClientVersionListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ClientVersionListDto.fromJS(resultData200) : new ClientVersionListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientVersionListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑 ClientVersion
      * @param id (optional) 
      * @return Success
      */
@@ -6132,7 +6246,7 @@ export class ClientVersionServiceProxy {
     }
 
     /**
-     * 获取的分页列表信息
+     * 获取ClientVersion的分页列表信息
      * @param filterText (optional) 
      * @param sorting (optional) 
      * @param maxResultCount (optional) 
@@ -19482,7 +19596,7 @@ export class TicketDetailHistoryServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    getAllTicketDetailHistory(body: GetTicketDetailHistorysInput | undefined): Observable<AllTicketDetailHistorDto[]> {
+    getAllTicketDetailHistory(body: GetTicketDetailHistorysInput | undefined): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
         let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetAllTicketDetailHistory";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -19505,14 +19619,14 @@ export class TicketDetailHistoryServiceProxy {
                 try {
                     return this.processGetAllTicketDetailHistory(<any>response_);
                 } catch (e) {
-                    return <Observable<AllTicketDetailHistorDto[]>><any>_observableThrow(e);
+                    return <Observable<PagedResultDtoOfTicketDetailHistoryListDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<AllTicketDetailHistorDto[]>><any>_observableThrow(response_);
+                return <Observable<PagedResultDtoOfTicketDetailHistoryListDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAllTicketDetailHistory(response: HttpResponseBase): Observable<AllTicketDetailHistorDto[]> {
+    protected processGetAllTicketDetailHistory(response: HttpResponseBase): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -19523,11 +19637,7 @@ export class TicketDetailHistoryServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200 && resultData200.constructor === Array) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200.push(AllTicketDetailHistorDto.fromJS(item));
-            }
+            result200 = resultData200 ? PagedResultDtoOfTicketDetailHistoryListDto.fromJS(resultData200) : new PagedResultDtoOfTicketDetailHistoryListDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -19535,7 +19645,7 @@ export class TicketDetailHistoryServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<AllTicketDetailHistorDto[]>(<any>null);
+        return _observableOf<PagedResultDtoOfTicketDetailHistoryListDto>(<any>null);
     }
 
     /**
@@ -28017,6 +28127,75 @@ export class SalesBySellerDailyServiceProxy {
 }
 
 @Injectable()
+export class SalesByTicketServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param body (optional) 
+     * @return Success
+     */
+    getPaged(body: SalesByTicketInput | undefined): Observable<StatsPagedResultDtoOfSalesByTicketResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesByTicket/GetPaged";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfSalesByTicketResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfSalesByTicketResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesByTicketResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesByTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesByTicketResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfSalesByTicketResultDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class SalesCommonServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -31933,14 +32112,20 @@ export interface IGroupActivityResultModel {
     data: GroupActivityResultData;
 }
 
-export class CheckResult implements ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
+/** 手持机验票结果 */
+export class HandSetCheckResult implements IHandSetCheckResult {
+    isSuccess: boolean;
+    resultTips: string | undefined;
+    checkTime: moment.Moment;
+    ticketType: string | undefined;
+    ticketNO: string | undefined;
+    voiceName: string | undefined;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    canCheckCount: number;
+    checkedCount: number;
 
-    constructor(data?: ICheckResult) {
+    constructor(data?: IHandSetCheckResult) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -31951,45 +32136,61 @@ export class CheckResult implements ICheckResult {
 
     init(data?: any) {
         if (data) {
-            this.status = data["status"];
-            this.msg = data["msg"];
-            this.count = data["count"];
-            this.audio = data["audio"];
-            this.show_msg = data["show_msg"];
+            this.isSuccess = data["isSuccess"];
+            this.resultTips = data["resultTips"];
+            this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
+            this.ticketType = data["ticketType"];
+            this.ticketNO = data["ticketNO"];
+            this.voiceName = data["voiceName"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.canCheckCount = data["canCheckCount"];
+            this.checkedCount = data["checkedCount"];
         }
     }
 
-    static fromJS(data: any): CheckResult {
+    static fromJS(data: any): HandSetCheckResult {
         data = typeof data === 'object' ? data : {};
-        let result = new CheckResult();
+        let result = new HandSetCheckResult();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["msg"] = this.msg;
-        data["count"] = this.count;
-        data["audio"] = this.audio;
-        data["show_msg"] = this.show_msg;
+        data["isSuccess"] = this.isSuccess;
+        data["resultTips"] = this.resultTips;
+        data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
+        data["ticketType"] = this.ticketType;
+        data["ticketNO"] = this.ticketNO;
+        data["voiceName"] = this.voiceName;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["canCheckCount"] = this.canCheckCount;
+        data["checkedCount"] = this.checkedCount;
         return data; 
     }
 
-    clone(): CheckResult {
+    clone(): HandSetCheckResult {
         const json = this.toJSON();
-        let result = new CheckResult();
+        let result = new HandSetCheckResult();
         result.init(json);
         return result;
     }
 }
 
-export interface ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
+/** 手持机验票结果 */
+export interface IHandSetCheckResult {
+    isSuccess: boolean;
+    resultTips: string | undefined;
+    checkTime: moment.Moment;
+    ticketType: string | undefined;
+    ticketNO: string | undefined;
+    voiceName: string | undefined;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    canCheckCount: number;
+    checkedCount: number;
 }
 
 export class QueryData implements IQueryData {
@@ -32230,6 +32431,158 @@ export class PagedResultDtoOfGateHistoryResultDto implements IPagedResultDtoOfGa
 export interface IPagedResultDtoOfGateHistoryResultDto {
     totalCount: number;
     items: GateHistoryResultDto[] | undefined;
+}
+
+export class CheckResult implements ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+
+    constructor(data?: ICheckResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.status = data["status"];
+            this.msg = data["msg"];
+            this.count = data["count"];
+            this.audio = data["audio"];
+            this.show_msg = data["show_msg"];
+        }
+    }
+
+    static fromJS(data: any): CheckResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["msg"] = this.msg;
+        data["count"] = this.count;
+        data["audio"] = this.audio;
+        data["show_msg"] = this.show_msg;
+        return data; 
+    }
+
+    clone(): CheckResult {
+        const json = this.toJSON();
+        let result = new CheckResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+}
+
+export enum DeviceTypeEnum {
+    TicketMachine = <any>"TicketMachine", 
+    GateMachine = <any>"GateMachine", 
+    FaceMachine = <any>"FaceMachine", 
+    SelfhelpMachine = <any>"SelfhelpMachine", 
+    HandMachine = <any>"HandMachine", 
+}
+
+/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
+export class ClientVersionListDto implements IClientVersionListDto {
+    /** AppName */
+    appName: string | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** VersionCode */
+    versionCode: string | undefined;
+    /** VersionDesc */
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IClientVersionListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.appName = data["appName"];
+            this.versionName = data["versionName"];
+            this.versionCode = data["versionCode"];
+            this.versionDesc = data["versionDesc"];
+            this.deviceType = data["deviceType"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ClientVersionListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientVersionListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appName"] = this.appName;
+        data["versionName"] = this.versionName;
+        data["versionCode"] = this.versionCode;
+        data["versionDesc"] = this.versionDesc;
+        data["deviceType"] = this.deviceType;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ClientVersionListDto {
+        const json = this.toJSON();
+        let result = new ClientVersionListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
+export interface IClientVersionListDto {
+    /** AppName */
+    appName: string | undefined;
+    /** VersionName */
+    versionName: string | undefined;
+    /** VersionCode */
+    versionCode: string | undefined;
+    /** VersionDesc */
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
 }
 
 export class AudioResultDto implements IAudioResultDto {
@@ -37969,14 +38322,6 @@ export interface IPagedResultDtoOfCheckRecordListDto {
     items: CheckRecordListDto[] | undefined;
 }
 
-export enum DeviceTypeEnum {
-    TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"SelfhelpMachine", 
-    FaceMachine = <any>"GateMachine", 
-    SelfhelpMachine = <any>"HandMachine", 
-    HandMachine = <any>"FaceMachine", 
-}
-
 /** 的列表DTO Yozeev.SystemConfig.ClientVersion */
 export class ClientVersionEditDto implements IClientVersionEditDto {
     /** Id */
@@ -38096,91 +38441,6 @@ export class CreateOrUpdateClientVersionInput implements ICreateOrUpdateClientVe
 
 export interface ICreateOrUpdateClientVersionInput {
     clientVersion: ClientVersionEditDto;
-}
-
-/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
-export class ClientVersionListDto implements IClientVersionListDto {
-    /** AppName */
-    appName: string | undefined;
-    /** VersionName */
-    versionName: string | undefined;
-    /** VersionCode */
-    versionCode: string | undefined;
-    /** VersionDesc */
-    versionDesc: string | undefined;
-    deviceType: DeviceTypeEnum;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: IClientVersionListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.appName = data["appName"];
-            this.versionName = data["versionName"];
-            this.versionCode = data["versionCode"];
-            this.versionDesc = data["versionDesc"];
-            this.deviceType = data["deviceType"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): ClientVersionListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ClientVersionListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["appName"] = this.appName;
-        data["versionName"] = this.versionName;
-        data["versionCode"] = this.versionCode;
-        data["versionDesc"] = this.versionDesc;
-        data["deviceType"] = this.deviceType;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): ClientVersionListDto {
-        const json = this.toJSON();
-        let result = new ClientVersionListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-/** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
-export interface IClientVersionListDto {
-    /** AppName */
-    appName: string | undefined;
-    /** VersionName */
-    versionName: string | undefined;
-    /** VersionCode */
-    versionCode: string | undefined;
-    /** VersionDesc */
-    versionDesc: string | undefined;
-    deviceType: DeviceTypeEnum;
-    creatorUser: User;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
 }
 
 /** 读取可编辑的Dto */
@@ -55428,228 +55688,6 @@ export interface IGetTicketDetailHistorysInput {
     skipCount: number;
 }
 
-export class TicketDetailHistory implements ITicketDetailHistory {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    deviceId: number;
-    device: Device;
-    deviceName: string | undefined;
-    ticketDetailId: number;
-    ticketDetail: TicketDetail;
-    ticketNo: string | undefined;
-    customerId: number | undefined;
-    visitValue: string | undefined;
-    validationType: string | undefined;
-    ticketName: string | undefined;
-    statusCode: CheckStatusEnum;
-    statusText: string | undefined;
-    checkDate: moment.Moment;
-    year: number;
-    month: number;
-    day: number;
-    hour: number;
-    minute: number;
-    yearWeek: number;
-    weekDay: number;
-    checkTime: moment.Moment;
-    checkerId: number | undefined;
-    checker: User;
-    checkCount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicketDetailHistory) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketId = data["ticketId"];
-            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
-            this.deviceId = data["deviceId"];
-            this.device = data["device"] ? Device.fromJS(data["device"]) : <any>undefined;
-            this.deviceName = data["deviceName"];
-            this.ticketDetailId = data["ticketDetailId"];
-            this.ticketDetail = data["ticketDetail"] ? TicketDetail.fromJS(data["ticketDetail"]) : <any>undefined;
-            this.ticketNo = data["ticketNo"];
-            this.customerId = data["customerId"];
-            this.visitValue = data["visitValue"];
-            this.validationType = data["validationType"];
-            this.ticketName = data["ticketName"];
-            this.statusCode = data["statusCode"];
-            this.statusText = data["statusText"];
-            this.checkDate = data["checkDate"] ? moment(data["checkDate"].toString()) : <any>undefined;
-            this.year = data["year"];
-            this.month = data["month"];
-            this.day = data["day"];
-            this.hour = data["hour"];
-            this.minute = data["minute"];
-            this.yearWeek = data["yearWeek"];
-            this.weekDay = data["weekDay"];
-            this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
-            this.checkerId = data["checkerId"];
-            this.checker = data["checker"] ? User.fromJS(data["checker"]) : <any>undefined;
-            this.checkCount = data["checkCount"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TicketDetailHistory {
-        data = typeof data === 'object' ? data : {};
-        let result = new TicketDetailHistory();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketId"] = this.ticketId;
-        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
-        data["deviceId"] = this.deviceId;
-        data["device"] = this.device ? this.device.toJSON() : <any>undefined;
-        data["deviceName"] = this.deviceName;
-        data["ticketDetailId"] = this.ticketDetailId;
-        data["ticketDetail"] = this.ticketDetail ? this.ticketDetail.toJSON() : <any>undefined;
-        data["ticketNo"] = this.ticketNo;
-        data["customerId"] = this.customerId;
-        data["visitValue"] = this.visitValue;
-        data["validationType"] = this.validationType;
-        data["ticketName"] = this.ticketName;
-        data["statusCode"] = this.statusCode;
-        data["statusText"] = this.statusText;
-        data["checkDate"] = this.checkDate ? this.checkDate.toISOString() : <any>undefined;
-        data["year"] = this.year;
-        data["month"] = this.month;
-        data["day"] = this.day;
-        data["hour"] = this.hour;
-        data["minute"] = this.minute;
-        data["yearWeek"] = this.yearWeek;
-        data["weekDay"] = this.weekDay;
-        data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
-        data["checkerId"] = this.checkerId;
-        data["checker"] = this.checker ? this.checker.toJSON() : <any>undefined;
-        data["checkCount"] = this.checkCount;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TicketDetailHistory {
-        const json = this.toJSON();
-        let result = new TicketDetailHistory();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicketDetailHistory {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    deviceId: number;
-    device: Device;
-    deviceName: string | undefined;
-    ticketDetailId: number;
-    ticketDetail: TicketDetail;
-    ticketNo: string | undefined;
-    customerId: number | undefined;
-    visitValue: string | undefined;
-    validationType: string | undefined;
-    ticketName: string | undefined;
-    statusCode: CheckStatusEnum;
-    statusText: string | undefined;
-    checkDate: moment.Moment;
-    year: number;
-    month: number;
-    day: number;
-    hour: number;
-    minute: number;
-    yearWeek: number;
-    weekDay: number;
-    checkTime: moment.Moment;
-    checkerId: number | undefined;
-    checker: User;
-    checkCount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class AllTicketDetailHistorDto implements IAllTicketDetailHistorDto {
-    ticketDetailHistory: TicketDetailHistory;
-    deviceCode: string | undefined;
-    ticketPriceId: number;
-    checkerName: string | undefined;
-
-    constructor(data?: IAllTicketDetailHistorDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.ticketDetailHistory = data["ticketDetailHistory"] ? TicketDetailHistory.fromJS(data["ticketDetailHistory"]) : <any>undefined;
-            this.deviceCode = data["deviceCode"];
-            this.ticketPriceId = data["ticketPriceId"];
-            this.checkerName = data["checkerName"];
-        }
-    }
-
-    static fromJS(data: any): AllTicketDetailHistorDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AllTicketDetailHistorDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["ticketDetailHistory"] = this.ticketDetailHistory ? this.ticketDetailHistory.toJSON() : <any>undefined;
-        data["deviceCode"] = this.deviceCode;
-        data["ticketPriceId"] = this.ticketPriceId;
-        data["checkerName"] = this.checkerName;
-        return data; 
-    }
-
-    clone(): AllTicketDetailHistorDto {
-        const json = this.toJSON();
-        let result = new AllTicketDetailHistorDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAllTicketDetailHistorDto {
-    ticketDetailHistory: TicketDetailHistory;
-    deviceCode: string | undefined;
-    ticketPriceId: number;
-    checkerName: string | undefined;
-}
-
 /** 的编辑DTO Yozeev.BusinessLogic.TicketDetailHistory */
 export class TicketDetailHistoryListDto implements ITicketDetailHistoryListDto {
     /** BranchId */
@@ -55859,6 +55897,61 @@ export interface ITicketDetailHistoryListDto {
     id: number;
 }
 
+export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
+    totalCount: number;
+    items: TicketDetailHistoryListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTicketDetailHistoryListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(TicketDetailHistoryListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTicketDetailHistoryListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfTicketDetailHistoryListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfTicketDetailHistoryListDto {
+    totalCount: number;
+    items: TicketDetailHistoryListDto[] | undefined;
+}
+
 /** 读取可编辑的Dto */
 export class GetTicketDetailHistoryForEditOutput implements IGetTicketDetailHistoryForEditOutput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
@@ -55914,61 +56007,6 @@ export class GetTicketDetailHistoryForEditOutput implements IGetTicketDetailHist
 export interface IGetTicketDetailHistoryForEditOutput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
     checkStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
-    totalCount: number;
-    items: TicketDetailHistoryListDto[] | undefined;
-
-    constructor(data?: IPagedResultDtoOfTicketDetailHistoryListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(TicketDetailHistoryListDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): PagedResultDtoOfTicketDetailHistoryListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): PagedResultDtoOfTicketDetailHistoryListDto {
-        const json = this.toJSON();
-        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPagedResultDtoOfTicketDetailHistoryListDto {
-    totalCount: number;
-    items: TicketDetailHistoryListDto[] | undefined;
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.TicketIntroduce */
@@ -63474,8 +63512,7 @@ export interface IOperCustomerAgeResultDto {
 
 /** 游客性别 */
 export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto {
-    /** 性别 */
-    gender: string | undefined;
+    gender: SexEnum;
     /** 百分比 */
     percentage: number;
 
@@ -63519,8 +63556,7 @@ export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto
 
 /** 游客性别 */
 export interface IOperCustomerGenderResultDto {
-    /** 性别 */
-    gender: string | undefined;
+    gender: SexEnum;
     /** 百分比 */
     percentage: number;
 }
@@ -65448,6 +65484,263 @@ export interface IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
     items: SalesBySellerDailyResultDto[] | undefined;
 }
 
+/** 票型售票统计 */
+export class SalesByTicketInput implements ISalesByTicketInput {
+    /** 票型ID */
+    ticketId: string | undefined;
+    /** 支付方式ID */
+    payMethodId: string | undefined;
+    /** 开始日期 */
+    startDate: string | undefined;
+    /** 结束日期 */
+    endDate: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesByTicketInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketId = data["ticketId"];
+            this.payMethodId = data["payMethodId"];
+            this.startDate = data["startDate"];
+            this.endDate = data["endDate"];
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesByTicketInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesByTicketInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketId"] = this.ticketId;
+        data["payMethodId"] = this.payMethodId;
+        data["startDate"] = this.startDate;
+        data["endDate"] = this.endDate;
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesByTicketInput {
+        const json = this.toJSON();
+        let result = new SalesByTicketInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型售票统计 */
+export interface ISalesByTicketInput {
+    /** 票型ID */
+    ticketId: string | undefined;
+    /** 支付方式ID */
+    payMethodId: string | undefined;
+    /** 开始日期 */
+    startDate: string | undefined;
+    /** 结束日期 */
+    endDate: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
+/** 票型售票统计 */
+export class SalesByTicketResultDto implements ISalesByTicketResultDto {
+    /** 票型ID */
+    id: number;
+    ticket: Ticket;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+
+    constructor(data?: ISalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.saleAmount = data["saleAmount"];
+            this.refundAmount = data["refundAmount"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): SalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["saleAmount"] = this.saleAmount;
+        data["refundAmount"] = this.refundAmount;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+
+    clone(): SalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new SalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型售票统计 */
+export interface ISalesByTicketResultDto {
+    /** 票型ID */
+    id: number;
+    ticket: Ticket;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+}
+
+export class StatsPagedResultDtoOfSalesByTicketResultDto implements IStatsPagedResultDtoOfSalesByTicketResultDto {
+    total: SalesByTicketResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesByTicketResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SalesByTicketResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SalesByTicketResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSalesByTicketResultDto {
+    total: SalesByTicketResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesByTicketResultDto[] | undefined;
+}
+
 /** 统计报表通用-订单 */
 export class SalesCommonActivityInput implements ISalesCommonActivityInput {
     /** 订单ID集合 */
@@ -65642,7 +65935,7 @@ export interface ISalesActivityResultDto {
 
 export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedResultDtoOfSalesActivityResultDto {
     total: SalesActivityResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
 
@@ -65662,7 +65955,7 @@ export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedR
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
@@ -65710,7 +66003,7 @@ export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedR
 
 export interface IStatsPagedResultDtoOfSalesActivityResultDto {
     total: SalesActivityResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
 }
@@ -65873,7 +66166,7 @@ export interface ISalesActivityDetailResultDto {
 
 export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStatsPagedResultDtoOfSalesActivityDetailResultDto {
     total: SalesActivityDetailResultDto;
-    filters: { [key: string] : Anonymous11[]; } | undefined;
+    filters: { [key: string] : Anonymous12[]; } | undefined;
     totalCount: number;
     items: SalesActivityDetailResultDto[] | undefined;
 
@@ -65893,7 +66186,7 @@ export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStats
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous12.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
@@ -65941,7 +66234,7 @@ export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStats
 
 export interface IStatsPagedResultDtoOfSalesActivityDetailResultDto {
     total: SalesActivityDetailResultDto;
-    filters: { [key: string] : Anonymous11[]; } | undefined;
+    filters: { [key: string] : Anonymous12[]; } | undefined;
     totalCount: number;
     items: SalesActivityDetailResultDto[] | undefined;
 }
@@ -67496,6 +67789,43 @@ export class Anonymous11 implements IAnonymous11 {
 }
 
 export interface IAnonymous11 {
+}
+
+export class Anonymous12 implements IAnonymous12 {
+
+    constructor(data?: IAnonymous12) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous12 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous12();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous12 {
+        const json = this.toJSON();
+        let result = new Anonymous12();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous12 {
 }
 
 export class PrimaryId implements IPrimaryId {
