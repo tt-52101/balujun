@@ -60,6 +60,8 @@ collectionTime=''
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
 		var formdata = new GetDevicesInput();
+		
+		
 		var arr = []
 		for (var i = this.queryData.length - 1; i >= 0; i--) {
 			if (this.queryData[i].value) {
@@ -72,13 +74,15 @@ collectionTime=''
 		formdata.maxResultCount = request.maxResultCount;
 		formdata.skipCount =request.skipCount;
 
+		console.log(formdata);
+		
 		this._gateRecordService.getPaged(formdata)
 		.finally(() => {
 			finishedCallback();
 		})
 		.subscribe(result => {
 			console.log(result.items);
-			
+			// result.items.filter(item=>result.items.deviceName)
 			this.dataList = result.items;
 			this.showPaging(result);
 		});

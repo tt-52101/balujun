@@ -649,7 +649,7 @@ export class CheckTicketServiceProxy {
      * @param count (optional) 数量
      * @return Success
      */
-    handSetScancodeopen(deviceCode: string | undefined, checkType: VerifiableTypeEnum, checkValue: string | undefined, count: number | undefined): Observable<CheckResult> {
+    handSetScancodeopen(deviceCode: string | undefined, checkType: VerifiableTypeEnum, checkValue: string | undefined, count: number | undefined): Observable<HandSetCheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/HandSetScancodeopen?";
         if (deviceCode === null)
             throw new Error("The parameter 'deviceCode' cannot be null.");
@@ -684,14 +684,14 @@ export class CheckTicketServiceProxy {
                 try {
                     return this.processHandSetScancodeopen(<any>response_);
                 } catch (e) {
-                    return <Observable<CheckResult>><any>_observableThrow(e);
+                    return <Observable<HandSetCheckResult>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<CheckResult>><any>_observableThrow(response_);
+                return <Observable<HandSetCheckResult>><any>_observableThrow(response_);
         }));
     }
 
-    protected processHandSetScancodeopen(response: HttpResponseBase): Observable<CheckResult> {
+    protected processHandSetScancodeopen(response: HttpResponseBase): Observable<HandSetCheckResult> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -702,7 +702,7 @@ export class CheckTicketServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? CheckResult.fromJS(resultData200) : new CheckResult();
+            result200 = resultData200 ? HandSetCheckResult.fromJS(resultData200) : new HandSetCheckResult();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -710,7 +710,7 @@ export class CheckTicketServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<CheckResult>(<any>null);
+        return _observableOf<HandSetCheckResult>(<any>null);
     }
 
     /**
@@ -785,10 +785,9 @@ export class CheckTicketServiceProxy {
      * @param gateNumber (optional) 设备号
      * @param jqmpass (optional) 卡号
      * @param rdindex (optional) 串口号
-     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
+    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -802,10 +801,6 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        if (num === null)
-            throw new Error("The parameter 'num' cannot be null.");
-        else if (num !== undefined)
-            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -857,10 +852,9 @@ export class CheckTicketServiceProxy {
      * @param gateNumber (optional) 设备号
      * @param jqmpass (optional) 卡号
      * @param rdindex (optional) 串口号
-     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
+    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -874,10 +868,6 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
-        if (num === null)
-            throw new Error("The parameter 'num' cannot be null.");
-        else if (num !== undefined)
-            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -929,10 +919,9 @@ export class CheckTicketServiceProxy {
      * @param qrcode (optional) 
      * @param ticketNo (optional) 
      * @param ticketdetailId (optional) 
-     * @param num (optional) 
      * @return Success
      */
-    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined, num: number | undefined): Observable<CheckResult> {
+    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TicketDetailIdOpen?";
         if (qrcode === null)
             throw new Error("The parameter 'qrcode' cannot be null.");
@@ -946,10 +935,6 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'ticketdetailId' cannot be null.");
         else if (ticketdetailId !== undefined)
             url_ += "ticketdetailId=" + encodeURIComponent("" + ticketdetailId) + "&"; 
-        if (num === null)
-            throw new Error("The parameter 'num' cannot be null.");
-        else if (num !== undefined)
-            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -1226,6 +1211,63 @@ export class FileServiceProxy {
     }
 
     /**
+     * 上传音频文件
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadAudio(body: Blob | undefined): Observable<AudioResultDto> {
+        let url_ = this.baseUrl + "/api/File/UploadAudio";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadAudio(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadAudio(<any>response_);
+                } catch (e) {
+                    return <Observable<AudioResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AudioResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadAudio(response: HttpResponseBase): Observable<AudioResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AudioResultDto.fromJS(resultData200) : new AudioResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AudioResultDto>(<any>null);
+    }
+
+    /**
      * 上传版本文件
      * @param body (optional) 
      * @return Success
@@ -1280,63 +1322,6 @@ export class FileServiceProxy {
             }));
         }
         return _observableOf<ClientVersionListDto>(<any>null);
-    }
-
-    /**
-     * 上传音频文件
-     * @param body (optional) 
-     * @return Success
-     */
-    uploadImage(body: Blob | undefined): Observable<AudioResultDto> {
-        let url_ = this.baseUrl + "/api/File/UploadImage";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = body;
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "multipart/form-data", 
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUploadImage(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUploadImage(<any>response_);
-                } catch (e) {
-                    return <Observable<AudioResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AudioResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUploadImage(response: HttpResponseBase): Observable<AudioResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? AudioResultDto.fromJS(resultData200) : new AudioResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AudioResultDto>(<any>null);
     }
 }
 
@@ -19611,7 +19596,7 @@ export class TicketDetailHistoryServiceProxy {
      * @param body (optional) 
      * @return Success
      */
-    getAllTicketDetailHistory(body: GetTicketDetailHistorysInput | undefined): Observable<AllTicketDetailHistorDto[]> {
+    getAllTicketDetailHistory(body: GetTicketDetailHistorysInput | undefined): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
         let url_ = this.baseUrl + "/api/services/app/TicketDetailHistory/GetAllTicketDetailHistory";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -19634,14 +19619,14 @@ export class TicketDetailHistoryServiceProxy {
                 try {
                     return this.processGetAllTicketDetailHistory(<any>response_);
                 } catch (e) {
-                    return <Observable<AllTicketDetailHistorDto[]>><any>_observableThrow(e);
+                    return <Observable<PagedResultDtoOfTicketDetailHistoryListDto>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<AllTicketDetailHistorDto[]>><any>_observableThrow(response_);
+                return <Observable<PagedResultDtoOfTicketDetailHistoryListDto>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetAllTicketDetailHistory(response: HttpResponseBase): Observable<AllTicketDetailHistorDto[]> {
+    protected processGetAllTicketDetailHistory(response: HttpResponseBase): Observable<PagedResultDtoOfTicketDetailHistoryListDto> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -19652,11 +19637,7 @@ export class TicketDetailHistoryServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (resultData200 && resultData200.constructor === Array) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200.push(AllTicketDetailHistorDto.fromJS(item));
-            }
+            result200 = resultData200 ? PagedResultDtoOfTicketDetailHistoryListDto.fromJS(resultData200) : new PagedResultDtoOfTicketDetailHistoryListDto();
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -19664,7 +19645,7 @@ export class TicketDetailHistoryServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<AllTicketDetailHistorDto[]>(<any>null);
+        return _observableOf<PagedResultDtoOfTicketDetailHistoryListDto>(<any>null);
     }
 
     /**
@@ -28889,6 +28870,63 @@ export class WechatServiceProxy {
     }
 
     /**
+     * 根据Id查找订单
+     * @param id (optional) 
+     * @return Success
+     */
+    getActivityById(id: number | undefined): Observable<ActivityListModel> {
+        let url_ = this.baseUrl + "/api/Wechat/GetActivityById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetActivityById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetActivityById(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityListModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityListModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetActivityById(response: HttpResponseBase): Observable<ActivityListModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityListModel.fromJS(resultData200) : new ActivityListModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityListModel>(<any>null);
+    }
+
+    /**
      * 获取微信常用游客
      * @param openId (optional) 
      * @return Success
@@ -28948,14 +28986,29 @@ export class WechatServiceProxy {
     /**
      * 获取微信用户的订单
      * @param openId (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
      * @return Success
      */
-    getWechatActivitys(openId: string | undefined): Observable<PagedResultDtoOfActivity> {
+    getWechatActivitys(openId: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfActivity> {
         let url_ = this.baseUrl + "/api/Wechat/GetWechatActivitys?";
         if (openId === null)
             throw new Error("The parameter 'openId' cannot be null.");
         else if (openId !== undefined)
             url_ += "openId=" + encodeURIComponent("" + openId) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -31513,6 +31566,7 @@ export class Activity implements IActivity {
     organizationId: number | undefined;
     organization: Organization;
     activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -31561,6 +31615,7 @@ export class Activity implements IActivity {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -31609,6 +31664,7 @@ export class Activity implements IActivity {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -31653,6 +31709,7 @@ export interface IActivity {
     organizationId: number | undefined;
     organization: Organization;
     activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -32131,14 +32188,20 @@ export interface IGroupActivityResultModel {
     data: GroupActivityResultData;
 }
 
-export class CheckResult implements ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
+/** 手持机验票结果 */
+export class HandSetCheckResult implements IHandSetCheckResult {
+    isSuccess: boolean;
+    resultTips: string | undefined;
+    checkTime: moment.Moment;
+    ticketType: string | undefined;
+    ticketNO: string | undefined;
+    voiceName: string | undefined;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    canCheckCount: number;
+    checkedCount: number;
 
-    constructor(data?: ICheckResult) {
+    constructor(data?: IHandSetCheckResult) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -32149,45 +32212,61 @@ export class CheckResult implements ICheckResult {
 
     init(data?: any) {
         if (data) {
-            this.status = data["status"];
-            this.msg = data["msg"];
-            this.count = data["count"];
-            this.audio = data["audio"];
-            this.show_msg = data["show_msg"];
+            this.isSuccess = data["isSuccess"];
+            this.resultTips = data["resultTips"];
+            this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
+            this.ticketType = data["ticketType"];
+            this.ticketNO = data["ticketNO"];
+            this.voiceName = data["voiceName"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.canCheckCount = data["canCheckCount"];
+            this.checkedCount = data["checkedCount"];
         }
     }
 
-    static fromJS(data: any): CheckResult {
+    static fromJS(data: any): HandSetCheckResult {
         data = typeof data === 'object' ? data : {};
-        let result = new CheckResult();
+        let result = new HandSetCheckResult();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["status"] = this.status;
-        data["msg"] = this.msg;
-        data["count"] = this.count;
-        data["audio"] = this.audio;
-        data["show_msg"] = this.show_msg;
+        data["isSuccess"] = this.isSuccess;
+        data["resultTips"] = this.resultTips;
+        data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
+        data["ticketType"] = this.ticketType;
+        data["ticketNO"] = this.ticketNO;
+        data["voiceName"] = this.voiceName;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["canCheckCount"] = this.canCheckCount;
+        data["checkedCount"] = this.checkedCount;
         return data; 
     }
 
-    clone(): CheckResult {
+    clone(): HandSetCheckResult {
         const json = this.toJSON();
-        let result = new CheckResult();
+        let result = new HandSetCheckResult();
         result.init(json);
         return result;
     }
 }
 
-export interface ICheckResult {
-    status: number;
-    msg: string | undefined;
-    count: number;
-    audio: string | undefined;
-    show_msg: string | undefined;
+/** 手持机验票结果 */
+export interface IHandSetCheckResult {
+    isSuccess: boolean;
+    resultTips: string | undefined;
+    checkTime: moment.Moment;
+    ticketType: string | undefined;
+    ticketNO: string | undefined;
+    voiceName: string | undefined;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    canCheckCount: number;
+    checkedCount: number;
 }
 
 export class QueryData implements IQueryData {
@@ -32430,6 +32509,116 @@ export interface IPagedResultDtoOfGateHistoryResultDto {
     items: GateHistoryResultDto[] | undefined;
 }
 
+export class CheckResult implements ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+
+    constructor(data?: ICheckResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.status = data["status"];
+            this.msg = data["msg"];
+            this.count = data["count"];
+            this.audio = data["audio"];
+            this.show_msg = data["show_msg"];
+        }
+    }
+
+    static fromJS(data: any): CheckResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new CheckResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["status"] = this.status;
+        data["msg"] = this.msg;
+        data["count"] = this.count;
+        data["audio"] = this.audio;
+        data["show_msg"] = this.show_msg;
+        return data; 
+    }
+
+    clone(): CheckResult {
+        const json = this.toJSON();
+        let result = new CheckResult();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICheckResult {
+    status: number;
+    msg: string | undefined;
+    count: number;
+    audio: string | undefined;
+    show_msg: string | undefined;
+}
+
+export class AudioResultDto implements IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
+
+    constructor(data?: IAudioResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.success = data["success"];
+            this.errorMsg = data["errorMsg"];
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): AudioResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudioResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["errorMsg"] = this.errorMsg;
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): AudioResultDto {
+        const json = this.toJSON();
+        let result = new AudioResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
+}
+
 export enum DeviceTypeEnum {
     TicketMachine = <any>"TicketMachine", 
     GateMachine = <any>"SelfhelpMachine", 
@@ -32521,57 +32710,6 @@ export interface IClientVersionListDto {
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
-}
-
-export class AudioResultDto implements IAudioResultDto {
-    success: boolean;
-    errorMsg: string | undefined;
-    uri: string | undefined;
-
-    constructor(data?: IAudioResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.success = data["success"];
-            this.errorMsg = data["errorMsg"];
-            this.uri = data["uri"];
-        }
-    }
-
-    static fromJS(data: any): AudioResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AudioResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        data["errorMsg"] = this.errorMsg;
-        data["uri"] = this.uri;
-        return data; 
-    }
-
-    clone(): AudioResultDto {
-        const json = this.toJSON();
-        let result = new AudioResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAudioResultDto {
-    success: boolean;
-    errorMsg: string | undefined;
-    uri: string | undefined;
 }
 
 export class ActivateEmailInput implements IActivateEmailInput {
@@ -33709,6 +33847,8 @@ export class ActivityEditDto implements IActivityEditDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
 
     constructor(data?: IActivityEditDto) {
         if (data) {
@@ -33752,6 +33892,7 @@ export class ActivityEditDto implements IActivityEditDto {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
         }
     }
 
@@ -33795,6 +33936,7 @@ export class ActivityEditDto implements IActivityEditDto {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         return data; 
     }
 
@@ -33855,6 +33997,8 @@ export interface IActivityEditDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
 }
 
 export class CreateOrUpdateActivityInput implements ICreateOrUpdateActivityInput {
@@ -33952,6 +34096,8 @@ export class ActivityListDto implements IActivityListDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -34000,6 +34146,7 @@ export class ActivityListDto implements IActivityListDto {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -34048,6 +34195,7 @@ export class ActivityListDto implements IActivityListDto {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -34113,6 +34261,8 @@ export interface IActivityListDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -55626,228 +55776,6 @@ export interface IGetTicketDetailHistorysInput {
     skipCount: number;
 }
 
-export class TicketDetailHistory implements ITicketDetailHistory {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    deviceId: number;
-    device: Device;
-    deviceName: string | undefined;
-    ticketDetailId: number;
-    ticketDetail: TicketDetail;
-    ticketNo: string | undefined;
-    customerId: number | undefined;
-    visitValue: string | undefined;
-    validationType: string | undefined;
-    ticketName: string | undefined;
-    statusCode: CheckStatusEnum;
-    statusText: string | undefined;
-    checkDate: moment.Moment;
-    year: number;
-    month: number;
-    day: number;
-    hour: number;
-    minute: number;
-    yearWeek: number;
-    weekDay: number;
-    checkTime: moment.Moment;
-    checkerId: number | undefined;
-    checker: User;
-    checkCount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-
-    constructor(data?: ITicketDetailHistory) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.branchId = data["branchId"];
-            this.ticketId = data["ticketId"];
-            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
-            this.deviceId = data["deviceId"];
-            this.device = data["device"] ? Device.fromJS(data["device"]) : <any>undefined;
-            this.deviceName = data["deviceName"];
-            this.ticketDetailId = data["ticketDetailId"];
-            this.ticketDetail = data["ticketDetail"] ? TicketDetail.fromJS(data["ticketDetail"]) : <any>undefined;
-            this.ticketNo = data["ticketNo"];
-            this.customerId = data["customerId"];
-            this.visitValue = data["visitValue"];
-            this.validationType = data["validationType"];
-            this.ticketName = data["ticketName"];
-            this.statusCode = data["statusCode"];
-            this.statusText = data["statusText"];
-            this.checkDate = data["checkDate"] ? moment(data["checkDate"].toString()) : <any>undefined;
-            this.year = data["year"];
-            this.month = data["month"];
-            this.day = data["day"];
-            this.hour = data["hour"];
-            this.minute = data["minute"];
-            this.yearWeek = data["yearWeek"];
-            this.weekDay = data["weekDay"];
-            this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
-            this.checkerId = data["checkerId"];
-            this.checker = data["checker"] ? User.fromJS(data["checker"]) : <any>undefined;
-            this.checkCount = data["checkCount"];
-            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
-            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
-            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
-            this.creatorUserId = data["creatorUserId"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): TicketDetailHistory {
-        data = typeof data === 'object' ? data : {};
-        let result = new TicketDetailHistory();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["branchId"] = this.branchId;
-        data["ticketId"] = this.ticketId;
-        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
-        data["deviceId"] = this.deviceId;
-        data["device"] = this.device ? this.device.toJSON() : <any>undefined;
-        data["deviceName"] = this.deviceName;
-        data["ticketDetailId"] = this.ticketDetailId;
-        data["ticketDetail"] = this.ticketDetail ? this.ticketDetail.toJSON() : <any>undefined;
-        data["ticketNo"] = this.ticketNo;
-        data["customerId"] = this.customerId;
-        data["visitValue"] = this.visitValue;
-        data["validationType"] = this.validationType;
-        data["ticketName"] = this.ticketName;
-        data["statusCode"] = this.statusCode;
-        data["statusText"] = this.statusText;
-        data["checkDate"] = this.checkDate ? this.checkDate.toISOString() : <any>undefined;
-        data["year"] = this.year;
-        data["month"] = this.month;
-        data["day"] = this.day;
-        data["hour"] = this.hour;
-        data["minute"] = this.minute;
-        data["yearWeek"] = this.yearWeek;
-        data["weekDay"] = this.weekDay;
-        data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
-        data["checkerId"] = this.checkerId;
-        data["checker"] = this.checker ? this.checker.toJSON() : <any>undefined;
-        data["checkCount"] = this.checkCount;
-        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
-        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
-        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
-        data["creatorUserId"] = this.creatorUserId;
-        data["id"] = this.id;
-        return data; 
-    }
-
-    clone(): TicketDetailHistory {
-        const json = this.toJSON();
-        let result = new TicketDetailHistory();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface ITicketDetailHistory {
-    branchId: number | undefined;
-    ticketId: number;
-    ticket: Ticket;
-    deviceId: number;
-    device: Device;
-    deviceName: string | undefined;
-    ticketDetailId: number;
-    ticketDetail: TicketDetail;
-    ticketNo: string | undefined;
-    customerId: number | undefined;
-    visitValue: string | undefined;
-    validationType: string | undefined;
-    ticketName: string | undefined;
-    statusCode: CheckStatusEnum;
-    statusText: string | undefined;
-    checkDate: moment.Moment;
-    year: number;
-    month: number;
-    day: number;
-    hour: number;
-    minute: number;
-    yearWeek: number;
-    weekDay: number;
-    checkTime: moment.Moment;
-    checkerId: number | undefined;
-    checker: User;
-    checkCount: number;
-    creatorUser: User;
-    branch: Branch;
-    creationTime: moment.Moment;
-    creatorUserId: number | undefined;
-    id: number;
-}
-
-export class AllTicketDetailHistorDto implements IAllTicketDetailHistorDto {
-    ticketDetailHistory: TicketDetailHistory;
-    deviceCode: string | undefined;
-    ticketPriceId: number;
-    checkerName: string | undefined;
-
-    constructor(data?: IAllTicketDetailHistorDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.ticketDetailHistory = data["ticketDetailHistory"] ? TicketDetailHistory.fromJS(data["ticketDetailHistory"]) : <any>undefined;
-            this.deviceCode = data["deviceCode"];
-            this.ticketPriceId = data["ticketPriceId"];
-            this.checkerName = data["checkerName"];
-        }
-    }
-
-    static fromJS(data: any): AllTicketDetailHistorDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AllTicketDetailHistorDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["ticketDetailHistory"] = this.ticketDetailHistory ? this.ticketDetailHistory.toJSON() : <any>undefined;
-        data["deviceCode"] = this.deviceCode;
-        data["ticketPriceId"] = this.ticketPriceId;
-        data["checkerName"] = this.checkerName;
-        return data; 
-    }
-
-    clone(): AllTicketDetailHistorDto {
-        const json = this.toJSON();
-        let result = new AllTicketDetailHistorDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAllTicketDetailHistorDto {
-    ticketDetailHistory: TicketDetailHistory;
-    deviceCode: string | undefined;
-    ticketPriceId: number;
-    checkerName: string | undefined;
-}
-
 /** 的编辑DTO Yozeev.BusinessLogic.TicketDetailHistory */
 export class TicketDetailHistoryListDto implements ITicketDetailHistoryListDto {
     /** BranchId */
@@ -56057,6 +55985,61 @@ export interface ITicketDetailHistoryListDto {
     id: number;
 }
 
+export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
+    totalCount: number;
+    items: TicketDetailHistoryListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfTicketDetailHistoryListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(TicketDetailHistoryListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfTicketDetailHistoryListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfTicketDetailHistoryListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfTicketDetailHistoryListDto {
+    totalCount: number;
+    items: TicketDetailHistoryListDto[] | undefined;
+}
+
 /** 读取可编辑的Dto */
 export class GetTicketDetailHistoryForEditOutput implements IGetTicketDetailHistoryForEditOutput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
@@ -56112,61 +56095,6 @@ export class GetTicketDetailHistoryForEditOutput implements IGetTicketDetailHist
 export interface IGetTicketDetailHistoryForEditOutput {
     ticketDetailHistory: TicketDetailHistoryEditDto;
     checkStatusEnumTypeEnum: KeyValuePairOfStringString[] | undefined;
-}
-
-export class PagedResultDtoOfTicketDetailHistoryListDto implements IPagedResultDtoOfTicketDetailHistoryListDto {
-    totalCount: number;
-    items: TicketDetailHistoryListDto[] | undefined;
-
-    constructor(data?: IPagedResultDtoOfTicketDetailHistoryListDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.totalCount = data["totalCount"];
-            if (data["items"] && data["items"].constructor === Array) {
-                this.items = [] as any;
-                for (let item of data["items"])
-                    this.items.push(TicketDetailHistoryListDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): PagedResultDtoOfTicketDetailHistoryListDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalCount"] = this.totalCount;
-        if (this.items && this.items.constructor === Array) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        return data; 
-    }
-
-    clone(): PagedResultDtoOfTicketDetailHistoryListDto {
-        const json = this.toJSON();
-        let result = new PagedResultDtoOfTicketDetailHistoryListDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IPagedResultDtoOfTicketDetailHistoryListDto {
-    totalCount: number;
-    items: TicketDetailHistoryListDto[] | undefined;
 }
 
 /** 的列表DTO Yozeev.BusinessLogic.TicketIntroduce */
@@ -66939,6 +66867,169 @@ export enum CaptchaType {
     HostUserLogin = <any>"HostUserLogin", 
     TenantUserRegister = <any>"TenantUserRegister", 
     TenantUserLogin = <any>"TenantUserLogin", 
+}
+
+export class ActivityListModel implements IActivityListModel {
+    id: number;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    scheduleId: number | undefined;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    travelAgencyId: number | undefined;
+    travelAgency: TravelAgency;
+    activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
+    ticketPrice: TicketPrice;
+
+    constructor(data?: IActivityListModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.activityNo = data["activityNo"];
+            this.sourceId = data["sourceId"];
+            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            this.scheduleId = data["scheduleId"];
+            this.orgActivityId = data["orgActivityId"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
+            this.customerId = data["customerId"];
+            this.buyer = data["buyer"];
+            this.mobile = data["mobile"];
+            this.payMethodId = data["payMethodId"];
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.voucherNo = data["voucherNo"];
+            this.payStatus = data["payStatus"];
+            this.activityType = data["activityType"];
+            this.remark = data["remark"];
+            this.isPrint = data["isPrint"];
+            this.closed = data["closed"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            this.accountsId = data["accountsId"];
+            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
+            this.orderType = data["orderType"];
+            this.travelAgencyId = data["travelAgencyId"];
+            this.travelAgency = data["travelAgency"] ? TravelAgency.fromJS(data["travelAgency"]) : <any>undefined;
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(ActivityDetail.fromJS(item));
+            }
+            this.openId = data["openId"];
+            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ActivityListModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityListModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["activityNo"] = this.activityNo;
+        data["sourceId"] = this.sourceId;
+        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        data["scheduleId"] = this.scheduleId;
+        data["orgActivityId"] = this.orgActivityId;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
+        data["customerId"] = this.customerId;
+        data["buyer"] = this.buyer;
+        data["mobile"] = this.mobile;
+        data["payMethodId"] = this.payMethodId;
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["voucherNo"] = this.voucherNo;
+        data["payStatus"] = this.payStatus;
+        data["activityType"] = this.activityType;
+        data["remark"] = this.remark;
+        data["isPrint"] = this.isPrint;
+        data["closed"] = this.closed;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        data["accountsId"] = this.accountsId;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        data["orderType"] = this.orderType;
+        data["travelAgencyId"] = this.travelAgencyId;
+        data["travelAgency"] = this.travelAgency ? this.travelAgency.toJSON() : <any>undefined;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["openId"] = this.openId;
+        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): ActivityListModel {
+        const json = this.toJSON();
+        let result = new ActivityListModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityListModel {
+    id: number;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    scheduleId: number | undefined;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    travelAgencyId: number | undefined;
+    travelAgency: TravelAgency;
+    activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
+    ticketPrice: TicketPrice;
 }
 
 export class PagedResultDtoOfCustomer implements IPagedResultDtoOfCustomer {
