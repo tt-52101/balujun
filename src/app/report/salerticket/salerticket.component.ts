@@ -189,7 +189,7 @@ implements OnInit {
 		var formdata=new SalesCommonActivityInput
 		formdata.activityIds=this.orderids
 		formdata.filterText=''
-		formdata.sorting=''
+		formdata.sorting='activityDate desc'
 		formdata.maxResultCount=this.opagesize
 		formdata.skipCount=(this.oindex - 1) * this.opagesize
 

@@ -47,7 +47,7 @@
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="audioName">音频</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file"
+        <nz-upload [nzAction]="uploadurl" [nzShowUploadList]="false" [nzHeaders]="hearder" nzName="file" nzAccept="audio/*" nzFileType="audio/wav,audio/mp3,audio/m4a,audio/mp4"
         (nzChange)="handleChange($event)">
         <button nz-button type="button"><span>上传</span></button>
       </nz-upload>

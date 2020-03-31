@@ -1211,6 +1211,63 @@ export class FileServiceProxy {
     }
 
     /**
+     * 上传音频文件
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadAudio(body: Blob | undefined): Observable<AudioResultDto> {
+        let url_ = this.baseUrl + "/api/File/UploadAudio";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadAudio(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadAudio(<any>response_);
+                } catch (e) {
+                    return <Observable<AudioResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AudioResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadAudio(response: HttpResponseBase): Observable<AudioResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AudioResultDto.fromJS(resultData200) : new AudioResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AudioResultDto>(<any>null);
+    }
+
+    /**
      * 上传版本文件
      * @param body (optional) 
      * @return Success
@@ -1265,63 +1322,6 @@ export class FileServiceProxy {
             }));
         }
         return _observableOf<ClientVersionListDto>(<any>null);
-    }
-
-    /**
-     * 上传音频文件
-     * @param body (optional) 
-     * @return Success
-     */
-    uploadImage(body: Blob | undefined): Observable<AudioResultDto> {
-        let url_ = this.baseUrl + "/api/File/UploadImage";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = body;
-
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Content-Type": "multipart/form-data", 
-                "Accept": "text/plain"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUploadImage(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processUploadImage(<any>response_);
-                } catch (e) {
-                    return <Observable<AudioResultDto>><any>_observableThrow(e);
-                }
-            } else
-                return <Observable<AudioResultDto>><any>_observableThrow(response_);
-        }));
-    }
-
-    protected processUploadImage(response: HttpResponseBase): Observable<AudioResultDto> {
-        const status = response.status;
-        const responseBlob = 
-            response instanceof HttpResponse ? response.body : 
-            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = resultData200 ? AudioResultDto.fromJS(resultData200) : new AudioResultDto();
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf<AudioResultDto>(<any>null);
     }
 }
 
@@ -28870,6 +28870,63 @@ export class WechatServiceProxy {
     }
 
     /**
+     * 根据Id查找订单
+     * @param id (optional) 
+     * @return Success
+     */
+    getActivityById(id: number | undefined): Observable<ActivityListModel> {
+        let url_ = this.baseUrl + "/api/Wechat/GetActivityById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetActivityById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetActivityById(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityListModel>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityListModel>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetActivityById(response: HttpResponseBase): Observable<ActivityListModel> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ActivityListModel.fromJS(resultData200) : new ActivityListModel();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityListModel>(<any>null);
+    }
+
+    /**
      * 获取微信常用游客
      * @param openId (optional) 
      * @return Success
@@ -28929,14 +28986,29 @@ export class WechatServiceProxy {
     /**
      * 获取微信用户的订单
      * @param openId (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
      * @return Success
      */
-    getWechatActivitys(openId: string | undefined): Observable<PagedResultDtoOfActivity> {
+    getWechatActivitys(openId: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfActivity> {
         let url_ = this.baseUrl + "/api/Wechat/GetWechatActivitys?";
         if (openId === null)
             throw new Error("The parameter 'openId' cannot be null.");
         else if (openId !== undefined)
             url_ += "openId=" + encodeURIComponent("" + openId) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -31494,6 +31566,7 @@ export class Activity implements IActivity {
     organizationId: number | undefined;
     organization: Organization;
     activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -31542,6 +31615,7 @@ export class Activity implements IActivity {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -31590,6 +31664,7 @@ export class Activity implements IActivity {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -31634,6 +31709,7 @@ export interface IActivity {
     organizationId: number | undefined;
     organization: Organization;
     activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -32492,12 +32568,63 @@ export interface ICheckResult {
     show_msg: string | undefined;
 }
 
+export class AudioResultDto implements IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
+
+    constructor(data?: IAudioResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.success = data["success"];
+            this.errorMsg = data["errorMsg"];
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): AudioResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudioResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success;
+        data["errorMsg"] = this.errorMsg;
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): AudioResultDto {
+        const json = this.toJSON();
+        let result = new AudioResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAudioResultDto {
+    success: boolean;
+    errorMsg: string | undefined;
+    uri: string | undefined;
+}
+
 export enum DeviceTypeEnum {
     TicketMachine = <any>"TicketMachine", 
-    GateMachine = <any>"GateMachine", 
-    FaceMachine = <any>"FaceMachine", 
-    SelfhelpMachine = <any>"SelfhelpMachine", 
-    HandMachine = <any>"HandMachine", 
+    GateMachine = <any>"SelfhelpMachine", 
+    FaceMachine = <any>"GateMachine", 
+    SelfhelpMachine = <any>"HandMachine", 
+    HandMachine = <any>"FaceMachine", 
 }
 
 /** 的编辑DTO Yozeev.SystemConfig.ClientVersion */
@@ -32583,57 +32710,6 @@ export interface IClientVersionListDto {
     creationTime: moment.Moment;
     creatorUserId: number | undefined;
     id: number;
-}
-
-export class AudioResultDto implements IAudioResultDto {
-    success: boolean;
-    errorMsg: string | undefined;
-    uri: string | undefined;
-
-    constructor(data?: IAudioResultDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.success = data["success"];
-            this.errorMsg = data["errorMsg"];
-            this.uri = data["uri"];
-        }
-    }
-
-    static fromJS(data: any): AudioResultDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AudioResultDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["success"] = this.success;
-        data["errorMsg"] = this.errorMsg;
-        data["uri"] = this.uri;
-        return data; 
-    }
-
-    clone(): AudioResultDto {
-        const json = this.toJSON();
-        let result = new AudioResultDto();
-        result.init(json);
-        return result;
-    }
-}
-
-export interface IAudioResultDto {
-    success: boolean;
-    errorMsg: string | undefined;
-    uri: string | undefined;
 }
 
 export class ActivateEmailInput implements IActivateEmailInput {
@@ -33771,6 +33847,8 @@ export class ActivityEditDto implements IActivityEditDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
 
     constructor(data?: IActivityEditDto) {
         if (data) {
@@ -33814,6 +33892,7 @@ export class ActivityEditDto implements IActivityEditDto {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
         }
     }
 
@@ -33857,6 +33936,7 @@ export class ActivityEditDto implements IActivityEditDto {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         return data; 
     }
 
@@ -33917,6 +33997,8 @@ export interface IActivityEditDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
 }
 
 export class CreateOrUpdateActivityInput implements ICreateOrUpdateActivityInput {
@@ -34014,6 +34096,8 @@ export class ActivityListDto implements IActivityListDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -34062,6 +34146,7 @@ export class ActivityListDto implements IActivityListDto {
                 for (let item of data["activityDetails"])
                     this.activityDetails.push(ActivityDetail.fromJS(item));
             }
+            this.openId = data["openId"];
             this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
             this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
@@ -34110,6 +34195,7 @@ export class ActivityListDto implements IActivityListDto {
             for (let item of this.activityDetails)
                 data["activityDetails"].push(item.toJSON());
         }
+        data["openId"] = this.openId;
         data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
         data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
@@ -34175,6 +34261,8 @@ export interface IActivityListDto {
     travelAgency: TravelAgency;
     /** ActivityDetails */
     activityDetails: ActivityDetail[] | undefined;
+    /** 微信Id */
+    openId: string | undefined;
     creatorUser: User;
     branch: Branch;
     creationTime: moment.Moment;
@@ -66779,6 +66867,169 @@ export enum CaptchaType {
     HostUserLogin = <any>"HostUserLogin", 
     TenantUserRegister = <any>"TenantUserRegister", 
     TenantUserLogin = <any>"TenantUserLogin", 
+}
+
+export class ActivityListModel implements IActivityListModel {
+    id: number;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    scheduleId: number | undefined;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    travelAgencyId: number | undefined;
+    travelAgency: TravelAgency;
+    activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
+    ticketPrice: TicketPrice;
+
+    constructor(data?: IActivityListModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.activityNo = data["activityNo"];
+            this.sourceId = data["sourceId"];
+            this.source = data["source"] ? Source.fromJS(data["source"]) : <any>undefined;
+            this.scheduleId = data["scheduleId"];
+            this.orgActivityId = data["orgActivityId"];
+            this.activityDate = data["activityDate"] ? moment(data["activityDate"].toString()) : <any>undefined;
+            this.playDate = data["playDate"] ? moment(data["playDate"].toString()) : <any>undefined;
+            this.customerId = data["customerId"];
+            this.buyer = data["buyer"];
+            this.mobile = data["mobile"];
+            this.payMethodId = data["payMethodId"];
+            this.payMethod = data["payMethod"] ? PayMethod.fromJS(data["payMethod"]) : <any>undefined;
+            this.voucherNo = data["voucherNo"];
+            this.payStatus = data["payStatus"];
+            this.activityType = data["activityType"];
+            this.remark = data["remark"];
+            this.isPrint = data["isPrint"];
+            this.closed = data["closed"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+            this.accountsId = data["accountsId"];
+            this.account = data["account"] ? Account.fromJS(data["account"]) : <any>undefined;
+            this.orderType = data["orderType"];
+            this.travelAgencyId = data["travelAgencyId"];
+            this.travelAgency = data["travelAgency"] ? TravelAgency.fromJS(data["travelAgency"]) : <any>undefined;
+            if (data["activityDetails"] && data["activityDetails"].constructor === Array) {
+                this.activityDetails = [] as any;
+                for (let item of data["activityDetails"])
+                    this.activityDetails.push(ActivityDetail.fromJS(item));
+            }
+            this.openId = data["openId"];
+            this.ticketPrice = data["ticketPrice"] ? TicketPrice.fromJS(data["ticketPrice"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): ActivityListModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityListModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["activityNo"] = this.activityNo;
+        data["sourceId"] = this.sourceId;
+        data["source"] = this.source ? this.source.toJSON() : <any>undefined;
+        data["scheduleId"] = this.scheduleId;
+        data["orgActivityId"] = this.orgActivityId;
+        data["activityDate"] = this.activityDate ? this.activityDate.toISOString() : <any>undefined;
+        data["playDate"] = this.playDate ? this.playDate.toISOString() : <any>undefined;
+        data["customerId"] = this.customerId;
+        data["buyer"] = this.buyer;
+        data["mobile"] = this.mobile;
+        data["payMethodId"] = this.payMethodId;
+        data["payMethod"] = this.payMethod ? this.payMethod.toJSON() : <any>undefined;
+        data["voucherNo"] = this.voucherNo;
+        data["payStatus"] = this.payStatus;
+        data["activityType"] = this.activityType;
+        data["remark"] = this.remark;
+        data["isPrint"] = this.isPrint;
+        data["closed"] = this.closed;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        data["accountsId"] = this.accountsId;
+        data["account"] = this.account ? this.account.toJSON() : <any>undefined;
+        data["orderType"] = this.orderType;
+        data["travelAgencyId"] = this.travelAgencyId;
+        data["travelAgency"] = this.travelAgency ? this.travelAgency.toJSON() : <any>undefined;
+        if (this.activityDetails && this.activityDetails.constructor === Array) {
+            data["activityDetails"] = [];
+            for (let item of this.activityDetails)
+                data["activityDetails"].push(item.toJSON());
+        }
+        data["openId"] = this.openId;
+        data["ticketPrice"] = this.ticketPrice ? this.ticketPrice.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): ActivityListModel {
+        const json = this.toJSON();
+        let result = new ActivityListModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IActivityListModel {
+    id: number;
+    activityNo: string | undefined;
+    sourceId: number;
+    source: Source;
+    scheduleId: number | undefined;
+    orgActivityId: number | undefined;
+    activityDate: moment.Moment;
+    playDate: moment.Moment;
+    customerId: number | undefined;
+    buyer: string | undefined;
+    mobile: string | undefined;
+    payMethodId: number;
+    payMethod: PayMethod;
+    voucherNo: string | undefined;
+    payStatus: PayStatusEnum;
+    activityType: ActivityTypeEnum;
+    remark: string | undefined;
+    isPrint: boolean;
+    closed: boolean;
+    totalQuantity: number;
+    totalAmount: number;
+    accountsId: number | undefined;
+    account: Account;
+    orderType: OrderTypeEnum;
+    travelAgencyId: number | undefined;
+    travelAgency: TravelAgency;
+    activityDetails: ActivityDetail[] | undefined;
+    openId: string | undefined;
+    ticketPrice: TicketPrice;
 }
 
 export class PagedResultDtoOfCustomer implements IPagedResultDtoOfCustomer {

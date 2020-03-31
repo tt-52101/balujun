@@ -74,11 +74,7 @@
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
           <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)"></td>
-          <td nz-td class="text-center">
-            <span *ngIf="item.creatorUser">
-              {{item.creatorUser.name}}
-            </span>
-          </td>
+
           <td nz-td class="text-center">
             <span *ngIf="item.device">
               {{item.device.deviceName}}
@@ -87,6 +83,11 @@
           <td nz-td class="text-center">
             <span *ngIf="item.device">
               {{item.device.deviceCode}}
+            </span>
+          </td>
+          <td nz-td class="text-center">
+            <span *ngIf="item.device">
+              {{l(item.device.deviceType)}}
             </span>
           </td>
           <td nz-td class="text-center">

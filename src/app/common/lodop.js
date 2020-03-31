@@ -90,11 +90,11 @@ export function getLodop(oOBJECT, oEMBED) {
             } catch (err) {}
             if (!LODOP && (document.readyState !== "complete" || (isIE  && CLodopJsState == "loading")) ) {
                 alert("网页还没下载完毕，请稍等一下再操作.");
-                return;
+                return false;
             }
             if (!LODOP) {
-                document.body.innerHTML = strCLodopInstall_1 + (CLodopIsLocal ? strCLodopInstall_2 : "") + strCLodopInstall_3 + document.body.innerHTML;                
-                return;
+                // document.body.innerHTML = strCLodopInstall_1 + (CLodopIsLocal ? strCLodopInstall_2 : "") + strCLodopInstall_3 + document.body.innerHTML;                
+                return false;
             } else {
                 if (CLODOP.CVERSION < "3.0.9.3") {
                     document.body.innerHTML = strCLodopUpdate + document.body.innerHTML;
@@ -121,7 +121,7 @@ export function getLodop(oOBJECT, oEMBED) {
                     LODOP.setAttribute("classid", "clsid:2105C259-1E0C-4534-8141-A753534CB4CA");
                 else
                     LODOP.setAttribute("type", "application/x-print-lodop");
-                document.documentElement.appendChild(LODOP);
+                // document.documentElement.appendChild(LODOP);
                 CreatedOKLodopObject = LODOP;
             } else
             LODOP = CreatedOKLodopObject;
@@ -131,13 +131,13 @@ export function getLodop(oOBJECT, oEMBED) {
                     document.body.innerHTML = strHtmChrome + document.body.innerHTML;
                 if (ua.indexOf('Firefox') >= 0)
                     document.body.innerHTML = strHtmFireFox + document.body.innerHTML;
-                document.body.innerHTML = (is64IE ? strHtm64_Install : strHtmInstall) + document.body.innerHTML;
+                // document.body.innerHTML = (is64IE ? strHtm64_Install : strHtmInstall) + document.body.innerHTML;
                 return LODOP;
             }
         }
         if (LODOP.VERSION < "6.2.2.6") {
-            if (!needCLodop())
-                document.body.innerHTML = (is64IE ? strHtm64_Update : strHtmUpdate) + document.body.innerHTML;
+            // if (!needCLodop())
+            //     document.body.innerHTML = (is64IE ? strHtm64_Update : strHtmUpdate) + document.body.innerHTML;
         }
         //===如下空白位置适合调用统一功能(如注册语句、语言选择等):==
 

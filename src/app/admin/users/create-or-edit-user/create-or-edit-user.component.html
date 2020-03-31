@@ -23,7 +23,7 @@
                 </em>
               </nz-form-label>
               <nz-form-control nz-col [nzSm]="20" nzHasFeedback>
-                <nz-input-group nzPrefixIcon="anticon anticon-user">
+                <nz-input-group >
                   <input nz-input #userNameInput="ngModel" name="userName" [disabled]="isAdmin" [(ngModel)]="user.userName" [placeholder]="l('UserName')" required maxlength="32">
                 </nz-input-group>
                 <nz-form-explain *ngIf="isAdmin">{{l('ThisAdminUser')}}</nz-form-explain>
@@ -60,7 +60,7 @@
             {{l("EmailAddress")}}
           </nz-form-label>
           <nz-form-control nz-col [nzSm]="20" nzHasFeedback>
-            <nz-input-group nzPrefixIcon="anticon anticon-mail">
+            <nz-input-group >
               <input nz-input #emailAddressInput="ngModel" name="emailAddress" [(ngModel)]="user.emailAddress"
                 [placeholder]="l('EmailAddress')" type="email" required maxlength="256" email>
             </nz-input-group>
@@ -75,7 +75,7 @@
             {{l("PhoneNumber")}}
           </nz-form-label>
           <nz-form-control nz-col [nzSm]="20" nzHasFeedback>
-            <nz-input-group nzPrefixIcon="anticon anticon-phone">
+            <nz-input-group >
               <input nz-input #phoneNumberInput="ngModel" name="PhoneNumber" [(ngModel)]="user.phoneNumber" [placeholder]="l('PhoneNumber')" maxlength="24" required>
             </nz-input-group>
             <nz-form-explain *ngIf="phoneNumberInput.control.dirty&&phoneNumberInput.control.errors">
@@ -110,7 +110,7 @@
               {{l("Password")}}
             </nz-form-label>
             <nz-form-control nz-col [nzSm]="20" nzHasFeedback>
-              <nz-input-group nzPrefixIcon="anticon anticon-lock">
+              <nz-input-group >
                 <input nz-input type="password" name="password" #password="ngModel" [(ngModel)]="user.password" [placeholder]="l('Password')" validateEqual="passwordRepeat" reverse="true" [required]="!user.id && !setRandomPassword" minlength="6" maxlength="32">
               </nz-input-group>
               <nz-form-explain *ngIf="password.control.dirty&&password.control.errors">
@@ -125,7 +125,7 @@
               {{l("PasswordRepeat")}}
             </nz-form-label>
             <nz-form-control nz-col [nzSm]="20" nzHasFeedback>
-              <nz-input-group nzPrefixIcon="anticon anticon-lock">
+              <nz-input-group >
                 <input nz-input type="password" name="passwordRepeat" #passwordRepeat="ngModel" [(ngModel)]="passwordRepeatStr" [placeholder]="l('PasswordRepeat')" validateEqual="password" reverse="false" [required]="!user.id && !setRandomPassword" minlength="6" maxlength="32">
               </nz-input-group>
               <nz-form-explain *ngIf="passwordRepeat.control.dirty&&passwordRepeat.control.errors">
