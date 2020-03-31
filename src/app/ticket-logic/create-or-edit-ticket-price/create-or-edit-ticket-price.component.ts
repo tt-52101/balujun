@@ -11,13 +11,13 @@ import * as moment from 'moment';
   selector: 'create-or-edit-ticket-price',
   templateUrl: './create-or-edit-ticket-price.component.html',
   styleUrls: [
-    'create-or-edit-ticket-price.component.less'
+  'create-or-edit-ticket-price.component.less'
   ],
 })
 
 export class CreateOrEditTicketPriceComponent
-  extends ModalComponentBase
-  implements OnInit {
+extends ModalComponentBase
+implements OnInit {
   /**
   * 编辑时DTO的id
   */
@@ -43,7 +43,7 @@ export class CreateOrEditTicketPriceComponent
     injector: Injector,
     private _ticketPriceService: TicketPriceServiceProxy,
     private _ticketService: TicketServiceProxy,
-  ) {
+    ) {
     super(injector);
   }
 
@@ -54,8 +54,6 @@ export class CreateOrEditTicketPriceComponent
 
   change1($event):void{
     this.entity.upperTimeStr=this.formatDate($event)
-    console.log(this.formatDate($event))
-    console.log(this.entity.upperTimeStr)
   }
 
   change2($event):void{
@@ -66,15 +64,15 @@ export class CreateOrEditTicketPriceComponent
     let year = date.getFullYear();
     let month = date.getMonth() + 1;
     if (month < 10) { month = '0' + month }
-    let day = date.getDate();
+      let day = date.getDate();
     if (day < 10) { day = '0' + day }
-    let hours = date.getHours();
+      let hours = date.getHours();
     if (hours < 10) { hours = '0' + hours }
-    let minutes = date.getMinutes();
+      let minutes = date.getMinutes();
     if (minutes < 10) { minutes = '0' + minutes }
-    let seconds = date.getSeconds();
+      let seconds = date.getSeconds();
     if (seconds < 10) { seconds = '0' + seconds }
-    var datesrt = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+      var datesrt = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
     return datesrt
   }
 
@@ -84,32 +82,25 @@ export class CreateOrEditTicketPriceComponent
   */
   init(): void {
 
-
     this._ticketPriceService.getForEdit(this.id).subscribe(result => {
       if(result.ticketPrice.id){
         result.ticketPrice.upperTimeStr = result.ticketPrice.upperTime.toString()
         result.ticketPrice.lowerTimeStr = result.ticketPrice.lowerTime.toString()
       }else{
-       result.ticketPrice.upperTime=moment()
-       result.ticketPrice.lowerTime=moment()
-       result.ticketPrice.upperTimeStr=this.formatDate(new Date())
-       result.ticketPrice.lowerTimeStr=this.formatDate(new Date())
-       // result.ticketPrice.scheduleId=''
-      //  result.ticketPrice.ticketId=''
-     }
-     this.entity = result.ticketPrice;
-     console.log(this.entity)
-   });
-
-
+        // result.ticketPrice.upperTime=moment()
+        // result.ticketPrice.lowerTime=moment()
+        result.ticketPrice.upperTimeStr=this.formatDate(new Date())
+        result.ticketPrice.lowerTimeStr=this.formatDate(new Date())
+      }
+      this.entity = result.ticketPrice;
+      console.log(this.entity)
+    });
 
     this._ticketService.getPaged('', '', 999, 0)
-      .subscribe(result => {
-        this.ticketList = result.items;  
-      });
+    .subscribe(result => {
+      this.ticketList = result.items;  
+    });
   }
-
-
 
 
 
@@ -117,21 +108,27 @@ export class CreateOrEditTicketPriceComponent
   * 保存方法,提交form表单
   */
   submitForm(): void {
-    console.log(this.entity.ticketId);
-
     const input = new CreateOrUpdateTicketPriceInput();
-    // this.entity.upperTimeStr=this.formatDate(new Date(this.entity.upperTimeStr))
-    //   this.entity.lowerTimeStr=this.formatDate(new Date(this.entity.lowerTimeStr))
+    if(new Date(this.entity.upperTimeStr).getTime() > new Date(this.entity.lowerTimeStr).getTime()){
+      abp.message.error('下架时间须大于上架时间');
+      return
+    }
+    var upperTimeStr=this.formatDate(new Date(this.entity.upperTimeStr))
+    var lowerTimeStr=this.formatDate(new Date(this.entity.lowerTimeStr))
+    this.entity.upperTimeStr=upperTimeStr
+    this.entity.lowerTimeStr=lowerTimeStr
+    this.entity.upperTime=moment(upperTimeStr)
+    this.entity.lowerTime=moment(lowerTimeStr)
     input.ticketPrice = this.entity;
     console.log(input.ticketPrice)
 
     this.saving = true;
 
     this._ticketPriceService.createOrUpdate(input)
-      .finally(() => (this.saving = false))
-      .subscribe(() => {
-        this.notify.success(this.l('SavedSuccessfully'));
-        this.success(true);
-      });
+    .finally(() => (this.saving = false))
+    .subscribe(() => {
+      this.notify.success(this.l('SavedSuccessfully'));
+      this.success(true);
+    });
   }
 }

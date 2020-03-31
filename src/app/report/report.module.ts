@@ -9,7 +9,7 @@ import { SalerTicketComponent } from './salerticket/salerticket.component';
 import { SalerDailyComponent } from './salerdaily/salerdaily.component';
 import { PayMethodComponent } from './paymethod/paymethod.component';
 import { GroupComponent } from './group/group.component';
-
+import { TicketComponent, } from './ticket/ticket.component';
 
 import { SourceComponent } from './source/source.component';
 // import { TravelComponent, } from './travel/travel.component';
@@ -24,7 +24,7 @@ import { SourceComponent } from './source/source.component';
   SalerDailyComponent,
   PayMethodComponent,
   GroupComponent,
-
+TicketComponent,
   SourceComponent,
   // TravelComponent,
   // OtaComponent,

@@ -58,7 +58,7 @@
             </span>
           </td>
           <td nz-td class="text-center">
-            <img [src]="imgurl + '/' + item.coverPicture" class="picture">
+            <img [src]="imgurl + '/' + item.coverPicture" class="picture" (click)="viewbigpic(item.coverPicture)">
           </td>
           <td nz-td class="text-center">
             <ellipsis lines="1">

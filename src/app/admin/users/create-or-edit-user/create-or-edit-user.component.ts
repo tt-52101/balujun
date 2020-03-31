@@ -217,7 +217,7 @@ implements OnInit, AfterViewInit {
    save(): void {
      const input = new CreateOrUpdateUserInput();
      input.user = this.user;
-     input.user.emailAddress='123@qq.com'
+     input.user.emailAddress=new Date().getTime() + '@qq.com'
      input.setRandomPassword = this.setRandomPassword;
      input.sendActivationEmail = this.sendActivationEmail;
      if(this.roleName){

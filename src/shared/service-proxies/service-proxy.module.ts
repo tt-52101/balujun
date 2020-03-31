@@ -33,7 +33,7 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.SalesCommonServiceProxy,
   ApiServiceProxies.SalesBySellerDailyServiceProxy,
   ApiServiceProxies.HistoryServiceProxy,
-
+  ApiServiceProxies.SalesByTicketServiceProxy,
 
   // ============= Hangfire ==================
   // ApiServiceProxies.HangfireServiceServiceProxy,
