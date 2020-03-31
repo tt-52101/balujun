@@ -8,6 +8,7 @@ import {WeChatScenicSpotServiceProxy, WeChatScenicSpotListDto } from '@shared/se
 
 import { CreateOrEditScenicSpotComponent } from './create-or-edit-scenic-spot/create-or-edit-scenic-spot.component';
 
+import { AppConsts } from 'abpPro/AppConsts';
 
 @Component({
 	templateUrl: './scenic-spot.component.html',
@@ -18,6 +19,8 @@ import { CreateOrEditScenicSpotComponent } from './create-or-edit-scenic-spot/cr
 export class  ScenicSpotComponent extends PagedListingComponentBase<WeChatScenicSpotListDto>
 implements OnInit {
 	
+	imgurl=AppConsts.remoteServiceBaseUrl
+
 	constructor(
 		injector: Injector,
 		private _weChatScenicSpotService: WeChatScenicSpotServiceProxy,
@@ -43,6 +46,10 @@ implements OnInit {
 			this.dataList = result.items;
 			this.showPaging(result);
 		});
+	}
+
+	viewbigpic(src){
+		window.open(this.imgurl + '/'+src)
 	}
 	
 	createOrEdit(id?: number): void {

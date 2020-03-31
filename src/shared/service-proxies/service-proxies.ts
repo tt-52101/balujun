@@ -28146,6 +28146,75 @@ export class SalesBySellerDailyServiceProxy {
 }
 
 @Injectable()
+export class SalesByTicketServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 获取统计结果
+     * @param body (optional) 
+     * @return Success
+     */
+    getPaged(body: SalesByTicketInput | undefined): Observable<StatsPagedResultDtoOfSalesByTicketResultDto> {
+        let url_ = this.baseUrl + "/api/Stats/SalesByTicket/GetPaged";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<StatsPagedResultDtoOfSalesByTicketResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<StatsPagedResultDtoOfSalesByTicketResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<StatsPagedResultDtoOfSalesByTicketResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? StatsPagedResultDtoOfSalesByTicketResultDto.fromJS(resultData200) : new StatsPagedResultDtoOfSalesByTicketResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<StatsPagedResultDtoOfSalesByTicketResultDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class SalesCommonServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -63603,8 +63672,7 @@ export interface IOperCustomerAgeResultDto {
 
 /** 游客性别 */
 export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto {
-    /** 性别 */
-    gender: string | undefined;
+    gender: SexEnum;
     /** 百分比 */
     percentage: number;
 
@@ -63648,8 +63716,7 @@ export class OperCustomerGenderResultDto implements IOperCustomerGenderResultDto
 
 /** 游客性别 */
 export interface IOperCustomerGenderResultDto {
-    /** 性别 */
-    gender: string | undefined;
+    gender: SexEnum;
     /** 百分比 */
     percentage: number;
 }
@@ -65577,6 +65644,263 @@ export interface IStatsPagedResultDtoOfSalesBySellerDailyResultDto {
     items: SalesBySellerDailyResultDto[] | undefined;
 }
 
+/** 票型售票统计 */
+export class SalesByTicketInput implements ISalesByTicketInput {
+    /** 票型ID */
+    ticketId: string | undefined;
+    /** 支付方式ID */
+    payMethodId: string | undefined;
+    /** 开始日期 */
+    startDate: string | undefined;
+    /** 结束日期 */
+    endDate: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+
+    constructor(data?: ISalesByTicketInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.ticketId = data["ticketId"];
+            this.payMethodId = data["payMethodId"];
+            this.startDate = data["startDate"];
+            this.endDate = data["endDate"];
+            this.filterText = data["filterText"];
+            this.sorting = data["sorting"];
+            this.maxResultCount = data["maxResultCount"];
+            this.skipCount = data["skipCount"];
+        }
+    }
+
+    static fromJS(data: any): SalesByTicketInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesByTicketInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["ticketId"] = this.ticketId;
+        data["payMethodId"] = this.payMethodId;
+        data["startDate"] = this.startDate;
+        data["endDate"] = this.endDate;
+        data["filterText"] = this.filterText;
+        data["sorting"] = this.sorting;
+        data["maxResultCount"] = this.maxResultCount;
+        data["skipCount"] = this.skipCount;
+        return data; 
+    }
+
+    clone(): SalesByTicketInput {
+        const json = this.toJSON();
+        let result = new SalesByTicketInput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型售票统计 */
+export interface ISalesByTicketInput {
+    /** 票型ID */
+    ticketId: string | undefined;
+    /** 支付方式ID */
+    payMethodId: string | undefined;
+    /** 开始日期 */
+    startDate: string | undefined;
+    /** 结束日期 */
+    endDate: string | undefined;
+    filterText: string | undefined;
+    sorting: string | undefined;
+    maxResultCount: number;
+    skipCount: number;
+}
+
+/** 票型售票统计 */
+export class SalesByTicketResultDto implements ISalesByTicketResultDto {
+    /** 票型ID */
+    id: number;
+    ticket: Ticket;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+
+    constructor(data?: ISalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticket = data["ticket"] ? Ticket.fromJS(data["ticket"]) : <any>undefined;
+            if (data["activityIds"] && data["activityIds"].constructor === Array) {
+                this.activityIds = [] as any;
+                for (let item of data["activityIds"])
+                    this.activityIds.push(item);
+            }
+            this.saleQuantity = data["saleQuantity"];
+            this.refundQuantity = data["refundQuantity"];
+            this.saleAmount = data["saleAmount"];
+            this.refundAmount = data["refundAmount"];
+            this.totalQuantity = data["totalQuantity"];
+            this.totalAmount = data["totalAmount"];
+        }
+    }
+
+    static fromJS(data: any): SalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticket"] = this.ticket ? this.ticket.toJSON() : <any>undefined;
+        if (this.activityIds && this.activityIds.constructor === Array) {
+            data["activityIds"] = [];
+            for (let item of this.activityIds)
+                data["activityIds"].push(item);
+        }
+        data["saleQuantity"] = this.saleQuantity;
+        data["refundQuantity"] = this.refundQuantity;
+        data["saleAmount"] = this.saleAmount;
+        data["refundAmount"] = this.refundAmount;
+        data["totalQuantity"] = this.totalQuantity;
+        data["totalAmount"] = this.totalAmount;
+        return data; 
+    }
+
+    clone(): SalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new SalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 票型售票统计 */
+export interface ISalesByTicketResultDto {
+    /** 票型ID */
+    id: number;
+    ticket: Ticket;
+    /** 订单ID集合 */
+    activityIds: number[] | undefined;
+    /** 售票数量 */
+    saleQuantity: number;
+    /** 退票数量 */
+    refundQuantity: number;
+    /** 售票金额 */
+    saleAmount: number;
+    /** 退票金额 */
+    refundAmount: number;
+    /** 总数量 */
+    totalQuantity: number;
+    /** 总金额 */
+    totalAmount: number;
+}
+
+export class StatsPagedResultDtoOfSalesByTicketResultDto implements IStatsPagedResultDtoOfSalesByTicketResultDto {
+    total: SalesByTicketResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesByTicketResultDto[] | undefined;
+
+    constructor(data?: IStatsPagedResultDtoOfSalesByTicketResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.total = data["total"] ? SalesByTicketResultDto.fromJS(data["total"]) : <any>undefined;
+            if (data["filters"]) {
+                this.filters = {} as any;
+                for (let key in data["filters"]) {
+                    if (data["filters"].hasOwnProperty(key))
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                }
+            }
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(SalesByTicketResultDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StatsPagedResultDtoOfSalesByTicketResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StatsPagedResultDtoOfSalesByTicketResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["total"] = this.total ? this.total.toJSON() : <any>undefined;
+        if (this.filters) {
+            data["filters"] = {};
+            for (let key in this.filters) {
+                if (this.filters.hasOwnProperty(key))
+                    data["filters"][key] = this.filters[key];
+            }
+        }
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): StatsPagedResultDtoOfSalesByTicketResultDto {
+        const json = this.toJSON();
+        let result = new StatsPagedResultDtoOfSalesByTicketResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IStatsPagedResultDtoOfSalesByTicketResultDto {
+    total: SalesByTicketResultDto;
+    filters: { [key: string] : Anonymous10[]; } | undefined;
+    totalCount: number;
+    items: SalesByTicketResultDto[] | undefined;
+}
+
 /** 统计报表通用-订单 */
 export class SalesCommonActivityInput implements ISalesCommonActivityInput {
     /** 订单ID集合 */
@@ -65771,7 +66095,7 @@ export interface ISalesActivityResultDto {
 
 export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedResultDtoOfSalesActivityResultDto {
     total: SalesActivityResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
 
@@ -65791,7 +66115,7 @@ export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedR
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous10.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
@@ -65839,7 +66163,7 @@ export class StatsPagedResultDtoOfSalesActivityResultDto implements IStatsPagedR
 
 export interface IStatsPagedResultDtoOfSalesActivityResultDto {
     total: SalesActivityResultDto;
-    filters: { [key: string] : Anonymous10[]; } | undefined;
+    filters: { [key: string] : Anonymous11[]; } | undefined;
     totalCount: number;
     items: SalesActivityResultDto[] | undefined;
 }
@@ -66002,7 +66326,7 @@ export interface ISalesActivityDetailResultDto {
 
 export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStatsPagedResultDtoOfSalesActivityDetailResultDto {
     total: SalesActivityDetailResultDto;
-    filters: { [key: string] : Anonymous11[]; } | undefined;
+    filters: { [key: string] : Anonymous12[]; } | undefined;
     totalCount: number;
     items: SalesActivityDetailResultDto[] | undefined;
 
@@ -66022,7 +66346,7 @@ export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStats
                 this.filters = {} as any;
                 for (let key in data["filters"]) {
                     if (data["filters"].hasOwnProperty(key))
-                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous11.fromJS(i)) : [];
+                        this.filters[key] = data["filters"][key] ? data["filters"][key].map((i: any) => Anonymous12.fromJS(i)) : [];
                 }
             }
             this.totalCount = data["totalCount"];
@@ -66070,7 +66394,7 @@ export class StatsPagedResultDtoOfSalesActivityDetailResultDto implements IStats
 
 export interface IStatsPagedResultDtoOfSalesActivityDetailResultDto {
     total: SalesActivityDetailResultDto;
-    filters: { [key: string] : Anonymous11[]; } | undefined;
+    filters: { [key: string] : Anonymous12[]; } | undefined;
     totalCount: number;
     items: SalesActivityDetailResultDto[] | undefined;
 }
@@ -67625,6 +67949,43 @@ export class Anonymous11 implements IAnonymous11 {
 }
 
 export interface IAnonymous11 {
+}
+
+export class Anonymous12 implements IAnonymous12 {
+
+    constructor(data?: IAnonymous12) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+    }
+
+    static fromJS(data: any): Anonymous12 {
+        data = typeof data === 'object' ? data : {};
+        let result = new Anonymous12();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data; 
+    }
+
+    clone(): Anonymous12 {
+        const json = this.toJSON();
+        let result = new Anonymous12();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IAnonymous12 {
 }
 
 export class PrimaryId implements IPrimaryId {

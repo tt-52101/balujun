@@ -71,7 +71,7 @@
         <nz-radio-group [nzButtonStyle]="'solid'" name="group" [(ngModel)]="entity.group">
           <label nz-radio-button [nzValue]="0">散客票</label>
           <label nz-radio-button [nzValue]="1">团体票</label>
-          <label nz-radio-button [nzValue]="2">卡类</label>
+          <!-- <label nz-radio-button [nzValue]="2">卡类</label> -->
         </nz-radio-group>
       </nz-form-control>
     </nz-form-item>
@@ -86,7 +86,7 @@
       </nz-form-control>
     </nz-form-item>
 
-    <nz-form-item nz-row>
+<!--     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="radioValue">验票方式</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
         <nz-radio-group [nzButtonStyle]="'solid'" name="checkMethod" [(ngModel)]="entity.checkMethod">
@@ -95,7 +95,7 @@
           <label nz-radio-button nzValue="BalanceCheck">{{l('BalanceCheck')}}</label>
         </nz-radio-group>
       </nz-form-control>
-    </nz-form-item>
+    </nz-form-item> -->
 
     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">是否启用</nz-form-label>

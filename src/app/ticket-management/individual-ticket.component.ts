@@ -291,6 +291,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
 
 
                 LODOP=getLodop();
+                console.log(LODOP)
                 if(LODOP){
                     var top = 100; //最高坐标
                     var left = 90; //最左坐标
@@ -333,7 +334,7 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
                     // LODOP.PREVIEW()
                     LODOP.PRINT(); 
                 }else{
-                    abp.message.error('打印失败！请检查打印控件是否安装以及版本是否最新。控件下载地址：http://www.lodop.net/download.html。请根据设备系统下载对应版本。');
+                    abp.message.error('打印失败！请检查打印控件是否安装以及版本是否最新。控件下载地址：http://www.lodop.net/download.html。请根据设备系统下载对应版本。安装后请刷新页面或重新进入。');
                 }
             }else{
                 abp.message.warn(result.resultMessage);

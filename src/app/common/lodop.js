@@ -70,16 +70,16 @@ if (needCLodop()) {
 
 //==获取LODOP对象主过程,判断是否安装、需否升级:==
 export function getLodop(oOBJECT, oEMBED) {
-    var strHtmInstall = "<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='install_lodop32.zip' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</font>";
-    var strHtmUpdate = "<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='install_lodop32.zip' target='_self'>执行升级</a>,升级后请重新进入。</font>";
-    var strHtm64_Install = "<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='install_lodop64.zip' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</font>";
-    var strHtm64_Update = "<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='install_lodop64.zip' target='_self'>执行升级</a>,升级后请重新进入。</font>";
-    var strHtmFireFox = "<br><br><font color='#FF00FF'>（注意：如曾安装过Lodop旧版附件npActiveXPLugin,请在【工具】->【附加组件】->【扩展】中先卸它）</font>";
-    var strHtmChrome = "<br><br><font color='#FF00FF'>(如果此前正常，仅因浏览器升级或重安装而出问题，需重新执行以上安装）</font>";
-    var strCLodopInstall_1 = "<br><font color='#FF00FF'>Web打印服务CLodop未安装启动，点击这里<a href='CLodop_Setup_for_Win32NT.zip' target='_self'>下载执行安装</a>";
-    var strCLodopInstall_2 = "<br>（若此前已安装过，可<a href='CLodop.protocol:setup' target='_self'>点这里直接再次启动</a>）";
-    var strCLodopInstall_3 = "，成功后请刷新本页面。</font>";
-    var strCLodopUpdate = "<br><font color='#FF00FF'>Web打印服务CLodop需升级!点击这里<a href='CLodop_Setup_for_Win32NT.zip' target='_self'>执行升级</a>,升级后请刷新页面。</font>";
+    // var strHtmInstall = "<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='install_lodop32.zip' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</font>";
+    // var strHtmUpdate = "<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='install_lodop32.zip' target='_self'>执行升级</a>,升级后请重新进入。</font>";
+    // var strHtm64_Install = "<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='install_lodop64.zip' target='_self'>执行安装</a>,安装后请刷新页面或重新进入。</font>";
+    // var strHtm64_Update = "<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='install_lodop64.zip' target='_self'>执行升级</a>,升级后请重新进入。</font>";
+    // var strHtmFireFox = "<br><br><font color='#FF00FF'>（注意：如曾安装过Lodop旧版附件npActiveXPLugin,请在【工具】->【附加组件】->【扩展】中先卸它）</font>";
+    // var strHtmChrome = "<br><br><font color='#FF00FF'>(如果此前正常，仅因浏览器升级或重安装而出问题，需重新执行以上安装）</font>";
+    // var strCLodopInstall_1 = "<br><font color='#FF00FF'>Web打印服务CLodop未安装启动，点击这里<a href='CLodop_Setup_for_Win32NT.zip' target='_self'>下载执行安装</a>";
+    // var strCLodopInstall_2 = "<br>（若此前已安装过，可<a href='CLodop.protocol:setup' target='_self'>点这里直接再次启动</a>）";
+    // var strCLodopInstall_3 = "，成功后请刷新本页面。</font>";
+    // var strCLodopUpdate = "<br><font color='#FF00FF'>Web打印服务CLodop需升级!点击这里<a href='CLodop_Setup_for_Win32NT.zip' target='_self'>执行升级</a>,升级后请刷新页面。</font>";
     var LODOP;
     try {
         var ua = navigator.userAgent;
@@ -96,8 +96,9 @@ export function getLodop(oOBJECT, oEMBED) {
                 // document.body.innerHTML = strCLodopInstall_1 + (CLodopIsLocal ? strCLodopInstall_2 : "") + strCLodopInstall_3 + document.body.innerHTML;                
                 return false;
             } else {
-                if (CLODOP.CVERSION < "3.0.9.3") {
-                    document.body.innerHTML = strCLodopUpdate + document.body.innerHTML;
+                if (CLODOP.CVERSION < "3.0.8.3") {
+                    // document.body.innerHTML = strCLodopUpdate + document.body.innerHTML;
+                    LODOP.upgrade=true
                 }
                 if (oEMBED && oEMBED.parentNode)
                     oEMBED.parentNode.removeChild(oEMBED);
@@ -127,12 +128,14 @@ export function getLodop(oOBJECT, oEMBED) {
             LODOP = CreatedOKLodopObject;
             //==Lodop插件未安装时提示下载地址:==
             if ((!LODOP) || (!LODOP.VERSION)) {
-                if (ua.indexOf('Chrome') >= 0)
-                    document.body.innerHTML = strHtmChrome + document.body.innerHTML;
-                if (ua.indexOf('Firefox') >= 0)
-                    document.body.innerHTML = strHtmFireFox + document.body.innerHTML;
+                // return 3;
+                // console.log(ua)
+                // if (ua.indexOf('Chrome') >= 0)
+                //     document.body.innerHTML = strHtmChrome + document.body.innerHTML;
+                // if (ua.indexOf('Firefox') >= 0)
+                //     document.body.innerHTML = strHtmFireFox + document.body.innerHTML;
                 // document.body.innerHTML = (is64IE ? strHtm64_Install : strHtmInstall) + document.body.innerHTML;
-                return LODOP;
+                return false;
             }
         }
         if (LODOP.VERSION < "6.2.2.6") {
