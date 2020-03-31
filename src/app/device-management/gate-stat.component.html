@@ -13,14 +13,14 @@
           </nz-form-control>
         </nz-form-item>
 
-        <!-- <nz-form-item>
-          <nz-form-label nzFor="ticket">票型</nz-form-label>
+        <nz-form-item>
+          <nz-form-label nzFor="tickets">票型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="ticketId" nzAllowClear name="ticket" style="width: 180px">
+            <nz-select [(ngModel)]="queryData[1].value" nzAllowClear name="ticket" style="width: 180px">
               <nz-option *ngFor="let item of Tickets;" [nzValue]="item.id" [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>
-        </nz-form-item> -->
+        </nz-form-item>
 
         <!--         <nz-form-item>
           <nz-form-label nzFor="operator">检票员</nz-form-label>

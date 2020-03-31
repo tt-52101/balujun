@@ -40,6 +40,8 @@ implements OnInit {
     init(): void {
         this._deviceService.getForEdit(this.id).subscribe(result => {
             this.entity = result.device;
+            console.log(this.entity);
+            
         });
         this.getstation()
     }

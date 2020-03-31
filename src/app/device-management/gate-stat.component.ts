@@ -45,22 +45,30 @@ implements OnInit {
 		method: "=",
 		value: "",
 		logic: "and"
-	},{
-		field: "CreatorUserId ",
+	},
+	{
+		field: "TicketId",
 		method: "=",
 		value: "",
 		logic: "and"
-	},{
-		field: "CreationTime",
-		method: ">=",
-		value: "",
-		logic: "and"
-	},{
-		field: "CreationTime",
-		method: "<=",
-		value: "",
-		logic: "and"
-	}]
+	},
+	// {
+	// 	field: "CreatorUserId ",
+	// 	method: "=",
+	// 	value: "",
+	// 	logic: "and"
+	// },{
+	// 	field: "CreationTime",
+	// 	method: ">=",
+	// 	value: "",
+	// 	logic: "and"
+	// },{
+	// 	field: "CreationTime",
+	// 	method: "<=",
+	// 	value: "",
+	// 	logic: "and"
+	// }
+]
 	collectionTime=''
 
 	Devices=[]
@@ -77,6 +85,8 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
+
+		
 		this._historyService.getPagedStat(
 			arr,
 			'',
@@ -95,9 +105,8 @@ implements OnInit {
 			console.log(result);
 			
 			this.showPaging(result);
-
 			this.getdevice()
-			// this.getticket()
+			this.getticket()
 			// this.getuser()
 		});
 	}
@@ -135,22 +144,13 @@ implements OnInit {
 	// }
 
 
-
-	// getticket(){
-	// 	const formdata = new GetTicketsInput();
-	// 	formdata.queryData = [];
-	// 	formdata.sorting = null
-	// 	formdata.maxResultCount = 999;
-	// 	formdata.skipCount = 0;
-
-	// 	this._ticketService.getPaged(formdata)
-	// 	.subscribe(result => {
-	// 		this.Tickets = result.items;
-	// 		this.showPaging(result);
-	// 	});
-	// }
-
-
+	getticket(){
+		this._ticketService.getPaged('','',99,0)
+		.subscribe(result => {
+			this.Tickets = result.items;
+			this.showPaging(result);
+		});
+	}
 
 
 	disabledDate = (current: Date): boolean => {
