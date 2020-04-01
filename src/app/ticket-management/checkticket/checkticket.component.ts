@@ -94,7 +94,7 @@ export class CheckTicket extends AppComponentBase implements OnInit {
 		}
 
 		var ticket=this.ticketlist[0]
-		this._checkTicketService.ticketDetailIdOpen(ticket.qrcode,ticket.ticketNo,ticket.activityDetailId)
+		this._checkTicketService.ticketDetailIdOpen(ticket.qrcode,ticket.ticketNo,ticket.activityDetailId,1)
 		.subscribe(result => {
 			console.log(result)
 			if(result.msg== '验票成功'){

@@ -781,13 +781,13 @@ export class CheckTicketServiceProxy {
     }
 
     /**
-     * 二维码验票(一人一票)
-     * @param gateNumber (optional) 设备号
-     * @param jqmpass (optional) 卡号
-     * @param rdindex (optional) 串口号
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+    testScancodeopenGet(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -801,6 +801,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -848,13 +852,13 @@ export class CheckTicketServiceProxy {
     }
 
     /**
-     * 二维码验票(一人一票)
-     * @param gateNumber (optional) 设备号
-     * @param jqmpass (optional) 卡号
-     * @param rdindex (optional) 串口号
+     * @param gateNumber (optional) 
+     * @param jqmpass (optional) 
+     * @param rdindex (optional) 
+     * @param num (optional) 
      * @return Success
      */
-    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined): Observable<CheckResult> {
+    testScancodeopenPost(gateNumber: string | undefined, jqmpass: string | undefined, rdindex: string | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TestScancodeopen?";
         if (gateNumber === null)
             throw new Error("The parameter 'gateNumber' cannot be null.");
@@ -868,6 +872,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'rdindex' cannot be null.");
         else if (rdindex !== undefined)
             url_ += "rdindex=" + encodeURIComponent("" + rdindex) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -915,13 +923,13 @@ export class CheckTicketServiceProxy {
     }
 
     /**
-     * 根据票据Id验票
      * @param qrcode (optional) 
      * @param ticketNo (optional) 
      * @param ticketdetailId (optional) 
+     * @param num (optional) 
      * @return Success
      */
-    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined): Observable<CheckResult> {
+    ticketDetailIdOpen(qrcode: string | undefined, ticketNo: string | undefined, ticketdetailId: number | undefined, num: number | undefined): Observable<CheckResult> {
         let url_ = this.baseUrl + "/api/CheckTicket/TicketDetailIdOpen?";
         if (qrcode === null)
             throw new Error("The parameter 'qrcode' cannot be null.");
@@ -935,6 +943,10 @@ export class CheckTicketServiceProxy {
             throw new Error("The parameter 'ticketdetailId' cannot be null.");
         else if (ticketdetailId !== undefined)
             url_ += "ticketdetailId=" + encodeURIComponent("" + ticketdetailId) + "&"; 
+        if (num === null)
+            throw new Error("The parameter 'num' cannot be null.");
+        else if (num !== undefined)
+            url_ += "num=" + encodeURIComponent("" + num) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -6315,6 +6327,62 @@ export class ClientVersionServiceProxy {
             }));
         }
         return _observableOf<PagedResultDtoOfClientVersionListDto>(<any>null);
+    }
+
+    /**
+     * @param appName (optional) 
+     * @return Success
+     */
+    getVersionNameByAppName(appName: string | undefined): Observable<ClientVersion> {
+        let url_ = this.baseUrl + "/api/services/app/ClientVersion/GetVersionNameByAppName?";
+        if (appName === null)
+            throw new Error("The parameter 'appName' cannot be null.");
+        else if (appName !== undefined)
+            url_ += "appName=" + encodeURIComponent("" + appName) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVersionNameByAppName(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVersionNameByAppName(<any>response_);
+                } catch (e) {
+                    return <Observable<ClientVersion>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ClientVersion>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetVersionNameByAppName(response: HttpResponseBase): Observable<ClientVersion> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? ClientVersion.fromJS(resultData200) : new ClientVersion();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ClientVersion>(<any>null);
     }
 }
 
@@ -26903,6 +26971,62 @@ export class WeChatScenicSpotServiceProxy {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    uploadImage(body: Blob | undefined): Observable<PictureResultDto> {
+        let url_ = this.baseUrl + "/api/services/app/WeChatScenicSpot/UploadImage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = body;
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "multipart/form-data", 
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUploadImage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUploadImage(<any>response_);
+                } catch (e) {
+                    return <Observable<PictureResultDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PictureResultDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processUploadImage(response: HttpResponseBase): Observable<PictureResultDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PictureResultDto.fromJS(resultData200) : new PictureResultDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PictureResultDto>(<any>null);
+    }
+
+    /**
      * 上传照片
      * @param body (optional) 
      * @return Success
@@ -38641,6 +38765,81 @@ export class PagedResultDtoOfClientVersionListDto implements IPagedResultDtoOfCl
 export interface IPagedResultDtoOfClientVersionListDto {
     totalCount: number;
     items: ClientVersionListDto[] | undefined;
+}
+
+export class ClientVersion implements IClientVersion {
+    appName: string | undefined;
+    versionName: string | undefined;
+    versionCode: string | undefined;
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
+
+    constructor(data?: IClientVersion) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.appName = data["appName"];
+            this.versionName = data["versionName"];
+            this.versionCode = data["versionCode"];
+            this.versionDesc = data["versionDesc"];
+            this.deviceType = data["deviceType"];
+            this.creatorUser = data["creatorUser"] ? User.fromJS(data["creatorUser"]) : <any>undefined;
+            this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = data["creatorUserId"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ClientVersion {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientVersion();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["appName"] = this.appName;
+        data["versionName"] = this.versionName;
+        data["versionCode"] = this.versionCode;
+        data["versionDesc"] = this.versionDesc;
+        data["deviceType"] = this.deviceType;
+        data["creatorUser"] = this.creatorUser ? this.creatorUser.toJSON() : <any>undefined;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): ClientVersion {
+        const json = this.toJSON();
+        let result = new ClientVersion();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IClientVersion {
+    appName: string | undefined;
+    versionName: string | undefined;
+    versionCode: string | undefined;
+    versionDesc: string | undefined;
+    deviceType: DeviceTypeEnum;
+    creatorUser: User;
+    creationTime: moment.Moment;
+    creatorUserId: number | undefined;
+    id: number;
 }
 
 export class CommonLookupFindUsersInput implements ICommonLookupFindUsersInput {
@@ -63543,6 +63742,49 @@ export class PagedResultDtoOfWeChatScenicSpotListDto implements IPagedResultDtoO
 export interface IPagedResultDtoOfWeChatScenicSpotListDto {
     totalCount: number;
     items: WeChatScenicSpotListDto[] | undefined;
+}
+
+export class PictureResultDto implements IPictureResultDto {
+    uri: string | undefined;
+
+    constructor(data?: IPictureResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.uri = data["uri"];
+        }
+    }
+
+    static fromJS(data: any): PictureResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PictureResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["uri"] = this.uri;
+        return data; 
+    }
+
+    clone(): PictureResultDto {
+        const json = this.toJSON();
+        let result = new PictureResultDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPictureResultDto {
+    uri: string | undefined;
 }
 
 /** 游客年龄 */
