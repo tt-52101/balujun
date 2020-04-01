@@ -73,9 +73,6 @@ collectionTime=''
 		formdata.sorting = request.sorting,
 		formdata.maxResultCount = request.maxResultCount;
 		formdata.skipCount =request.skipCount;
-
-		console.log(formdata);
-		
 		this._gateRecordService.getPaged(formdata)
 		.finally(() => {
 			finishedCallback();
