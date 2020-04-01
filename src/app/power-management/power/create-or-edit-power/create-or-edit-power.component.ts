@@ -23,7 +23,7 @@ implements OnInit {
 
     entity: PowerEditDto=new PowerEditDto();
 
-    menuId :number;
+    menuId :any;
     menuarr = [];
     menulist=[];
 
@@ -107,7 +107,7 @@ implements OnInit {
         if(this.entity.category==PowerTypeEnum.MENU){
           this.ismenu=true
         }
-        this.menuId = result.power.menuId
+        this.menuId = result.power.menuId+''
       });
     }
 
@@ -149,7 +149,7 @@ implements OnInit {
 
 
     onChange($event: number): void {
-      // console.log($event)
+      console.log($event)
       for(var i = 0;i < this.menulist.length; i++){
         if(this.menulist[i].id == $event){
           this.menuId = $event

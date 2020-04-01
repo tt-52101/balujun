@@ -263,7 +263,7 @@ export class LoginService {
     }
     // http://localhost:8000/#/app/power-management/power
 
-    // console.log(initialUrl)
+    console.log(initialUrl)
     location.href = initialUrl;
     // window.history.forward()
 
