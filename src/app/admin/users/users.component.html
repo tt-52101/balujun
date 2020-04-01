@@ -10,7 +10,7 @@
 
   <!-- <div class="mb-md"> -->
     <!-- 模糊搜索框 -->
-<!--     <nz-row nzGutter="8">
+    <!-- <nz-row nzGutter="8">
       <nz-col nzSm="24">
         <nz-form-item>
           <nz-form-control>
@@ -40,33 +40,61 @@
         <app-role-combox [(selectedRole)]="role" (selectedRoleChange)="refreshGoFirstPage()"></app-role-combox>
       </nz-col>
 
-    </nz-row> -->
-
-
-
-
+    <!-- </nz-row> -->
 
     <!-- </div> -->
 
+    <div class="mb-md">
+    <nz-row nzGutter="16">
+      <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
+        <nz-form-item>
+          <nz-form-label>所属机构</nz-form-label>
+          <nz-form-control>
+            <nz-select [(ngModel)]="Branchid" nzAllowClear style="width: 120px" name="status">
+              <nz-option *ngFor="let item of branchlist" [nzValue]="item.id" [nzLabel]="item.branchName"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item style="padding-top: 4px">
+          <button nz-button nzType="primary" type="submit" (click)="refresh()">
+            <span>
+              {{l("Query")}}
+            </span>
+          </button>
+          <button nz-button [nzType]="'primary'"  (click)="createOrEdit()" *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+            <span>
+              {{l("Create")}}
+            </span>
+          </button>
+
+          <button nz-button [nzType]="'danger'"  (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+            <span>
+              {{l("BatchDelete")}}
+            </span>
+          </button>
+        </nz-form-item>
+      </form>
+    </nz-row>
+  </div>
+
 
     <!-- 操作常规按钮部分 -->
-
+<!-- 
     <nz-row nzGutter="8">
       <nz-col nzMd="20" nzSm="12" class="btn-gutter">
         <button nz-button [nzType]="'primary'"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1"
         (click)="createOrEdit()">
-        <!-- <i class="anticon anticon-plus"></i> -->
         <span>
           {{l("CreateNewUser")}}
         </span>
       </button>
       <button nz-button [nzType]="'danger'"  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1"
       (click)="batchDelete()">
-      <!-- <i class="anticon anticon-delete"></i> -->
       <span>
         {{l("BatchDelete")}}
       </span>
-    </button>
+    </button> -->
 <!--       <button nz-button nzType="default" 
         (click)="exportToExcel()">
         <i class="anticon anticon-file-excel"></i>
@@ -74,7 +102,7 @@
           {{l("ExportToExcel")}}
         </span>
       </button> -->
-    </nz-col>
+    <!-- </nz-col> -->
 <!--     <nz-col nzMd="4" nzSm="12" class="text-right">
       <a (click)="advancedFiltersVisible=!advancedFiltersVisible">
         {{advancedFiltersVisible ? l('HideAdvancedFilters') : l('ShowAdvancedFilters')}}
@@ -82,7 +110,7 @@
           [class.anticon-up]="advancedFiltersVisible"></i>
       </a>
     </nz-col> -->
-  </nz-row>
+  <!-- </nz-row> -->
   <!-- 数据部分 -->
 <!--   <div class="my-md">
     <nz-alert [nzType]="'info'" [nzShowIcon]="true" [nzMessage]="message">
@@ -124,6 +152,9 @@
           </th>
           <th nz-th class="text-center">
             <span>{{l('Roles')}}</span>
+          </th>
+          <th nz-th class="text-center">
+            <span>所属机构</span>
           </th>
 
 <!--           <th nz-th class="text-center">
@@ -170,6 +201,11 @@
               </span>
             </td> -->
             <!-- <td class="text-center" [innerHTML]="item.isEmailConfirmed | yn"> </td> -->
+            <td class="text-center">
+              <span nz-tooltip [nzTitle]="getRolesAsString(item.roles)">
+               机构
+              </span>
+            </td>
             <td class="text-center" [innerHTML]="item.isActive | yn"> </td>
             <td class="text-center">
               <ellipsis lines="1">

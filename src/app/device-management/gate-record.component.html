@@ -65,7 +65,7 @@
           <th nz-th class="text-center">
             <span>操作员</span>
           </th>
-          <th nz-th class="text-center">
+          <th nz-th class="text-center" nzShowSort nzSortKey="creationTime">
             <span>操作时间</span>
           </th>
         </tr>
@@ -113,7 +113,7 @@
           </td>
           <td nz-td class="text-center">
             <span>
-              {{item.creatorUser}}
+              {{item.creatorUser.userName}}
             </span>
           </td>
           <td nz-td class="text-center">

@@ -38,7 +38,7 @@
     </nz-row>
   </div>
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzShowQuickJumper]="true" [nzFrontPagination]="false" nzBordered style="word-break:break-all" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems">
+    <nz-table #ajaxTable [nzData]="dataList" [nzShowQuickJumper]="true" [nzFrontPagination]="false" nzBordered style="word-break:break-all" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzNoResult]="noDataTemplate" [nzPageSizeOptions]="pageSizes" [nzTotal]="totalItems" [nzScroll]="{ y: '621px'}">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>

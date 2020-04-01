@@ -6,7 +6,8 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-ba
 import {
 	TicketDetailHistoryServiceProxy, PagedResultDtoOfTicketDetailHistoryListDto, TicketDetailHistoryListDto, DeviceServiceProxy, GetDevicesInput, TicketServiceProxy,
 	// GetTicketsInput,
-	QueryData
+	QueryData,
+	GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditTicketDetailHistoryComponent } from './create-or-edit-ticket-detail-history/create-or-edit-ticket-detail-history.component';
 // import { AppConsts } from '@shared/AppConsts';
@@ -23,46 +24,46 @@ import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days'
 
 
 export class TicketDetailHistoryComponent extends PagedListingComponentBase<TicketDetailHistoryListDto>
-	implements OnInit {
+implements OnInit {
 
 	constructor(
 		injector: Injector,
 		private _ticketDetailHistoryService: TicketDetailHistoryServiceProxy,
 		private _deviceService: DeviceServiceProxy,
 		private _ticketService: TicketServiceProxy,
-	) {
+		) {
 		super(injector);
 	}
 
 	queryData = [
-		{
-			field: "deviceId",
-			method: "=",
-			value: "",
-			logic: "and"
-		},
-		{
-			field: "ticketcode",
-			method: "=",
-			value: "",
-			logic: "and"
-		},
-		{
-			field: "ticketName",
-			method: "=",
-			value: "",
-			logic: "and"
-		}, {
-			field: "creationTime",
-			method: ">=",
-			value: "",
-			logic: "and"
-		}, {
-			field: "creationTime",
-			method: "<=",
-			value: "",
-			logic: "and"
-		}]
+	{
+		field: "deviceId",
+		method: "=",
+		value: "",
+		logic: "and"
+	},
+	{
+		field: "ticketcode",
+		method: "=",
+		value: "",
+		logic: "and"
+	},
+	{
+		field: "ticketName",
+		method: "=",
+		value: "",
+		logic: "and"
+	}, {
+		field: "creationTime",
+		method: ">=",
+		value: "",
+		logic: "and"
+	}, {
+		field: "creationTime",
+		method: "<=",
+		value: "",
+		logic: "and"
+	}]
 
 	collectionTime = ''
 
@@ -83,20 +84,21 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 			}
 		}
 		const formdata = new GetDevicesInput();
+
+		formdata.queryData=arr
 		formdata.filterText = ''
 		formdata.sorting = 'creationTime desc',
-			formdata.maxResultCount = request.maxResultCount;
+		formdata.maxResultCount = request.maxResultCount;
 		formdata.skipCount = request.skipCount;
-		console.log(formdata);
-		
+
 		this._ticketDetailHistoryService.getPaged(formdata)
-			.finally(() => {
-				finishedCallback();
-			})
-			.subscribe(result => {
-				this.dataList = result.items;
-				this.showPaging(result);
-			});
+		.finally(() => {
+			finishedCallback();
+		})
+		.subscribe(result => {
+			this.dataList = result.items;
+			this.showPaging(result);
+		});
 		this.getdevice()
 		this.getticket()
 	}
@@ -109,20 +111,24 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 		formdata.skipCount = 0;
 
 		this._deviceService.getPaged(formdata)
-			.subscribe(result => {
-				this.devicList = result.items;
-			});
+		.subscribe(result => {
+			this.devicList = result.items;
+		});
 	}
 
 
 	getticket() {
 
-
-		this._ticketService.getPaged('', '', 99, 0)
-			.subscribe(result => {
-				this.ticketlist = result.items;
-				this.showPaging(result);
-			});
+		var formdata = new GetTicketsInput();
+		formdata.queryData = []
+		formdata.sorting = ''
+		formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+		this._ticketService.getPaged(formdata)
+		.subscribe(result => {
+			this.ticketlist = result.items;
+			this.showPaging(result);
+		});
 	}
 
 	disabledDate = (current: Date): boolean => {
@@ -131,25 +137,22 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 	};
 
 	datechange($event): void {
-		if ($event[0].getTime() == $event[1].getTime()) {
-			$event[1] = new Date($event[1].getTime() + 24 * 60 * 60 * 1000)
+		console.log($event)
+		if($event.length ==2){
+			if($event[0].getTime() == $event[1].getTime()){
+				$event[1]=new Date($event[1].getTime()+24*60*60*1000)
+			}
+			var year=$event[0].getFullYear();
+			var month = $event[0].getMonth() + 1;
+			var day = $event[0].getDate();
+			var fulldate1=year+'-'+month+'-'+day;
+			var year=$event[1].getFullYear();
+			var month = $event[1].getMonth() + 1;
+			var day = $event[1].getDate();
+			var fulldate2=year+'-'+month+'-'+day;
+			this.queryData[3].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[4].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
 		}
-
-		var year = $event[0].getFullYear();
-		var month = $event[0].getMonth() + 1;
-		var day = $event[0].getDate();
-
-		var fulldate1 = year + '-' + month + '-' + day;
-
-		var year = $event[1].getFullYear();
-		var month = $event[1].getMonth() + 1;
-		var day = $event[1].getDate();
-
-		var fulldate2 = year + '-' + month + '-' + day;
-
-		this.queryData[2].value = moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
-		this.queryData[3].value = moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
-
 	}
 
 	/**
@@ -158,11 +161,11 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 	*/
 	createOrEdit(id?: number): void {
 		this.modalHelper.static(CreateOrEditTicketDetailHistoryComponent, { id: id })
-			.subscribe(result => {
-				if (result) {
-					this.refresh();
-				}
-			});
+		.subscribe(result => {
+			if (result) {
+				this.refresh();
+			}
+		});
 	}
 
 
@@ -172,7 +175,7 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 	*/
 	delete(entity: TicketDetailHistoryListDto): void {
 		this._ticketDetailHistoryService.delete(entity.id)
-			.subscribe(() => {
+		.subscribe(() => {
 				/**
 				* 刷新表格数据并跳转到第一页（`pageNumber = 1`）
 				*/
@@ -202,7 +205,7 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 					});
 				}
 			},
-		);
+			);
 	}
 
 
@@ -212,9 +215,9 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 	exportToExcel(): void {
 		abp.message.error('功能开发中！！！！');
 		// this._ticketDetailHistoryService.getTicketDetailHistoryexportToExcel().subscribe(result => {
-		// this._fileDownloadService.downloadTempFile(result);
-		// });
-	}
+			// this._fileDownloadService.downloadTempFile(result);
+			// });
+		}
 
-}
+	}
 

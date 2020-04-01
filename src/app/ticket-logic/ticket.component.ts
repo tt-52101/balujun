@@ -3,7 +3,9 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
+
 import {TicketServiceProxy, TicketListDto,GetTicketsInput} from '@shared/service-proxies/service-proxies';
+
 import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
 
 
@@ -37,12 +39,14 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
+
 		var formdata=new GetTicketsInput
 		formdata.queryData=[]
 		formdata.filterText=''
 		formdata.sorting=''
 		formdata.maxResultCount=request.maxResultCount
 		formdata.skipCount=request.skipCount
+
 
 
 		this._ticketService.getPaged(formdata)

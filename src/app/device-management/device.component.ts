@@ -29,11 +29,11 @@ implements OnInit {
 
   isAllOperation=false
   curmenupower=[]
-
+  devicList=[]
 
   queryData=[{
-    field: "deviceName",
-    method: "%",
+    field: "id",
+    method: "=",
     value: "",
     logic: "and"
   },{
@@ -83,7 +83,20 @@ implements OnInit {
     });
 
     // this.getstation()
+    this.devic()
   }
+  devic() {
+		var formdata = new GetDevicesInput();
+		formdata.queryData = []
+		formdata.sorting = null
+		formdata.maxResultCount = 999;
+		formdata.skipCount = 0;
+
+		this._deviceService.getPaged(formdata)
+			.subscribe(result => {
+				this.devicList = result.items;
+			});
+	}
 
   // getstation(){
   //   this._ticketStationService.getPaged('','',999,0)

@@ -7,7 +7,8 @@ import {
   UserListDto,
   UserServiceProxy,
   EntityDtoOfInt64,
-  PagedResultDtoOfUserListDto
+  PagedResultDtoOfUserListDto,
+  BranchServiceProxy
 } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditUserComponent } from '@app/admin/users/create-or-edit-user/create-or-edit-user.component';
 import { EditUserPermissionsComponent } from '@app/admin/users/edit-user-permissions/edit-user-permissions.component';
@@ -51,6 +52,11 @@ implements OnInit {
    */
    role: number[] = undefined;
 
+   branchlist=[]
+
+   Branchid= ''
+
+
   /**
    * 是否显示解锁按钮
    */
@@ -66,7 +72,8 @@ implements OnInit {
      private _userService: UserServiceProxy,
      private _activatedRoute: ActivatedRoute,
      public _impersonationService: ImpersonationService,
-     private _fileDownloadService: FileDownloadService
+     private _fileDownloadService: FileDownloadService,
+     private _branchService: BranchServiceProxy
      ) {
      super(injector);
      this.filterText =
@@ -203,9 +210,24 @@ implements OnInit {
        )
      .subscribe((result: PagedResultDtoOfUserListDto) => {
        this.dataList = result.items;
+       console.log(this.dataList);
+       
        this.showPaging(result);
      });
+     this.branch()
+     
    }
+
+   branch(){
+     this._branchService.getPaged('','',999,0)
+		.subscribe(result => {
+			console.log(result.items);
+			
+			this.branchlist = result.items;
+			this.showPaging(result);
+		});
+   }
+
 
   /**
    * 批量删除
