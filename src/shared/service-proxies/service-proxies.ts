@@ -4159,6 +4159,415 @@ export class AppVersionServiceProxy {
 }
 
 @Injectable()
+export class AudioServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    /**
+     * 批量删除Audio的方法
+     * @param body (optional) 
+     * @return Success
+     */
+    batchDelete(body: number[] | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/BatchDelete";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBatchDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBatchDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processBatchDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 添加或者修改的公共方法
+     * @param body (optional) 
+     * @return Success
+     */
+    createOrUpdate(body: CreateOrUpdateAudioInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/CreateOrUpdate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json", 
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateOrUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateOrUpdate(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processCreateOrUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 删除信息
+     * @param id (optional) 
+     * @return Success
+     */
+    delete(id: number | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/Delete?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDelete(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDelete(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processDelete(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
+
+    /**
+     * 通过指定id获取AudioListDto信息
+     * @param id (optional) 
+     * @return Success
+     */
+    getById(id: number | undefined): Observable<AudioListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/GetById?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetById(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetById(<any>response_);
+                } catch (e) {
+                    return <Observable<AudioListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<AudioListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetById(response: HttpResponseBase): Observable<AudioListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? AudioListDto.fromJS(resultData200) : new AudioListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<AudioListDto>(<any>null);
+    }
+
+    /**
+     * 获取编辑
+     * @param id (optional) 
+     * @return Success
+     */
+    getForEdit(id: number | undefined): Observable<GetAudioForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/GetForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetAudioForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetAudioForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForEdit(response: HttpResponseBase): Observable<GetAudioForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? GetAudioForEditOutput.fromJS(resultData200) : new GetAudioForEditOutput();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetAudioForEditOutput>(<any>null);
+    }
+
+    /**
+     * 获取的分页列表信息
+     * @param filterText (optional) 
+     * @param sorting (optional) 
+     * @param maxResultCount (optional) 
+     * @param skipCount (optional) 
+     * @return Success
+     */
+    getPaged(filterText: string | undefined, sorting: string | undefined, maxResultCount: number | undefined, skipCount: number | undefined): Observable<PagedResultDtoOfAudioListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/GetPaged?";
+        if (filterText === null)
+            throw new Error("The parameter 'filterText' cannot be null.");
+        else if (filterText !== undefined)
+            url_ += "filterText=" + encodeURIComponent("" + filterText) + "&"; 
+        if (sorting === null)
+            throw new Error("The parameter 'sorting' cannot be null.");
+        else if (sorting !== undefined)
+            url_ += "sorting=" + encodeURIComponent("" + sorting) + "&"; 
+        if (maxResultCount === null)
+            throw new Error("The parameter 'maxResultCount' cannot be null.");
+        else if (maxResultCount !== undefined)
+            url_ += "maxResultCount=" + encodeURIComponent("" + maxResultCount) + "&"; 
+        if (skipCount === null)
+            throw new Error("The parameter 'skipCount' cannot be null.");
+        else if (skipCount !== undefined)
+            url_ += "skipCount=" + encodeURIComponent("" + skipCount) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPaged(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPaged(<any>response_);
+                } catch (e) {
+                    return <Observable<PagedResultDtoOfAudioListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<PagedResultDtoOfAudioListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPaged(response: HttpResponseBase): Observable<PagedResultDtoOfAudioListDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? PagedResultDtoOfAudioListDto.fromJS(resultData200) : new PagedResultDtoOfAudioListDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<PagedResultDtoOfAudioListDto>(<any>null);
+    }
+
+    /**
+     * 导出为excel文件
+     * @return Success
+     */
+    getToExcelFile(): Observable<FileDto> {
+        let url_ = this.baseUrl + "/api/services/app/Audio/GetToExcelFile";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetToExcelFile(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetToExcelFile(<any>response_);
+                } catch (e) {
+                    return <Observable<FileDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<FileDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetToExcelFile(response: HttpResponseBase): Observable<FileDto> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 ? FileDto.fromJS(resultData200) : new FileDto();
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<FileDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class AuditLogServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -36621,6 +37030,268 @@ export interface IFileDto {
     fileName: string | undefined;
     fileType: string | undefined;
     fileToken: string | undefined;
+}
+
+/** 的列表DTO Yozeev.BusinessLogic.Audio */
+export class AudioEditDto implements IAudioEditDto {
+    /** Id */
+    id: number | undefined;
+    /** AudioName */
+    audioName: string | undefined;
+    /** AudioAddress */
+    audioAddress: string | undefined;
+
+    constructor(data?: IAudioEditDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.audioName = data["audioName"];
+            this.audioAddress = data["audioAddress"];
+        }
+    }
+
+    static fromJS(data: any): AudioEditDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudioEditDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["audioName"] = this.audioName;
+        data["audioAddress"] = this.audioAddress;
+        return data; 
+    }
+
+    clone(): AudioEditDto {
+        const json = this.toJSON();
+        let result = new AudioEditDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的列表DTO Yozeev.BusinessLogic.Audio */
+export interface IAudioEditDto {
+    /** Id */
+    id: number | undefined;
+    /** AudioName */
+    audioName: string | undefined;
+    /** AudioAddress */
+    audioAddress: string | undefined;
+}
+
+export class CreateOrUpdateAudioInput implements ICreateOrUpdateAudioInput {
+    audio: AudioEditDto;
+
+    constructor(data?: ICreateOrUpdateAudioInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.audio = new AudioEditDto();
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.audio = data["audio"] ? AudioEditDto.fromJS(data["audio"]) : new AudioEditDto();
+        }
+    }
+
+    static fromJS(data: any): CreateOrUpdateAudioInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrUpdateAudioInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["audio"] = this.audio ? this.audio.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): CreateOrUpdateAudioInput {
+        const json = this.toJSON();
+        let result = new CreateOrUpdateAudioInput();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ICreateOrUpdateAudioInput {
+    audio: AudioEditDto;
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Audio */
+export class AudioListDto implements IAudioListDto {
+    /** AudioName */
+    audioName: string | undefined;
+    /** AudioAddress */
+    audioAddress: string | undefined;
+    id: number;
+
+    constructor(data?: IAudioListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.audioName = data["audioName"];
+            this.audioAddress = data["audioAddress"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): AudioListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AudioListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["audioName"] = this.audioName;
+        data["audioAddress"] = this.audioAddress;
+        data["id"] = this.id;
+        return data; 
+    }
+
+    clone(): AudioListDto {
+        const json = this.toJSON();
+        let result = new AudioListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 的编辑DTO Yozeev.BusinessLogic.Audio */
+export interface IAudioListDto {
+    /** AudioName */
+    audioName: string | undefined;
+    /** AudioAddress */
+    audioAddress: string | undefined;
+    id: number;
+}
+
+/** 读取可编辑的Dto */
+export class GetAudioForEditOutput implements IGetAudioForEditOutput {
+    audio: AudioEditDto;
+
+    constructor(data?: IGetAudioForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.audio = data["audio"] ? AudioEditDto.fromJS(data["audio"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetAudioForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAudioForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["audio"] = this.audio ? this.audio.toJSON() : <any>undefined;
+        return data; 
+    }
+
+    clone(): GetAudioForEditOutput {
+        const json = this.toJSON();
+        let result = new GetAudioForEditOutput();
+        result.init(json);
+        return result;
+    }
+}
+
+/** 读取可编辑的Dto */
+export interface IGetAudioForEditOutput {
+    audio: AudioEditDto;
+}
+
+export class PagedResultDtoOfAudioListDto implements IPagedResultDtoOfAudioListDto {
+    totalCount: number;
+    items: AudioListDto[] | undefined;
+
+    constructor(data?: IPagedResultDtoOfAudioListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.totalCount = data["totalCount"];
+            if (data["items"] && data["items"].constructor === Array) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items.push(AudioListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PagedResultDtoOfAudioListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultDtoOfAudioListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (this.items && this.items.constructor === Array) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+
+    clone(): PagedResultDtoOfAudioListDto {
+        const json = this.toJSON();
+        let result = new PagedResultDtoOfAudioListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IPagedResultDtoOfAudioListDto {
+    totalCount: number;
+    items: AudioListDto[] | undefined;
 }
 
 export class AuditLogListDto implements IAuditLogListDto {
