@@ -76,8 +76,6 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
           arr.push(new QueryData(this.queryData[i]))
         }
       }
-
-
       this._ticketDetailService.getPaged(arr,'','',999,0)
       .subscribe(result => {
 
@@ -119,6 +117,8 @@ export class InternetTicketComponent extends AppComponentBase implements OnInit 
           this.orderlist = result.items;
         }
       });
+    }else{
+      abp.message.warn('请输入订单号或者扫二维码');
     }
   }
 
