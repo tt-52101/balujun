@@ -21,13 +21,13 @@
           <button nz-button [nzType]="'primary'" (click)="getticket()" style="padding: 0px 20px;height: 32px;background: rgb(93,119,255);border-color: rgb(93,119,255)">{{l("Query")}}</button>
         </nz-form-item>
 
-        <nz-form-item class="formitem" style="margin:4px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Settle') > -1">
+        <nz-form-item class="formitem" style="margin:5px 8px 0 10px;" *ngIf="isAllOperation || curmenupower.indexOf('Settle') > -1">
           <nz-input-group nzAddOnAfter="次" [nzPrefix]="suffixButton" nzSearch >
             <nz-input-number style="width:160px;text-indent:65px" [nzSize]="large" [(ngModel)]="time" name="time" [nzMin]="1" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
           </nz-input-group>
 
           <ng-template #suffixButton style="left: 0">
-            <button nzSearch nz-button [nzType]="'primary'" (click)="check()" style="height: 32px;background: rgb(6,150,249);border-color: rgb(6,150,249)">刷票</button>
+            <button nzSearch nz-button [nzType]="'primary'" (click)="check()" style="height: 32px;background: rgb(93,119,255);border-color: rgb(93,119,255)">刷票</button>
          </ng-template>
        </nz-form-item>
 

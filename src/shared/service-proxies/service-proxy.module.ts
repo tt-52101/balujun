@@ -60,6 +60,8 @@ import * as ApiServiceProxies from '@shared/service-proxies/service-proxies';
   ApiServiceProxies.ScenicSpotServiceProxy,
   ApiServiceProxies.SourceServiceProxy,
 
+  ApiServiceProxies.AudioServiceProxy,
+
   // ApiServiceProxies.FinanceServiceProxy,
   //游客
   ApiServiceProxies.CustomerServiceProxy,

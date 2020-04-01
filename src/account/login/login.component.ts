@@ -149,6 +149,7 @@ export class LoginComponent extends AppComponentBase implements OnInit {
      // console.log(this.loginService.authenticateModel)
      // this.loginService.authenticateModel.sourceCode=''
      this.loginService.authenticate((success: boolean) => {
+       console.log(success)
        if (!success) {
          // 登陆失败,刷新验证码
          this.clearimg();

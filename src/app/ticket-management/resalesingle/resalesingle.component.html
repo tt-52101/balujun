@@ -36,7 +36,7 @@
             <td class="text-center">
               <div *ngIf="editindex !== i; else editTpl2" class="editable-cell-value-wrap" (click)="startEdit(i)">{{item.num}}</div>
               <ng-template #editTpl2>
-                <nz-input-number [(ngModel)]="item.num" [nzMin]="1" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
+                <nz-input-number [(ngModel)]="item.num" [nzMin]="0" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
               </ng-template>
             </td>
             <td class="text-center">

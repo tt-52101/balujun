@@ -104,9 +104,13 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
     getpaymethod(){
         this._payMethodService.getPaged('','',999,0)
         .subscribe(result => {
+            var arr=result.items.sort(this.sort)
             this.paymethodList = result.items;
             this.orderinfo.payMethodId=result.items[0].id
         });
+    }
+    sort(a,b){
+        return a.sort - b.sort
     }
 
     getticket(){

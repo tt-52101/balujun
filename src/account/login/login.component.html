@@ -4,8 +4,8 @@
       <nz-card [nzTitle]="nzTitle">
         <ng-template #nzTitle>
           <div class="text-center yoyo__block">
-            <div class="tabtext">{{ l("UserLogin") }}</div>
-            <!-- <div class="tabtext">{{ l("用户登录") }}</div> -->
+            <!-- <div class="tabtext">{{ l("UserLogin") }}</div> -->
+            <div class="tabtext">用户登录</div>
           </div>
         </ng-template>
         <form nz-form #loginForm="ngForm" (ngSubmit)="login()" autocomplete="off">
@@ -14,7 +14,7 @@
             <nz-form-control style="width: 100%;">
               <nz-input-group [nzSuffix]="suffixTemplateInf">
                 <img src="/assets/images/login/user.png" class="icon-diy">
-                <input class="login-input" nz-input name="userNameOrEmailAddress" #userNameOrEmailAddressInput="ngModel" [(ngModel)]="loginService.authenticateModel.userNameOrEmailAddress" [placeholder]="l('UserNameOrEmail')" required maxlength="32" />
+                <input class="login-input" nz-input name="userNameOrEmailAddress" #userNameOrEmailAddressInput="ngModel" [(ngModel)]="loginService.authenticateModel.userNameOrEmailAddress" placeholder="用户名" required maxlength="32" />
               </nz-input-group>
               <ng-template #suffixTemplateInf>
               </ng-template>
@@ -27,8 +27,8 @@
                 <input class="login-input" nz-input name="password" #passwordInput="ngModel" [(ngModel)]="loginService.authenticateModel.password" [placeholder]="l('Password')" type="{{hidepwd?'password':'text'}}" required maxlength="32" />
               </nz-input-group>
               <ng-template #suffixTemplateInfo>
-                <i nz-icon nzType="eye-invisible" nzTheme="fill" style="font-size: 18px;color: #ccc;margin-right: 12px;" *ngIf="hidepwd" (click)="changepwd()"></i>
-                <i nz-icon nzType="eye" nzTheme="fill" style="font-size: 18px;color: #ccc;margin-right: 12px;" *ngIf="!hidepwd" (click)="changepwd()"></i>
+                <i nz-icon nzType="eye-invisible" nzTheme="fill" style="font-size: 18px;color: #ccc;margin-right: -5px;" *ngIf="hidepwd" (click)="changepwd()"></i>
+                <i nz-icon nzType="eye" nzTheme="fill" style="font-size: 18px;color: #ccc;margin-right: -5px;" *ngIf="!hidepwd" (click)="changepwd()"></i>
               </ng-template>
             </nz-form-control>
           </nz-form-item>

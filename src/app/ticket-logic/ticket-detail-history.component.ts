@@ -84,7 +84,7 @@ export class TicketDetailHistoryComponent extends PagedListingComponentBase<Tick
 		}
 		const formdata = new GetDevicesInput();
 		formdata.filterText = ''
-		formdata.sorting = request.sorting,
+		formdata.sorting = 'creationTime desc',
 			formdata.maxResultCount = request.maxResultCount;
 		formdata.skipCount = request.skipCount;
 		console.log(formdata);

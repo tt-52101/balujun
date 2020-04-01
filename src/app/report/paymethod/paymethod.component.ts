@@ -46,8 +46,8 @@ implements OnInit {
 	}];
 
 	payMethodList = []
-	payMethodId=0
-
+	payMethodId=''
+	pid:any;
 
 	collectionTime = ''
 
@@ -80,12 +80,18 @@ implements OnInit {
 				arr.push(new QueryData(this.queryData[i]))
 			}
 		}
-		this._salesByPayMethodServiceProxy.getPaged(arr,'',request.sorting,request.maxResultCount,request.skipCount,this.payMethodId+'')
+		if(this.payMethodId == null){
+			this.payMethodId=''
+			this.pid=''
+		}else{
+			this.pid = this.payMethodId
+		}
+		this._salesByPayMethodServiceProxy.getPaged(arr,'',request.sorting,request.maxResultCount,request.skipCount,this.pid)
 		.finally(() => {
 			finishedCallback();
 		})
 		.subscribe(result => {
-			console.log(result);
+			// console.log(result);
 
 			this.dataList = result.items;
 			if (result.totalCount > 0) {
@@ -99,6 +105,12 @@ implements OnInit {
 		this.getpaymethod()
 	}
 
+	pchange($event): void {
+		console.log($event)
+		if($event == null){
+			this.payMethodId=''
+		}
+	}
 
 	datechange($event): void {
 		if($event.length>0){
@@ -216,12 +228,12 @@ implements OnInit {
 		this._payMethodService.getPaged('', '', 999, 0)
 		.subscribe(result => {
 			this.payMethodList = result.items
-			console.log(result.items);
-			if(this.payMethodId == 0){
-				this.payMethodId=this.payMethodList[0].id
-				this.refreshGoFirstPage()
-			}
-		});
+			// console.log(result.items);
+			// if(this.payMethodId == 0){
+				// 	this.payMethodId=this.payMethodList[0].id
+				// 	this.refreshGoFirstPage()
+				// }
+			});
 	}
 
 }

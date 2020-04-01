@@ -121,6 +121,7 @@ export class GroupBooking extends AppComponentBase implements OnInit {
             }
             this.discount = 100
         }
+        this.countprice()
 
     }
 

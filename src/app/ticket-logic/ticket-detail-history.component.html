@@ -42,11 +42,9 @@
               name="collectionTime" [nzDisabledDate]="disabledDate" [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
+        <nz-form-item  style="padding-top: 4px">
           <button nz-button [nzType]="'primary'" type="submit" (click)="refresh()">
-            <span>
-              查询
-            </span>
+            <span>查询</span>
           </button>
         </nz-form-item>
       </form>

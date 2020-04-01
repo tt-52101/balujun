@@ -120,7 +120,7 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
             }
             this.discount = 100
         }
-
+        this.countprice()
     }
 
     disabledDate = (current: Date): boolean => {

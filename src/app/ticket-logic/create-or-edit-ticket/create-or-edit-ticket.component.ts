@@ -1,6 +1,6 @@
 import { Component, OnInit, Injector, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { ModalComponentBase } from '@shared/component-base/modal-component-base';
-import { CreateOrUpdateTicketInput,TicketEditDto, TicketServiceProxy ,CheckMethodEnum} from '@shared/service-proxies/service-proxies';
+import { CreateOrUpdateTicketInput,TicketEditDto, TicketServiceProxy ,CheckMethodEnum,AudioServiceProxy} from '@shared/service-proxies/service-proxies';
 
 
 
@@ -11,27 +11,27 @@ import { AppConsts } from 'abpPro/AppConsts';
   selector: 'create-or-edit-ticket',
   templateUrl: './create-or-edit-ticket.component.html',
   styleUrls: [
-    'create-or-edit-ticket.component.less'
+  'create-or-edit-ticket.component.less'
   ],
 })
 
 export class CreateOrEditTicketComponent
-  extends ModalComponentBase
-  implements OnInit {
+extends ModalComponentBase
+implements OnInit {
   /**
  * 编辑时DTO的id
  */
-  id: any;
+ id: any;
 
-  entity: TicketEditDto = new TicketEditDto();
+ entity: TicketEditDto = new TicketEditDto();
 
-  uploadurl = ''
-  baseurl = ''
-  hearder = {
-    Authorization: ''
-  }
+ uploadurl = ''
+ baseurl = ''
+ hearder = {
+   Authorization: ''
+ }
 
-  audioName = ''
+ audioName = ''
 
   /**
   * 初始化的构造函数
@@ -40,7 +40,8 @@ export class CreateOrEditTicketComponent
     injector: Injector,
     private _ticketService: TicketServiceProxy,
     private _utilsService: UtilsService,
-  ) {
+    private _audioService: AudioServiceProxy,
+    ) {
     super(injector);
   }
 
@@ -53,43 +54,51 @@ export class CreateOrEditTicketComponent
   /**
   * 初始化方法
   */
-
+  audioList=[]
   
 
   init(): void {
     this._ticketService.getForEdit(this.id).subscribe(result => {
       this.entity = result.ticket;
-      this.audioName = result.ticket.audioName
-      console.log(this.entity);
+      // this.audioName = result.ticket.audioName
+      // console.log(this.entity);
     });
 
-    this.uploadurl = AppConsts.remoteServiceBaseUrl + '/api/File/UploadImageAsync'
-    this.hearder.Authorization = 'Bearer ' + this._utilsService.getCookieValue("Abp.AuthToken");
+    this.getaudio()
+
+    // this.uploadurl = AppConsts.remoteServiceBaseUrl + '/api/File/UploadImageAsync'
+    // this.hearder.Authorization = 'Bearer ' + this._utilsService.getCookieValue("Abp.AuthToken");
+  }
+
+  getaudio(){
+    this._audioService.getPaged('','',999,0).subscribe(result => {
+      this.audioList=result.items
+    });
+
   }
 
 
 
+  // handleChange(info): void {
+    //   console.log(info)
+    //   switch (info.file.status) {
 
-  handleChange(info): void {
-    console.log(info)
-    switch (info.file.status) {
-
-      case 'done':
-        this.audioName = info.file.name
-        this.entity.audioName = info.file.response.result.uri
-        break;
-      case 'error':
-        abp.message.error(this.l('UploadFail'));
-        break;
-    }
-  }
+      //     case 'done':
+      //       this.audioName = info.file.name
+      //       this.entity.audioName = info.file.response.result.uri
+      //       break;
+      //     case 'error':
+      //       abp.message.error(this.l('UploadFail'));
+      //       break;
+      //   }
+      // }
 
 
-  // onChange1($event): void {
-  //   console.log(this.dateRange);
+      // onChange1($event): void {
+        //   console.log(this.dateRange);
 
-  //   console.log('onChange: ', $event);
-  // }
+        //   console.log('onChange: ', $event);
+        // }
 
   /**
   * 保存方法,提交form表单
@@ -97,19 +106,19 @@ export class CreateOrEditTicketComponent
   submitForm(): void {
     console.log(this.entity);
 
-      const input = new CreateOrUpdateTicketInput();
-      console.log(input);
-      // this.entity.ticketId = 1
-      this.entity.checkMethod=CheckMethodEnum.NumberCheck
-      input.ticket = this.entity;
+    const input = new CreateOrUpdateTicketInput();
+    // console.log(input);
+    // this.entity.ticketId = 1
+    this.entity.checkMethod=CheckMethodEnum.NumberCheck
+    input.ticket = this.entity;
 
-      this.saving = true;
+    this.saving = true;
 
-      this._ticketService.createOrUpdate(input)
-        .finally(() => (this.saving = false))
-        .subscribe(() => {
-          this.notify.success(this.l('SavedSuccessfully'));
-          this.success(true);
-        });
+    this._ticketService.createOrUpdate(input)
+    .finally(() => (this.saving = false))
+    .subscribe(() => {
+      this.notify.success(this.l('SavedSuccessfully'));
+      this.success(true);
+    });
   }
 }

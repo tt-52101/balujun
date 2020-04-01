@@ -5,7 +5,8 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="activityNo">支付方式</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="boat">
+            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="boat" (ngModelChange)="pchange($event)">
+              <nz-option nzValue="" nzLabel="全部"> </nz-option>
               <nz-option *ngFor="let item of payMethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName">
               </nz-option>
             </nz-select>

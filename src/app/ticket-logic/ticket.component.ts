@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import {TicketServiceProxy, TicketListDto} from '@shared/service-proxies/service-proxies';
+import {TicketServiceProxy, TicketListDto,GetTicketsInput} from '@shared/service-proxies/service-proxies';
 import { CreateOrEditTicketComponent } from './create-or-edit-ticket/create-or-edit-ticket.component';
 
 
@@ -22,12 +22,12 @@ implements OnInit {
 		private _ticketService: TicketServiceProxy,
 		) {
 		super(injector);
-    this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
-    this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
-  }
+		this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
+		this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
+	}
 
-  isAllOperation=false
-  curmenupower=[]
+	isAllOperation=false
+	curmenupower=[]
 	
 	queryData = [];
 	/**
@@ -37,7 +37,15 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto,pageNumber: number,finishedCallback: Function): void {
-		this._ticketService.getPaged('','',request.maxResultCount,request.skipCount)
+		var formdata=new GetTicketsInput
+		formdata.queryData=[]
+		formdata.filterText=''
+		formdata.sorting=''
+		formdata.maxResultCount=request.maxResultCount
+		formdata.skipCount=request.skipCount
+
+
+		this._ticketService.getPaged(formdata)
 		.finally(() => {
 			finishedCallback();
 		})
@@ -106,9 +114,9 @@ implements OnInit {
 	exportToExcel(): void {
 		abp.message.error('功能开发中！！！！');
 		// this._ticketService.getTicketexportToExcel().subscribe(result => {
-		// this._fileDownloadService.downloadTempFile(result);
-		// });
+			// this._fileDownloadService.downloadTempFile(result);
+			// });
+		}
+
 	}
-	
-}
 

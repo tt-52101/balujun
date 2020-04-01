@@ -15,6 +15,8 @@ import {
 	QueryData
 } from '@shared/service-proxies/service-proxies';
 
+import * as moment from 'moment';
+
 // import { AppConsts } from '@shared/AppConsts';
 //  import { FileDownloadService } from '@shared/utils/file-download.service';
 
@@ -112,8 +114,26 @@ implements OnInit {
 	}
 
 	datechange($event): void {
-		this.queryData[3].value = $event[0]
-		this.queryData[4].value = $event[1]
+		// this.queryData[3].value = $event[0]
+		// this.queryData[4].value = $event[1]
+				if($event[0].getTime() == $event[1].getTime()){
+			$event[1]=new Date($event[1].getTime()+24*60*60*1000)
+		}
+
+		var year=$event[0].getFullYear();
+		var month = $event[0].getMonth() + 1;
+		var day = $event[0].getDate();
+
+		var fulldate1=year+'-'+month+'-'+day;
+
+		var year=$event[1].getFullYear();
+		var month = $event[1].getMonth() + 1;
+		var day = $event[1].getDate();
+
+		var fulldate2=year+'-'+month+'-'+day;
+
+		this.queryData[3].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+		this.queryData[4].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
 	}
 
 	close(): void {

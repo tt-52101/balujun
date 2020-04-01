@@ -169,65 +169,94 @@
             <ng-container>
               <a (click)="open(item,item.activityNo)">
                 <span>{{l('Detail')}}</span> </a>
-            </ng-container>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </nz-row>
-</nz-card>
-<nz-drawer [nzVisible]="visible" nzPlacement="bottom" [nzHeight]="documentHeight" [nzTitle]="l('Detail')" (nzOnClose)="close()">
-  <p style="font-weight: 600;font-size: 16px;margin-top: 20px;display: inline-block;">订单票据</p>
-  <button nz-button [nzType]="'primary'" (click)="reprint()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c;margin: 0 20px;">补打票</button>
-  <nz-table #ajaxTable2 [nzData]="ticketlist" [nzScroll]="{ y:'600px' }" style="word-break:break-all;" [nzFrontPagination]="false" nzBordered>
-    <ng-template #noDataTemplate>
-      <no-data></no-data>
-    </ng-template>
-    <thead>
-      <tr>
-        <th nz-td nzShowCheckbox [(nzChecked)]="allChecked1" [nzIndeterminate]="checkboxIndeterminate1" (nzCheckedChange)="checkAll1($event)" nzWidth="60px" nzLeft="0px">
-        <th class="text-center" nzWidth="150px">
-          <span>{{l('Ticket')}}</span>
-        </th>
-        <th class="text-center" nzWidth="180px">
-          <span>{{l('TicketNo')}}</span>
-        </th>
-        <th class="text-center" nzWidth="100px">
-          <span>{{l('UnitPrice')}}</span>
-        </th>
-        <th class="text-center" nzWidth="100px">
-          <span>{{l('TicketStatus')}}</span>
-        </th>
-        <th class="text-center" nzWidth="110px" nzRight="0px">
-          <span>{{l('isPrint')}}</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of ajaxTable2.data; let i = index;">
-        <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus1(ticketlist)" nzLeft="0px"></td>
-        <td class="text-center" nzWidth="150px">
-          <span>
-            {{item.ticketPriceName}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="180px">
-          <span>
-            {{item.ticketNo}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            {{item.ticketPrice}}
-          </span>
-        </td>
-        <td class="text-center" nzWidth="100px">
-          <span>
-            {{l(item.ticketStatus)}}
-          </span>
-        </td>
-        <td nz-td class="text-center" nzWidth="110px" [innerHTML]="item.isPrint | yn" nzRight="0px"> </td>
-      </tr>
-    </tbody>
-  </nz-table>
-</nz-drawer>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-row>
+  </nz-card>
+  <nz-drawer [nzVisible]="visible" nzPlacement="bottom" [nzHeight]="documentHeight" [nzTitle]="l('Detail')" (nzOnClose)="close()">
+    <p style="font-weight: 600;font-size: 16px;margin-top: 20px;display: inline-block;">订单票据</p>
+    <button nz-button [nzType]="'primary'" (click)="reprint()" style="padding: 0px 20px;height: 32px;background: #fc992c;border-color: #fc992c;margin: 0 20px;">补打票</button>
+    <nz-table #ajaxTable2 [nzData]="ticketlist" style="word-break:break-all;" [nzFrontPagination]="false" nzBordered>
+      <ng-template #noDataTemplate>
+        <no-data></no-data>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nz-th nzShowCheckbox [(nzChecked)]="allChecked1" [nzIndeterminate]="checkboxIndeterminate1" (nzCheckedChange)="checkAll1($event)" nzWidth="60px" nzLeft="0px">
+            <th class="text-center" nzWidth="150px" nz-th>
+              <span>{{l('Ticket')}}</span>
+            </th>
+            <th class="text-center" nzWidth="180px" nz-th>
+              <span>{{l('TicketNo')}}</span>
+            </th>
+            <th class="text-center" nzWidth="100px" nz-th>
+              <span>单价</span>
+            </th>
+            <th class="text-center" nzWidth="100px" nz-th>
+              <span>数量</span>
+            </th>
+            <th class="text-center" nzWidth="100px" nz-th>
+              <span>金额小计</span>
+            </th>
+            <th class="text-center" nzWidth="100px" nz-th>
+              <span>可验次数</span>
+            </th>
+            <th class="text-center" nzWidth="100px" nz-th>
+              <span>已验次数</span>
+            </th>
+            <th class="text-center" nzWidth="110px" nzRight="0px" nz-th>
+              <span>{{l('isPrint')}}</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ajaxTable2.data; let i = index;">
+            <td nz-td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus1(ticketlist)" nzWidth="60px" nzLeft="0px"></td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ticketPriceName}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ticketNo}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.activityDetail.unitPrice}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.activityDetail.quantity}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.ticketPrice}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.checkingQuantity}}
+              </span>
+            </td>
+            <td nz-td class="text-center" >
+              <span>
+                {{item.checkedQuantity}}
+              </span>
+            </td>
+<!--             <td nz-td class="text-center" >
+              <span>
+                {{l(item.ticketStatus)}}
+              </span>
+            </td> -->
+            <td nz-td class="text-center" nzWidth="110px" [innerHTML]="item.isPrint | yn" nzRight="0px" > </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-drawer>

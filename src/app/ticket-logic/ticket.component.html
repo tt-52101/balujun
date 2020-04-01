@@ -98,8 +98,8 @@
           </td>
           <td nz-td nzWidth="135px" class="text-center">
 
-            <span>
-              {{item.audioName}}
+            <span *ngIf="item.audio">
+              {{item.audio.audioName}}
             </span>
 
           </td>
