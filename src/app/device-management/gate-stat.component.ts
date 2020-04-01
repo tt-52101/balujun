@@ -7,6 +7,7 @@ import {
 	HistoryServiceProxy, PagedResultDtoOfGateHistoryResultDto, GateHistoryResultDto, QueryData,
 	DeviceServiceProxy, GetDevicesInput,
 	TicketServiceProxy,
+	GetTicketsInput,
 	// GetTicketsInput,
 	// ScheduleServiceProxy,GetSchedulesInput,
 	UserServiceProxy
@@ -81,21 +82,18 @@ export class GateStatComponent extends PagedListingComponentBase<GateHistoryResu
 			}
 		}
 
-
 		this._historyService.getPagedStat(
 			arr,
 			'',
 			request.sorting,
 			request.maxResultCount,
 			request.skipCount,
-			this.ticketId,
+			this.ticketId||'',
 		)
 			.finally(() => {
 				finishedCallback();
 			})
 			.subscribe(result => {
-
-
 				var hash = {};
 				this.dataList = result.items.reduce((item, next) => {
 					hash[next.deviceName] ? '' : hash[next.deviceName] = true && item.push(next);
@@ -144,7 +142,12 @@ export class GateStatComponent extends PagedListingComponentBase<GateHistoryResu
 
 
 	getticket() {
-		this._ticketService.getPaged('', '', 99, 0)
+		var formdata = new GetTicketsInput();
+		formdata.queryData = []
+		formdata.sorting = ''
+		formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+		this._ticketService.getPaged(formdata)
 			.subscribe(result => {
 				this.Tickets = result.items;
 				this.showPaging(result);

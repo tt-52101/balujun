@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import { TicketPriceListDto, QueryData, GetTicketPricesInput, TicketPriceServiceProxy, TicketServiceProxy } from '@shared/service-proxies/service-proxies';
+import { TicketPriceListDto, QueryData, GetTicketPricesInput, TicketPriceServiceProxy, TicketServiceProxy, GetTicketsInput } from '@shared/service-proxies/service-proxies';
 import { CreateOrEditTicketPriceComponent } from './create-or-edit-ticket-price/create-or-edit-ticket-price.component';
 
 
@@ -88,7 +88,12 @@ export class TicketPriceComponent extends PagedListingComponentBase<TicketPriceL
   }
 
   getstation() {
-    this._ticketService.getPaged('', '', 999, 0)
+    var formdata = new GetTicketsInput();
+		formdata.queryData = []
+		formdata.sorting = ''
+		formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+    this._ticketService.getPaged(formdata)
       .subscribe(result => {
         this.ticketList = result.items;
       });

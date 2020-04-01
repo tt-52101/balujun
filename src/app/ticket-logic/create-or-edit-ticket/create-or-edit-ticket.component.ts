@@ -59,7 +59,7 @@ export class CreateOrEditTicketComponent
   init(): void {
     this._ticketService.getForEdit(this.id).subscribe(result => {
       this.entity = result.ticket;
-      this.audioName = result.ticket.audioName
+      // this.audioName = result.ticket.audioName
       console.log(this.entity);
     });
 
@@ -76,7 +76,7 @@ export class CreateOrEditTicketComponent
 
       case 'done':
         this.audioName = info.file.name
-        this.entity.audioName = info.file.response.result.uri
+        // this.entity.audioName = info.file.response.result.uri
         break;
       case 'error':
         abp.message.error(this.l('UploadFail'));

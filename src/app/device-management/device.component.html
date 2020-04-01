@@ -5,10 +5,12 @@
   <div class="mb-md">
     <nz-row nzGutter="16">
       <form nz-form class="mb-md" [nzLayout]="'inline'" [nzNoColon]="true">
-        <nz-form-item class="formitem">
-          <nz-form-label nzFor="deviceName">设备名称</nz-form-label>
+        <nz-form-item>
+          <nz-form-label nzFor="deviceId">{{l('Device')}}</nz-form-label>
           <nz-form-control>
-            <input type="text" nz-input name="deviceName" [(ngModel)]="queryData[0].value" style="width: 120px">
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear name="deviceId" required style="width: 180px">
+              <nz-option *ngFor="let item of devicList;let i = index;" [nzValue]="item.id" [nzLabel]="item.deviceName"></nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
 

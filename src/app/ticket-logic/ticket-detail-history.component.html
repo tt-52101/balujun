@@ -12,6 +12,7 @@
           </nz-form-control>
         </nz-form-item>
         <!-- <nz-form-item>
+
           <nz-form-label nzFor="deviceId">票码</nz-form-label>
           <nz-form-control>
             <input type="text" nz-input name='ticketcode' [(ngModel)]="queryData[1].value" style="width: 150px">
@@ -35,13 +36,17 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item> -->
+
+
         <nz-form-item class="formitem">
           <nz-form-label>检票时间</nz-form-label>
           <nz-form-control>
-            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)"
-              name="collectionTime" [nzDisabledDate]="disabledDate" [(ngModel)]="collectionTime"></nz-range-picker>
+            <nz-range-picker style="width: 230px" nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="collectionTime" [nzDisabledDate]="disabledDate"
+            [(ngModel)]="collectionTime"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
+
+        
         <nz-form-item>
           <button nz-button [nzType]="'primary'" type="submit" (click)="refresh()">
             <span>

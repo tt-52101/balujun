@@ -1,7 +1,7 @@
 import { Component, OnInit, Injector, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { ModalComponentBase } from '@shared/component-base/modal-component-base';
 import {
-  CreateOrUpdateTicketPriceInput, TicketPriceEditDto, TicketPriceServiceProxy, TicketServiceProxy
+  CreateOrUpdateTicketPriceInput, TicketPriceEditDto, TicketPriceServiceProxy, TicketServiceProxy, GetTicketsInput
 } from '@shared/service-proxies/service-proxies';
 import { Validators, AbstractControl, FormControl } from '@angular/forms';
 
@@ -97,7 +97,12 @@ implements OnInit {
       console.log(this.entity)
     });
 
-    this._ticketService.getPaged('', '', 999, 0)
+    var formdata = new GetTicketsInput();
+		formdata.queryData = []
+		formdata.sorting = ''
+		formdata.maxResultCount = 99;
+		formdata.skipCount = 0;
+    this._ticketService.getPaged(formdata)
     .subscribe(result => {
       this.ticketList = result.items;  
     });
