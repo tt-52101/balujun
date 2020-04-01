@@ -4,21 +4,34 @@
       <div class="ticketleft-top">
         <div class="ticketleft-top-title">团体信息</div>
         <div class="search">
-           <nz-select nzPlaceHolder="请输入团体名称搜索" nzAllowClear nzShowSearch [(ngModel)]="groupid" (ngModelChange)="onchange($event)">
-            <nz-option *ngFor="let item of grouparr;let i=index" [nzValue]="item.id"  [nzLabel]="item.groupName"></nz-option>
+           <nz-select nzPlaceHolder="请输入团体名称搜索" nzAllowClear nzShowSearch [(ngModel)]="groupid"
+            (ngModelChange)="onchange($event)">
+            <nz-option *ngFor="let item of grouparr;let i=index" [nzValue]="item.id"  [nzLabel]="item.groupName">
+            </nz-option>
           </nz-select>
         </div>
         <div class="ticketleft-list">
-          <div class="ticketleft-list-item"><span>团体名称：</span><div>{{groupinfo.groupName}}</div></div>
-          <div class="ticketleft-list-item"><span>折扣：</span><div>{{groupinfo.discount}}</div></div>
-          <div class="ticketleft-list-item"><span>联系电话：</span><div>{{groupinfo.mobile}}</div></div>
-          <div class="ticketleft-list-item"><span>备注：</span><div>{{groupinfo.remand}}</div></div>
-          <div class="ticketleft-list-item"><span>联系人：</span><div>{{groupinfo.contacts}}</div></div>
+          <div class="ticketleft-list-item"><span>团体名称：</span>
+            <div>{{groupinfo.groupName}}</div>
+          </div>
+          <div class="ticketleft-list-item"><span>折扣：</span>
+            <div>{{groupinfo.discount}}</div>
+          </div>
+          <div class="ticketleft-list-item"><span>联系电话：</span>
+            <div>{{groupinfo.mobile}}</div>
+          </div>
+          <div class="ticketleft-list-item"><span>备注：</span>
+            <div>{{groupinfo.remand}}</div>
+          </div>
+          <div class="ticketleft-list-item"><span>联系人：</span>
+            <div>{{groupinfo.contacts}}</div>
+          </div>
         </div>
       </div>
       <div class="ticketleft-center"></div>
       <div class="ticketleft-botton">
-        <nz-table #editRowTable [nzData]="orderticket" [nzShowPagination]='false' [nzNoResult]="noDataTemplate" [nzScroll]="{ y: '600px' }" [nzFrontPagination]="false">
+        <nz-table #editRowTable [nzData]="orderticket" [nzShowPagination]='false' [nzNoResult]="noDataTemplate"
+          [nzScroll]="{ y: '600px' }" [nzFrontPagination]="false">
           <ng-template #noDataTemplate>
             <div>请添加票型</div>
           </ng-template>
@@ -34,7 +47,8 @@
           <tbody>
             <tr *ngFor="let item of editRowTable.data; let i = index" class="editable-row">
               <td class="text-center">
-                <i nz-icon nzType="minus-circle" nzTheme="outline" [nzTheme]="'twotone'" [nzTwotoneColor]="'#9E7BFF'" style="cursor: pointer;" (click)='deleteRow(i)'></i>
+                <i nz-icon nzType="minus-circle" nzTheme="outline" [nzTheme]="'twotone'" [nzTwotoneColor]="'#9E7BFF'"
+                  style="cursor: pointer;" (click)='deleteRow(i)'></i>
               </td>
               <td class="text-center">
                 <div class="editable-cell" *ngIf="editindex !== i; else editTpl1">
@@ -42,7 +56,8 @@
                 </div>
                 <ng-template #editTpl1>
                   <nz-select [(ngModel)]="item.ticketid" nzAllowClear (ngModelChange)="ticketchange($event)">
-                    <nz-option *ngFor="let titem of ticketlist;let ti = index " [nzValue]="titem.id" [nzLabel]="titem.ticketName"></nz-option>
+                    <nz-option *ngFor="let titem of ticketlist;let ti = index " [nzValue]="titem.id"
+                      [nzLabel]="titem.ticketName"></nz-option>
                   </nz-select>
                 </ng-template>
               </td>
@@ -50,9 +65,11 @@
                 <div>￥{{ item.ticketprice }}</div>
               </td>
               <td class="text-center">
-                <div *ngIf="editindex !== i; else editTpl2" class="editable-cell-value-wrap" (click)="startEdit(i)">{{item.num}}</div>
+                <div *ngIf="editindex !== i; else editTpl2" class="editable-cell-value-wrap" (click)="startEdit(i)">
+                  {{item.num}}</div>
                 <ng-template #editTpl2>
-                  <nz-input-number [(ngModel)]="item.num" [nzMin]="0" [nzStep]="1" (ngModelChange)="numchange($event)"></nz-input-number>
+                  <nz-input-number [(ngModel)]="item.num" [nzMin]="0" [nzStep]="1" (ngModelChange)="numchange($event)">
+                  </nz-input-number>
                 </ng-template>
               </td>
               <td class="text-center">
@@ -68,7 +85,7 @@
     </div>
   </div>
   <div nz-col nzSpan="9" class="ticketright">
-<!--     <div class="ticketright-top">
+    <!--     <div class="ticketright-top">
       <div class="carttitle">结算</div>
     </div> -->
     <div class="ticketright-botton">
@@ -82,14 +99,16 @@
         <nz-form-item class="botton-item">
           <nz-form-label class="botton-form" nzRequired [nzSpan]="6" nzFor="time"><span>有效日期</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
-            <nz-range-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="effectivetime" [(ngModel)]="effectivetime" [nzDisabledDate]="disabledDate"></nz-range-picker>
+            <nz-range-picker nzFormat="yyyy-MM-dd" (ngModelChange)="datechange($event)" name="effectivetime"
+              [(ngModel)]="effectivetime" [nzDisabledDate]="disabledDate"></nz-range-picker>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="botton-item">
           <nz-form-label class="botton-form" nzRequired [nzSpan]="6"><span>支付方式</span></nz-form-label>
           <nz-form-control [nzSpan]="13">
             <nz-select [(ngModel)]="orderinfo.payMethodId" name="payMethodId" nzAllowClear>
-              <nz-option *ngFor="let item of paymethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName"></nz-option>
+              <nz-option *ngFor="let item of paymethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

@@ -106,7 +106,7 @@
           </td>
           <td class="text-center" nz-td>
             <span>
-              {{item.payMethod.payName}}
+              {{item.payMethod&&item.payMethod.payName}}
             </span>
           </td>
           <td class="text-center" nz-td>
@@ -115,13 +115,13 @@
             </span>
           </td>
           <td class="text-center" nz-td>
-            <span *ngIf="item.creatorUser">
-              {{item.creatorUser.userName}}
+            <span>
+              {{item.creatorUser&&item.creatorUser.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>
-            <span *ngIf="item.collectior">
-              {{item.collectior.userName}}
+            <span>
+              {{item.collectior&&item.collectior.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>

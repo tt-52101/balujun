@@ -66,7 +66,7 @@
         <tr *ngFor="let item of ajaxTable.data">
           <td nz-td class="text-center" nzLeft="0px">
             <span>
-              {{item.role.displayName}}
+              {{item.role&&item.role.displayName}}
             </span>
           </td>
           <td nz-td class="text-center" nzLeft="150px">
@@ -82,8 +82,8 @@
           <td nz-td class="text-center">
             <span *ngFor="let itemss of item.availableTicketPrices" style="color: #000;">
               <span *ngIf="itemss.ticketPrice">
-                {{itemss.ticketPrice.ticketName}}(标识码{{itemss.ticket.ticketCode}})
-                - ￥{{itemss.ticketPrice.price}}<br>
+                {{itemss.ticketPrice&&itemss.ticketPrice.ticketName}}(标识码{{itemss.ticket&&itemss.ticket.ticketCode}})
+                - ￥{{itemss.ticketPrice&&itemss.ticketPrice.price}}<br>
               </span>
             </span>
           </td>
