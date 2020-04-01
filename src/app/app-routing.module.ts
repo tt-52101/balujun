@@ -9,7 +9,8 @@ const routes: Routes = [{
   component: LayoutDefaultComponent,
   canActivate: [AppRouteGuard],
   canActivateChild: [AppRouteGuard],
-  children: [{
+  children: [
+  {
     path: 'main',
     loadChildren: 'app/main/main.module#MainModule',
     data: { preload: true }

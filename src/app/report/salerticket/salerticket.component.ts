@@ -106,6 +106,9 @@ implements OnInit {
 		})
 		.subscribe(result => {
 			this.dataList = result.items;
+			console.log(result.filters.Sellers)
+			this.userList=result.filters.Sellers
+			this.ticketlist=result.filters.Tickets
 			if(result.totalCount>0){
 				this.total= [result.total]
 			}else{
@@ -114,9 +117,9 @@ implements OnInit {
 			this.showPaging(result);
 		});
 
-		this.getuser()
+		// this.getuser()
 
-		this.gettickets()
+		// this.gettickets()
 	}
 
 	gettickets(){

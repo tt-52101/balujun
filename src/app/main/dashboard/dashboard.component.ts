@@ -4,7 +4,7 @@ import { _HttpClient } from '@delon/theme';
 import { NzMessageService } from 'ng-zorro-antd';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
-// import {ScheduleServiceProxy, PagedResultDtoOfScheduleListDto, ScheduleListDto,getdatasInput,  QueryData,OperServiceProxy,AnalyticType} from '@shared/service-proxies/service-proxies';
+import {    QueryData} from '@shared/service-proxies/service-proxies';
 
 
 declare var echarts: any;
@@ -120,6 +120,28 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
     // });
 
   }
+
+    datechange($event): void {
+    if($event[0].getTime() == $event[1].getTime()){
+      $event[1]=new Date($event[1].getTime()+24*60*60*1000)
+    }
+
+    var year=$event[0].getFullYear();
+    var month = $event[0].getMonth() + 1;
+    var day = $event[0].getDate();
+
+    var fulldate1=year+'-'+month+'-'+day;
+
+    var year=$event[1].getFullYear();
+    var month = $event[1].getMonth() + 1;
+    var day = $event[1].getDate();
+
+    var fulldate2=year+'-'+month+'-'+day;
+
+    this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+    this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+    this.getdata(-1,5)
+  };
 
   setecharts1(): void {
     var datestr=new Date().getFullYear()+'-'+new Date().getMonth()+'-'+new Date().getDate()
@@ -314,27 +336,7 @@ export class DashboardComponent extends AppComponentBase implements OnInit {
   // // };
 
 
-  datechange($event): void {
-    if($event[0].getTime() == $event[1].getTime()){
-      $event[1]=new Date($event[1].getTime()+24*60*60*1000)
-    }
 
-    var year=$event[0].getFullYear();
-    var month = $event[0].getMonth() + 1;
-    var day = $event[0].getDate();
-
-    var fulldate1=year+'-'+month+'-'+day;
-
-    var year=$event[1].getFullYear();
-    var month = $event[1].getMonth() + 1;
-    var day = $event[1].getDate();
-
-    var fulldate2=year+'-'+month+'-'+day;
-
-    this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
-    this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
-    this.getdata(-1,5)
-  };
 
 
 }

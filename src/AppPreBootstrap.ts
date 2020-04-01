@@ -77,6 +77,7 @@ export class AppPreBootstrap {
       (result: any) => {
         AppConsts.appBaseUrl =
           window.location.protocol + '//' + window.location.host;
+              console.log(AppConsts.appBaseUrl)
         AppConsts.remoteServiceBaseUrl = result.remoteServiceBaseUrl;
         AppConsts.portalBaseUrl = result.portalBaseUrl;
         AppConsts.localeMappings = result.localeMappings;
