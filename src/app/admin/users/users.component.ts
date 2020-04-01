@@ -219,7 +219,7 @@ implements OnInit {
    }
 
    branch(){
-     this._branchService.getPaged('','',999,0)
+     this._branchService.getPaged('','',99,0)
 		.subscribe(result => {
 			console.log(result.items);
 			
