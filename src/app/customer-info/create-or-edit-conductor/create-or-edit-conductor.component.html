@@ -9,7 +9,7 @@
     <nz-form-item nz-row>
       <nz-form-label nz-col [nzSm]="4" nzFor="normalizedName">角色名称</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-        <span *ngIf="entity.role">{{entity.role.displayName}}</span>
+        <span *ngIf="entity.role" style="font-weight: 600">{{entity.role.displayName}}</span>
       </nz-form-control>
     </nz-form-item>
     <nz-form-item nz-row>

@@ -47,7 +47,7 @@
   </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzScroll]="{ x: '1390px'}" style="word-break:break-all" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzScroll]="{ x: '1630px'}" style="word-break:break-all" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered>
       <!-- 暂无数据组件 -->
       <ng-template #noDataTemplate>
         <no-data></no-data>
@@ -57,10 +57,10 @@
         <tr>
           <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
           </th>
-          <th nz-th class="text-center" nzWidth="130px">
+          <th nz-th class="text-center" nzWidth="190px" nzLeft="60px">
             <span>票价别名</span>
           </th>
-          <th nz-th class="text-center" nzWidth="130px">
+          <th nz-th class="text-center" nzWidth="100px">
             <span>票价</span>
           </th>
           <th nz-th class="text-center" nzWidth="130px">
@@ -90,13 +90,13 @@
           <th class="text-center" nzWidth="200px">
             <span>下架时间</span>
           </th>
-          <th class="text-center" nzWidth="130px">
+          <th class="text-center" nzWidth="100px">
             <span>排序</span>
           </th>
           <!--           <th class="text-center" nzWidth="130px">
             <span>创建人</span>
           </th> -->
-          <th class="text-center" nzWidth="130px">
+          <th class="text-center" nzWidth="130px" nzRight="0px">
             <span>操作</span>
           </th>
         </tr>
@@ -106,7 +106,7 @@
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
           <td nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzWidth="60px" nzLeft="0px"></td>
-          <td nz-td class="text-center">
+          <td nz-td class="text-center" nzLeft="60px">
             <span>
               {{item.ticketName}}
             </span>
@@ -168,7 +168,7 @@
               {{l(item.creatorUser)}}
             </span>
           </td> -->
-          <td nz-td class="text-center">
+          <td nz-td class="text-center" nzRight="0px">
             <ng-container>
               <a (click)="createOrEdit(item.id)">
                 <span>{{l('Edit')}}</span>

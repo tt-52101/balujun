@@ -23,7 +23,7 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         private _roleService: RoleServiceProxy,
         private _userService: UserServiceProxy,
         private _ticketPriceService: TicketPriceServiceProxy,
-    ) {
+        ) {
         super(injector);
     }
 
@@ -65,53 +65,43 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
 
 
         this._ticketRoleServiceProxy.getPaged(this.queryData[0].value||'', this.queryData[1].value||'', this.queryData[2].value||'', formdata)
-            .finally(() => {
-                finishedCallback();
-            })
-            .subscribe(result => {
-                this.dataList = result.items;
-                console.log(result.items);
-                
-                this.showPaging(result);
-            });
+        .finally(() => {
+            finishedCallback();
+        })
+        .subscribe(result => {
+            this.dataList = result.items;
+            this.showPaging(result);
+        });
         this.rolelists()
         this.userlists()
         this.ticketlistlists()
     }
 
 
-
-
-
-
-    /**
- * 新增或编辑DTO信息
- * @param id 当前DTO的Id
- */
     createOrEdit(id?: number): void {
         this.modalHelper.static(CreateOrEditConductorComponent, { id: id })
-            .subscribe(result => {
-                if (result) {
-                    this.refresh();
-                }
-            });
+        .subscribe(result => {
+            if (result) {
+                this.refresh();
+            }
+        });
     }
 
     rolelists() {
         this._roleService.getPaged(this.selectedPermission, '', '', 99, 0)
-            .subscribe(result => {
-                console.log(result.items);
+        .subscribe(result => {
+            console.log(result.items);
 
-                this.rolelist = result.items
-            });
+            this.rolelist = result.items
+        });
     }
 
     userlists() {
         this._userService
-            .getPaged(this.selectedPermission, [], undefined, undefined, undefined, '', '', 99, 0)
-            .subscribe(result => {
-                this.userlist = result.items
-            });
+        .getPaged(this.selectedPermission, [], undefined, undefined, undefined, '', '', 99, 0)
+        .subscribe(result => {
+            this.userlist = result.items
+        });
     }
 
     ticketlistlists() {
@@ -124,13 +114,10 @@ export class Conductor extends PagedListingComponentBase<TicketRoleListDto> impl
         formdata.skipCount = 0;
 
         this._ticketPriceService.getPaged(formdata)
-            .subscribe(result => {
-                this.ticketlist = result.items
-            });
+        .subscribe(result => {
+            this.ticketlist = result.items
+        });
 
     }
-
-
-
 
 }
