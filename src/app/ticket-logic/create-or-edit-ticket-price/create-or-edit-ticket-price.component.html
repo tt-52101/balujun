@@ -15,74 +15,75 @@
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scenicspot" nzRequired>显示位置</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
         <nz-select required [(ngModel)]="entity.position" name="position" nzAllowClear>
-          <nz-option nzValue="windows" nzLabel="线下窗口"></nz-option>
-          <nz-option nzValue="Online" nzLabel="线上购票"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
+          <nz-option *ngFor="let item of positionEnumTypeEnum;let i = index;" [nzValue]="item.value" [nzLabel]="item.key"></nz-option>
+<!--           <nz-option nzValue="windows" nzLabel="线下窗口"></nz-option>
+  <nz-option nzValue="Online" nzLabel="线上购票"></nz-option> -->
+</nz-select>
+</nz-form-control>
+</nz-form-item>
 
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="ticketName" nzRequired>票型别名</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input nz-input name="ticketName" #ticketName="ngModel" required [(ngModel)]="entity.ticketName">
-      </nz-form-control>
-    </nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="ticketName" nzRequired>票型别名</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <input nz-input name="ticketName" #ticketName="ngModel" required [(ngModel)]="entity.ticketName">
+  </nz-form-control>
+</nz-form-item>
 
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="price" nzRequired>票价</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input nz-input name="price" #price="ngModel" required [(ngModel)]="entity.price">
-      </nz-form-control>
-    </nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="price" nzRequired>票价</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <input nz-input name="price" #price="ngModel" required [(ngModel)]="entity.price">
+  </nz-form-control>
+</nz-form-item>
 
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="ticketList" nzRequired>源票型</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <nz-select required [(ngModel)]="entity.ticketId" name="ticket" nzAllowClear>
-          <nz-option *ngFor="let item of ticketList;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName">
-          </nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sort">排序</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <input nz-input name="sort" #sort="ngModel" required [(ngModel)]="entity.sort">
-      </nz-form-control>
-    </nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="ticketList" nzRequired>源票型</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <nz-select required [(ngModel)]="entity.ticketId" name="ticket" nzAllowClear>
+      <nz-option *ngFor="let item of ticketList;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName">
+      </nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sort">排序</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <input nz-input name="sort" #sort="ngModel" required [(ngModel)]="entity.sort">
+  </nz-form-control>
+</nz-form-item>
 
-    <nz-form-item nz-row>
-      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzFor="upperTime">{{l('UpperTime')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <nz-date-picker nzShowTime name="upperTime" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]='entity.upperTimeStr'
-          required (ngModelChange)="change1($event)"></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
-      <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzFor="lowerTime">{{l('LowerTime')}}</nz-form-label>
-      <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
-        <nz-date-picker nzShowTime name="lowerTime" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]='entity.lowerTimeStr'
-          required (ngModelChange)="change2($event)"></nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzFor="upperTime">{{l('UpperTime')}}</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <nz-date-picker nzShowTime name="upperTime" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]='entity.upperTimeStr'
+    required (ngModelChange)="change1($event)"></nz-date-picker>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item nz-row>
+  <nz-form-label nzRequired [nzSm]="6" [nzXs]="24" nzFor="lowerTime">{{l('LowerTime')}}</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
+    <nz-date-picker nzShowTime name="lowerTime" nzFormat="yyyy-MM-dd HH:mm:ss" [(ngModel)]='entity.lowerTimeStr'
+    required (ngModelChange)="change2($event)"></nz-date-picker>
+  </nz-form-control>
+</nz-form-item>
 
-      <nz-form-item nz-row>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">是否启用</nz-form-label>
-        <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
-          <label nz-checkbox name="isEnabled" #isEnabled="ngModel" [(ngModel)]="entity.isEnabled"></label>
-        </nz-form-control>
-      </nz-form-item>
-  </fieldset>
-  <!-- 模态框底部 -->
-  <div class="modal-footer">
-    <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
-      <!-- <i class="anticon anticon-close-circle-o"></i>  -->
-      {{l("Cancel")}}
-    </button>
-    <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
-      [nzLoading]="saving">
-      <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
-      {{l("Save")}}
-    </button>
-  </div>
+<nz-form-item nz-row>
+  <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="isEnabled">是否启用</nz-form-label>
+  <nz-form-control nz-col [nzSm]="14" [nzXs]="24">
+    <label nz-checkbox name="isEnabled" #isEnabled="ngModel" [(ngModel)]="entity.isEnabled"></label>
+  </nz-form-control>
+</nz-form-item>
+</fieldset>
+<!-- 模态框底部 -->
+<div class="modal-footer">
+  <button nz-button [nzType]="'default'" type="button" (click)="close()" [disabled]="saving">
+    <!-- <i class="anticon anticon-close-circle-o"></i>  -->
+    {{l("Cancel")}}
+  </button>
+  <button nz-button [nzType]="'primary'" type="submit" [disabled]="!validateForm.form.valid|| saving"
+  [nzLoading]="saving">
+  <!-- <i class="anticon anticon-save" *ngIf="!saving"></i>  -->
+  {{l("Save")}}
+</button>
+</div>
 </form>

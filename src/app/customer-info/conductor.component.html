@@ -7,7 +7,7 @@
           <nz-form-label nzFor="rolename">角色名称</nz-form-label>
           <nz-form-control>
             <nz-select required [(ngModel)]="queryData[0].value" name="role.name" nzAllowClear style="width: 160px">
-              <nz-option *ngFor="let item of rolelist" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+              <nz-option *ngFor="let item of rolelist" [nzValue]="item.name" [nzLabel]="item.displayName"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -59,7 +59,7 @@
           <th nz-th class="text-center" nzWidth="150px">
             <span>操作</span>
           </th>
-        </tr>
+        </tr> 
       </thead>
       <!-- 表格内容 -->
       <tbody>

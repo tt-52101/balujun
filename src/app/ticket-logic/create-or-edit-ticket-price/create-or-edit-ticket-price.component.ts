@@ -34,7 +34,7 @@ implements OnInit {
   upperTime = ""
   lowerTime = ""
 
-
+  positionEnumTypeEnum=[]
 
   /**
   * 初始化的构造函数
@@ -83,6 +83,7 @@ implements OnInit {
   init(): void {
 
     this._ticketPriceService.getForEdit(this.id).subscribe(result => {
+      this.positionEnumTypeEnum=result.positionEnumTypeEnum
       if(result.ticketPrice.id){
         result.ticketPrice.upperTimeStr = result.ticketPrice.upperTime.toString()
         result.ticketPrice.lowerTimeStr = result.ticketPrice.lowerTime.toString()
