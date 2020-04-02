@@ -118,20 +118,20 @@
       <td class="text-center">
 
         <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
-          <a (click)="createOrEdit(item.id)" *ngIf="!item.isStatic">
+          <a (click)="createOrEdit(item.id)" *ngIf="!item.isStatic" style="margin: 0 10px 0 0;">
             <span>{{l('Edit')}}</span>
           </a>
         </ng-container>
 
         <ng-container *ngIf="!item.isStatic && (isAllOperation || curmenupower.indexOf('EditPower') > -1)" >
-          <a (click)="editPowerRole(item.id)" style="margin: 0 20px;">
+          <a (click)="editPowerRole(item.id)">
             <span>{{l('EditPower')}}</span>
           </a>
         </ng-container>
 
 
         <ng-container  *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
-          <a nz-popconfirm *ngIf="!item.isStatic"
+          <a nz-popconfirm *ngIf="!item.isStatic" style="margin: 0 0 0 10px;"
           [nzPopconfirmTitle]="l('ConfirmDeleteWarningMessage')"
           (nzOnConfirm)="delete(item)"
           >
