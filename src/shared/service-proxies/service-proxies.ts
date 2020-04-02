@@ -60573,6 +60573,7 @@ export class UserEditDto implements IUserEditDto {
     profilePictureId: string | undefined;
     isTwoFactorEnabled: boolean;
     isActive: boolean;
+    branchId: number | undefined;
 
     constructor(data?: IUserEditDto) {
         if (data) {
@@ -60595,6 +60596,7 @@ export class UserEditDto implements IUserEditDto {
             this.profilePictureId = data["profilePictureId"];
             this.isTwoFactorEnabled = data["isTwoFactorEnabled"];
             this.isActive = data["isActive"];
+            this.branchId = data["branchId"];
         }
     }
 
@@ -60617,6 +60619,7 @@ export class UserEditDto implements IUserEditDto {
         data["profilePictureId"] = this.profilePictureId;
         data["isTwoFactorEnabled"] = this.isTwoFactorEnabled;
         data["isActive"] = this.isActive;
+        data["branchId"] = this.branchId;
         return data; 
     }
 
@@ -60643,6 +60646,7 @@ export interface IUserEditDto {
     profilePictureId: string | undefined;
     isTwoFactorEnabled: boolean;
     isActive: boolean;
+    branchId: number | undefined;
 }
 
 /** 用户信息新增和编辑时用Dto */
@@ -60656,6 +60660,8 @@ export class CreateOrUpdateUserInput implements ICreateOrUpdateUserInput {
     sendActivationEmail: boolean;
     /** 设置随机密码 */
     setRandomPassword: boolean;
+    /** 机构标识 */
+    branchId: number;
 
     constructor(data?: ICreateOrUpdateUserInput) {
         if (data) {
@@ -60681,6 +60687,7 @@ export class CreateOrUpdateUserInput implements ICreateOrUpdateUserInput {
             }
             this.sendActivationEmail = data["sendActivationEmail"];
             this.setRandomPassword = data["setRandomPassword"];
+            this.branchId = data["branchId"];
         }
     }
 
@@ -60706,6 +60713,7 @@ export class CreateOrUpdateUserInput implements ICreateOrUpdateUserInput {
         }
         data["sendActivationEmail"] = this.sendActivationEmail;
         data["setRandomPassword"] = this.setRandomPassword;
+        data["branchId"] = this.branchId;
         return data; 
     }
 
@@ -60728,6 +60736,8 @@ export interface ICreateOrUpdateUserInput {
     sendActivationEmail: boolean;
     /** 设置随机密码 */
     setRandomPassword: boolean;
+    /** 机构标识 */
+    branchId: number;
 }
 
 export class UserRoleDto implements IUserRoleDto {
@@ -60790,6 +60800,7 @@ export class GetUserForEditTreeOutput implements IGetUserForEditTreeOutput {
     roles: UserRoleDto[] | undefined;
     allOrganizationUnits: OrganizationUnitListDto[] | undefined;
     memberedOrganizationUnits: string[] | undefined;
+    branch: Branch;
 
     constructor(data?: IGetUserForEditTreeOutput) {
         if (data) {
@@ -60818,6 +60829,7 @@ export class GetUserForEditTreeOutput implements IGetUserForEditTreeOutput {
                 for (let item of data["memberedOrganizationUnits"])
                     this.memberedOrganizationUnits.push(item);
             }
+            this.branch = data["branch"] ? Branch.fromJS(data["branch"]) : <any>undefined;
         }
     }
 
@@ -60846,6 +60858,7 @@ export class GetUserForEditTreeOutput implements IGetUserForEditTreeOutput {
             for (let item of this.memberedOrganizationUnits)
                 data["memberedOrganizationUnits"].push(item);
         }
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         return data; 
     }
 
@@ -60862,6 +60875,7 @@ export interface IGetUserForEditTreeOutput {
     roles: UserRoleDto[] | undefined;
     allOrganizationUnits: OrganizationUnitListDto[] | undefined;
     memberedOrganizationUnits: string[] | undefined;
+    branch: Branch;
 }
 
 export class UserListRoleDto implements IUserListRoleDto {

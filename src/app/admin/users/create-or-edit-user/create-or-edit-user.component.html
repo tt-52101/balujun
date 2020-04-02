@@ -204,7 +204,7 @@
         <nz-row>
           <nz-col class="mb-md">
 
-            <nz-radio-group [(ngModel)]="branchId" [nzButtonStyle]="'solid'" name="branch">
+            <nz-radio-group [(ngModel)]="user.branchId" [nzButtonStyle]="'solid'" name="branch">
               <label *ngFor="let branch of branchList" nz-radio-button
                 [nzValue]="branch.id">{{branch.branchName}}</label>
             </nz-radio-group>

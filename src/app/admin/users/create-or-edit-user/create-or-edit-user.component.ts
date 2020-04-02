@@ -171,7 +171,7 @@ implements OnInit, AfterViewInit {
        // 角色
        this.roles = result.roles;
 
-       //  this.branchId=result.user.branchId
+        // this.branchId=result.user.branchId
 
        for (var i = 0;i<this.roles.length; i++) {
          if(this.roles[i].isAssigned){
@@ -218,6 +218,7 @@ implements OnInit, AfterViewInit {
      const input = new CreateOrUpdateUserInput();
      input.user = this.user;
      input.user.emailAddress=new Date().getTime() + '@qq.com'
+     // input.user.branchId=this.
      input.setRandomPassword = this.setRandomPassword;
      input.sendActivationEmail = this.sendActivationEmail;
      if(this.roleName){

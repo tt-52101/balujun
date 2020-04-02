@@ -38,7 +38,7 @@
       </nz-col>
       <nz-col nzSm="12">
         <app-role-combox [(selectedRole)]="role" (selectedRoleChange)="refreshGoFirstPage()"></app-role-combox>
-      </nz-col>
+      </nz-col>-->
 
     <!-- </nz-row> -->
 
@@ -202,8 +202,8 @@
             </td> -->
             <!-- <td class="text-center" [innerHTML]="item.isEmailConfirmed | yn"> </td> -->
             <td class="text-center">
-              <span nz-tooltip [nzTitle]="getRolesAsString(item.roles)">
-               {{item.branch}}
+              <span>
+               {{item.branch && item.branch.branchName}}
               </span>
             </td>
             <td class="text-center" [innerHTML]="item.isActive | yn"> </td>
