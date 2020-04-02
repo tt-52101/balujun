@@ -15,7 +15,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="ticketName">票型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear style="width: 200px" name="ticketName">
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear style="width: 200px" name="ticketName" (ngModelChange)="onChange($event)">
               <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>

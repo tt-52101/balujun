@@ -115,6 +115,18 @@ implements OnInit {
 		this.getpaymethod()
 	}
 
+	onChange1($event): void {
+		if($event == null){
+			this.organizationId=''
+		}
+	}
+
+	onChange2($event): void {
+		if($event == null){
+			this.payMethodId=''
+		}
+	}
+
 
 	getgroup(){
 		const formdata = new GetOrganizationsInput();

@@ -135,6 +135,11 @@ implements OnInit {
 		});
 	}
 
+	onChange($event): void {
+		if($event == null){
+			this.ticketId=''
+		}
+	}
 
 
 	datechange($event): void {

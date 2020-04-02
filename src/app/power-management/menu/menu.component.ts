@@ -32,6 +32,7 @@ implements OnInit {
   isAllOperation=false
   curmenupower=[]
 
+  windowheight='600px'
     /**
      * 获取后端数据列表信息
      * @param request 请求的数据的dto 请求必需参数 skipCount: number; maxResultCount: number;
@@ -53,6 +54,7 @@ implements OnInit {
          this.dataList = result.items;
          this.showPaging(result);
        });
+       this.windowheight=document.body.clientHeight - 330 + 'px'
      }
 
     /**

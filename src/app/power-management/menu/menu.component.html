@@ -41,7 +41,7 @@
   </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1190px',y: '600px'}" style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1190px',y: windowheight}" style="word-break:break-all">
       <!-- 暂无数据组件 -->
       <ng-template #noDataTemplate>
         <no-data></no-data>

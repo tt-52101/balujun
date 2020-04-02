@@ -122,6 +122,14 @@ implements OnInit {
 		// this.gettickets()
 	}
 
+	onChange($event): void {
+		if($event == null){
+			this.ticketId=''
+		}
+	}
+
+
+
 	gettickets(){
 		const formdata = new GetTicketPricesInput()
 		formdata.queryData = [];

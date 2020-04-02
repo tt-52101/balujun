@@ -110,11 +110,23 @@ implements OnInit {
 		.subscribe(result => {
 			this.ticketlist = result.items;
 			// if(!this.ticketId){
-			// 	this.ticketId=this.ticketlist[0].id
-			// 	this.refreshGoFirstPage()
-			// }
+				// 	this.ticketId=this.ticketlist[0].id
+				// 	this.refreshGoFirstPage()
+				// }
 
-		});
+			});
+	}
+
+	onChange1($event): void {
+		if($event == null){
+			this.ticketId=''
+		}
+	}
+
+	onChange2($event): void {
+		if($event == null){
+			this.payMethodId=''
+		}
 	}
 
 

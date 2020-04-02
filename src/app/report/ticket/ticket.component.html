@@ -5,7 +5,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="ticket">票型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 200px" name="ticket">
+            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 200px" name="ticket" (ngModelChange)="onChange1($event)">
               <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>
@@ -14,7 +14,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="payMethod">支付方式</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="payMethod">
+            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="payMethod" (ngModelChange)="onChange2($event)">
               <nz-option *ngFor="let item of payMethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName">
               </nz-option>
             </nz-select>

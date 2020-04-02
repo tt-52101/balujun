@@ -6,7 +6,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="activityNo">订单来源</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="sourceId" nzAllowClear style="width: 200px" name="organization">
+            <nz-select [(ngModel)]="sourceId" nzAllowClear style="width: 200px" name="organization" (ngModelChange)="sonChange($event)">
               <nz-option *ngFor="let item of sourceList;let i = index;" [nzValue]="item.id" [nzLabel]="item.sourceName">
               </nz-option>
             </nz-select>
@@ -15,7 +15,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="scheduleCode">支付方式</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="payMethod">
+            <nz-select [(ngModel)]="payMethodId" nzAllowClear style="width: 200px" name="payMethod" (ngModelChange)="ponChange($event)">
               <nz-option *ngFor="let item of payMethodList;let i = index;" [nzValue]="item.id" [nzLabel]="item.payName"></nz-option>
             </nz-select>
           </nz-form-control>

@@ -106,7 +106,7 @@ implements OnInit {
 			}else{
 				this.total=[]
 			}
-			console.log(this.dataList )
+			// console.log(this.dataList)
 			this.showPaging(result);
 		});
 
@@ -114,6 +114,18 @@ implements OnInit {
 
 		this.getsource()
 		this.getpaymethod()
+	}
+
+	sonChange($event): void {
+		if($event == null){
+			this.sourceId=''
+		}
+	}
+
+	ponChange($event): void {
+		if($event == null){
+			this.payMethodId=''
+		}
 	}
 
 

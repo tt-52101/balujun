@@ -6,7 +6,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="activityNo">{{l('Seller')}}</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear style="width: 200px" name="boat">
+            <nz-select [(ngModel)]="queryData[0].value" nzAllowClear style="width: 200px" name="boat" >
               <nz-option *ngFor="let item of userList;let i = index;" [nzValue]="item.id" [nzLabel]="item.userName"></nz-option>
             </nz-select>
           </nz-form-control>
@@ -14,7 +14,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="scheduleCode">票型</nz-form-label>
           <nz-form-control>
-            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 200px" name="boat">
+            <nz-select [(ngModel)]="ticketId" nzAllowClear style="width: 200px" name="boat" (ngModelChange)="onChange($event)">
               <nz-option *ngFor="let item of ticketlist;let i = index;" [nzValue]="item.id" [nzLabel]="item.ticketName"></nz-option>
             </nz-select>
           </nz-form-control>
