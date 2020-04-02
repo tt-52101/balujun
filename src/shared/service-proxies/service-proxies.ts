@@ -29047,6 +29047,67 @@ export class WechatServiceProxy {
     }
 
     /**
+     * 根据订单id查找所有票据
+     * @param id (optional) 
+     * @return Success
+     */
+    getTicketDetailByActivityId(id: number | undefined): Observable<TicketDetailListModel[]> {
+        let url_ = this.baseUrl + "/api/Wechat/GetTicketDetailByActivityId?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTicketDetailByActivityId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTicketDetailByActivityId(<any>response_);
+                } catch (e) {
+                    return <Observable<TicketDetailListModel[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TicketDetailListModel[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTicketDetailByActivityId(response: HttpResponseBase): Observable<TicketDetailListModel[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (resultData200 && resultData200.constructor === Array) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(TicketDetailListModel.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TicketDetailListModel[]>(<any>null);
+    }
+
+    /**
      * 获取微信用户的订单
      * @param openId (optional) 
      * @param sorting (optional) 
@@ -29567,6 +29628,53 @@ export class WechatPayServiceProxy {
             }));
         }
         return _observableOf<AjaxResult>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
+    testFillActivityByTemp(): Observable<void> {
+        let url_ = this.baseUrl + "/api/WechatPay/TestFillActivityByTemp";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestFillActivityByTemp(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestFillActivityByTemp(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processTestFillActivityByTemp(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
     }
 
     /**
@@ -30673,9 +30781,9 @@ export enum SexEnum {
 }
 
 export enum VerifiableTypeEnum {
-    IdentityCard = <any>"QRCode", 
-    ICCard = <any>"IdentityCard", 
-    QRCode = <any>"ICCard", 
+    IdentityCard = <any>"IdentityCard", 
+    ICCard = <any>"ICCard", 
+    QRCode = <any>"QRCode", 
     ReturnCard = <any>"ReturnCard", 
     TaiwanCard = <any>"TaiwanCard", 
 }
@@ -60813,6 +60921,7 @@ export class UserListDto implements IUserListDto {
     lastLoginTime: moment.Moment | undefined;
     creationTime: moment.Moment;
     isActive: boolean;
+    branch: BranchListDto;
     id: number;
 
     constructor(data?: IUserListDto) {
@@ -60838,6 +60947,7 @@ export class UserListDto implements IUserListDto {
             this.lastLoginTime = data["lastLoginTime"] ? moment(data["lastLoginTime"].toString()) : <any>undefined;
             this.creationTime = data["creationTime"] ? moment(data["creationTime"].toString()) : <any>undefined;
             this.isActive = data["isActive"];
+            this.branch = data["branch"] ? BranchListDto.fromJS(data["branch"]) : <any>undefined;
             this.id = data["id"];
         }
     }
@@ -60863,6 +60973,7 @@ export class UserListDto implements IUserListDto {
         data["lastLoginTime"] = this.lastLoginTime ? this.lastLoginTime.toISOString() : <any>undefined;
         data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>undefined;
         data["isActive"] = this.isActive;
+        data["branch"] = this.branch ? this.branch.toJSON() : <any>undefined;
         data["id"] = this.id;
         return data; 
     }
@@ -60885,6 +60996,7 @@ export interface IUserListDto {
     lastLoginTime: moment.Moment | undefined;
     creationTime: moment.Moment;
     isActive: boolean;
+    branch: BranchListDto;
     id: number;
 }
 
@@ -67417,6 +67529,133 @@ export class PagedResultDtoOfCustomer implements IPagedResultDtoOfCustomer {
 export interface IPagedResultDtoOfCustomer {
     totalCount: number;
     items: Customer[] | undefined;
+}
+
+export class TicketDetailListModel implements ITicketDetailListModel {
+    id: number;
+    ticketNo: string | undefined;
+    activityDetailId: number;
+    activityDetail: ActivityDetail;
+    activityId: number;
+    orgActivityDetailId: number | undefined;
+    orgActivityId: number | undefined;
+    customerId: number | undefined;
+    customer: Customer;
+    ticketId: number;
+    qrCode: string | undefined;
+    checkingQuantity: number;
+    checkedQuantity: number;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    checkMethod: CheckMethodEnum;
+    ticketStatus: TicketStatusEnum;
+    checkTime: moment.Moment | undefined;
+    isPrint: boolean;
+    group: number;
+    ticketPrice: number;
+    ticketPriceName: string | undefined;
+
+    constructor(data?: ITicketDetailListModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.id = data["id"];
+            this.ticketNo = data["ticketNo"];
+            this.activityDetailId = data["activityDetailId"];
+            this.activityDetail = data["activityDetail"] ? ActivityDetail.fromJS(data["activityDetail"]) : <any>undefined;
+            this.activityId = data["activityId"];
+            this.orgActivityDetailId = data["orgActivityDetailId"];
+            this.orgActivityId = data["orgActivityId"];
+            this.customerId = data["customerId"];
+            this.customer = data["customer"] ? Customer.fromJS(data["customer"]) : <any>undefined;
+            this.ticketId = data["ticketId"];
+            this.qrCode = data["qrCode"];
+            this.checkingQuantity = data["checkingQuantity"];
+            this.checkedQuantity = data["checkedQuantity"];
+            this.startDateTime = data["startDateTime"] ? moment(data["startDateTime"].toString()) : <any>undefined;
+            this.endDateTime = data["endDateTime"] ? moment(data["endDateTime"].toString()) : <any>undefined;
+            this.checkMethod = data["checkMethod"];
+            this.ticketStatus = data["ticketStatus"];
+            this.checkTime = data["checkTime"] ? moment(data["checkTime"].toString()) : <any>undefined;
+            this.isPrint = data["isPrint"];
+            this.group = data["group"];
+            this.ticketPrice = data["ticketPrice"];
+            this.ticketPriceName = data["ticketPriceName"];
+        }
+    }
+
+    static fromJS(data: any): TicketDetailListModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new TicketDetailListModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["ticketNo"] = this.ticketNo;
+        data["activityDetailId"] = this.activityDetailId;
+        data["activityDetail"] = this.activityDetail ? this.activityDetail.toJSON() : <any>undefined;
+        data["activityId"] = this.activityId;
+        data["orgActivityDetailId"] = this.orgActivityDetailId;
+        data["orgActivityId"] = this.orgActivityId;
+        data["customerId"] = this.customerId;
+        data["customer"] = this.customer ? this.customer.toJSON() : <any>undefined;
+        data["ticketId"] = this.ticketId;
+        data["qrCode"] = this.qrCode;
+        data["checkingQuantity"] = this.checkingQuantity;
+        data["checkedQuantity"] = this.checkedQuantity;
+        data["startDateTime"] = this.startDateTime ? this.startDateTime.toISOString() : <any>undefined;
+        data["endDateTime"] = this.endDateTime ? this.endDateTime.toISOString() : <any>undefined;
+        data["checkMethod"] = this.checkMethod;
+        data["ticketStatus"] = this.ticketStatus;
+        data["checkTime"] = this.checkTime ? this.checkTime.toISOString() : <any>undefined;
+        data["isPrint"] = this.isPrint;
+        data["group"] = this.group;
+        data["ticketPrice"] = this.ticketPrice;
+        data["ticketPriceName"] = this.ticketPriceName;
+        return data; 
+    }
+
+    clone(): TicketDetailListModel {
+        const json = this.toJSON();
+        let result = new TicketDetailListModel();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface ITicketDetailListModel {
+    id: number;
+    ticketNo: string | undefined;
+    activityDetailId: number;
+    activityDetail: ActivityDetail;
+    activityId: number;
+    orgActivityDetailId: number | undefined;
+    orgActivityId: number | undefined;
+    customerId: number | undefined;
+    customer: Customer;
+    ticketId: number;
+    qrCode: string | undefined;
+    checkingQuantity: number;
+    checkedQuantity: number;
+    startDateTime: moment.Moment;
+    endDateTime: moment.Moment;
+    checkMethod: CheckMethodEnum;
+    ticketStatus: TicketStatusEnum;
+    checkTime: moment.Moment | undefined;
+    isPrint: boolean;
+    group: number;
+    ticketPrice: number;
+    ticketPriceName: string | undefined;
 }
 
 export class PagedResultDtoOfActivity implements IPagedResultDtoOfActivity {
