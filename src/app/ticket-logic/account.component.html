@@ -5,7 +5,7 @@
         <nz-form-item class="formitem">
           <nz-form-label nzFor="activityNo">结账单号</nz-form-label>
           <nz-form-control>
-            <input type="number" nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 200px">
+            <input nz-input name="activityNo" [(ngModel)]="queryData[0].value" style="width: 200px">
           </nz-form-control>
         </nz-form-item>
         <nz-form-item class="formitem">
@@ -106,7 +106,7 @@
           </td>
           <td class="text-center" nz-td>
             <span>
-              {{item.payMethod.payName}}
+              {{item.payMethod&&item.payMethod.payName}}
             </span>
           </td>
           <td class="text-center" nz-td>
@@ -115,13 +115,13 @@
             </span>
           </td>
           <td class="text-center" nz-td>
-            <span *ngIf="item.creatorUser">
-              {{item.creatorUser.userName}}
+            <span>
+              {{item.creatorUser&&item.creatorUser.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>
-            <span *ngIf="item.collectior">
-              {{item.collectior.userName}}
+            <span>
+              {{item.collectior&&item.collectior.userName}}
             </span>
           </td>
           <td class="text-center" nz-td>
