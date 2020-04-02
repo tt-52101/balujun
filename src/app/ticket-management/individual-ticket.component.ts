@@ -183,8 +183,8 @@ export class IndividualTicket extends AppComponentBase implements OnInit {
 
     numchange(value, i) {
         if (value == '' || isNaN(i)) {
+            this.notify.error('请输入整数');
             this.orderticket[i].num = 0
-            // abp.message.error('请输入整数');
             this.countprice()
             return
         } else {
