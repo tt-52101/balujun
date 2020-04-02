@@ -2,20 +2,19 @@
   <div class="mb-md">
     <nz-row nzGutter="8">
       <nz-col nzMd="20" nzSm="12" class="btn-gutter">
-        <button nz-button [nzType]="'primary'" (click)="createOrEdit()"
-          *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
+        <nz-tree-select style="width: 200px;margin-right: 16px" [nzDefaultExpandAll]="false" [nzNodes]="menuarr" name="menuid" nzPlaceHolder="请选择菜单" [(ngModel)]="queryData[0].value" (ngModelChange)="onChange($event)">
+        </nz-tree-select>
+        <button nz-button [nzType]="'primary'" (click)="createOrEdit()" *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
           <span>
             {{l("Create")}}
           </span>
         </button>
-        <button nz-button (click)="batchcreate()" style="background: #fc992c;border-color: #fc992c;color: #fff;"
-          *ngIf="isAllOperation || curmenupower.indexOf('BatchCreate') > -1">
+        <button nz-button (click)="batchcreate()" style="background: #fc992c;border-color: #fc992c;color: #fff;" *ngIf="isAllOperation || curmenupower.indexOf('BatchCreate') > -1">
           <span>
             批量添加
           </span>
         </button>
-        <button nz-button [nzType]="'danger'" (click)="batchDelete()"
-          *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
+        <button nz-button [nzType]="'danger'" (click)="batchDelete()" *ngIf="isAllOperation || curmenupower.indexOf('BatchDelete') > -1">
           <span>
             {{l("BatchDelete")}}
           </span>
@@ -25,17 +24,13 @@
   </div>
   <!-- 实体的表格内容 -->
   <nz-row class="my-md">
-    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber"
-      [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()"
-      (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate"
-      [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '1010px', y: '600px' }" style="word-break:break-all">
+    <nz-table #ajaxTable [nzData]="dataList" [nzTotal]="totalItems" [(nzPageIndex)]="pageNumber" [(nzPageSize)]="pageSize" [nzLoading]="isTableLoading" (nzPageIndexChange)="pageNumberChange()" (nzPageSizeChange)="refresh()" [nzShowSizeChanger]="true" [nzShowQuickJumper]="true" [nzNoResult]="noDataTemplate" [nzFrontPagination]="false" nzBordered [nzScroll]="{ x: '810px', y: '600px' }" style="word-break:break-all">
       <ng-template #noDataTemplate>
         <no-data></no-data>
       </ng-template>
       <thead (nzSortChange)="gridSort($event)">
         <tr>
-          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled"
-            [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
+          <th nzShowCheckbox [(nzChecked)]="allChecked" [nzDisabled]="allCheckboxDisabled" [nzIndeterminate]="checkboxIndeterminate" (nzCheckedChange)="checkAll($event)" nzWidth="60px" nzLeft="0px">
           </th>
           <th class="text-center" nzWidth="160px" nzLeft="60px" nz-th nzShowSort nzSortKey="Menu">
             <span>{{l('Menu')}}</span>
@@ -54,16 +49,16 @@
                     </th>
                     <th class="text-center" nzWidth="140px" nz-th nzShowSort nzSortKey="GroupName">
                         <span>{{l('GroupName')}}</span>
-                    </th> -->
-          <th class="text-center" nzWidth="100px" nz-th nzShowSort nzSortKey="Sort">
+                      </th> -->
+<!--           <th class="text-center" nzWidth="100px" nz-th nzShowSort nzSortKey="Sort">
             <span>{{l('Sort')}}</span>
-          </th>
-          <th class="text-center" nzWidth="100px" nz-th>
+          </th> -->
+<!--           <th class="text-center" nzWidth="100px" nz-th>
             <span>{{l('Iocn')}}</span>
-          </th>
+          </th> -->
           <!-- <th class="text-center" nzWidth="100px" nz-th>
                         <span>{{l('Category')}}</span>
-                    </th> -->
+                      </th> -->
           <th class="text-center" nzWidth="100px" nz-th>
             <span>{{l('IsEnabled')}}</span>
           </th>
@@ -76,8 +71,7 @@
       <tbody>
         <tr *ngFor="let item of ajaxTable.data">
           <!-- 全选框 -->
-          <td class="text-center" nzShowCheckbox [(nzChecked)]="item.checked"
-            (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td>
+          <td class="text-center" nzShowCheckbox [(nzChecked)]="item.checked" (nzCheckedChange)="refreshCheckStatus(dataList)" nzLeft="0px"></td>
           <td class="text-center" nz-td nzLeft="60px">
             <ellipsis lines="1">
               <span nz-tooltip [nzTitle]="item.menu" *ngIf="item.menu">
@@ -119,7 +113,7 @@
                                 {{item.groupName}}
                             </span>
                         </ellipsis>
-                    </td> -->
+                      </td> -->
           <!--  <td class="text-center" nz-td>
                         <ellipsis lines="1">
                             <span nz-tooltip [nzTitle]="item.sort">
@@ -136,17 +130,17 @@
                                 {{l(item.category)}}
                             </span>
                         </ellipsis>
-                    </td> -->
-          <td class="text-center" nz-td>
+                      </td> -->
+<!--           <td class="text-center" nz-td>
             <ellipsis lines="1">
               <span nz-tooltip [nzTitle]="item.sort">
                 {{item.sort}}
               </span>
             </ellipsis>
-          </td>
-          <td class="text-center" nz-td>
+          </td> -->
+<!--           <td class="text-center" nz-td>
             <i nz-icon [nzType]="item.iocName" nzTheme="outline"></i>
-          </td>
+          </td> -->
           <td class="text-center" nz-td class="text-center" [innerHTML]="item.isEnabled | yn"> </td>
           <td class="text-center" nz-td class="text-center" nzRight="0px">
             <ng-container *ngIf="isAllOperation || curmenupower.indexOf('CreateOrUpdate') > -1">
@@ -156,8 +150,7 @@
               <nz-divider nzType="vertical"></nz-divider>
             </ng-container>
             <ng-container *ngIf="isAllOperation || curmenupower.indexOf('Delete') > -1">
-              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)"
-                [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
+              <nz-popconfirm [nzTitle]="l('ConfirmDeleteWarningMessage')" (nzOnConfirm)="delete(item)" [nzOkText]="l('Ok')" [nzCancelText]="l('Cancel')">
                 <a nz-popconfirm>
                   <span>{{l('Delete')}}</span>
                 </a>

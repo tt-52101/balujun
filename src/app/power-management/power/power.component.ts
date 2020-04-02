@@ -3,7 +3,7 @@ import { Component, Injector, OnInit } from '@angular/core';
 import * as _ from 'lodash';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/component-base/paged-listing-component-base';
-import { PowerServiceProxy, PagedResultDtoOfPowerListDto, PowerListDto } from '@shared/service-proxies/service-proxies';
+import { PowerServiceProxy, PagedResultDtoOfPowerListDto, PowerListDto ,MenuServiceProxy,QueryData} from '@shared/service-proxies/service-proxies';
 import { CreateOrEditPowerComponent } from './create-or-edit-power/create-or-edit-power.component';
 import { BatchCreatePowerComponent } from './batch-create-power/batch-create-power.component';
 //import { AppConsts } from '@shared/AppConsts';
@@ -21,15 +21,25 @@ implements OnInit {
 
 	constructor(
 		injector: Injector,
-		private _powerService: PowerServiceProxy
+		private _powerService: PowerServiceProxy,
+		private _menuService: MenuServiceProxy
 		) {
 		super(injector);
-    this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
-    this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
-  }
+		this.curmenupower=JSON.parse(localStorage.getItem('curmenupower'))
+		this.isAllOperation=eval(localStorage.getItem('isAllOperation'))
+	}
 
-  isAllOperation=false
-  curmenupower=[]
+	isAllOperation=false
+	curmenupower=[]
+
+	menuarr=[]
+
+	queryData=[{
+		field: "menuId",
+		method: "=",
+		value: "",
+		logic: "and"
+	}]
 
 	/**
 	* 获取后端数据列表信息
@@ -38,8 +48,12 @@ implements OnInit {
 	* @param finishedCallback 完成后回调函数
 	*/
 	protected fetchDataList(request: PagedRequestDto, pageNumber: number, finishedCallback: Function): void {
+		var arr=[]
+		if(this.queryData[0].value){
+			arr.push(new QueryData(this.queryData[0]))
+		}
 		this._powerService.getPaged(
-			[],
+			arr,
 			'',
 			request.sorting,
 			request.maxResultCount,
@@ -50,11 +64,26 @@ implements OnInit {
 		})
 		.subscribe(result => {
 			this.dataList = result.items;
+			this.getmenu()
 			console.log(this.dataList);
 			this.showPaging(result);
 		});
 	}
 
+	getmenu(){
+		this._menuService.getMenuDropDown()
+		.subscribe(res => {
+			this.menuarr = res
+		});
+	}
+
+
+
+	onChange($event: string): void {
+		this.queryData[0].value = $event
+		this.refreshGoFirstPage()
+	}
+	
 	/**
 	* 新增或编辑DTO信息
 	* @param id 当前DTO的Id

@@ -117,25 +117,26 @@
 
             </nz-form-control>
         </nz-form-item> -->
-    <nz-form-item nz-row>
+<!--     <nz-form-item nz-row>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="sort">{{l('Sort')}}</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
         <input nz-input name="sort" #sort="ngModel" [(ngModel)]="entity.sort" [placeholder]="l('Sort')">
 
 
       </nz-form-control>
-    </nz-form-item>
-    <nz-form-item nz-row>
+    </nz-form-item> -->
+
+<!--     <nz-form-item nz-row>
       <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzFor="iocName">{{l('IocName')}}</nz-form-label>
       <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
         <nz-select [(ngModel)]="entity.iocName" name="iocName" (ngModelChange)="iconChange($event)">
           <nz-option *ngFor="let item of iconarr" [nzLabel]="item.title" [nzValue]="item.title" nzCustomContent><i
               nz-icon [nzType]="item.icon"></i> {{item.title}}</nz-option>
-
         </nz-select>
-
       </nz-form-control>
-    </nz-form-item>
+    </nz-form-item> -->
+
+
     <!-- <nz-form-item nz-row>
             <nz-form-label nz-col [nzSm]="6" [nzXs]="24" nzRequired nzFor="iocClassName">{{l('IocClassName')}}</nz-form-label>
             <nz-form-control nz-col [nzSm]="14" [nzXs]="24" nzHasFeedback>
