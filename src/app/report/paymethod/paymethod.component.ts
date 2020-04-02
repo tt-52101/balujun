@@ -91,7 +91,7 @@ implements OnInit {
 			finishedCallback();
 		})
 		.subscribe(result => {
-			// console.log(result);
+			console.log(result);
 
 			this.dataList = result.items;
 			if (result.totalCount > 0) {
