@@ -151,11 +151,11 @@ implements OnInit {
 
 			var fulldate2=year+'-'+month+'-'+day;
 
-			this.queryData[1].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
-			this.queryData[2].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[0].value=moment(fulldate1).format('YYYY-MM-DD HH:mm:ss')
+			this.queryData[1].value=moment(fulldate2).format('YYYY-MM-DD HH:mm:ss')
 		}else{
+			this.queryData[0].value=''
 			this.queryData[1].value=''
-			this.queryData[2].value=''
 		}
 	}
 

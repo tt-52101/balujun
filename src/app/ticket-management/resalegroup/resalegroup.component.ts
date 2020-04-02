@@ -227,11 +227,17 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
         }
     }
 
-    numchange(i){
-
-        this.countprice()
+    numchange(value, i) {
+        if (value == '' || isNaN(i)) {
+            this.orderticket[i].num = 0
+            // abp.message.error('请输入整数');
+            this.countprice()
+            return
+        } else {
+            this.orderticket[i].num = parseInt(value)
+            this.countprice()
+        }
     }
-
     deleteRow(i): void {
         this.orderticket= this.orderticket.filter((item,index) =>  index !=i )
         this.countprice()
@@ -271,7 +277,7 @@ export class ResaleGroup extends AppComponentBase implements OnInit {
             if(item.ticketid){
                 item.ticketcount=(item.ticketprice * item.num).toFixed(2)
                 totalprice +=Number(item.ticketcount)
-                totalnum +=item.num
+                totalnum +=parseInt(item.num)
             }
         })
         this.totalprice=totalprice * this.discount / 100

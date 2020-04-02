@@ -148,7 +148,7 @@ implements OnInit {
 					const ids = _.map(this.selectedDataItems, 'id');
 					this._ticketAccountService.settleAccount(ids).subscribe(result => {
 						if(result.resultCode=='000'){
-							this.notify.success(this.l('SuccessfullyEditd'));
+							this.notify.success('结账成功');
 						}else{
 							this.notify.error(result.resultMessage);
 						}
